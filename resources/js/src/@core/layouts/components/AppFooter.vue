@@ -6,7 +6,7 @@
         class="ml-25"
         href="#"
         target="_blank"
-      >Infochannel</b-link>
+      >TravelPoints</b-link>
       <span class="d-none d-sm-inline-block">, Todos los derechos reservados</span>
     </span>
 

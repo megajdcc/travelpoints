@@ -26,7 +26,7 @@
             >
               <span class="brand-logo">
                 <b-img
-                  :src="appLogoImage"
+                  :src="logo"
                   alt="logo"
                 />
               </span>
@@ -89,6 +89,8 @@ import { $themeConfig } from '@themeConfig'
 import VerticalNavMenuItems from './components/vertical-nav-menu-items/VerticalNavMenuItems.vue'
 import useVerticalNavMenu from './useVerticalNavMenu'
 
+import store from '@/store'
+
 export default {
   components: {
     VuePerfectScrollbar,
@@ -119,6 +121,7 @@ export default {
       updateMouseHovered,
     } = useVerticalNavMenu(props)
 
+  
     const { skin } = useAppConfig()
 
     // Shadow bottom is UI specific and can be removed by user => It's not in `useVerticalNavMenu`
@@ -134,7 +137,7 @@ export default {
     const collapseTogglerIconFeather = computed(() => (collapseTogglerIcon.value === 'unpinned' ? 'CircleIcon' : 'DiscIcon'))
 
     // App Name
-    const { appName, appLogoImage } = $themeConfig.app
+    const { appName, appLogoImage, applogoImageWhite } = $themeConfig.app
 
     return {
       perfectScrollbarSettings,
@@ -154,6 +157,10 @@ export default {
       // App Name
       appName,
       appLogoImage,
+      logo:computed(() => {
+        return skin.value == 'dark' || skin.value == 'semi-dark' ? applogoImageWhite : appLogoImage;
+      })
+
     }
   },
 }

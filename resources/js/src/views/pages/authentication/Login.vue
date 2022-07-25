@@ -24,7 +24,7 @@
       <b-col lg="4" class="d-flex align-items-center auth-bg px-2 p-lg-5">
         <b-col sm="8" md="6" lg="12" class="px-xl-2 mx-auto">
           <b-card-title class="mb-1 font-weight-bold" title-tag="h2">
-            Bienvenido al Sistema de Gestión de Calidad  SGC | InfoChannel ! 👋
+           Bienvenido a TravelPoints 👋
           </b-card-title>
           <b-card-text class="mb-2">
             Inicie sesión en su cuenta y comience la aventura

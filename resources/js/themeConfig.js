@@ -12,7 +12,8 @@ export const $themeConfig = {
   app: {
     appName: 'Boda y Playa', // Will update name in navigation menu (Branding)
     // eslint-disable-next-line global-require
-    appLogoImage: require('storage/logotipo.png') // Will update logo in navigation menu (Branding)
+    appLogoImage: require('storage/logotipo.png'), // Will update logo in navigation menu (Branding)
+    applogoImageWhite:require('storage/logotipoblanco.png')
   },
   
   layout: {

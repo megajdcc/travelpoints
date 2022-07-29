@@ -543,7 +543,22 @@ export default {
 				})
 
 			})
+		},
+
+		async crearLinkReferido({commit},data) {
+			return await new Promise((resolve, reject) => {
+				commit('toggleLoading',null,{root:true})
+				axios.put(`/api/usuarios/${data.id}/crear/link/referidor`,data).then(({data:datos}) => {
+					commit('updatePerfil',datos.usuario)
+					resolve(datos)
+				}).catch(e => reject(e))
+				.then(() => {
+					commit('toggleLoading', null, { root: true })
+				})
+
+			})
 		}
+
 
 
 	}

@@ -33,7 +33,7 @@ export default [
 
              {
                 path: 'invitados',
-                name: 'misinvitados',
+                name: 'misreferidos',
                 component: () => import('views/socio/perfil/invitados'),
                 meta: {
                    name: 'perfil'

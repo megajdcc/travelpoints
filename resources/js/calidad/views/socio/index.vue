@@ -90,9 +90,9 @@
                      Perfil de socio
                   </b-nav-item>
 
-                  <b-nav-item :to="{ name: 'misinvitados' }" exact active-class="active">
+                  <b-nav-item :to="{ name: 'misreferidos' }" exact active-class="active">
                      <span class="fas fa-user-plus"></span>
-                     Mis Invitados
+                     Mis Referidos
                   </b-nav-item>
 
                   <b-nav-item :to="{ name: 'perfil.editar' }" exact active-class="active">

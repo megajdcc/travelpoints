@@ -489,5 +489,28 @@ class UserController extends Controller
         return response()->json(['result' => $result]);
     }
 
+    public function crearLinkReferidor(Request $request, User $usuario){
+
+        $datos = $request->validate([
+            'codigo_referidor' => 'required|unique:users,codigo_referidor'
+        ],[
+            'codigo_referidor.required' => 'El código es importante no lo olvides',
+            'codigo_referidor.unique' => 'El código de referidor ya está siendo usuario por otro usuario, inténta con otro...'
+        ]);
+
+        $result = $usuario->update($datos);
+
+        $usuario->tokens;
+        $usuario->ciudad?->estado?->pais;
+
+        $usuario->rol;
+        $usuario->habilidades = $usuario->getHabilidades();
+        $usuario->avatar = $usuario->getAvatar();
+        
+        return response()->json(['result' => $result,'usuario' => $usuario]);
+        
+    }
+
+
 
 }

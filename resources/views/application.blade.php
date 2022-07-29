@@ -39,7 +39,9 @@
   </div>
   <div id="app">
   </div>
-  
+
+
+  @if(env('APP_ENV') == 'production')
   <script>
     // Check that service workers are supported
     if ('serviceWorker' in navigator) {
@@ -49,6 +51,9 @@
       });
     }
   </script> 
+
+  @endif
+
 
     <script src="{{ mix('js/manifest.js')}}"></script>
     <script src="{{ mix('js/vendor.js')}}"></script>

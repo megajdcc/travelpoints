@@ -111,6 +111,8 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
 
     Route::post('desactivar/usuario',[UserController::class,'desactivarCuenta']);
 
+    Route::put('usuarios/{usuario}/crear/link/referidor',[UserController::class,'crearLinkReferidor']);
+
 
 
 });

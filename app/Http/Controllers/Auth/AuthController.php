@@ -17,11 +17,26 @@ use Illuminate\Support\Str;
 
 use App\Events\UsuarioConectado;
 use App\Events\UsuarioDesconectado;
+use Laravel\Socialite\Facades\Socialite;
+
 
 class AuthController extends Controller
 {
 
    
+
+   public function redirectGoogle(Request $request){
+      return Socialite::driver('google')->redirect();
+   }
+
+   public function callbackGoogle(Request $request){
+      $usuario = Socialite::driver()->user();
+
+      dd($usuario);
+
+   }
+
+
     /**
     * Create user
     *
@@ -102,8 +117,9 @@ class AuthController extends Controller
          // $token = $tokenResult->plainTextToken;
 
          $user->token = $token;
+         
          $user->save();
-
+         $user->update(['activo' => true]);
          $user->tokens;
          $user->rol;
          $user->habilidades = $user->getHabilidades();

@@ -92,21 +92,6 @@ export default [
   //     layout: 'full',
   //   },
   // },
-  {
-    path: '/configurar/perfil',
-    name: 'perfil',
-    component: () => import('views/perfil/index.vue'),
-    meta: {
-      pageTitle: 'Mi perfil',
-      resource: 'perfil',
-      action: 'read',
-      breadcrumb: [
-        {
-          text: 'Configuración de perfil',
-          active: true,
-        },
-      ],
-    },
-  },
+ 
 
 ]

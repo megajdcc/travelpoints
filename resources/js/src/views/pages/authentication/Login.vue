@@ -5,7 +5,7 @@
       <!-- Brand logo-->
       <b-link class="brand-logo">
 
-        <img src="/storage/logotipo.png" alt="Logo" />
+        <img :src="logo" alt="Logo" />
         <!-- <h2 class="brand-text text-primary ml-1">
           Boda y Playa
         </h2> -->
@@ -24,7 +24,7 @@
       <b-col lg="4" class="d-flex align-items-center auth-bg px-2 p-lg-5">
         <b-col sm="8" md="6" lg="12" class="px-xl-2 mx-auto">
           <b-card-title class="mb-1 font-weight-bold" title-tag="h2">
-           Bienvenido a TravelPoints 👋
+            Bienvenido a {{ appName }} 👋
           </b-card-title>
           <b-card-text class="mb-2">
             Inicie sesión en su cuenta y comience la aventura
@@ -55,9 +55,9 @@
                 </div>
                 <validation-provider #default="{ errors }" name="Password" vid="password" rules="required">
                   <b-input-group class="input-group-merge" :class="errors.length > 0 ? 'is-invalid':null">
-                    <b-form-input id="login-password" v-model="formulario.password" :state="errors.length > 0 ? false:null"
-                      class="form-control-merge" :type="passwordFieldType" name="login-password"
-                      placeholder="Password" autocomplete="current-password"  />
+                    <b-form-input id="login-password" v-model="formulario.password"
+                      :state="errors.length > 0 ? false:null" class="form-control-merge" :type="passwordFieldType"
+                      name="login-password" placeholder="Password" autocomplete="current-password" />
                     <b-input-group-append is-text>
                       <feather-icon class="cursor-pointer" :icon="passwordToggleIcon"
                         @click="togglePasswordVisibility" />
@@ -84,6 +84,11 @@
               <b-button type="submit" variant="primary" block :disabled="invalid" v-loading="loading">
                 Iniciar
               </b-button>
+<!-- 
+              <b-button @click="authGoogle" variant="primary" block :disabled="invalid" v-loading="loading">
+                Google Auth
+              </b-button> -->
+              
             </b-form>
           </validation-observer>
 
@@ -127,13 +132,14 @@ import {
 import { required, email } from '@validations'
 import { togglePasswordVisibility } from '@core/mixins/ui/forms'
 import store from '@/store/index'
-import {computed} from '@vue/composition-api';
+import {computed,toRefs} from '@vue/composition-api';
 import useAuth from '@core/utils/useAuth'
 
 import '@core/scss/vue/libs/toastification.scss'
 import ToastificationContent from '@core/components/toastification/ToastificationContent'
 import router from '@/router'
 import { getHomeRouteForLoggedInUser } from '@/auth/utils'
+import { $themeConfig } from '@themeConfig'
 
 export default {
   directives: {
@@ -183,6 +189,8 @@ export default {
   setup(props){
     
     const usuario = computed(() => store.state.usuario.usuario)
+    const { appName, appLogoImage, applogoImageWhite } = $themeConfig.app
+    const { skin } = toRefs(store.state.appConfig.layout)
     const {
       login,
       formValidate,
@@ -237,6 +245,17 @@ export default {
 
     }
 
+    const authGoogle = () => {
+
+      axios.get(`/api/auth/google/redirect`).then(response => {
+        console.log(response)
+      }).catch(e => {
+        console.log(e)
+      })
+
+    }
+
+
     return{
       login,
       required,
@@ -244,7 +263,13 @@ export default {
       auth:computed(() => store.state.auth),
       formValidate,
       formulario,
-      iniciar
+      iniciar,
+      authGoogle,
+      appName,
+      logo:computed(() => {
+        return skin.value == 'dark' || skin.value == 'semi-dark' ? applogoImageWhite : appLogoImage;
+      })
+
     }
   }
 

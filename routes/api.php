@@ -2,6 +2,8 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\{AuthController};
 use App\Http\Controllers\{ UserController,NotificacionController,RolController,PermisoController};
+use Laravel\Socialite\Facades\Socialite;
+use App\Models\{Pais,Estado,Ciudad};
 
 /*
 |--------------------------------------------------------------------------
@@ -25,6 +27,9 @@ use App\Http\Controllers\{ UserController,NotificacionController,RolController,P
 
     Route::group(['prefix' => 'auth'], function () {
         
+        Route::get('google/redirect',[AuthController::class,'redirectGoogle']);
+        Route::get('google/callback', [AuthController::class, 'callbackGoogle']);
+
         Route::post('login', [AuthController::class, 'login']);
         Route::post('register', [AuthController::class, 'register']);
         Route::post('recuperar/contrasena',[AuthController::class,'recuperarContrasena']);
@@ -104,8 +109,29 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::post('fetch/usuarios',[UserController::class,'getUsers']);
     Route::post('usuario/{usuario}/update/avatar',[UserController::class,'actualizarAvatarUsuario']);
 
+    Route::post('desactivar/usuario',[UserController::class,'desactivarCuenta']);
+
 
 
 });
 
 Route::put('usuario/{usuario}/establecer/contrasena', [UserController::class, 'EstablecerContrasena'])->name('establecercontrasena');
+
+Route::get('get/paises',function(){
+    $paises = Pais::get();
+    return response()->json($paises);
+});
+
+Route::get('get/estados/{pais}', function(Pais $pais) {
+    $estados = $pais->estados;
+    return response()->json($estados);
+});
+
+Route::get('get/ciudades/{estado}', function (Estado $estado) {
+    $ciudades = $estado->ciudades;
+    return response()->json($ciudades);
+});
+
+
+
+

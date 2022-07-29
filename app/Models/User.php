@@ -48,7 +48,9 @@ class User extends Authenticatable
         'facebook',
         'instagram',
         'ultimo_login',
-        'ciudad_id' 
+        'ciudad_id' ,
+        'codigo_referidor',
+        'tps'
     ];
 
     /**
@@ -69,9 +71,10 @@ class User extends Authenticatable
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
-        'is_password' => 'boolean',
-        'is_whatsapp' => 'boolean',
-        'activo' => 'boolean'
+        'is_password'       => 'boolean',
+        'is_whatsapp'       => 'boolean',
+        'activo'            => 'boolean',
+        'tps'               => 'float'
     ];
 
 
@@ -142,4 +145,21 @@ class User extends Authenticatable
     public function ciudad(){
         return $this->belongsTo(Ciudad::class,'ciudad_id','id');
     }
+
+    /** 
+     * Un usuario puede tener muchos referidos 
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany;
+     */
+    public function referidos(){
+        return $this->belongsToMany(User::class,'usuario_referencia','usuario_id','referido_id')->withPivot('codigo');
+    }
+
+    /**
+     * Un usuario puede ser referido por otro usuario (referidor)
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany; 
+     */
+    public function referidor(){
+        return $this->belongsToMany(User::class,'usuario_referencia','referido_id','usuario_id')->withPivot('codigo');
+    }
+
 }

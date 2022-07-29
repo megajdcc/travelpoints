@@ -7,12 +7,16 @@ use App\Models\User;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Notification;
 use App\Notifications\WelcomeUsuario;
-use Illuminate\Support\Facades\{Hash,Auth,File,Storage,Validator,DB};
+use Illuminate\Support\Facades\{Hash,Auth,File,Storage,Validator,DB,Mail};
 use Illuminate\Validation\Rule;
 use Carbon\Carbon;
 use Exception;
 use Datatables;
 use App\Events\{UsuarioCreado};
+use App\Notifications\CuentaDesactivada;
+use Illuminate\Validation\Rules\RequiredIf;
+
+
 class UserController extends Controller
 {
 
@@ -36,14 +40,15 @@ class UserController extends Controller
             'fecha_nacimiento' => 'nullable',
             'rol_id'           => 'required',
             'website'          => 'nullable',
-            'is_whatsapp'      => 'nullable',
+            'is_whatsapp'      => 'required_with:telefono',
             'twitter'          => 'nullable',
             'facebook'         => 'nullable',
             'instagram'        => 'nullable',
             'genero'           => 'nullable',
             'codigo_postal'    => 'nullable',
             'activo'           => 'nullable',
-            'ciudad_id'        => 'nullable'
+            'ciudad_id'        => 'nullable',
+            
         ],[
             'nombre.required' => 'El nombre es importante',
             'email.unique'    => 'El email ya está siendo usado, el mismo debe ser único',
@@ -51,6 +56,7 @@ class UserController extends Controller
             'email.required'  => 'Este campo es obligatorio',
             'email.email'     => 'El email no es valido por favor verifique',
             'email.unique'    => 'El email debe ser único ya otro usuario lo esta usando.',
+            'is_whatsapp.required_with' => 'Este campo es importante'
         ]);
     }
 
@@ -152,8 +158,6 @@ class UserController extends Controller
     public function update(Request $request, User $usuario){
 
         $datos = $this->validar($request,$usuario);
-
-       
     
         try{
             DB::beginTransaction();
@@ -210,7 +214,7 @@ class UserController extends Controller
         $usuarios = User::get();
         foreach ($usuarios as $key => $usuario) {
             $usuario->rol;
-            $usuario->ciudad;
+            $usuario->ciudad?->estado?->pais;
             $usuario->rol->permisos;
             $usuario->avatar = $usuario->getAvatar();
         }
@@ -273,16 +277,18 @@ class UserController extends Controller
 
     public function updatePerfil(Request $request, User $usuario){
 
-        $usuario->update($this->validar($request,$usuario));
+        $result =  $usuario->update($this->validar($request, $usuario));
+        $user = User::find($usuario->id);
 
-        $usuario = $request->user();
-        $usuario->tokens;
-        $usuario->ciudad;
-        $usuario->rol;
-        $usuario->habilidades = $usuario->getHabilidades();
-        $usuario->avatar = $usuario->getAvatar();
+        $user->tokens;
+        $user->ciudad?->estado?->pais;
 
-        return response()->json(['result' => true, 'usuario' => $usuario]);
+        $user->rol;
+        $user->habilidades = $user->getHabilidades();
+        $user->avatar = $user->getAvatar();
+        
+        return response()->json(['result' => $result, 'usuario' => $user]);
+
     }
 
     public function uploadAvatar(Request $request){
@@ -330,33 +336,23 @@ class UserController extends Controller
     public function changePassword(Request $request,User $usuario){
 
         $v = Validator::make($request->all(),[
-            'passwordValueOld' => ['required',function($attribute,$value,$fail){
-
-
+            'contrasenaAnterior' => ['required',function($attribute,$value,$fail){
                 if(!Hash::check($value,Auth::user()->password)){
-                    // dd(Hash::make($value). ' - ' . Auth::user()->password);
                     $fail('Su contraseña no coincide con la actual');
                 }
             }],
-            'newPasswordValue'     => 'required|min:6',
-            'RetypePassword' => 'required|same:newPasswordValue'
+            'contrasenaNueva'     => 'required|min:6',
+            'retypePassword' => 'required|same:contrasenaNueva'
         ],[
-            'passwordValueOld.required'     => 'Su contraseña es requeridad para poder actualizarla',
-            'newPasswordValue.required' => 'Su nueva contraseña es obligatoria',
-            'newPasswordValue.min'      => 'Su contraseña debe ser mayor a 6 caracteres',
-            'RetypePassword.same' => 'La contraseñas no son iguales'
+            'contrasenaAnterior.required' => 'Su contraseña es requeridad para poder actualizarla',
+            'contrasenaNueva.required'    => 'Su nueva contraseña es obligatoria',
+            'contrasenaNueva.min'         => 'Su contraseña debe ser mayor a 6 caracteres',
+            'retypePassword.same'         => 'La contraseñas no son iguales'
         ])->validate();
-
         
-
-        $usuario->password = Hash::make($v['newPasswordValue']);
-
-
-        $usuario->save();
-
-       
+        $usuario->password = Hash::make($v['contrasenaNueva']);
         
-        return response()->json(['result' => true]);
+        return response()->json(['result' =>  $usuario->save()]);
     }
 
     public function perfilDatos(){
@@ -380,6 +376,7 @@ class UserController extends Controller
     public function refresh(){
 
         $usuario = User::find(Auth::id());
+        
         $data = [
             'avatar' => $usuario->getAvatar(),
             'usuario' => $usuario,
@@ -467,5 +464,30 @@ class UserController extends Controller
         ]);
 
     }
+
+    public function desactivarCuenta(Request $request){
+        $v = Validator::make($request->all(), [
+            'mensaje' => 'required',
+            'contrasena' => ['required', function ($attribute, $value, $fail) use ($request){
+                if (!Hash::check($value, $request->user()->password)) {
+                    $fail('La contraseña no coincide con la actual');
+                }
+            }],
+        ], [
+            'mensaje.required' => 'El mensaje es importante, no lo olvides',
+        ])->validate();
+        
+        
+        $result = $request->user()->update(['activo' => false]);
+        
+        Notification::send(
+            User::whereHas('rol', fn (Builder $q) => $q->whereIn('nombre', ['Desarrollador', 'Administrador']))->get(), 
+            new CuentaDesactivada($request->user(),$v['mensaje'])
+        );
+
+        
+        return response()->json(['result' => $result]);
+    }
+
 
 }

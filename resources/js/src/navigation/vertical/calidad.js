@@ -29,18 +29,6 @@ export default [
 
       ]
    },
-
-   {
-      header: 'Mi Cuenta',
-      icon:'MinusIcon'
-   },
-   {
-      title:'Perfil',
-      route:'perfil',
-      icon:'UserIcon',
-      action: 'read',
-      resource: 'perfil',
-   }
    
 ]
 

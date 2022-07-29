@@ -6,6 +6,7 @@ import { canNavigate } from '@/libs/acl/routeProtection'
 import dashboard from './routes/dashboard'
 import pages from './routes/pages'
 import calidad from './routes/calidad'
+import paginas from './routes/paginas';
 
 Vue.use(VueRouter)
 const router = new VueRouter({
@@ -16,11 +17,11 @@ const router = new VueRouter({
     return { x: 0, y: 0 }
   },
   routes: [
-    {
-      path: '/',
-      redirect: { name: 'home' }
-    },
-
+    // {
+    //   path: '/',
+    //   redirect: { name: 'home' }
+    // },
+    ...paginas,
     ...dashboard,
     ...pages,
     ...calidad,

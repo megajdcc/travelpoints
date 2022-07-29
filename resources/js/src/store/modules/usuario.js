@@ -35,6 +35,10 @@ export default {
 				ultimo_login:null,
 				ciudad_id:null,
 				ciudad:null,
+				codigo_referidor:null,
+				referidos:[],
+				referidor:[],
+				tps:null,
 
 
 			},
@@ -67,6 +71,11 @@ export default {
 				ultimo_login: null,
 				ciudad_id: null,
 				ciudad: null,
+				codigo_referidor: null,
+				referidos: [],
+				referidor: [],
+				tps:null,
+
 			},
 
 			usuarios: [],
@@ -134,6 +143,11 @@ export default {
 				ultimo_login: null,
 				ciudad_id: null,
 				ciudad: null,
+				codigo_referidor: null,
+				referidos: [],
+				referidor: [],
+				tps:null,
+
 			}
 		},
 
@@ -162,6 +176,11 @@ export default {
 		},
 
 		updateAvatar(state,avatar){
+			const user = JSON.parse(localStorage.getItem('userData'))
+
+			user.avatar = avatar;
+
+			localStorage.setItem('userData',JSON.stringify(user))
 			state.usuario.avatar = avatar;
 		},
 
@@ -176,8 +195,19 @@ export default {
 
 
 		updatePerfil(state,data){
+			localStorage.setItem('userData',JSON.stringify(data))
 			state.usuario = data
 		},
+
+		desactivarCuenta(state, result) {
+			const user = JSON.parse(localStorage.getItem('userData'))
+			user.activo = !result;
+			localStorage.setItem('userData', JSON.stringify(user))
+
+			state.usuario.activo = !result;
+
+		},
+
 
 		limpiarUsuario(state){
 
@@ -209,6 +239,10 @@ export default {
 				ultimo_login: null,
 				ciudad_id: null,
 				ciudad: null,
+				codigo_referidor: null,
+				referidos: [],
+				referidor: [],
+				tps: null,
 			}
 			
 		}
@@ -221,6 +255,11 @@ export default {
 		draft(state){
 			return clone(state.user);
 		},
+
+		draftUsuario(state){
+			return clone(state.usuario)
+		},
+
 
 		conPermiso:(state) => {
 			return (permiso) => {
@@ -326,7 +365,10 @@ export default {
 					return {label:val.nombre,value:val.id,id:val.id,email:val.email};
 				})
 			}
-		}
+		},
+
+
+		
 
 	
 
@@ -399,12 +441,31 @@ export default {
 	   
 		},
 
-		async guardarUsuario({state,commit,dispatch},draft){
-			return await axios.put(`/api/perfil/update/usuario/`+state.usuario.id, draft);
+		async guardarUsuario({state,commit},data){
+
+			return await new Promise((resolve, reject) => {
+				commit('toggleLoading', null, { root: true })
+				axios.put(`/api/perfil/update/usuario/${state.usuario.id}`,data).then(({data}) => {
+					if(data.result){
+						commit('updatePerfil',data.usuario)
+					}
+					resolve(data)
+				}).catch(e => reject(e))
+				.then(() => commit('toggleLoading',null,{root:true}))
+
+			})
 		},
 
-		async cambiarContrasena({state},data){
-			return await axios.post(`/api/cambiar/contrasena/usuario/${state.usuario.id}`,data);
+		async cambiarContrasena({commit,state},data){
+			return await new Promise((resolve, reject) => {
+				commit('toggleLoading', null, { root: true })
+				axios.post(`/api/cambiar/contrasena/usuario/${state.usuario.id}`,data).then(({data}) => {
+					resolve(data)
+				}).catch(e => reject(e))
+				.then(() => {
+					commit('toggleLoading',null,{root:true})
+				})
+			})
 		},
 
 		async eliminar({state},data){
@@ -466,7 +527,24 @@ export default {
 
 				
 			})
+		},
+
+		async desactivarCuenta({commit},data) {
+			return await new Promise((resolve, reject) => {
+				commit('toggleLoading',null,{root:true})
+
+				axios.post(`/api/desactivar/usuario`,data).then(({data:datos}) => {
+					commit('desactivarCuenta',datos.result)
+					resolve(datos)
+
+				}).catch( e => reject(e))
+				.then(() => {
+					commit('toggleLoading', null, { root: true })
+				})
+
+			})
 		}
+
 
 	}
 } 

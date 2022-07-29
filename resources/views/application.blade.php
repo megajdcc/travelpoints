@@ -9,7 +9,7 @@
   <!-- <link rel="icon" href="<%= BASE_URL %>favicon.ico"> -->
   <link rel="manifest" href="/manifest.json">
 
-  <title>Sistema de Gestión de Calidad | SGC | InfoChannel</title>
+  <title>TravelPoints</title>
 
   <!-- Splash Screen/Loader Styles -->
   <link rel="stylesheet" type="text/css" href="{{ mix('css/loader.css') }}" />
@@ -18,7 +18,7 @@
   <link rel="stylesheet" href="{{ mix('css/app.css') }}">
 
   <!-- Favicon -->
-  <link rel="shortcut icon" href="{{ asset('favicon.ico') }}">
+  <link rel="shortcut icon" href="{{ asset('favicons/favicon-8x8.png') }}">
 
   <!-- Font -->
   {{-- <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet"> --}}

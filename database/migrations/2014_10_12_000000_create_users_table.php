@@ -41,9 +41,18 @@ class CreateUsersTable extends Migration
             $table->foreign('rol_id')->references('id')->on('rols')->onUpdate('cascade')->onDelete('set null');
             $table->string('token')->nullable();
             $table->timestamp('ultimo_login')->nullable();
+            $table->string('codigo_referidor')->unique()->nullable();
+            $table->decimal('tps')->default(0);
             $table->rememberToken();
             $table->timestamps();
         });
+
+        Schema::create('usuario_referencia',function(Blueprint $table){
+            $table->string('codigo');
+            $table->foreignId('usuario_id')->constrained('users')->cascadeOnDelete()->cascadeOnUpdate();
+            $table->foreignId('referido_id')->constrained('users')->cascadeOnDelete()->cascadeOnUpdate();
+        });
+
     }
 
     /**
@@ -53,6 +62,7 @@ class CreateUsersTable extends Migration
      */
     public function down()
     {
+        Schema::dropIfExists('usuario_referencia');
         Schema::dropIfExists('users');
     }
 }

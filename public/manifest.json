@@ -1,8 +1,8 @@
 {
-   "name":"SGC InfoChannel",
-   "id":"SGC",
-   "short_name":"SGC InfoChannel",
-   "description":"SGC InfoChannel",
+   "name":"TravelPoints",
+   "id":"Travel",
+   "short_name":"Travel",
+   "description":"TravelPoints",
    "dir":"ltr",
    "display":"standalone",
    "background_color":"#0071bc",

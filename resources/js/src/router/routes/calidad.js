@@ -1,5 +1,199 @@
 export default [
    /*****************************************/
+   /* SOCIO
+   /*************************************** */
+    {
+    path: '/socio',
+    name:'socio',
+    component: () => import('views/socio'),
+    children:[
+      {
+          path: 'perfil',
+          name: 'perfil',
+          component: () => import('views/socio/perfil'),
+          meta: {
+             resource: 'perfil',
+             action: 'read',
+             name:'perfil'
+             
+            //  navActiveLink: 'socio'
+          },
+
+          children:[
+
+             {
+                path: '',
+                name: 'miperfil',
+                component: () => import('views/socio/perfil/datos'),
+                meta: {
+                   name: 'perfil'
+                   //  navActiveLink: 'socio'
+                },
+             },
+
+             {
+                path: 'invitados',
+                name: 'misinvitados',
+                component: () => import('views/socio/perfil/invitados'),
+                meta: {
+                   name: 'perfil'
+                   //  navActiveLink: 'socio'
+                },
+             },
+
+             {
+                path: 'editar',
+                name: 'perfil.editar',
+                component: () => import('views/socio/perfil/editar'),
+                meta: {
+                   name: 'perfil'
+                   //  navActiveLink: 'socio'
+                },
+             },
+             {
+                path: 'contrasena',
+                name: 'perfil.password',
+                component: () => import('views/socio/perfil/CambiarPassword'),
+                meta: {
+                   name: 'perfil'
+                   //  navActiveLink: 'socio'
+                },
+             },
+
+             {
+                path: 'desactivar',
+                name: 'perfil.desactivar',
+                component: () => import('views/socio/perfil/desactivar'),
+                meta: {
+                   name: 'perfil'
+                   //  navActiveLink: 'socio'
+                },
+             },
+
+          ]
+
+       },
+      //  negocio
+       {
+          path: 'negocio',
+          name: 'socio.negocio',
+          component: () => import('views/socio/negocio'),
+          meta: {
+             resource: 'perfil',
+             action: 'read',
+             name:'negocio'
+            //  navActiveLink: 'socio'
+          },
+
+          children:[
+            {
+               path:'',
+               name:'socio.negocio.list',
+               component:()=> import('views/socio/negocio/list'),
+                meta: {
+                   name: 'negocio'
+                   //  navActiveLink: 'socio'
+                },
+            },
+            {
+                path: 'afiliar',
+                name: 'socio.negocio.afiliar',
+                component: () => import('views/socio/negocio/create'),
+               meta: {
+                  navActiveLink: 'socio.negocio',
+                  name: 'negocio'
+
+               },
+             },
+             {
+                path: 'siguiente',
+                name: 'socio.negocio.siguiendo',
+                component: () => import('views/socio/negocio/siguiendo'),
+                meta: {
+                   navActiveLink: 'socio.negocio',
+                   name: 'negocio'
+
+                },
+             },
+             {
+                path: 'recomendados',
+                name: 'socio.negocio.recomendados',
+                component: () => import('views/socio/negocio/recomendados'),
+                meta: {
+                   navActiveLink: 'socio.negocio',
+                   name: 'negocio'
+
+                },
+             },
+             {
+                path: 'solicitudes',
+                name: 'socio.negocio.solicitudes',
+                component: () => import('views/socio/negocio/solicitudes'),
+                meta: {
+                   navActiveLink: 'socio.negocio',
+                   name: 'negocio'
+
+                },
+             }
+          ]
+
+       },
+       // reservaciones
+       {
+          path: 'reservaciones',
+          name: 'socio.reservaciones',
+          component: () => import('views/socio/reservaciones'),
+          meta: {
+             resource: 'perfil',
+             action: 'read',
+            //  navActiveLink: 'socio'
+          }
+
+       },
+
+      //  consumos
+
+       {
+          path: 'consumos',
+          name: 'socio.consumos',
+          component: () => import('views/socio/consumos'),
+          meta: {
+             resource: 'perfil',
+             action: 'read',
+            //  navActiveLink: 'socio'
+          }
+
+       },
+      //  certificados
+       {
+          path: 'certificados',
+          name: 'socio.certificados',
+          component: () => import('views/socio/certificados'),
+          meta: {
+             resource: 'perfil',
+             action: 'read',
+            //  navActiveLink: 'socio'
+          }
+
+       },
+      //  compras
+       {
+          path: 'compras',
+          name: 'socio.compras',
+          component: () => import('views/socio/compras'),
+          meta: {
+             resource: 'perfil',
+             action: 'read',
+            //  navActiveLink: 'socio'
+          }
+
+       }
+
+
+    ]
+  },
+
+   /*****************************************/
    /* USUARIO
    /*************************************** */
 

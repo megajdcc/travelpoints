@@ -39,7 +39,7 @@ class WelcomeUsuario extends Notification implements ShouldQueue
         return [
             'database',
             'mail',
-            'broadcast'
+            // 'broadcast'
         ];
     }
 

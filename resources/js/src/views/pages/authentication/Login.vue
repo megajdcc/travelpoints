@@ -3,13 +3,7 @@
     <b-row class="auth-inner m-0">
 
       <!-- Brand logo-->
-      <b-link class="brand-logo">
-
-        <img :src="logo" alt="Logo" />
-        <!-- <h2 class="brand-text text-primary ml-1">
-          Boda y Playa
-        </h2> -->
-      </b-link>
+      <logo url="/"/>
       <!-- /Brand logo-->
 
       <!-- Left Text-->
@@ -162,7 +156,8 @@ export default {
     BAlert,
     ValidationProvider,
     ValidationObserver,
-    BFormInvalidFeedback
+    BFormInvalidFeedback,
+    Logo:() => import('components/Logo')
   },
   mixins: [togglePasswordVisibility],
   data() {
@@ -190,7 +185,6 @@ export default {
     
     const usuario = computed(() => store.state.usuario.usuario)
     const { appName, appLogoImage, applogoImageWhite } = $themeConfig.app
-    const { skin } = toRefs(store.state.appConfig.layout)
     const {
       login,
       formValidate,
@@ -211,7 +205,7 @@ export default {
             toast({
                  component: ToastificationContent,
                  props: {
-                    title: `Bienvenido ${usuario.value.nombre || usuario.value.apellido}`,
+                    title: `Bienvenido ${ usuario.value.nombre || usuario.value.username}`,
                     icon: 'CoffeeIcon',
                     variant: 'success',
                     text: `Ha iniciado sesión correctamente como ${usuario.value.rol.nombre}. ¡Ahora puedes empezar a explorar!`,
@@ -266,9 +260,7 @@ export default {
       iniciar,
       authGoogle,
       appName,
-      logo:computed(() => {
-        return skin.value == 'dark' || skin.value == 'semi-dark' ? applogoImageWhite : appLogoImage;
-      })
+     
 
     }
   }

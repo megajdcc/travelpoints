@@ -32,6 +32,7 @@ use App\Models\{Pais,Estado,Ciudad};
 
         Route::post('login', [AuthController::class, 'login']);
         Route::post('register', [AuthController::class, 'register']);
+        Route::post('nuevo/usuario',[UserController::class,'nuevoUsuario']);
         Route::post('recuperar/contrasena',[AuthController::class,'recuperarContrasena']);
         Route::post('reset-password',[AuthController::class,'resetPassword']);
         
@@ -114,7 +115,6 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::put('usuarios/{usuario}/crear/link/referidor',[UserController::class,'crearLinkReferidor']);
 
 
-
 });
 
 Route::put('usuario/{usuario}/establecer/contrasena', [UserController::class, 'EstablecerContrasena'])->name('establecercontrasena');
@@ -135,5 +135,6 @@ Route::get('get/ciudades/{estado}', function (Estado $estado) {
 });
 
 
+Route::get('usuarios/verificar/codigo/{codigo}', [UserController::class, 'verificarCodigo']);
 
 

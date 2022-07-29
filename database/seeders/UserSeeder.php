@@ -27,6 +27,7 @@ class UserSeeder extends Seeder
                 'permisos',
                 "notificaciones",
                 "usuarios",
+                'Auth'
             ];
 
             $actions = ['manage','read','write','delete','update'];
@@ -52,7 +53,7 @@ class UserSeeder extends Seeder
                 if($rol->nombre == 'Usuario'){
 
                     $permisos_filtrados = $permisos_registrados->filter(function($v,$i){
-                        return $v->nombre == 'home' || $v->nombre == 'perfil' ;
+                        return $v->nombre == 'perfil' || $v->nombre == 'notificaciones' || $v->nombre == 'Auth';
                     });
 
                     foreach ($permisos_filtrados as $k => $v) {
@@ -64,6 +65,7 @@ class UserSeeder extends Seeder
             
 
     		$usuario = User::create([
+                'username' => '@megajdcc',
 				'nombre'   => 'Jhonatan Deivyth',
 				'apellido' => 'Crespo Colmenarez',
 				'telefono' => '+584128505504',

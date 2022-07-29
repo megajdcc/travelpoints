@@ -111,7 +111,7 @@ export default {
       const url_app = ref(window.location.origin)
       
       const link_referido = computed(() => {
-         return `${url_app.value}/register/referrer/${formulario.value.codigo_referidor}`;
+         return `${url_app.value}/register/${formulario.value.codigo_referidor}`;
 
       })
       const compartirFacebook = () => {
@@ -146,7 +146,7 @@ export default {
 
       return {
          loading:computed(() => store.state.loading),
-         url:computed(() => `${window.location.origin}/register/referrer/`),
+         url:computed(() => `${window.location.origin}/register/`),
          required,
          formulario,
          compartirWhatsapp,

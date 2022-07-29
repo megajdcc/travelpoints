@@ -8,6 +8,7 @@ export default {
 	state:() => ({
 
 			usuario: {
+				username:null,
 				id: null,
 				nombre:null,
 				apellido:null,
@@ -44,6 +45,7 @@ export default {
 			},
 
 			user: {
+				username: null,
 				id: null,
 				nombre: null,
 				apellido: null,
@@ -116,6 +118,7 @@ export default {
 
 		clearUsuario(state){
 			state.user = {
+				username: null,
 				id: null,
 				nombre: null,
 				apellido: null,
@@ -213,6 +216,7 @@ export default {
 
 			state.usuario = {
 				id: null,
+				username: null,
 				nombre: null,
 				apellido: null,
 				telefono: '',
@@ -557,7 +561,35 @@ export default {
 				})
 
 			})
+		},
+
+		async verificarCodigoReferido({commit},codigo){
+			return await new Promise((resolve, reject) => {
+				commit('toggleLoading',null,{root:true})
+				axios.get(`/api/usuarios/verificar/codigo/${codigo}`).then(({data}) => {
+					resolve(data)
+				}).catch(e => reject(e))
+				.then(()=> {
+					commit('toggleLoading', null, { root: true })
+				})
+			})
+		},
+
+		async nuevoUsuario({commit},data){
+
+			return await new Promise((resolve, reject) => {
+				commit('toggleLoading',null,{root:true})
+
+				axios.post('/api/auth/nuevo/usuario',data).then(({data:datos}) => {
+					resolve(datos)
+				}).catch(e => {
+					reject(e)
+				}).then(() => commit('toggleLoading',null,{root:true}))
+
+			})
+
 		}
+		
 
 
 

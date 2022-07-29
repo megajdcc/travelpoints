@@ -12,14 +12,12 @@ class UsuarioCreado extends Mailable implements ShouldQueue
 {
    use Queueable;
 
-    protected $usuario ; 
     /**
      * Create a new message instance.
      *
      * @return void
      */
-    public function __construct(User $usuario){
-        $this->usuario = $usuario;
+    public function __construct(public User $usuario){
     }
 
     /**
@@ -33,9 +31,9 @@ class UsuarioCreado extends Mailable implements ShouldQueue
       
 
         return $this->markdown('emails.usuario.creado')
-                    ->subject('Bienvenido al sistema '.$this->usuario->nombre . ' ' . $this->usuario->apellido)
+                    ->subject('Bienvenido al sistema '.$this->usuario->getNombreCompleto())
                     ->with([
-                        'Nombre' => $this->usuario->nombre . ' ' . $this->usuario->apellido,
+                        'Nombre' => $this->usuario->getNombreCompleto(),
                         'rol'    => $this->usuario->rol->nombre,
                         'Email'  => $this->usuario->email,
                         'Url'    => url('/usuario/'.$this->usuario->id.'/establecer/contrasena'),

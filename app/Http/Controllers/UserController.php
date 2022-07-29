@@ -15,6 +15,8 @@ use Datatables;
 use App\Events\{UsuarioCreado};
 use App\Notifications\CuentaDesactivada;
 use Illuminate\Validation\Rules\RequiredIf;
+use App\Models\Usuario\Rol;
+
 
 
 class UserController extends Controller
@@ -23,6 +25,8 @@ class UserController extends Controller
     public function getUsuario(User $usuario){
         $usuario->rol;
         $usuario->rol->permisos;
+        $usuario->referidor;
+        $usuario->referidos;
         $usuario->avatar = $usuario->getAvatar();
 
         return response()->json($usuario);
@@ -32,7 +36,8 @@ class UserController extends Controller
 
     private function validar(Request $request,User $usuario = null){
         return $request->validate([
-            'nombre'           => 'required',
+            'username' =>   ['required', $usuario ? Rule::unique('users', 'username')->ignore($usuario): 'unique:users,username'],
+            'nombre'           => 'nullable',
             'apellido'         => 'nullable',
             'telefono'         => 'nullable',
             'email'            => ['required', $usuario ? Rule::unique('users', 'email')->ignore($usuario): 'unique:users,email'],
@@ -48,9 +53,9 @@ class UserController extends Controller
             'codigo_postal'    => 'nullable',
             'activo'           => 'nullable',
             'ciudad_id'        => 'nullable',
-            
+            'codigo_referidor' => 'nullable'            
         ],[
-            'nombre.required' => 'El nombre es importante',
+            'username.unique' => 'El nombre de usuario ya está siendo usado, inténta con otro',
             'email.unique'    => 'El email ya está siendo usado, el mismo debe ser único',
             'rol_id.required' => 'El rol es importante no lo olvides',
             'email.required'  => 'Este campo es obligatorio',
@@ -77,6 +82,8 @@ class UserController extends Controller
                 $usuario->notify(new WelcomeUsuario($usuario));
             DB::commit();
             $usuario->rol;
+            $usuario->referidor;
+            $usuario->referidos;
             $usuario->rol->permisos;
             $usuario->avatar = $usuario->getAvatar();
             $result = true;
@@ -94,6 +101,63 @@ class UserController extends Controller
 
     }
 
+    public function nuevoUsuario(Request $request ){
+
+        $datos = $request->validate([
+            'username'       => 'required|unique:users,username',
+            'email'          => 'required|unique:users,email',
+            'password'       => 'required|min:6',
+            'retypePassword' => 'required|same:password',
+            'referidor'      => 'nullable'
+        ],[
+            'username.required' => 'El nombre de usuario es importante',
+            'username.unique' => 'El nombre de usuario ya está siendo usado inténte con otro',
+            'password.required' => 'La contraseña es importante no lo olvides',
+            'password.min' => 'La contraseña debe tener mínimo 6 caracteres',
+            'retypePassword.required' => 'La contraseña es importante no lo olvides',
+            'retypePassword.same' => 'La contraseñas deben ser iguales'
+        ]);
+
+
+
+        try{
+            DB::beginTransaction();
+                $usuario = User::create([
+                    'username'    => $datos['username'],
+                    'email'       => $datos['email'],
+                    'password'    => Hash::make($datos['password']),
+                    'is_password' => true,
+                    'rol_id' => Rol::where('nombre','Usuario')->first()->id
+                ]);
+
+                $usuario->asignarPermisosPorRol();
+
+
+                if($datos['referidor'] && $datos['referidor'] != 'null'){
+                    $usuario->referidor()->attach(User::where('codigo_referidor',$datos['referidor'])->first()->id,['codigo' => $datos['referidor']]);
+                }
+
+                $usuario->rol;
+                $usuario->rol->permisos;
+                $usuario->referidor;
+                $usuario->referidos;
+                $usuario->avatar = $usuario->getAvatar();
+                $result = true;
+                $usuario->notify(new WelcomeUsuario($usuario));
+
+            DB::commit();
+            
+
+        }catch(\Exception $e){
+            DB::rollback();
+            $result = false;
+        }
+
+        return response()->json(['result' => $result, 'usuario' => $result ? $usuario : null ]);
+        
+    }
+
+
     /**
      * [crearUsuario description]
      * @param  Array  $datos [Los datos del nuevo usuario a crear ]
@@ -103,6 +167,7 @@ class UserController extends Controller
 
         
         $usuario = User::create([
+            'username' => $datos['username'],
             'nombre' => $datos['nombre'],
             'apellido'  => $datos['apellido'],
             'telefono'  => $datos['telefono'],
@@ -126,6 +191,7 @@ class UserController extends Controller
     public function validarDatos(Request $request) : array{
 
         $datos = $request->validate([
+            'username' => 'required|unique:users,username',
             'nombre'           => 'required',
             'apellido'         => 'nullable',
             'telefono'         => 'nullable',
@@ -142,6 +208,7 @@ class UserController extends Controller
         ],[
             'nombre.required' => 'El nombre es importante',
             'email.unique' => 'El email ya está siendo usado, el mismo debe ser único',
+            'username.unique' => 'El nombre de usuario ya está siendo usado, inténta con otro'
 
         ]);
 
@@ -170,6 +237,8 @@ class UserController extends Controller
 
             $usuario->rol;
             $usuario->ciudad;
+            $usuario->referidor;
+            $usuario->referidos;
             $usuario->rol->permisos;
             $usuario->avatar = $usuario->getAvatar();
             $result = true;
@@ -216,6 +285,8 @@ class UserController extends Controller
             $usuario->rol;
             $usuario->ciudad?->estado?->pais;
             $usuario->rol->permisos;
+            $usuario->referidor;
+            $usuario->referidos;
             $usuario->avatar = $usuario->getAvatar();
         }
         return response()->json($usuarios);
@@ -284,6 +355,8 @@ class UserController extends Controller
         $user->ciudad?->estado?->pais;
 
         $user->rol;
+        $user->referidor;
+        $user->referidos;
         $user->habilidades = $user->getHabilidades();
         $user->avatar = $user->getAvatar();
         
@@ -456,6 +529,9 @@ class UserController extends Controller
                 $usuarios[$key]->avatar = asset('storage/img-perfil/default.jpg'); 
             }
 
+            $usuario->referidor;
+            $usuario->referidos;
+
         }
 
         return response()->json([
@@ -510,6 +586,15 @@ class UserController extends Controller
         return response()->json(['result' => $result,'usuario' => $usuario]);
         
     }
+
+    public function verificarCodigo(string $codigo){
+
+        $usuario = User::where('codigo_referidor',$codigo)->first();
+
+        return response()->json(['result' => $usuario ? true : false]);
+
+    }
+
 
 
 

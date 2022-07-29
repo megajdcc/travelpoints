@@ -444,6 +444,24 @@ export default [
 
 
    /*****************************************/
+   /* LINK DE REFERIDO
+   /*************************************** */
+   {
+      path:'/register/:codigo?',
+      props:true,
+      component:() => import('views/auth/registro'),
+      name:'registro.referido',
+      meta:{
+         layout:'full',
+         resource:'Auth',
+         action:'read'
+      }
+
+
+   },
+
+
+   /*****************************************/
    /* PAGINA DE Mantenimiento
    /*************************************** */
    {

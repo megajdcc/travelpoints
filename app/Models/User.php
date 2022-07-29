@@ -26,6 +26,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
+        'username',
         'nombre',
         'apellido',
         'telefono',
@@ -110,9 +111,15 @@ class User extends Authenticatable
     }
 
     public function getNombreCompleto(){
-       return $this->nombre . ' '. $this->apellido;
-    }
 
+        if($this->nombre){
+            return $this->nombre . ' ' . $this->apellido;
+        }
+
+        return $this->username;
+
+      
+    }
 
     public function rol(){
         return $this->belongsTo('App\Models\Usuario\Rol','rol_id','id');

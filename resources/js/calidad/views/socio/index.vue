@@ -13,7 +13,7 @@
                               <b-avatar :src="usuario.avatar" />
                            </b-col>
                            <b-col cols="10" class="px-0">
-                              {{ `${usuario.nombre} ${usuario.apellido}` }}
+                              {{ ` ${usuario.nombre ? usuario.nombre +' ' +usuario.apellido : usuario.username}` }}
                            </b-col>
                         </b-row>
                      </b-container>

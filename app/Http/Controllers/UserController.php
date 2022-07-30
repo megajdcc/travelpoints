@@ -595,7 +595,35 @@ class UserController extends Controller
 
     }
 
+    public function misReferidos(Request $request){
+
+        $datos = $request->all();
+
+        $paginator = DB::table('usuario_referencia','ur')
+                            ->selectRaw("concat(u.nombre,' ',u.apellido) as nombre_completo, u.id,u.username,u.imagen")
+                            ->join('users as u','ur.referido_id','u.id')
+                            ->where('ur.usuario_id',$datos['usuario_id'])
+                            ->orderBy('u.id','desc')
+                            ->paginate($datos['perPage']);
 
 
+        $usuarios = $paginator->items();
+
+        foreach ($usuarios as $key => $usuario) {
+            if(empty($usuario->imagen)){
+                $usuario->imagen =  asset('storage/img-perfil/default.jpg');
+            }else{
+                $usuario->imagen =  asset('storage/img-perfil/').$usuario->imagen;
+            }
+        }
+
+        return response()->json([
+            'usuarios' => $usuarios,
+            'total' => $paginator->total(),
+        ]);
+
+        
+
+    }
 
 }

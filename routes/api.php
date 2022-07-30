@@ -114,6 +114,8 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
 
     Route::put('usuarios/{usuario}/crear/link/referidor',[UserController::class,'crearLinkReferidor']);
 
+    Route::post('usuario/perfil/referidos',[UserController::class,'misReferidos']);
+
 
 });
 

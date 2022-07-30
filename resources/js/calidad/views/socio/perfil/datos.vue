@@ -1,10 +1,7 @@
 <template>
    <div>
       <perfil-info :usuario="usuario" />
-      <b-card class="mt-1">
-         <!-- media -->
-
-      </b-card>
+      <invitados class="mt-1" />
    </div>
 
 </template>
@@ -51,7 +48,8 @@ export default {
       BMediaBody,
       BLink,
       BContainer,
-      'perfil-info':() => import('components/PerfilInfo')
+      'perfil-info':() => import('components/PerfilInfo'),
+      'invitados' : () => import('./invitados')
    },
  
 

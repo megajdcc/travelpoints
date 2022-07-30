@@ -17,6 +17,22 @@
 
                   <b-row>
                      <b-col cols="12" md="6">
+
+                        <b-form-group>
+                           <template #label>
+                              Username: <span class="text-danger">*</span>
+                           </template>
+
+                           <validation-provider name="username" rules="required" #default="{ errors }">
+                              <b-form-input v-model="formulario.username" :state="errors.length ? false : null"
+                                 disabled />
+
+                              <b-form-invalid-feedback>
+                                 {{ errors[0] }}
+                              </b-form-invalid-feedback>
+                           </validation-provider>
+                        </b-form-group>
+
                         <b-form-group>
                            <template #label>
                               Nombre: <span class="text-danger">*</span>
@@ -45,6 +61,11 @@
                            </validation-provider>
                         </b-form-group>
 
+
+                     </b-col>
+
+                     <b-col cols="12" md="6">
+
                         <b-form-group>
                            <template #label>
                               Email: <span class="text-danger">*</span>
@@ -59,9 +80,6 @@
                               </b-form-invalid-feedback>
                            </validation-provider>
                         </b-form-group>
-                     </b-col>
-
-                     <b-col cols="12" md="6">
 
                         <b-form-group label-for="example-datepicker" label="Fecha de Nacimiento">
                            <validation-provider name="fecha_nacimiento" #default="{ errors }">
@@ -90,7 +108,7 @@
                            </validation-provider>
                         </b-form-group>
 
-                        <b-form-group v-if="formulario.telefono.length > 4">
+                        <b-form-group v-if="formulario.telefono">
 
                            <template #label>
                               ¿El número está asociado a WhatsApp?
@@ -246,7 +264,7 @@
                      <b-col cols="12" md="4">
                         <b-form-group label="Twitter">
                            <b-input-group>
-                              
+
                               <b-input-group-prepend is-text>
                                  <feather-icon icon="TwitterIcon" />
                               </b-input-group-prepend>

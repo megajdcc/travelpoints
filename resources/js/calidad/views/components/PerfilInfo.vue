@@ -1,6 +1,6 @@
 <template>
    <b-media no-body class="mb-1 mb-md-0">
-      <b-media-aside  vertical-align="center" class="d-none d-md-flex">
+      <b-media-aside vertical-align="center" class="d-none d-md-flex">
          <b-card body-class="content-img" @click="refInputEl.$el.click()" style="cursor:pointer">
             <b-img ref="previewEl" rounded :src="usuario.avatar" class="img-perfil" thumbnail v-loading="loading" />
             <span class="img-perfil-hover">Clic para cambiar imagen</span>
@@ -11,12 +11,14 @@
 
       <b-media-body class="my-auto">
 
-         <b-card body-class="content-img d-flex d-md-none text-center justify-content-center d-flex" @click="refInputEl.$el.click()" style="cursor:pointer" >
+         <b-card body-class="content-img d-flex d-md-none text-center justify-content-center d-flex"
+            @click="refInputEl.$el.click()" style="cursor:pointer">
             <b-img ref="previewEl" rounded :src="usuario.avatar" class="img-perfil" thumbnail v-loading="loading" />
             <span class="img-perfil-hover">Clic para cambiar imagen</span>
          </b-card>
 
-         <h1><strong>{{ usuario.nombre + ' ' + usuario.apellido }}</strong></h1>
+         <h1><strong> {{ ` ${usuario.nombre ? usuario.nombre +' ' +usuario.apellido : usuario.username}` }}</strong>
+         </h1>
          <strong>{{ usuario.direccion ? usuario.direccion : 'Dirección sin definir' }}</strong>
          <hr>
          <h2><strong> Tp {{ usuario.tps | currency }}</strong></h2>

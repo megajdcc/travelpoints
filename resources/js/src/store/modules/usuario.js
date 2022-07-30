@@ -588,8 +588,20 @@ export default {
 
 			})
 
-		}
-		
+		},
+		async misReferidos({commit},data){
+
+			return new Promise((resolve, reject) => {
+					commit('toggleLoading',null,{root:true})
+
+					axios.post('/api/usuario/perfil/referidos',data).then(({data:datos}) => {
+						resolve(datos)
+					}).catch(e => reject(e))
+					.then(() => commit('toggleLoading',null,{root:true}))
+
+			})
+		}	
+
 
 
 

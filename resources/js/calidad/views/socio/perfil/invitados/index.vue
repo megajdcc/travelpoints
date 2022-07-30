@@ -1,57 +1,70 @@
 <template>
-   <b-card>
-      <template #header>
-         <h2 class="font-weight-bolder">Mi código de referidor</h2>
-      </template>
-      <h2>Gana puntos ($Tp) envíando tu código de referidor a tus amigos.</h2>
-      <p class="text-justify">Aumenta tus puntos ($Tp) por cada Amigo que se haya registrado con tu código de referidor
-         y haya consumado una
+   <div>
+      <b-card>
+         <template #header>
+            <header class="d-flex justify-content-between align-items-center w-100">
+               <h2 class="font-weight-bolder">Mi código de referidor</h2>
+            </header>
+         </template>
+         <h2>Gana puntos ($Tp) envíando tu código de referidor a tus amigos.</h2>
+         <p class="text-justify">Aumenta tus puntos ($Tp) por cada Amigo que se haya registrado con tu código de
+            referidor
+            y haya consumado una
          reserva. <br> Por cada reserva consumada de tus referidos tu ganarás saldo ($Tp) que luego podrás usar en
-         nuestras tiendas de destinos que tenemos para Tí.</p>
+            nuestras tiendas de destinos que tenemos para Tí.</p>
 
-      <validation-observer ref="formValidate" #default="{handleSubmit}">
-         <b-form @submit.prevent="handleSubmit(guardar)">
-            <b-form-group label="Comparte tu link">
-               <validation-provider name="codigo" rules="required" #default="{errors}">
-                  <b-input-group size="sm" class="w-100">
-                     <b-input-group-prepend is-text>
-                        {{ url }}
-                     </b-input-group-prepend>
-                     <b-form-input v-model="formulario.codigo_referidor" :state="errors.length ? false : null" :disabled="usuario.codigo_referidor" />
+         <validation-observer ref="formValidate" #default="{ handleSubmit }">
+            <b-form @submit.prevent="handleSubmit(guardar)">
+               <b-form-group label="Comparte tu link">
+                  <validation-provider name="codigo" rules="required" #default="{ errors }">
+                     <b-input-group size="sm" class="w-100">
+                        <b-input-group-prepend is-text>
+                           {{ url }}
+                        </b-input-group-prepend>
+                        <b-form-input v-model="formulario.codigo_referidor" :state="errors.length ? false : null"
+                           :disabled="usuario.codigo_referidor ? true : false" />
 
-                     <b-input-group-append>
-                        <b-button @click="copiarLink" size="sm" v-if="usuario.codigo_referidor">
-                           Copiar link
-                        </b-button>
+                        <b-input-group-append>
+                           <b-button @click="copiarLink" size="sm" v-if="usuario.codigo_referidor ? true : false">
+                              Copiar link
+                           </b-button>
 
-                        <b-button variant="primary" type="submit" :disabled="!formulario.codigo_referidor" v-else
-                           v-loading="loading">
-                           Crear Link
-                        </b-button>
+                           <b-button variant="primary" type="submit"
+                              :disabled="!formulario.codigo_referidor ? true : false" v-else v-loading="loading">
+                              Crear Link
+                           </b-button>
 
-                     </b-input-group-append>
-                  </b-input-group>
+                        </b-input-group-append>
+                     </b-input-group>
 
-                  <b-form-invalid-feedback :state="errors.length ? false :null">
-                     {{ errors[0] }}
-                  </b-form-invalid-feedback>
+                     <b-form-invalid-feedback :state="errors.length ? false : null">
+                        {{ errors[0] }}
+                     </b-form-invalid-feedback>
 
-               </validation-provider>
-            </b-form-group>
+                  </validation-provider>
+               </b-form-group>
 
-            <b-button-group size="sm" v-if="usuario.codigo_referidor">
-               <b-button @click="compartirFacebook" style="background:#376BC8 !important">
-                  <feather-icon icon="FacebookIcon" /> Facebook
-               </b-button>
+               <b-button-group size="sm" v-if="usuario.codigo_referidor">
+                  <b-button @click="compartirFacebook" style="background:#376BC8 !important">
+                     <feather-icon icon="FacebookIcon" /> Facebook
+                  </b-button>
 
-               <b-button @click="compartirWhatsapp" style="background:#29ce41 !important">
-                  <feather-icon icon="WhatsappIcon" /> WhatsApp
-               </b-button>
-            </b-button-group>
-         </b-form>
-      </validation-observer>
+                  <b-button @click="compartirWhatsapp" style="background:#29ce41 !important">
+                     <feather-icon icon="WhatsappIcon" /> WhatsApp
+                  </b-button>
+               </b-button-group>
+            </b-form>
+         </validation-observer>
 
-   </b-card>
+      </b-card>
+
+      <!-- Mis referidos -->
+
+      <referidos class="mt-1"/>
+      
+
+   </div>
+
 </template>
 
 <script>
@@ -69,7 +82,10 @@ import {
    BInputGroupPrepend,
    BInputGroupAppend,
    BForm,
-   BFormInvalidFeedback
+   BFormInvalidFeedback,
+   BLink,
+
+
 
 } from 'bootstrap-vue'
 
@@ -79,6 +95,7 @@ import store from '@/store'
 
 import { ValidationObserver,ValidationProvider } from 'vee-validate'
 import {required} from '@validations'
+
 export default {
 
    components:{
@@ -96,7 +113,9 @@ export default {
       ValidationObserver,
       ValidationProvider,
       BForm,
-      BFormInvalidFeedback
+      BFormInvalidFeedback,
+      BLink,
+      referidos:() => import('./list.vue')
 
 
    },

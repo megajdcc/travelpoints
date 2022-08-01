@@ -1,11 +1,26 @@
 @import './variables/variables';
+@import './fuentes/fuentes';
 
-/*================================================================================
+h1,h2,h3,h4,h5,h6{
+   font-family: 'Myriad Bold';
+}
+body{
+   font-family: 'Myriad' !important;
+}
 
-NOTE:
-------
-PLACE HERE YOUR OWN SCSS CODES AND IF NEEDED, OVERRIDE THE STYLES FROM THE OTHER STYLESHEETS.
-WE WILL RELEASE FUTURE UPDATES SO IN ORDER TO NOT OVERWRITE YOUR STYLES IT'S BETTER LIKE THIS.  */
+strong{
+   font-weight: 'Nexa Bold' !important;
+}
+
+// small,p,span{
+//    font-family: 'Myriad' !important;
+
+// }
+
+p{
+   font-size: 12pt;
+}
+
 .main-menu .navbar-header {
    height: 100%;
    width: 260px;

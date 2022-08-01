@@ -38,6 +38,20 @@ export default [
       action: 'read',
       resource: 'Auth',
       icon: 'PlusSquareIcon',
+   },
+    {
+      title: 'Porque afiliar tu negocio',
+      route: 'negocio.about',
+      action: 'read',
+      resource: 'Auth',
+      icon: 'PlusSquareIcon',
+   },
+   {
+      title: 'Términos y condiciones',
+      route: 'terminos-condiciones',
+      action: 'read',
+      resource: 'Auth',
+      icon: 'PlusSquareIcon',
    }
 
 

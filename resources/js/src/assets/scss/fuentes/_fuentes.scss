@@ -1,0 +1,43 @@
+/***************************************************
+		Reescritura de stilos de Travel Points 
+***************************************************/
+@font-face {
+font-family: 'Nexa Book';
+font-style: normal;
+font-weight: normal;
+src: local('Nexa Book'), url('@/assets/fonts/NexaBold.woff') format('woff');
+}
+
+@font-face {
+font-family: 'Nexa Book Italic';
+font-style: normal;
+font-weight: normal;
+src: local('Nexa Book Italic'), url('@/assets/fonts/NexaBookItalic.woff') format('woff');
+}
+
+@font-face {
+font-family: 'Nexa Thin';
+font-style: normal;
+font-weight: normal;
+src: local('Nexa Thin'), url('@/assets/fonts/NexaThin.woff') format('woff');
+}
+
+@font-face {
+font-family: 'Nexa Bold';
+font-style: normal;
+font-weight: normal;
+src: local('Nexa Bold'), url('@/assets/fonts/NexaBold.woff') format('woff');
+}
+
+@font-face {
+font-family: 'Myriad';
+font-style: normal;
+font-weight: normal;
+src:url('@/assets/fonts/MYRIADPRO-COND.OTF') format('OTF');
+}
+@font-face {
+font-family: 'Myriad Bold';
+font-style: normal;
+font-weight: normal;
+src:url('@/assets/fonts/MYRIADPRO-BOLDCOND.OTF') format('OTF');
+}

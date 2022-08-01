@@ -46,7 +46,7 @@ mix.webpackConfig({
         test: /\.s[ac]ss$/i,
         use: [
           {
-            loader: 'sass-loader',
+            loader:'sass-loader',
             options: {
               sassOptions: {
                 includePaths: ['node_modules', 'resources/js/src/assets']
@@ -54,7 +54,13 @@ mix.webpackConfig({
             }
           }
         ]
+      },
+
+      {
+        test:/\.OTF$/,
+        use:['file-loader']
       }
+
       // {
       //   test: /(\.(png|jpe?g|gif|webp)$|^((?!font).)*\.svg$)/,
       //   use:[

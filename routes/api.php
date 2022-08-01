@@ -130,7 +130,6 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::get('faqs/categorias/get/all',[CategoriaFaqController::class,'getAll']);
     Route::get('faqs/categorias/{categoria}/get',[CategoriaFaqController::class,'get']);
 
-    Route::post('cargar/categorias',[CategoriaFaqController::class,'cargar']);
     
 
 
@@ -156,5 +155,6 @@ Route::get('get/ciudades/{estado}', function (Estado $estado) {
 
 
 Route::get('usuarios/verificar/codigo/{codigo}', [UserController::class, 'verificarCodigo']);
+Route::post('cargar/categorias', [CategoriaFaqController::class, 'cargar']);
 
 

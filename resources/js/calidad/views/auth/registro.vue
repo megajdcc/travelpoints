@@ -72,7 +72,7 @@
                   <b-form-group>
                      <b-form-checkbox id="register-privacy-policy" v-model="formulario.condiciones" name="checkbox-1">
                         Acepto los
-                        <b-link :to="{name:'terminos.condiciones'}">Terminos y condiciones</b-link>
+                        <b-link :to="{name:'terminos-condiciones'}">Terminos y condiciones</b-link>
                      </b-form-checkbox>
                   </b-form-group>
 

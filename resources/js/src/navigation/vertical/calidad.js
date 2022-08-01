@@ -25,7 +25,23 @@ export default [
             route: 'listar.permisos',
             action: 'read',
             resource: 'permisos'
+         },
+
+         {
+            title: 'Preguntas Frecuentes (Faqs)',
+            route: 'listar.faqs',
+            icon:'HelpCircleIcon',
+            action: 'read',
+            resource: 'faqs'
+         },
+         {
+            title: 'Categorías de Preguntas frecuentes (Faqs)',
+            route: 'listar.categoria-faqs',
+            icon: 'ListIcon',
+            action: 'read',
+            resource: 'faqs'
          }
+
 
       ]
    },

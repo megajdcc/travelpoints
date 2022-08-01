@@ -169,4 +169,9 @@ class User extends Authenticatable
         return $this->belongsToMany(User::class,'usuario_referencia','referido_id','usuario_id')->withPivot('codigo');
     }
 
+    public function faqs(){
+        return $this->hasMany(Faq::class,'usuario_id','id');
+    }
+    
+
 }

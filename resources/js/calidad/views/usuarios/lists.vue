@@ -47,10 +47,10 @@
                 :to="{ name: 'mostrar.usuario', params: { id: data.item.id } }" disabled />
             </template>
             <b-link :to="{ name: 'mostrar.usuario', params: { id: data.item.id } }" disabled
-              class="font-weight-bold d-block text-nowrap">
+              class="font-weight-bold d-block text-nowrap"> 
               {{ data.item.usuario }}
             </b-link>
-            <small class="text-muted" v-if="data.item.username">@{{ data.item.username }}</small>
+            <small class="text-muted" v-if="data.item.username">{{ data.item.username }}</small>
           </b-media>
         </template>
 

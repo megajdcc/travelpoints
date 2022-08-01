@@ -1,9 +1,9 @@
 <?php
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\{AuthController};
-use App\Http\Controllers\{ UserController,NotificacionController,RolController,PermisoController};
+use App\Http\Controllers\{CategoriaFaqController, FaqController, UserController,NotificacionController,RolController,PermisoController};
 use Laravel\Socialite\Facades\Socialite;
-use App\Models\{Pais,Estado,Ciudad};
+use App\Models\{CategoriaFaq, Pais,Estado,Ciudad};
 
 /*
 |--------------------------------------------------------------------------
@@ -115,6 +115,24 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::put('usuarios/{usuario}/crear/link/referidor',[UserController::class,'crearLinkReferidor']);
 
     Route::post('usuario/perfil/referidos',[UserController::class,'misReferidos']);
+
+    /*****************************/
+    /* Faqs y Categorias de Faqs
+    /*****************************/
+
+    Route::get('faqs/{faq}/get',[FaqController::class,'get']);
+    Route::resource('faqs',FaqController::class);
+    Route::post('faqs/fetch', [FaqController::class,'fetchData']);
+
+    Route::post('faqs/categorias/fetch',[CategoriaFaqController::class,'fetchData']);
+
+    Route::resource('faqs/categorias',CategoriaFaqController::class);
+    Route::get('faqs/categorias/get/all',[CategoriaFaqController::class,'getAll']);
+    Route::get('faqs/categorias/{categoria}/get',[CategoriaFaqController::class,'get']);
+
+    Route::post('cargar/categorias',[CategoriaFaqController::class,'cargar']);
+    
+
 
 
 });

@@ -1,5 +1,5 @@
 <template>
-   <b-link class="brand-logo" :src="url">
+   <b-link class="brand-logo" :to="url">
       <img :src="logo" :alt="appName" />
    </b-link>
 </template>
@@ -20,7 +20,7 @@ export default {
    props:{
       
       url:{
-         type:String,
+         type:String|Object,
          required:false,
          default:'#'
       }

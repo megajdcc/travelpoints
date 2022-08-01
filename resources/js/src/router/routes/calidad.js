@@ -14,7 +14,8 @@ export default [
           meta: {
              resource: 'perfil',
              action: 'read',
-             name:'perfil'
+             name:'perfil',
+             layout:'travel'
              
             //  navActiveLink: 'socio'
           },
@@ -26,7 +27,9 @@ export default [
                 name: 'miperfil',
                 component: () => import('views/socio/perfil/datos'),
                 meta: {
-                   name: 'perfil'
+                   name: 'perfil',
+                   layout: 'travel'
+
                    //  navActiveLink: 'socio'
                 },
              },
@@ -36,7 +39,10 @@ export default [
                 name: 'misreferidos',
                 component: () => import('views/socio/perfil/invitados'),
                 meta: {
-                   name: 'perfil'
+                   name: 'perfil',
+                   layout: 'travel'
+
+                   
                    //  navActiveLink: 'socio'
                 },
              },
@@ -46,7 +52,9 @@ export default [
                 name: 'perfil.editar',
                 component: () => import('views/socio/perfil/editar'),
                 meta: {
-                   name: 'perfil'
+                   name: 'perfil',
+                   layout: 'travel'
+
                    //  navActiveLink: 'socio'
                 },
              },
@@ -55,7 +63,9 @@ export default [
                 name: 'perfil.password',
                 component: () => import('views/socio/perfil/CambiarPassword'),
                 meta: {
-                   name: 'perfil'
+                   name: 'perfil',
+                   layout: 'travel'
+
                    //  navActiveLink: 'socio'
                 },
              },
@@ -65,7 +75,9 @@ export default [
                 name: 'perfil.desactivar',
                 component: () => import('views/socio/perfil/desactivar'),
                 meta: {
-                   name: 'perfil'
+                   name: 'perfil',
+                   layout: 'travel'
+
                    //  navActiveLink: 'socio'
                 },
              },
@@ -81,7 +93,9 @@ export default [
           meta: {
              resource: 'perfil',
              action: 'read',
-             name:'negocio'
+             name:'negocio',
+             layout: 'travel'
+
             //  navActiveLink: 'socio'
           },
 
@@ -91,7 +105,9 @@ export default [
                name:'socio.negocio.list',
                component:()=> import('views/socio/negocio/list'),
                 meta: {
-                   name: 'negocio'
+                   name: 'negocio',
+                   layout: 'travel'
+
                    //  navActiveLink: 'socio'
                 },
             },
@@ -101,7 +117,9 @@ export default [
                 component: () => import('views/socio/negocio/create'),
                meta: {
                   navActiveLink: 'socio.negocio',
-                  name: 'negocio'
+                  name: 'negocio',
+                  layout: 'travel'
+
 
                },
              },
@@ -111,7 +129,9 @@ export default [
                 component: () => import('views/socio/negocio/siguiendo'),
                 meta: {
                    navActiveLink: 'socio.negocio',
-                   name: 'negocio'
+                   name: 'negocio',
+                   layout: 'travel'
+
 
                 },
              },
@@ -121,7 +141,9 @@ export default [
                 component: () => import('views/socio/negocio/recomendados'),
                 meta: {
                    navActiveLink: 'socio.negocio',
-                   name: 'negocio'
+                   name: 'negocio',
+                   layout: 'travel'
+
 
                 },
              },
@@ -131,7 +153,9 @@ export default [
                 component: () => import('views/socio/negocio/solicitudes'),
                 meta: {
                    navActiveLink: 'socio.negocio',
-                   name: 'negocio'
+                   name: 'negocio',
+                   layout: 'travel'
+
 
                 },
              }
@@ -144,8 +168,10 @@ export default [
           name: 'socio.reservaciones',
           component: () => import('views/socio/reservaciones'),
           meta: {
-             resource: 'perfil',
-             action: 'read',
+            resource: 'perfil',
+            action: 'read',
+            layout: 'travel'
+
             //  navActiveLink: 'socio'
           }
 
@@ -160,6 +186,7 @@ export default [
           meta: {
              resource: 'perfil',
              action: 'read',
+             layout: 'travel'
             //  navActiveLink: 'socio'
           }
 
@@ -172,6 +199,7 @@ export default [
           meta: {
              resource: 'perfil',
              action: 'read',
+             layout: 'travel'
             //  navActiveLink: 'socio'
           }
 
@@ -184,6 +212,7 @@ export default [
           meta: {
              resource: 'perfil',
              action: 'read',
+             layout: 'travel'
             //  navActiveLink: 'socio'
           }
 
@@ -459,6 +488,227 @@ export default [
 
 
    },
+
+   /*****************************************/
+   /* LINK DE REGISTRO
+   /*************************************** */
+    {
+      path:'/register',
+      props:true,
+      component:() => import('views/auth/registro'),
+      name:'register',
+      meta:{
+         layout:'full',
+         resource:'Auth',
+         action:'read'
+      }
+
+   },
+
+
+   /*****************************************/
+   /* Preguntas Frecuentes FAQs
+   /*************************************** */
+   {
+      path: '/configuracion/faqs',
+      component: () => import('views/faqs'),
+      name: 'configuracion.faq',
+      children:[
+         {
+            path:'',
+            name:'listar.faqs',
+            component:() => import('views/faqs/list'),
+            meta:{
+               pageTitle:'Preguntas Frecuentes',
+               resource:'faqs',
+               action:'read',
+               breadcrumb:[
+                  {
+                     text:'Home',
+                     to:{name:'home'},
+                     active:false
+                  },
+                  {
+                     text: 'Preguntas frecuentes',
+                     active: true
+                  }
+
+               ]
+            }
+         },
+
+         {
+            path: 'create',
+            name: 'create.faq',
+            component: () => import('views/faqs/create'),
+            meta: {
+               pageTitle: 'Crear pregunta Frecuente',
+               resource: 'faqs',
+               action: 'write',
+               navActiveLink:'listar.faqs',
+               breadcrumb: [
+                  {
+                     text: 'Home',
+                     to: { name: 'home' },
+                     active: false
+                  },
+                  {
+                     text: 'Preguntas frecuentes',
+                     to: { name: 'listar.faqs' },
+                     active:false
+                  },
+                  {
+                     text: 'Crear',
+                     active: true
+                  }
+
+               ]
+            }
+         },
+
+         {
+            path: ':id/edit',
+            name: 'edit.faq',
+            props:true,
+            component: () => import('views/faqs/edit'),
+            meta: {
+               pageTitle: 'Editar pregunta Frecuente',
+               resource: 'faqs',
+               action: 'update',
+               navActiveLink: 'listar.faqs',
+               breadcrumb: [
+                  {
+                     text: 'Home',
+                     to: { name: 'home' },
+                     active: false
+                  },
+                  {
+                     text: 'Preguntas frecuentes',
+                     to: { name: 'listar.faqs' },
+                     active: false
+                  },
+                  {
+                     text: 'Atualizar',
+                     active: true
+                  }
+
+               ]
+            }
+         }
+
+
+      ]
+   },
+
+   /*****************************************/
+   /* Categoría de Faqs
+   /*************************************** */
+
+   {
+      path: '/configuracion/categorias-faqs',
+      component: () => import('views/faqs'),
+      name: 'configuracion.categorias-faq',
+      children: [
+         {
+            path: '',
+            name: 'listar.categoria-faqs',
+            component: () => import('views/faqs/categorias/list'),
+            meta: {
+               pageTitle: 'Categorías de Preguntas Frecuentes (Faqs)',
+               resource: 'faqs',
+               action: 'read',
+               breadcrumb: [
+                  {
+                     text: 'Home',
+                     to: { name: 'home' },
+                     active: false
+                  },
+                  {
+                     text: 'Categorías',
+                     active: true
+                  }
+
+               ]
+            }
+         },
+
+         {
+            path: 'create',
+            name: 'create.categoria-faq',
+            component: () => import('views/faqs/categorias/create'),
+            meta: {
+               pageTitle: 'Crear categoría',
+               resource: 'faqs',
+               action: 'write',
+               navActiveLink: 'listar.categoria-faqs',
+               breadcrumb: [
+                  {
+                     text: 'Home',
+                     to: { name: 'home' },
+                     active: false
+                  },
+                  {
+                     text: 'Categoría de Peguntas frecuentes',
+                     to: { name: 'listar.categoria-faqs' },
+                     active: false
+                  },
+                  {
+                     text: 'Crear',
+                     active: true
+                  }
+
+               ]
+            }
+         },
+
+         {
+            path: ':id/edit',
+            props:true,
+            name: 'edit.categoria-faq',
+            component: () => import('views/faqs/categorias/edit'),
+            meta: {
+               pageTitle: 'Editar Categoría',
+               resource: 'faqs',
+               action: 'update',
+               navActiveLink: 'listar.categoria-faqs',
+               breadcrumb: [
+                  {
+                     text: 'Home',
+                     to: { name: 'home' },
+                     active: false
+                  },
+                  {
+                     text: 'Categoría de Peguntas frecuentes',
+                     to: { name: 'listar.categoria-faqs' },
+                     active: false
+                  },
+                  {
+                     text: 'Atualizar',
+                     active: true
+                  }
+
+               ]
+            }
+         }
+
+
+      ]
+   },
+
+
+   {
+      path: '/faqs',
+      component: () => import('views/paginas/faqs'),
+      name: 'faqs',
+      meta: {
+         layout  : 'travel',
+         resource: 'Auth',
+         action  : 'read'
+      }
+
+   },
+
+
 
 
    /*****************************************/

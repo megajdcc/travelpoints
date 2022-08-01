@@ -4,7 +4,7 @@ export default [
       name: 'inicio',
       component: () => import('views/paginas'),
       meta: {
-        layout:'full',
+        layout:'travel',
          resource: 'Auth',
 
       },

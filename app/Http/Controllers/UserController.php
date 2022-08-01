@@ -16,6 +16,8 @@ use App\Events\{UsuarioCreado};
 use App\Notifications\CuentaDesactivada;
 use Illuminate\Validation\Rules\RequiredIf;
 use App\Models\Usuario\Rol;
+use Illuminate\Support\Str;
+
 
 
 
@@ -123,7 +125,7 @@ class UserController extends Controller
         try{
             DB::beginTransaction();
                 $usuario = User::create([
-                    'username'    => $datos['username'],
+                    'username'    => Str::slug($datos['username']),
                     'email'       => $datos['email'],
                     'password'    => Hash::make($datos['password']),
                     'is_password' => true,
@@ -467,6 +469,7 @@ class UserController extends Controller
             $paginator = DB::table('users','u')
                         ->selectRaw("
                             concat(u.nombre,' ',u.apellido) as usuario,
+                            u.username,
                             u.email,
                             u.telefono,
                             r.nombre as rol,
@@ -495,6 +498,7 @@ class UserController extends Controller
             $paginator = DB::table('users', 'u')
                 ->selectRaw("
                             concat(u.nombre,' ',u.apellido) as usuario,
+                            u.username,
                             u.email,
                             u.telefono,
                             r.nombre as rol,
@@ -529,8 +533,9 @@ class UserController extends Controller
                 $usuarios[$key]->avatar = asset('storage/img-perfil/default.jpg'); 
             }
 
-            $usuario->referidor;
-            $usuario->referidos;
+    
+            // $usuario->referidor;
+            // $usuario->referidos;
 
         }
 

@@ -9,6 +9,7 @@ export default function useAuth(){
 
    const usuario = computed(() => store.state.usuario.usuario)
 
+   
    const formValidate = ref(null)
 
    const formulario = ref({
@@ -90,7 +91,8 @@ export default function useAuth(){
       logout,
       login,
       formValidate,
-      formulario
+      formulario,
+      is_loggin:computed(() => usuario.value.id ? true : false)
    };
 
 }

@@ -1,8 +1,8 @@
 <template>
-   <b-container fluid>
+   <b-container fluid >
       <b-row>
          <b-col cols="12">
-
+            <h2>Hola a todos</h2>
          </b-col>
       </b-row>
    </b-container>

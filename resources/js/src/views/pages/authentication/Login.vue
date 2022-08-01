@@ -3,7 +3,7 @@
     <b-row class="auth-inner m-0">
 
       <!-- Brand logo-->
-      <logo url="/"/>
+      <logo :url="{name:'inicio'}"/>
       <!-- /Brand logo-->
 
       <!-- Left Text-->

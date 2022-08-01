@@ -12,6 +12,7 @@ export default {
   getters: {
     currentBreakPoint: state => {
       const { windowWidth } = state
+      
       if (windowWidth >= $themeBreakpoints.xl) return 'xl'
       if (windowWidth >= $themeBreakpoints.lg) return 'lg'
       if (windowWidth >= $themeBreakpoints.md) return 'md'

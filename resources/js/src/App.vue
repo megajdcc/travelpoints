@@ -24,7 +24,7 @@ export default {
     LayoutHorizontal: () => import('@/layouts/horizontal/LayoutHorizontal.vue'),
     LayoutVertical: () => import('@/layouts/vertical/LayoutVertical.vue'),
     LayoutFull: () => import('@/layouts/full/LayoutFull.vue'),
-
+    LayoutTravel: () => import('@/layouts/travel/LayoutTravel.vue'),
     ScrollToTop,
   },
 
@@ -59,9 +59,11 @@ export default {
 
     const route = useRoute();
     const contentLayoutType = computed(() => store.state.appConfig.layout.type)
+
     const layout = computed(() => {
       
       if (route.meta.layout === 'full') return 'layout-full'
+      if (route.meta.layout === 'travel') return 'layout-travel'
 
       return `layout-${contentLayoutType.value}`
 

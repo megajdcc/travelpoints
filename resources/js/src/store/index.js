@@ -24,6 +24,13 @@ import UserTablero from './modules/tableros/UserTablero.js';
 
 import dashboard from './modules/dashboard/dashboard.js'
 
+
+// Preguntas Frecuentes
+
+import faq from './modules/faqs'
+
+
+
 Vue.use(Vuex)
 
 export default new Vuex.Store({
@@ -112,6 +119,7 @@ export default new Vuex.Store({
     permiso,
     'user-tablero': UserTablero,
     dashboard,
+    faq
   },
 
   strict: process.env.DEV,

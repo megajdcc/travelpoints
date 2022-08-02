@@ -709,6 +709,99 @@ export default [
    },
 
 
+   /*****************************************/
+   /* Categoría de Negocios
+   /*************************************** */
+
+   {
+      path:'/negocios/categorias',
+      component:()=> import('views/negocios/categorias'),
+      children:[
+         {
+            path:'',
+            name:'negocio.categorias.list',
+            component:() => import('views/negocios/categorias/list'),
+            meta:{
+               resource:'negocio categorías',
+               action:'read',
+               pageTitle:'Categorías de negocios',
+               breadcrumb:[
+                  {
+                     text:'Home',
+                     to:{name:'home'},
+                     active:false
+                  },
+                  {
+                     text: 'Categorías',
+                     active: true
+                  }
+
+               ]
+            }
+         },
+
+         {
+            path: 'create',
+            name: 'negocio.categorias.create',
+            component: () => import('views/negocios/categorias/create'),
+            meta: {
+               resource: 'negocio categorías',
+               action: 'write',
+               pageTitle: 'Crear categoría',
+               navActiveLink:'negocio.categorias.list',
+               breadcrumb: [
+                  {
+                     text: 'Home',
+                     to: { name: 'home' },
+                     active: false
+                  },
+                  {
+                     text: 'Categorías',
+                     to: { name: 'negocio.categorias.list' },
+                     active: false
+                  },
+
+                  {
+                     text: 'crear',
+                     active: true
+                  }
+
+               ]
+            }
+         },
+         {
+            path: ':id/edit',
+            name: 'negocio.categorias.edit',
+            props:true,
+            component: () => import('views/negocios/categorias/edit'),
+            meta: {
+               resource: 'negocio categorías',
+               action: 'update',
+               pageTitle: 'Editar categoría',
+               navActiveLink:'negocio.categorias.list',
+               breadcrumb: [
+                  {
+                     text: 'Home',
+                     to: { name: 'home' },
+                     active: false
+                  },
+                  {
+                     text: 'Categorías',
+                     to: { name: 'negocio.categorias.list' },
+                     active: false
+                  },
+                  {
+                     text: 'editar',
+                     active: true
+                  }
+
+               ]
+            }
+         }
+      ]
+   },
+
+
 
 
    /*****************************************/

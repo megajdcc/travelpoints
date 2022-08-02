@@ -36,7 +36,8 @@ mix.webpackConfig({
       'views': path.resolve(__dirname, 'resources/js/calidad/views'),
       'mixins': path.resolve(__dirname, 'resources/js/mixins'),
       'store': path.resolve(__dirname, 'resources/js/src/store'),
-      'components': path.resolve(__dirname, 'resources/js/calidad/views/components')
+      'components': path.resolve(__dirname, 'resources/js/calidad/views/components'),
+      '@fuentes':path.resolve(__dirname,'resources/js/src/assets/fonts/')
     }
   },
   module: {
@@ -46,20 +47,31 @@ mix.webpackConfig({
         test: /\.s[ac]ss$/i,
         use: [
           {
-            loader:'sass-loader',
+            loader: 'resolve-url-loader',
             options: {
               sassOptions: {
                 includePaths: ['node_modules', 'resources/js/src/assets']
               }
             }
+          },
+          
+          {
+            loader:'sass-loader',
+            options: {
+              sassOptions: {
+                includePaths: ['node_modules', 'resources/js/src/assets']
+              },
+              sourceMap:true
+            }
           }
         ]
       },
 
-      {
-        test:/\.OTF$/,
-        use:['file-loader']
-      }
+      // {
+      //   test: /\.(otf|woff|woff2|eot|ttf)$/,
+      //   use:['url-loader','file-loader']
+      // },
+
 
       // {
       //   test: /(\.(png|jpe?g|gif|webp)$|^((?!font).)*\.svg$)/,

@@ -29,6 +29,10 @@ import dashboard from './modules/dashboard/dashboard.js'
 
 import faq from './modules/faqs'
 
+// categoria de Negocios
+
+import categoriaNegocio from './modules/negocios/categorias'
+
 
 
 Vue.use(Vuex)
@@ -119,7 +123,8 @@ export default new Vuex.Store({
     permiso,
     'user-tablero': UserTablero,
     dashboard,
-    faq
+    faq,
+    categoriaNegocio
   },
 
   strict: process.env.DEV,

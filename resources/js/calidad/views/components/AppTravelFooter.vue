@@ -61,11 +61,11 @@
 
       <b-row class="clearfix border-top">
          <b-col cols="12" class="d-flex justify-content-center mt-1 mb-0">
-            <small class="text-center">
+            <p class="text-center">
                Marina Vallarta Business Center, Oficina 204, Plaza Marina. <br>
                Puerto Vallarta, México. <br>
                01 800 400 INFO (4636), (322) 225 9635.
-            </small>
+            </p>
          </b-col>
 
          <b-col cols="12" class="mb-0">

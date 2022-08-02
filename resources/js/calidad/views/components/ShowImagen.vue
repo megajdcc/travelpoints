@@ -29,9 +29,6 @@
          <b-img :src="otros" fluid center style="max-height:50vh" />
       </template>
 
-
-      
-
       <template #modal-footer="{cancel}">
 
          <b-button-group size="sm">
@@ -62,13 +59,13 @@ import {
 } from 'bootstrap-vue'
 
 export default {
+
    components:{
       BModal,
       BImg,
       BButtonGroup,
       BButton,
       pdf:() => import("vue-pdf")
-
    },
 
    props:{

@@ -2,23 +2,23 @@
 @import './fuentes/fuentes';
 
 h1,h2,h3,h4,h5,h6{
-   font-family: 'Myriad Bold';
+   font-family: 'Myriad Regular';
+   font-weight: bolder;
 }
+
 body{
-   font-family: 'Myriad' !important;
+   font-family: 'Myriad Light';
+   font-size: 1.3rem;
 }
 
 strong{
    font-weight: 'Nexa Bold' !important;
 }
 
-// small,p,span{
-//    font-family: 'Myriad' !important;
 
-// }
-
-p{
-   font-size: 12pt;
+html body p{
+   // font-size: 14pt;
+   // line-height: 2rem !important;
 }
 
 .main-menu .navbar-header {
@@ -203,4 +203,10 @@ body {
 
 .main-menu .navbar-header .navbar-brand {
     margin-top: 0rem !important;
+}
+
+.nav-pills .nav-link {
+    font-size: 1.3rem;
+    line-height: 1rem;
+    color: #5e5873;
 }

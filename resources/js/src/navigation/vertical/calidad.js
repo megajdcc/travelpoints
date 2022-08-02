@@ -40,6 +40,14 @@ export default [
             icon: 'ListIcon',
             action: 'read',
             resource: 'faqs'
+         },
+
+         {
+            title: 'Categorías de negocios',
+            route: 'negocio.categorias.list',
+            icon: 'ListIcon',
+            action: 'read',
+            resource: 'negocio categorías'
          }
 
 

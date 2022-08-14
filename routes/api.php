@@ -1,7 +1,8 @@
 <?php
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\{AuthController};
-use App\Http\Controllers\{CategoriaFaqController, FaqController, NegocioCategoriaController, UserController,NotificacionController,RolController,PermisoController};
+use App\Http\Controllers\{CategoriaFaqController, FaqController, NegocioCategoriaController, UserController,NotificacionController,RolController,PermisoController, SolicitudController};
+use App\Http\Middleware\convertirNull;
 use Laravel\Socialite\Facades\Socialite;
 use App\Models\{CategoriaFaq, Pais,Estado,Ciudad};
 
@@ -139,6 +140,18 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::get('negocio/categorias/{categoria}/get',[NegocioCategoriaController::class,'getCategoria']);
     Route::resource('negocio/categorias',NegocioCategoriaController::class);
     Route::post('negocio/categorias/fetch/data',[NegocioCategoriaController::class,'fetchData']);
+    Route::get('negocio/categorias/get/all',[NegocioCategoriaController::class,'getAll']);
+
+
+
+    /*****************************/
+    /* Negocio Solicitudes
+    /*****************************/
+
+    Route::post('negocio/solicituds/fetch/data',[SolicitudController::class,'fetchData']);
+    Route::resource('negocio/solicituds',SolicitudController::class)->middleware(convertirNull::class);
+    Route::get('negocio/solicituds/{solicitud}/get',[SolicitudController::class,'getSolicitud']);
+
 
 });
 

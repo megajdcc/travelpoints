@@ -70,7 +70,7 @@ class WelcomeUsuario extends Notification implements ShouldQueue
             'type' => 'light-success', // light-info , light-success, light-danger, light-warning
             'btn' => true,
             'btnTitle' => 'Ir a mi perfil',
-            'url' => ['name' => 'perfil',]
+            'url' => ['name' => 'perfil.editar',]
              ];
     }
 

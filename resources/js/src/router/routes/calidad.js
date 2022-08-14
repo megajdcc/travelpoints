@@ -111,18 +111,7 @@ export default [
                    //  navActiveLink: 'socio'
                 },
             },
-            {
-                path: 'afiliar',
-                name: 'socio.negocio.afiliar',
-                component: () => import('views/socio/negocio/create'),
-               meta: {
-                  navActiveLink: 'socio.negocio',
-                  name: 'negocio',
-                  layout: 'travel'
-
-
-               },
-             },
+           
              {
                 path: 'siguiente',
                 name: 'socio.negocio.siguiendo',
@@ -149,15 +138,50 @@ export default [
              },
              {
                 path: 'solicitudes',
-                name: 'socio.negocio.solicitudes',
                 component: () => import('views/socio/negocio/solicitudes'),
                 meta: {
                    navActiveLink: 'socio.negocio',
                    name: 'negocio',
                    layout: 'travel'
-
-
                 },
+
+                children:[
+                  {
+                     path:'',
+                     component:()  => import('views/socio/negocio/solicitudes/list'),
+                     name:'socio.negocio.solicitudes',
+                     meta: {
+                        navActiveLink: 'socio.negocio',
+                        name: 'negocio',
+                        layout: 'travel',
+                     }
+                        
+                  },
+
+                  {
+                     path: 'afiliar',
+                     name: 'socio.negocio.afiliar',
+                     component: () => import('views/socio/negocio/solicitudes/create'),
+                        meta: {
+                           navActiveLink: 'socio.negocio',
+                           name: 'negocio',
+                           layout: 'travel'
+                        },
+                  },
+                  
+                  {
+                     path:':id/edit',
+                     props:true,
+                     component:()  => import('views/socio/negocio/solicitudes/edit'),
+                     name:'socio.negocio.solicitudes.edit',
+                     meta: {
+                        navActiveLink: 'socio.negocio',
+                        name: 'negocio',
+                        layout: 'travel',
+                     }
+                  }
+                    
+                ]
              }
           ]
 
@@ -795,6 +819,71 @@ export default [
                      active: true
                   }
 
+               ]
+            }
+         }
+      ]
+   },
+
+   /*****************************************/
+   /* Solicitudes de negocios
+   /*************************************** */
+
+   {
+      path:'/negocios/solicitudes',
+      component:() => import('views/negocios/solicitudes'),
+      children:[
+         {
+            path:'',
+            name:'listar.solicitudes.negocios',
+            component:() => import('views/negocios/solicitudes/list'),
+
+            meta:{
+               pageTitle:'Solicitudes de negocios',
+               resource:'solicitudes',
+               action:'read',
+               breadcrumb:[
+                  {
+                     text:'Home',
+                     to:{name:'home'},
+                     active:false
+                  },
+
+                  {
+                     text: 'Solicitudes',
+                     active: true
+                  }
+               ]
+            }
+         },
+         {
+            path: ':id/show',
+            props:true,
+            name: 'negocio.solicitud.show',
+            component: () => import('views/negocios/solicitudes/edit'),
+
+            meta: {
+               // pageTitle: 'Solicitud de negocio',
+               resource: 'solicitudes',
+               action: 'read',
+               navActiveLink:'listar.solicitudes.negocios',
+
+               breadcrumb: [
+                  {
+                     text: 'Home',
+                     to: { name: 'home' },
+                     active: false
+                  },
+
+                  {
+                     text: 'Solicitudes',
+                     active: false,
+                     to: { name:'listar.solicitudes.negocios'}
+                  },
+                  {
+                     text: 'Ver solicitud',
+                     active: true
+                  }
                ]
             }
          }

@@ -79,6 +79,29 @@ export const optionsCurrency = ref({
          })
 
 
+export const getSituacionSolicitud = (situacion) => {
+  const situaciones = [{
+    id:1,
+    text:'Solicitud enviada',
+    variant:'primary'
+  },{
+    id:2,
+    text:'Solicitud de cambio',
+    variant:'warning',
+  },{
+    id:3,
+    text:'Aceptada',
+    variant:'success'
+  },{
+    id:4,
+    text:'Rechazada',
+    variant:'danger'
+  }]
+
+  return situaciones.find(val =>val.id === situacion)
+
+}
+
 
 
 export const verificarActualizacion = () => {

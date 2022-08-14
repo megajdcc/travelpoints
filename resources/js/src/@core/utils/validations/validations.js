@@ -12,12 +12,13 @@ import {
   alpha_dash as rule_alpha_dash,
   alpha_num as rule_alpha_num,
   length as rule_length,
+  max as rule_max
 } from 'vee-validate/dist/rules'
 import ar from 'vee-validate/dist/locale/ar.json'
 import en from 'vee-validate/dist/locale/en.json'
 
 // eslint-disable-next-line object-curly-newline
-import { validatorPositive, validatorUrlValidator, validatorPassword, validatorCreditCard } from './validators'
+import { validatorPositive, validatorUrlValidator, validatorPassword, validatorCreditCard, validatorMaxCaracteres } from './validators'
 
 // ////////////////////////////////////////////////////////
 // General
@@ -34,6 +35,18 @@ export const email = extend('email', {
 })
 
 export const min = extend('min', rule_min)
+
+export const max = extend('max', {
+  ...rule_max,
+  message:'Sú {_field_} no debe ser mayor a {length} caracteres.'
+})
+
+export const comision = extend('comision',{
+  validate: (value, args) => (Number(value) >= args.minimo && Number(value) <= args.maximo ),
+  params:['minimo','maximo'],
+  message: 'Sú {_field_} debe estar entre {minimo} y {maximo} %'
+
+})
 
 export const confirmed = extend('confirmed', rule_confirmed)
 
@@ -72,6 +85,11 @@ export const url = extend('url', {
   validate: validatorUrlValidator,
   message: 'URL is invalid',
 })
+
+// export const max = ext('max',{
+//   validate: validatorMaxCaracteres,
+//   message:"La {_field_} no debe tener mas de "
+// })
 
 // Install English and Arabic localizations.
 localize({

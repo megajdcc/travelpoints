@@ -59,7 +59,7 @@
                      Mis Negocios
                   </b-nav-item>
 
-                  <b-nav-item :to="{ name: 'socio.negocio.afiliar' }" exact active-class="active">
+                  <b-nav-item :to="{ name: 'socio.negocio.afiliar' }" active-class="active">
                      <span class="fas fa-plus-circle"></span>
                      Afiliar mi negocio
                   </b-nav-item>
@@ -75,7 +75,7 @@
                      Recomendados
                   </b-nav-item>
 
-                  <b-nav-item :to="{ name: 'socio.negocio.solicitudes' }" exact active-class="active">
+                  <b-nav-item :to="{ name: 'socio.negocio.solicitudes' }"  active-class="active">
                      <span class="fas fa-file"></span>
                      Solicitudes enviadas
                   </b-nav-item>

@@ -13,6 +13,13 @@ class NegocioCategoriaController extends Controller
 {
     
     
+    public function getAll(){
+        
+        $categorias = NegocioCategoria::all();
+        return response()->json($categorias);
+
+    }
+    
     public function getCategoria(NegocioCategoria $categoria){
         return response()->json($categoria);
     }

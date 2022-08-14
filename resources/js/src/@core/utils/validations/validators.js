@@ -5,6 +5,15 @@ export const validatorPositive = value => {
   return false
 }
 
+export const validatorMaxCaracteres = (value,longitud = 5) => {
+  if(value.length > longitud){
+    return false;
+  }
+  return true;
+
+}
+
+
 export const validatorPassword = password => {
   /* eslint-disable no-useless-escape */
   const regExp = /(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%&*()]).{8,}/

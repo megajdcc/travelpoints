@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Negocio\Solicitud;
 
 class Ciudad extends Model
 {
@@ -26,6 +27,13 @@ class Ciudad extends Model
      */
     public function usuarios(){
         return $this->hasMany(User::class,'ciudad_id','id');
+    }
+
+    /**
+     * Una ciudad puede estar relacionada con  cero o muchas solicitudes de negocios 
+     */
+    public function solicitudes(){
+        return $this->hasMany(Solicitud::class,'ciudad_id','id');
     }
 
     

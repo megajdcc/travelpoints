@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Negocio\Solicitud;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -172,6 +173,17 @@ class User extends Authenticatable
     public function faqs(){
         return $this->hasMany(Faq::class,'usuario_id','id');
     }
+
+
+    /**
+     * Un usuario puede estar relacionada con  cero o muchas solicitudes de negocios 
+     */
+    public function solicitudes()
+    {
+        return $this->hasMany(Solicitud::class, 'usuario_id', 'id');
+    }
+
+
     
 
 }

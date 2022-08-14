@@ -33,6 +33,10 @@ import faq from './modules/faqs'
 
 import categoriaNegocio from './modules/negocios/categorias'
 
+// Solicitud de afiliacion de negocio
+
+import solicitud from './modules/negocios/solicitudes'
+
 
 
 Vue.use(Vuex)
@@ -124,7 +128,8 @@ export default new Vuex.Store({
     'user-tablero': UserTablero,
     dashboard,
     faq,
-    categoriaNegocio
+    categoriaNegocio,
+    solicitud
   },
 
   strict: process.env.DEV,

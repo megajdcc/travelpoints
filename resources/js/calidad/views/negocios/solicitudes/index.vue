@@ -11,9 +11,6 @@
 
    </div>
 </template>
-
-
-
 <script>
 
 import useAppConfig from '@core/app-config/useAppConfig'

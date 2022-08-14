@@ -56,6 +56,22 @@
                         <!-- User Info: Input Fields -->
                         <b-form>
                            <b-row class="mt-1">
+                              <!-- username -->
+                               <b-col cols="12" md="4">
+                                 <validation-provider #default="{errors}" name="username" rules="required">
+                                    <b-form-group label="Username" label-for="username">
+                                       <b-form-input id="username" v-model="form.username" autofocus
+                                          :state="errors.length ? false : null" trim placeholder="" />
+
+                                       <b-form-invalid-feedback>
+                                          {{ errors[0] }}
+                                       </b-form-invalid-feedback>
+
+                                    </b-form-group>
+                                 </validation-provider>
+
+                              </b-col>
+
 
                               <!-- Field: nombre -->
                               <b-col cols="12" md="4">

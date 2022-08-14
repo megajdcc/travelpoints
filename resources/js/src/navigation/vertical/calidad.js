@@ -9,6 +9,30 @@ export default [
    },
 
    {
+      title: 'Negocios',
+      icon: 'HomeIcon',
+      children:[
+         {
+            title: 'negocios',
+            route: 'listar.negocios',
+            action: 'read',
+            resource: 'negocios',
+            icon: 'ListIcon',
+         },
+
+         {
+            title: 'Solicitudes',
+            route: 'listar.solicitudes.negocios',
+            action: 'read',
+            resource: 'solicitudes',
+            icon: 'ListIcon',
+         },
+
+      ]
+   },
+
+
+   {
       title:'Configuraciones',
       icon:'SettingsIcon',
       children:[
@@ -47,7 +71,7 @@ export default [
             route: 'negocio.categorias.list',
             icon: 'ListIcon',
             action: 'read',
-            resource: 'negocio categorías'
+            resource: 'Negocio categorías'
          }
 
 

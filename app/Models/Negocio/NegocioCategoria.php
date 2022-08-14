@@ -29,5 +29,12 @@ class NegocioCategoria extends Model
 
     }
 
+    /**
+     * Una categoria puede tener cero o muchas solicitudes de negocios
+     */
+    public function solicitudes(){
+        return $this->hasMany(Solicitud::class,'categoria_id','id');
+    }
+
 
 }

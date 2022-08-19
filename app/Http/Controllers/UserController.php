@@ -38,11 +38,11 @@ class UserController extends Controller
 
     private function validar(Request $request,User $usuario = null){
         return $request->validate([
-            'username' =>   ['required', $usuario ? Rule::unique('users', 'username')->ignore($usuario): 'unique:users,username'],
+            'username'         => ['required', $usuario ? Rule::unique('users', 'username')->ignore($usuario): 'unique:users,username'],
             'nombre'           => 'nullable',
             'apellido'         => 'nullable',
             'telefono'         => 'nullable',
-            'email'            => ['required', $usuario ? Rule::unique('users', 'email')->ignore($usuario): 'unique:users,email'],
+            'email'            => ['required', $usuario ? Rule::unique('users', 'email')->ignore($usuario)   : 'unique:users,email'],
             'direccion'        => 'nullable',
             'fecha_nacimiento' => 'nullable',
             'rol_id'           => 'required',
@@ -80,8 +80,8 @@ class UserController extends Controller
 
         try{
             DB::beginTransaction();
-                $usuario = $this->crearUsuario($datos);
-                $usuario->notify(new WelcomeUsuario($usuario));
+            $usuario = $this->crearUsuario($datos);
+            $usuario->notify(new WelcomeUsuario($usuario));
             DB::commit();
             $usuario->rol;
             $usuario->referidor;
@@ -166,41 +166,23 @@ class UserController extends Controller
      * @return [App\User]        [El usuario creado]
      */
     public function crearUsuario(Array $datos) : User {
-
-        
-        $usuario = User::create([
-            'username' => $datos['username'],
-            'nombre' => $datos['nombre'],
-            'apellido'  => $datos['apellido'],
-            'telefono'  => $datos['telefono'],
-            'email'     => $datos['email'],
-            'direccion' => $datos['direccion'],
-            'password'  => Hash::make('20464273jd'),
-            'fecha_nacimiento' => (isset($datos['fecha_nacimiento'])) ? $datos['fecha_nacimiento'] : null ,
-            'rol_id' => $datos['rol_id'],
-            'is_whatsapp' => $datos['is_whatsapp'],
-            'website' => $datos['website'],
-            'twitter' => $datos['twitter'],
-            'facebook' => $datos['facebook'],
-            'instagram' => $datos['instagram'],
-        ]);
-
+        $usuario = User::create($datos);
         $usuario->asignarPermisosPorRol();
         return $usuario;
     
     }
 
-    public function validarDatos(Request $request) : array{
+    public function validarDatos(Request $request,User $usuario = null) : array{
 
         $datos = $request->validate([
-            'username' => 'required|unique:users,username',
+            'username'         => ['required',!is_null($usuario) ? Rule::unique('users','username')->ignore($usuario) : 'unique:users,username'],
             'nombre'           => 'required',
             'apellido'         => 'nullable',
             'telefono'         => 'nullable',
-            'email'            => [Rule::unique('users','email')],
+            'email'            => ['required',!is_null($usuario) ? Rule::unique('users','email')->ignore($usuario): 'unique:users,email'],
             'direccion'        => 'nullable',
             'fecha_nacimiento' => 'nullable',
-            'rol_id'           => 'nullable',
+            'rol_id'           => 'required',
             'website'          => 'nullable',
             'is_whatsapp'      => 'nullable',
             'twitter'          => 'nullable',
@@ -209,7 +191,7 @@ class UserController extends Controller
 
         ],[
             'nombre.required' => 'El nombre es importante',
-            'email.unique' => 'El email ya está siendo usado, el mismo debe ser único',
+            'email.unique'    => 'El email ya está siendo usado, el mismo debe ser único',
             'username.unique' => 'El nombre de usuario ya está siendo usado, inténta con otro'
 
         ]);
@@ -263,9 +245,7 @@ class UserController extends Controller
 
         try{
             DB::beginTransaction();
-
                 $usuario->delete();
-
             DB::commit();
             $result = true;
         }catch(Exception $e){

@@ -16,6 +16,9 @@ use Illuminate\Database\Eloquent\BroadcastsEvents;
 use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Broadcasting\Channel;
 
+use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Support\Facades\{Hash};
+
 class User extends Authenticatable
 {
     use HasApiTokens,HasFactory, Notifiable;
@@ -84,6 +87,25 @@ class User extends Authenticatable
         'is_whatsapp' => false,
         'activo' => true
     ];
+
+
+    public function genero():Attribute{
+
+        return Attribute::make(
+            get:fn($val) => $val == 1 ? 'Masculino' : 'Femenino',
+            set:fn($val) => $val == 'Masculino' ? 1 : 2,
+        );
+
+    }
+
+    public function password(): Attribute
+    {
+        return Attribute::make(
+            get: fn ($val) => $val,
+            set: fn ($val) => Hash::make($val),
+        );
+    }
+
 
     public function getUrlAvatar(){
 

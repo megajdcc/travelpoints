@@ -132,7 +132,7 @@
                                        
                                        <v-select v-model="form.rol_id"
                                           :dir="$store.state.appConfig.isRTL ? 'rtl' : 'ltr'" :options="getRols"
-                                          :reduce="val => val.value" :clearable="false" input-id="user-role" />
+                                          :reduce="val => val.value" :clearable="false" input-id="user-role" size="sm"/>
 
                                        <b-form-invalid-feedback :state="errors.length ? false : null">
                                           {{ errors[0] }}

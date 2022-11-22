@@ -1,0 +1,191 @@
+<?php
+use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Auth\{AuthController};
+use App\Http\Controllers\{CategoriaFaqController, DivisaController, FaqController, NegocioCategoriaController, UserController,NotificacionController,RolController,PermisoController, SolicitudController};
+use App\Http\Middleware\convertirNull;
+use Laravel\Socialite\Facades\Socialite;
+use App\Models\{CategoriaFaq, Pais,Estado,Ciudad};
+
+/*
+|--------------------------------------------------------------------------
+| API Routes
+|--------------------------------------------------------------------------
+|
+| Here is where you can register API routes for your application. These
+| routes are loaded by the RouteServiceProvider within a group which
+| is assigned the "api" middleware group. Enjoy building your API!
+|
+*/
+
+// Route::middleware('auth:api')->get('/user', function (Request $request) {
+//     return $request->user();
+// });
+
+
+
+// Route::middleware('auth:api')->group(function(){
+
+
+    Route::group(['prefix' => 'auth'], function () {
+        
+        Route::get('google/redirect',[AuthController::class,'redirectGoogle']);
+        Route::get('google/callback', [AuthController::class, 'callbackGoogle']);
+
+        Route::post('login', [AuthController::class, 'login']);
+        Route::post('register', [AuthController::class, 'register']);
+        Route::post('nuevo/usuario',[UserController::class,'nuevoUsuario']);
+        Route::post('recuperar/contrasena',[AuthController::class,'recuperarContrasena']);
+        Route::post('reset-password',[AuthController::class,'resetPassword']);
+        
+
+        Route::group(['middleware' => 'auth:sanctum'], function () {
+            Route::get('logout', [AuthController::class, 'logout']);
+            Route::get('user', [AuthController::class, 'user']);
+        });
+
+    });
+    
+// });
+
+
+
+
+
+Route::group(['middleware' => 'auth:sanctum'], function () {
+
+    // Request de usuarios Form Perfil 
+
+    Route::post('upload/avatar', [UserController::class, 'uploadAvatar'])->name('upload_avatar');
+    Route::put('perfil/update/usuario/{usuario}',[UserController::class, 'updatePerfil']);
+    Route::put('cambiar/contrasena/usuario/{usuario}',[UserController::class, 'changePassword']);
+
+
+    /*****************************/
+    /* NOTIFICACIONES
+    /*****************************/
+
+    Route::get('notificaciones/{usuario}',[NotificacionController::class,'NotificacionesSinLeer']);
+    Route::get('notificaciones/markread/{notificacion}/usuario/{usuario}',[NotificacionController::class,'NotificacionLeida']);
+    Route::delete('notificaciones/{notificacion}/usuario/{usuario}',[NotificacionController::class,'eliminar']);
+    Route::get('notificaciones/marknoread/{notificacion}/usuario/{usuario}',[NotificacionController::class,'NotificacionNoLeida']);
+
+    Route::get('notificaciones/todoleido/usuario/{usuario}',[NotificacionController::class,'todoLeido']);
+    Route::post('notificaciones/seleccionados/leidos/usuario/{usuario}',[NotificacionController::class,'seleccionadasLeidas']);
+    Route::post('notificaciones/seleccionados/eliminar/usuario/{usuario}', [NotificacionController::class, 'eliminarSeleccionados']);
+
+    /*****************************/
+    /* ROLES DE USUARIO
+    /*****************************/ 
+    Route::resource('roles', RolController::class);
+    Route::get('roles/get/permisos', [PermisoController::class, 'getPermisos'])->name('getPermisos');
+    Route::get('roles/listar/table', [RolController::class, 'listar']);
+    Route::delete('roles/delete/{role}', [RolController::class, 'destroy']);
+    Route::get('listar/roles', [RolController::class, 'roles']);
+    Route::post('fetch/roles',[RolController::class,'fetchData']);
+    Route::get('roles/{role}/get',[RolController::class,'getRol']);
+    
+
+
+    /*****************************/
+    /* PERMISOS DE USUARIO
+    /*****************************/ 
+    Route::resource('permisos', PermisoController::class);
+    Route::get('listar/permisos', [PermisoController::class, 'listarPermisos'])->name('listar_permisos');
+    Route::post('/revocar/permiso/{permiso}/role/{role}', [RolController::class, 'revocarPermiso']);
+    Route::post('/listar/permisos/role/{role}', [RolController::class, 'listarPermisosRole']);
+    Route::get('cargar/permisos', [PermisoController::class, 'getPermissions']);
+    Route::get('permisos/listar/table',[PermisoController::class, 'listarPermisos']);
+    Route::post('fetch/permisos', [PermisoController::class, 'fetchData']);
+    Route::get('permisos/{permiso}/get', [PermisoController::class, 'getPermiso']);
+
+
+
+    /*****************************/
+    /* USUARIOS
+    /*****************************/
+    Route::get('/usuarios/all', [UserController::class, 'getUsuarios']);
+    Route::resource('usuarios', UserController::class)->middleware('format_telefono');
+    Route::get('listar/usuarios', [UserController::class, 'listar'])->name('listar_usuarios');
+    Route::get('usuarios/{usuario}/get',[UserController::class,'getUsuario']);
+
+    Route::post('fetch/usuarios',[UserController::class,'getUsers']);
+    Route::post('usuario/{usuario}/update/avatar',[UserController::class,'actualizarAvatarUsuario']);
+
+    Route::post('desactivar/usuario',[UserController::class,'desactivarCuenta']);
+
+    Route::put('usuarios/{usuario}/crear/link/referidor',[UserController::class,'crearLinkReferidor']);
+
+    Route::post('usuario/perfil/referidos',[UserController::class,'misReferidos']);
+
+    /*****************************/
+    /* Faqs y Categorias de Faqs
+    /*****************************/
+
+    Route::get('faqs/{faq}/get',[FaqController::class,'get']);
+    Route::resource('faqs',FaqController::class);
+    Route::post('faqs/fetch', [FaqController::class,'fetchData']);
+
+    Route::post('faqs/categorias/fetch',[CategoriaFaqController::class,'fetchData']);
+
+    Route::resource('faqs/categorias',CategoriaFaqController::class);
+    Route::get('faqs/categorias/get/all',[CategoriaFaqController::class,'getAll']);
+    Route::get('faqs/categorias/{categoria}/get',[CategoriaFaqController::class,'get']);
+
+
+
+    /*****************************/
+    /* Negocio Categorias
+    /*****************************/
+
+    Route::get('negocio/categorias/{categoria}/get',[NegocioCategoriaController::class,'getCategoria']);
+    // Route::resource('negocio/categorias',NegocioCategoriaController::class);
+    Route::post('negocio/categorias/fetch/data',[NegocioCategoriaController::class,'fetchData']);
+    Route::get('negocio/categorias/get/all',[NegocioCategoriaController::class,'getAll']);
+
+
+
+    /*****************************/
+    /* Negocio Solicitudes
+    /*****************************/
+
+    Route::post('negocio/solicituds/fetch/data',[SolicitudController::class,'fetchData']);
+    Route::resource('negocio/solicituds',SolicitudController::class)->middleware(convertirNull::class);
+    Route::get('negocio/solicituds/get/all',[SolicitudController::class,'getAll']);
+    Route::get('negocio/solicituds/{solicitud}/get',[SolicitudController::class,'getSolicitud']);
+
+
+
+    /*****************************/
+    /* Divisas
+    /*****************************/
+
+    Route::get('divisas/{divisa}/fetch',[DivisaController::class,'fetch']);
+    Route::post('divisas/fetch/data',[DivisaController::class,'fetchData']);
+    Route::resource('divisas',DivisaController::class);
+
+
+
+});
+
+Route::put('usuario/{usuario}/establecer/contrasena', [UserController::class, 'EstablecerContrasena'])->name('establecercontrasena');
+
+Route::get('get/paises',function(){
+    $paises = Pais::get();
+    return response()->json($paises);
+});
+
+Route::get('get/estados/{pais}', function(Pais $pais) {
+    $estados = $pais->estados;
+    return response()->json($estados);
+});
+
+Route::get('get/ciudades/{estado}', function (Estado $estado) {
+    $ciudades = $estado->ciudades;
+    return response()->json($ciudades);
+});
+
+
+Route::get('usuarios/verificar/codigo/{codigo}', [UserController::class, 'verificarCodigo']);
+Route::post('cargar/categorias', [CategoriaFaqController::class, 'cargar']);
+
+

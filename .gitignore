@@ -1,0 +1,10 @@
+node_modules
+vendor
+.env
+.nvmrc
+public/storage
+storage
+public/js
+public/css/
+public/images
+queue.log

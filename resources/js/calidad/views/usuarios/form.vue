@@ -177,12 +177,6 @@
                               </b-form-group>
                            </b-col>
 
-                           <!-- Telefono -->
-                           <b-col cols="12" md="6" lg="4">
-                              <b-form-group label="Telefono" label-for="telefono">
-                                 <b-form-input id="telefono" v-model="form.telefono" />
-                              </b-form-group>
-                           </b-col>
 
                            <!-- Field: Website -->
                            <b-col cols="12" md="6" lg="4">
@@ -190,15 +184,10 @@
                                  <b-form-input id="website" v-model="form.website" />
                               </b-form-group>
                            </b-col>
-
-                           <!-- Field: SI tiene whatsapp -->
-                           <b-col cols="12" md="6" lg="4">
-                              <b-form-group label="Tiene whatsapp ? " label-for="whatsapp" label-class="mb-1">
-                                 <b-form-radio-group id="whatsapp" v-model="form.is_whatsapp" :options="whatsappOptions"
-                                    :value="false" />
-                              </b-form-group>
-                           </b-col>
+                        
                         </b-row>
+
+                       
 
                         <!-- Header: Personal Info -->
                         <div class="d-flex mt-2">
@@ -221,6 +210,87 @@
                            </b-col>
 
                         </b-row>
+                     </b-tab>
+
+                     <b-tab>
+                        <template #title>
+                           <feather-icon icon="PhoneIcon" size="16" class="mr-0 mr-sm-50" />
+                           <span class="d-none d-sm-inline">Teléfonos</span>
+                        </template>
+
+                        <b-row>
+                           <b-col md="8">
+                        
+                              <section class="d-flex justify-content-between">
+                                 <b-button-group size="sm">
+                                    <b-button variant="primary" @click="agregarTelefono" :disabled="form.telefonos.length >=5 ">
+                                       <feather-icon icon="PlusIcon" />
+                                       Agregar
+                                    </b-button>
+                                 </b-button-group>
+                              </section>
+
+                              <table class="table table-sm table-hover table-bordeless mt-1">
+                                 <thead>
+                                    <th>
+                                       Número de Télefono: 
+                                    </th>
+                                    <th>
+                                       ¿ Está asociado a whatsapp ? 
+                                    </th>
+                                    <th>
+                                       ¿ Es el número principal ? 
+                                    </th>
+                                    <th>
+
+                                    </th>
+                                 </thead>
+                                 <tbody>
+                                    <tr  v-for="(telefono,i) in form.telefonos" :key="i">
+                                       <td>
+                                          <validation-provider name="telefono" rules="required" #default="{valid,errors}">
+                                                <b-form-input v-mask="'+#############'" v-model="telefono.telefono" :state="valid" />
+
+                                                <b-form-invalid-feedback :state="valid">
+                                                   {{ errors[0] }}
+                                                </b-form-invalid-feedback>
+                                          </validation-provider>
+                                         
+                                       </td>
+
+                                       <td class="vertical-aling-center">
+                                             <b-form-checkbox switch button-variant="success" v-model="telefono.is_whatsapp" :value="true" :unchecked-value="false">
+                                             </b-form-checkbox>
+                                       </td>
+
+                                       <td  class=" vertical-align-center">
+                                          <b-form-checkbox switch button-variant="warning" v-model="telefono.principal" :value="true" :unchecked-value="false" >
+                                          </b-form-checkbox>
+                                       </td>
+
+                                       <td  class="vertical-align-center">
+                                          <b-button variant="danger" @click="quitarTelefono(telefono,i)" size="sm">
+                                             <feather-icon icon="TrashIcon" />
+                                          </b-button>
+
+                                            <b-button variant="success" @click="guardarTelefono(telefono)" size="sm" v-loading="loading" :disabled="!telefono.length >= 8 ">
+                                             <feather-icon icon="CheckIcon"  />
+                                          </b-button>
+
+                                       </td>
+                                     
+                                    </tr>
+                                 </tbody>
+                              </table>
+                        
+                           </b-col>
+                        
+                        </b-row>
+
+                        <b-row>
+                           <b-col> <span>Para agregar o actualizar un número de teléfono, dar clics en el boton Verde ...</span></b-col>
+                        </b-row>
+
                      </b-tab>
                      <!-- Tab: Redes -->
                      <b-tab>
@@ -310,6 +380,7 @@
 import {
    BCol,
    BRow,
+   BContainer,
    BForm,
    BFormGroup, 
    BFormInput, 
@@ -368,6 +439,7 @@ export default {
       BFormCheckbox,
       BTab,
       BTabs,
+      BContainer,
       BCard,
       BAlert,
       BLink,
@@ -404,7 +476,7 @@ export default {
       const { refFormObserver, getValidationState, resetForm } = formValidation(resetuserData)
       const profileFile = ref(null)
       // const {usuario:form} = toRefs(store.state.usuario)
-      const form = computed(() => store.getters['usuario/draft'])
+      const form = computed(() => store.state.usuario.user)
 
       const cargarform = () => {
 
@@ -450,6 +522,48 @@ export default {
          }).catch(e => console.log(e))
 
       }
+      const agregarTelefono = () => {
+         store.commit('usuario/agregarTelefono')
+      }
+
+      const quitarTelefono = (telefono,i) => {
+
+         if(telefono.id){
+            store.dispatch('usuario/quitarTelefono', telefono).then(({result}) => {
+               if(result){
+                  store.commit('usuario/quitarTelefono', i)
+               }
+              
+            })
+
+         }else{
+            store.commit('usuario/quitarTelefono',i)
+         }
+        
+      }
+
+      const guardarTelefono  = (telefono) => {
+
+         store.dispatch('usuario/guardarTelefono',{usuario:form.value.id,telefono:telefono}).then(({result}) => {
+            
+            if(result){
+               toast.success('Se ha guardado con éxito el teléfono',{position:'bottom-right'})
+            }else{
+               toast.info('No se pudo guardar el teléfono, inténtelo de nuevo',{position:'bottom-right'})
+            }
+
+         }).catch(e => {
+
+            if(e.response.status === 422){
+               formValidate.value.setErrors(e.response.data.errors)
+            }
+
+            console.log(e)
+
+         } )
+      }
+
+
 
       return {
          refFormObserver,
@@ -472,7 +586,11 @@ export default {
          profileFile,
          loading:computed(() => store.state.loading),
          getRols,
-         cargarImagen
+         cargarImagen,
+
+         agregarTelefono,
+         quitarTelefono,
+         guardarTelefono
          
       }
   }
@@ -480,6 +598,8 @@ export default {
 
 </script>
 
-<style lang="scss">
+<style lang="scss" >
 @import '~@core/scss/vue/libs/vue-flatpicker.scss';
 </style>
+
+

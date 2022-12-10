@@ -9,9 +9,7 @@ class Divisa extends Model
 {
     use HasFactory;
 
-
-
-    public  $fillable = [
+    public $fillable = [
         'nombre',
         'iso',
         'simbolo',
@@ -23,4 +21,12 @@ class Divisa extends Model
         'principal' => 'boolean'
     ];
 
+
+    public static function getPrincipal() : Divisa | null{
+
+        $divisa = Divisa::where('principal',true)->first();
+
+        return $divisa;
+
+    } 
 }

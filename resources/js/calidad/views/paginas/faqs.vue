@@ -3,12 +3,12 @@
       <!-- faq search section -->
       <section id="faq-search-filter">
          <b-card no-body class="faq-search"
-            :style="{ backgroundImage: `url(${require('@/assets/images/banner/banner.png')})` }">
-            <b-card-body class="text-center">
-               <h2 class="text-primary">
+            :style="{ backgroundImage: `url(${imgBanner})` }">
+            <b-card-body class="text-center content-banner">
+               <h1 class="text-primary font-weight-bolder display-5">
                   Respondamos algunas preguntas
-               </h2>
-               <b-card-text class="mb-2">
+               </h1>
+               <b-card-text class="mb-2 font-weight-bolder "  >
                   o elige una categoría para encontrar rápidamente la ayuda que necesitas
                </b-card-text>
 
@@ -112,6 +112,10 @@ import FaqQuestionAnswer from './FaqQuestionAnswer.vue'
 import store from '@/store'
 import {ref,onMounted,watch,toRefs,computed} from '@vue/composition-api'
 
+
+import useAppConfig from '@core/app-config/useAppConfig';
+
+
 export default {
 
    components: {
@@ -137,6 +141,8 @@ export default {
       const datos = ref([])
 
 
+      const {skin} = useAppConfig();
+
       const faqSearchQuery = ref('')
 
       const cargarForm = ()  =>  {
@@ -159,6 +165,8 @@ export default {
 
 
       return {
+         skin,
+         imgBanner: computed(() => ['semi-dark', 'dark'].includes(skin.value) ? require('@/assets/images/illustration/patron_fondo_blanco.svg') : require('@/assets/images/illustration/patron_fondo_negro.svg')),
          datos,
          faqSearchQuery,
          loading:computed(() => store.state.loading)
@@ -170,4 +178,23 @@ export default {
 
 <style lang="scss">
 @import '~@core/scss/vue/pages/page-faq.scss';
+
+.faq-search{
+   background-attachment: fixed;
+   background-position: top;
+   position: relative;
+   &::after{
+         content:'';
+         position: absolute;
+         width: 100%;
+         height:100%;
+         background-color: rgba(0,0,0,0.6);
+         z-index: 9;
+   }
+
+   .content-banner{
+      z-index: 10;
+   }
+
+}
 </style>

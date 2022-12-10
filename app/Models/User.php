@@ -8,7 +8,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
-use App\Trais\Has_roles;
 
 use App\Trais\HasDireccion;
 
@@ -18,11 +17,31 @@ use Illuminate\Broadcasting\Channel;
 
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Support\Facades\{Hash};
+use App\Trais\{hasCuenta, Has_roles, hasTelefonos};
+
+use App\Models\Divisa;
+
 
 class User extends Authenticatable
 {
     use HasApiTokens,HasFactory, Notifiable;
     use Has_roles;
+    use hasCuenta,hasTelefonos;
+
+
+    public readonly string $model_type;
+
+    public readonly int $divisa_id;
+
+
+
+    public function __construct(
+        string $model_type = 'App\Models\User')
+    {
+        $this->model_type = $model_type;
+        $this->divisa_id = Divisa::where('principal',true)->first()->id;
+        
+    }
 
     /**
      * The attributes that are mass assignable.
@@ -33,7 +52,6 @@ class User extends Authenticatable
         'username',
         'nombre',
         'apellido',
-        'telefono',
         'bio',
         'website',
         'fecha_nacimiento',
@@ -48,14 +66,12 @@ class User extends Authenticatable
         'rol_id',
         'token',
         'lenguaje', // 1 => es
-        'is_whatsapp',
         'twitter',
         'facebook',
         'instagram',
         'ultimo_login',
         'ciudad_id' ,
         'codigo_referidor',
-        'tps'
     ];
 
     /**
@@ -77,15 +93,13 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
         'is_password'       => 'boolean',
-        'is_whatsapp'       => 'boolean',
         'activo'            => 'boolean',
         'tps'               => 'float'
     ];
 
 
     protected $attributes = [
-        'is_whatsapp' => false,
-        'activo' => true
+        'activo' => true,
     ];
 
 
@@ -204,6 +218,8 @@ class User extends Authenticatable
     {
         return $this->hasMany(Solicitud::class, 'usuario_id', 'id');
     }
+
+
 
 
     

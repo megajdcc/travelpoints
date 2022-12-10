@@ -42,6 +42,20 @@ import solicitud from './modules/negocios/solicitudes'
 
 import divisa from './modules/divisas';
 
+// Cuentas y Movimientos 
+
+import cuenta from './modules/cuentas_movimientos/cuenta'
+import movimiento from './modules/cuentas_movimientos/movimiento'
+
+
+// iata
+
+import iata from './modules/iatas/iata.js'
+
+// destino
+
+import destino from './modules/destinos/destino.js'
+
 
 Vue.use(Vuex)
 
@@ -110,6 +124,7 @@ export default new Vuex.Store({
 	actions: {
 
     async cerrarSesion({ state, commit }) {
+      
       return await axios.get('/api/auth/logout',null,{
         headers: {
           'WWW-Authenticate': 'Bearer', 'Authorization': (state.token) ? state.token : localStorage.getItem('accessToken')
@@ -134,7 +149,11 @@ export default new Vuex.Store({
     faq,
     categoriaNegocio,
     solicitud,
-    divisa
+    divisa,
+    cuenta,
+    movimiento,
+    iata,
+    destino
   },
 
   strict: process.env.DEV,

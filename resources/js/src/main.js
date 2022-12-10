@@ -159,6 +159,9 @@ require('datatables.net-buttons/js/buttons.print.js');
 require('datatables.net-buttons/js/dataTables.buttons.min.js');
 require('datatables.net-responsive-bs4');
 
+import VueMask from 'v-mask'
+
+Vue.use(VueMask);
 
 // Laravel Echo
 

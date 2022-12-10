@@ -1,7 +1,7 @@
 <?php
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\{AuthController};
-use App\Http\Controllers\{CategoriaFaqController, DivisaController, FaqController, NegocioCategoriaController, UserController,NotificacionController,RolController,PermisoController, SolicitudController};
+use App\Http\Controllers\{CategoriaFaqController, DestinoController, DivisaController, FaqController, IataController, MovimientoController, NegocioCategoriaController, UserController,NotificacionController,RolController,PermisoController, SolicitudController, TelefonoController};
 use App\Http\Middleware\convertirNull;
 use Laravel\Socialite\Facades\Socialite;
 use App\Models\{CategoriaFaq, Pais,Estado,Ciudad};
@@ -116,6 +116,23 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::put('usuarios/{usuario}/crear/link/referidor',[UserController::class,'crearLinkReferidor']);
 
     Route::post('usuario/perfil/referidos',[UserController::class,'misReferidos']);
+    Route::put('usuarios/{usuario}/add/telefono',[UserController::class,'agregarTelefono']);
+
+    /*****************************/
+    /* USUARIOS TELEFONOS
+    /*****************************/
+    Route::resource('telefonos',TelefonoController::class);
+
+    /*****************************/
+    /* Destinos
+    /*****************************/
+
+    Route::get('destinos/{destino}/fetch/data',[DestinoController::class,'fetch']);
+    Route::post('destinos/fetch/data',[DestinoController::class,'fetchData']);
+    Route::resource('destinos',DestinoController::class);
+    Route::put('destinos/{destino}/cargar/imagen',[DestinoController::class,'cargarImagen']);
+    Route::delete('destinos/{destino}/eliminar/imagen/{imagen}',[DestinoController::class,'eliminarImagen']);
+
 
     /*****************************/
     /* Faqs y Categorias de Faqs
@@ -162,8 +179,22 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::get('divisas/{divisa}/fetch',[DivisaController::class,'fetch']);
     Route::post('divisas/fetch/data',[DivisaController::class,'fetchData']);
     Route::resource('divisas',DivisaController::class);
+    Route::get('divisas/get/principal',[DivisaController::class,'getPrincipal']);
 
+    /*****************************/
+    /* cuenta y movimientos
+    /*****************************/
 
+    Route::post('/movimientos/fetch/data',[MovimientoController::class,'fetchData']);
+
+    /*****************************/
+    /* Iata
+    /*****************************/
+
+    Route::get('iatas/{iata}/fetch/data',[IataController::class,'fetch']);
+    Route::post('iatas/fetch/data', [IataController::class, 'fetchData']);
+    Route::resource('iatas',IataController::class);
+    Route::get('iatas/get/all',[IataController::class, 'getIatas']);
 
 });
 

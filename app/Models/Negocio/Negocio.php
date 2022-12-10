@@ -7,9 +7,22 @@ use Illuminate\Database\Eloquent\Model;
 
 use App\Models\{Ciudad,Estado};
 
+use App\Trais\{HasDireccion,hasCuenta};
+
+
 class Negocio extends Model
 {
     use HasFactory;
+
+    use HasDireccion,hasCuenta;
+
+    public readonly string $model_type;
+
+
+    public function __construct(string $model_type = 'App\Models\Negocio\Negocio')
+    {
+        $this->model_type = $model_type;
+    }
 
 
     protected $fillable = [
@@ -41,14 +54,7 @@ class Negocio extends Model
         return $this->belongsTo(NegocioCategoria::class,'categoria_id','id');
     }
 
-    
-    public function ciudad(){
-        return $this->belongsTo(Ciudad::class,'ciudad_id','id');
-    }
 
-    public function estado(){
-        return $this->belongsTo(Estado::class,'estado_id','id');
-    }
 
 
 }

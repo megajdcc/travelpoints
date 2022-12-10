@@ -7,12 +7,12 @@ export default {
    state:() => ({
 
       divisa:{
-         id:null,
-         nombre:'',
-         iso:null,
-         simbolo:'',
-         tasa:0,
-         principal:false
+         id       : null,
+         nombre   : '',
+         iso      : '',
+         simbolo  : '',
+         tasa     : 0,
+         principal: false
       },
 
       divisas:[]
@@ -34,7 +34,7 @@ export default {
          state.divisa = {
             id: null,
             nombre: '',
-            iso: null,
+            iso: '',
             simbolo: '',
             tasa: 0,
             principal: false
@@ -117,10 +117,11 @@ export default {
       fetch({commit},divisa_id){
 
          return new Promise((resolve, reject) => {
-            axios.get(`/api/divisas/${divisa_id}/fetch`).then(({data}) => {
 
-               commit('setDivisa',data.divisa)
+            axios.get(`/api/divisas/${divisa_id}/fetch`).then(({data}) => {
+               commit('setDivisa',data)
                resolve(data);
+
             }).catch(e => reject(e))
 
          })
@@ -128,54 +129,70 @@ export default {
 
       guardar({state,commit},datos){
 
-         if(state.divisa.id){
+         return new Promise((resolve, reject) => {
 
-            
-            axios.put(`/api/divisas/${datos.id}`,datos).then(({data}) => {
+            if (state.divisa.id) {
 
-               commit('update',datos.divisa)
-               resolve(data)
-            }).catch(e => reject(e))
+               axios.put(`/api/divisas/${datos.id}`, datos).then(({ data }) => {
+                  commit('update', data.divisa)
+                  resolve(data)
+               }).catch(e => reject(e))
 
 
-         }else{
+            } else {
 
-            axios.post(`/api/divisas`,datos).then(({data}) => {
+               axios.post(`/api/divisas`, datos).then(({ data }) => {
 
-               commit('push',data.divisa)
-               resolve(data)
+                  commit('push', data.divisa)
+                  resolve(data)
 
-            }).catch(e => reject(e))
+               }).catch(e => reject(e))
 
-         }
+            }
+         })
+
+        
 
 
       },
 
-      delete({commit},divisa){
-
-
-         commit('put',divisa.id)
+      eliminar({commit},divisa_id){
 
          return new Promise((resolve, reject) => {
             
-            axios.delete(`/api/divisas/${divisa.id}`).then(({data}) => {
+            axios.delete(`/api/divisas/${divisa_id}`).then(({data}) => {
 
-               if(!data.result){
-                  commit('push',divisa)
+               if(data.result){
+                  commit('put',divisa_id)
                }
 
                resolve(data)
             }).catch(e => {
-               
-               commit('push',divisa)
-
                reject(e)
             })
 
          })
 
+      },
+
+
+      getPrincipal({commit}){
+
+
+         return new Promise((resolve, reject) => {
+
+            axios.get(`/api/divisas/get/principal`).then(({data}) => {
+
+               commit('setDivisa',data)
+
+               resolve(data)
+
+            }).catch(e => reject(e))
+
+
+         })
       }
+
 
 
 

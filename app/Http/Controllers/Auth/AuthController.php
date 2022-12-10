@@ -57,7 +57,7 @@ class AuthController extends Controller
             'c_password' => 'required|same:password'
         ]);
 
-        $user = new User([
+        $user = User::create([
             'nombre'  => $request->nombre,
             'apellido' => $request->apellido,
             'email' => $request->email,
@@ -110,26 +110,40 @@ class AuthController extends Controller
 
          $credentials = request(['email', 'password']);
        
+         $datos = [...$credentials,...['activo' => true,'is_password' => true]];
 
-         if (!Auth::attempt($credentials,$data['remember'])){
+         if (!Auth::attempt($datos,$data['remember'])){
             return response()->json(['result' => false,'message' => 'El usuario o contraseña, son incorrectos'],401);
          }
 
+     
+
          $user = $request->user();
+
+         $user->ultimo_login = now();
+         $user->save();
 
          $token = (!is_null($user->getTokenText())) ? $user->getTokenText() : ($user->createToken($user->nombre.'-'.$user->id))->plainTextToken;
          // $token = $tokenResult->plainTextToken;
 
          $user->token = $token;
+
+         if(!$user->cuenta){
+           $cuenta =  $user->aperturarCuenta();
+           $user->cuenta = $cuenta;
+         } 
          
          $user->save();
+         
          $user->update(['activo' => true]);
          $user->tokens;
          $user->rol;
          $user->habilidades = $user->getHabilidades();
          $user->avatar = $user->getAvatar();
          $user->ciudad?->estado?->pais;
-
+         $user->cuenta?->divisa;
+         $user->cuenta?->movimientos;
+         $user->telefonos;
 
          // broadcast(new UsuarioConectado($user))->toOthers();
 
@@ -306,11 +320,13 @@ class AuthController extends Controller
       ]);
 
       $status = Password::reset(
-         $request->only('email', 'password', 'password_confirmation', 'token'),
 
+         $request->only('email', 'password', 'password_confirmation', 'token'),
+         
          function ($user, $password) {
+
             $user->forceFill([
-               'password' => Hash::make($password)
+               'password' => $password
             ])->setRememberToken(Str::random(60));
 
             $user->save();
@@ -318,7 +334,7 @@ class AuthController extends Controller
             event(new PasswordReset($user));
          }
       );
-
+      
       return $status === Password::PASSWORD_RESET
          ? response()->json(['result' => true, 'status' => $status])
          : response()->json(['result' => false, 'status' => $status]);

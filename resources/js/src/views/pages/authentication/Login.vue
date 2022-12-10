@@ -185,6 +185,7 @@ export default {
     
     const usuario = computed(() => store.state.usuario.usuario)
     const { appName, appLogoImage, applogoImageWhite } = $themeConfig.app
+
     const {
       login,
       formValidate,
@@ -233,7 +234,11 @@ export default {
         }
 
 
-      }).catch(e => console.log(e))
+      }).catch(e => {
+        console.log(e)
+
+      })
+
       .then(() => store.commit('toggleLoading'))
 
 

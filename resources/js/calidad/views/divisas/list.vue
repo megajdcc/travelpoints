@@ -51,8 +51,12 @@
 
                <template #cell(tasa)="{item}">
                
-                  <span class="text-nowrap">
-                    {{ item.iso }} {{ tasa | currency }} {{ item.simbolo }} 
+                  <span class="text-nowrap" v-if="!item.principal">
+                    {{ item.iso }} {{ item.tasa | currency }} {{ item.simbolo }} 
+                  </span>
+
+                  <span class="text-nowrap" v-else>
+                     NO aplica
                   </span>
                
                </template>
@@ -62,7 +66,7 @@
 
                <b-button-group size="sm">
 
-                  <b-button :to="{ name: 'edit.divisa', params: { id: item.id } }" variant="primary" title="Editar Divisa"  v-if="$can('update','divisas')">
+                  <b-button :to="{ name: 'divisa.edit', params: { id: item.id } }" variant="primary" title="Editar Divisa"  v-if="$can('update','divisas')">
                      <feather-icon icon="EditIcon" />
                   </b-button>
 

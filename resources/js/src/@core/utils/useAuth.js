@@ -73,7 +73,7 @@ export default function useAuth(){
             }).catch((error) => {
 
                if (error.response && error.response.status === 422) {
-                  loginForm.value.setErrors(error.response.data.errors)
+                  formValidate.value.setErrors(error.response.data.errors)
                }
 
                reject(error)

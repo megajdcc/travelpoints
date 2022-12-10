@@ -17,6 +17,7 @@ use App\Notifications\CuentaDesactivada;
 use Illuminate\Validation\Rules\RequiredIf;
 use App\Models\Usuario\Rol;
 use Illuminate\Support\Str;
+use App\Models\Telefono;
 
 
 
@@ -30,6 +31,11 @@ class UserController extends Controller
         $usuario->referidor;
         $usuario->referidos;
         $usuario->avatar = $usuario->getAvatar();
+        $usuario->cuenta;
+        $usuario->cuenta?->divisa;
+
+        $usuario->telefonos;
+
 
         return response()->json($usuario);
 
@@ -41,19 +47,16 @@ class UserController extends Controller
             'username'         => ['required', $usuario ? Rule::unique('users', 'username')->ignore($usuario): 'unique:users,username'],
             'nombre'           => 'nullable',
             'apellido'         => 'nullable',
-            'telefono'         => 'nullable',
             'email'            => ['required', $usuario ? Rule::unique('users', 'email')->ignore($usuario)   : 'unique:users,email'],
             'direccion'        => 'nullable',
             'fecha_nacimiento' => 'nullable',
             'rol_id'           => 'required',
             'website'          => 'nullable',
-            'is_whatsapp'      => 'required_with:telefono',
             'twitter'          => 'nullable',
             'facebook'         => 'nullable',
             'instagram'        => 'nullable',
             'genero'           => 'nullable',
             'codigo_postal'    => 'nullable',
-            'activo'           => 'nullable',
             'ciudad_id'        => 'nullable',
             'codigo_referidor' => 'nullable'            
         ],[
@@ -63,7 +66,7 @@ class UserController extends Controller
             'email.required'  => 'Este campo es obligatorio',
             'email.email'     => 'El email no es valido por favor verifique',
             'email.unique'    => 'El email debe ser único ya otro usuario lo esta usando.',
-            'is_whatsapp.required_with' => 'Este campo es importante'
+           
         ]);
     }
 
@@ -88,6 +91,10 @@ class UserController extends Controller
             $usuario->referidos;
             $usuario->rol->permisos;
             $usuario->avatar = $usuario->getAvatar();
+            $usuario->cuenta?->divisa;
+            $usuario->telefonos;
+
+            
             $result = true;
 
         }catch(Exception $e){
@@ -143,8 +150,14 @@ class UserController extends Controller
                 $usuario->rol->permisos;
                 $usuario->referidor;
                 $usuario->referidos;
+            $usuario->telefonos;
+
                 $usuario->avatar = $usuario->getAvatar();
+            $usuario->cuenta;
+            $usuario->cuenta?->divisa;
+
                 $result = true;
+            
                 $usuario->notify(new WelcomeUsuario($usuario));
 
             DB::commit();
@@ -166,8 +179,17 @@ class UserController extends Controller
      * @return [App\User]        [El usuario creado]
      */
     public function crearUsuario(Array $datos) : User {
-        $usuario = User::create($datos);
+        
+        $usuario = User::create([...$datos,...['password' => '20464273jd']]);
         $usuario->asignarPermisosPorRol();
+        // $usuario->aperturarCuenta();
+        
+        $usuario->cuenta;
+        $usuario->cuenta?->divisa;
+
+        $usuario->telefonos;
+
+
         return $usuario;
     
     }
@@ -178,13 +200,11 @@ class UserController extends Controller
             'username'         => ['required',!is_null($usuario) ? Rule::unique('users','username')->ignore($usuario) : 'unique:users,username'],
             'nombre'           => 'required',
             'apellido'         => 'nullable',
-            'telefono'         => 'nullable',
             'email'            => ['required',!is_null($usuario) ? Rule::unique('users','email')->ignore($usuario): 'unique:users,email'],
             'direccion'        => 'nullable',
             'fecha_nacimiento' => 'nullable',
             'rol_id'           => 'required',
             'website'          => 'nullable',
-            'is_whatsapp'      => 'nullable',
             'twitter'          => 'nullable',
             'facebook'         => 'nullable',
             'instagram'        => 'nullable'
@@ -215,6 +235,7 @@ class UserController extends Controller
 
             $usuario->removeRole();
             $usuario->update($datos);
+            
             $usuario->asignarPermisosPorRol();
             
             DB::commit();
@@ -224,6 +245,10 @@ class UserController extends Controller
             $usuario->referidor;
             $usuario->referidos;
             $usuario->rol->permisos;
+            $usuario->telefonos;
+            $usuario->cuenta?->divisa;
+
+
             $usuario->avatar = $usuario->getAvatar();
             $result = true;
         }catch(Exception $e){
@@ -269,7 +294,10 @@ class UserController extends Controller
             $usuario->rol->permisos;
             $usuario->referidor;
             $usuario->referidos;
+            $usuario->telefonos;
             $usuario->avatar = $usuario->getAvatar();
+            $usuario->cuenta?->divisa;
+            $usuario->telefonos;
         }
         return response()->json($usuarios);
     }
@@ -286,14 +314,18 @@ class UserController extends Controller
         ]);
 
         try{
+            
             DB::beginTransaction();
+
             $usuario->password = $datos['password'];
             $usuario->is_password = true;
             $usuario->save();
 
             DB::commit();
+            
             $result = true;
             $status = 'Se ha establecido la contraseña de forma éxitosa. ';
+
         }catch(Exception $e){
             DB::rollBack();
             $result = false;
@@ -341,6 +373,10 @@ class UserController extends Controller
         $user->referidos;
         $user->habilidades = $user->getHabilidades();
         $user->avatar = $user->getAvatar();
+        $user->telefonos;
+        $user->cuenta?->divisa;
+
+
         
         return response()->json(['result' => $result, 'usuario' => $user]);
 
@@ -410,8 +446,13 @@ class UserController extends Controller
 
         try{
             DB::beginTransaction();
-            $usuario->password =$data['contrasenaNueva'];
+            $usuario->password = $data['contrasenaNueva'];
             $usuario->save();
+            $usuario->cuenta;
+            $usuario->telefonos;
+            $usuario->cuenta?->divisa;
+
+
 
             DB::commit();
 
@@ -462,31 +503,44 @@ class UserController extends Controller
 
         if(Auth::user()->rol->nombre == 'Desarrollador'){
 
-            $paginator = DB::table('users','u')
-                        ->selectRaw("
-                            concat(u.nombre,' ',u.apellido) as usuario,
-                            u.username,
-                            u.email,
-                            u.telefono,
-                            r.nombre as rol,
-                            u.id,
-                            u.imagen as avatar
+            
+            $paginator = User::where([
+                ['username','LIKE',"%{$datos['q']}%",'OR'],
+                ['email', 'LIKE', "%{$datos['q']}%", 'OR'],
+                ['nombre', 'LIKE', "%{$datos['q']}%", 'OR'],
+                ['apellido', 'LIKE', "%{$datos['q']}%", 'OR'],
+                ['direccion', 'LIKE', "%{$datos['q']}%", 'OR'],
+                ['fecha_nacimiento', 'LIKE', "%{$datos['q']}%", 'OR'],
+                ['codigo_postal', 'LIKE', "%{$datos['q']}%", 'OR'],
+                ['bio', 'LIKE', "%{$datos['q']}%", 'OR'],
+            ])
+            ->where('rol_id',$datos['role'] ? $datos['role'] : '>',0)
+            ->orderBy($datos['sortBy'],$datos['sortDesc'] ? 'desc' : 'asc')
+            ->paginate($datos['perPage'] == 0 ? 10000 : $datos['perPage']);
 
-                        ")
-                ->join('rols as r','u.rol_id','r.id')
-                ->where('u.rol_id', $datos['role'] ? $datos['role'] : '>', 0)
-                ->where([
-                        ['u.nombre', 'LIKE', '%' . $datos['q'] . '%', 'OR'],
-                        ['u.email', 'LIKE', '%' . $datos['q'] . '%', 'OR'],
-                        ['u.telefono', 'LIKE', '%' . $datos['q'] . '%', 'OR'],
-                        ['u.apellido', 'LIKE', '%' . $datos['q'] . '%', 'OR'],
-                        ['u.bio', 'LIKE', '%' . $datos['q'] . '%', 'OR'],
-                        ['u.direccion', 'LIKE', '%' . $datos['q'] . '%','OR'],
-                        ['r.nombre', 'LIKE', '%' . $datos['q'] . '%','OR'],
+            // $paginator = DB::table('users','u')
+            //             ->selectRaw("
+            //                 concat(u.nombre,' ',u.apellido) as usuario,
+            //                 u.username,
+            //                 u.email,
+            //                 r.nombre as rol,
+            //                 u.id,
+            //                 u.imagen as avatar
 
-                ])
-                ->orderBy($datos['sortBy'] ?: 'u.id', ($datos['sortDesc']) ? 'desc' : 'asc')
-                ->paginate($datos['perPage'] == 0 ? 10000 : $datos['perPage']);
+            //             ")
+            //     ->join('rols as r','u.rol_id','r.id')
+            //     ->where('u.rol_id', $datos['role'] ? $datos['role'] : '>', 0)
+            //     ->where([
+            //             ['u.nombre', 'LIKE', '%' . $datos['q'] . '%', 'OR'],
+            //             ['u.email', 'LIKE', '%' . $datos['q'] . '%', 'OR'],
+            //             ['u.apellido', 'LIKE', '%' . $datos['q'] . '%', 'OR'],
+            //             ['u.bio', 'LIKE', '%' . $datos['q'] . '%', 'OR'],
+            //             ['u.direccion', 'LIKE', '%' . $datos['q'] . '%','OR'],
+            //             ['r.nombre', 'LIKE', '%' . $datos['q'] . '%','OR'],
+
+            //     ])
+            //     ->orderBy($datos['sortBy'] ?: 'u.id', ($datos['sortDesc']) ? 'desc' : 'asc')
+            //     ->paginate($datos['perPage'] == 0 ? 10000 : $datos['perPage']);
 
                
         }else{
@@ -507,7 +561,6 @@ class UserController extends Controller
                 ->where([
                     ['u.nombre', 'LIKE', '%' . $datos['q'] . '%', 'OR'],
                     ['u.email', 'LIKE', '%' . $datos['q'] . '%', 'OR'],
-                    ['u.telefono', 'LIKE', '%' . $datos['q'] . '%', 'OR'],
                     ['u.apellido', 'LIKE', '%' . $datos['q'] . '%', 'OR'],
                     ['u.bio', 'LIKE', '%' . $datos['q'] . '%', 'OR'],
                     ['u.direccion', 'LIKE', '%' . $datos['q'] . '%','OR'],
@@ -522,6 +575,13 @@ class UserController extends Controller
 
 
         foreach($usuarios as $key => $usuario){
+
+           
+            $usuario->telefonos;
+            $usuario->rol;
+            $usuario->cuenta;
+            $usuario->cuenta?->divisa;
+
 
             if($usuario->avatar){
                $usuarios[$key]->avatar =asset('storage/img-perfil/' . $usuario->avatar); 
@@ -567,6 +627,54 @@ class UserController extends Controller
         return response()->json(['result' => $result]);
     }
 
+
+    public function agregarTelefono(Request $request, User $usuario) {
+
+        $datos =  $request->validate([
+            'id'          => 'nullable',
+            'telefono'    => 'required',
+            'is_whatsapp' => 'required',
+            'principal'   => 'required',
+        ]);
+
+        try{
+            DB::beginTransaction();
+            
+            if(isset($datos['id'])){
+                $telefono = $usuario->actualizarTelefono($datos);
+            }else{
+                $telefono = $usuario->addTelefono($datos);
+            }
+
+
+            DB::commit();
+            $result = true;
+        }catch(\Exception $e){
+            DB::rollBack();
+            $result = false;
+            dd($e->getMessage());
+        }
+        return response()->json(['result' => $result,'telefono' => $result ? $telefono : null]);
+    }
+
+    public function quitarTelefono(Request $request, Telefono $telefono){
+
+        try{
+            DB::beginTransaction();
+
+                $telefono->delete();
+
+            DB::commit();
+            $result = true;
+        }catch(\Exception $e){
+            DB::rollBack();
+            $result = false;
+        }
+
+        return response()->json(['result' => $result]);
+    }
+
+
     public function crearLinkReferidor(Request $request, User $usuario){
 
         $datos = $request->validate([
@@ -584,6 +692,10 @@ class UserController extends Controller
         $usuario->rol;
         $usuario->habilidades = $usuario->getHabilidades();
         $usuario->avatar = $usuario->getAvatar();
+        $usuario->telefonos;
+        $usuario->cuenta;
+        $usuario->cuenta?->divisa;
+
         
         return response()->json(['result' => $result,'usuario' => $usuario]);
         
@@ -612,6 +724,10 @@ class UserController extends Controller
         $usuarios = $paginator->items();
 
         foreach ($usuarios as $key => $usuario) {
+            $usuario->telefonos;
+            $usuario->cuenta?->divisa;
+
+
             if(empty($usuario->imagen)){
                 $usuario->imagen =  asset('storage/img-perfil/default.jpg');
             }else{

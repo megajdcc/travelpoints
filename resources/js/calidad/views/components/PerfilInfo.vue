@@ -21,7 +21,8 @@
          </h1>
          <strong>{{ usuario.direccion ? usuario.direccion : 'Dirección sin definir' }}</strong>
          <hr>
-         <h2><strong> Tp {{ usuario.tps | currency }}</strong></h2>
+         <h2><strong> {{ usuario.cuenta.divisa.iso }}{{  usuario.cuenta.saldo | currency({symbol:usuario.cuenta.divisa.simbolo}) }}</strong></h2>
+         
          <b-button :to="{ name: 'tienda' }" variant="primary" size="sm">
             <feather-icon icon="ShoppingCartIcon" />
             Ir a tienda
@@ -57,7 +58,7 @@ import {
 
 import store from '@/store'
 
-import {ref,computed} from '@vue/composition-api'
+import {ref,computed,onMounted,toRefs} from '@vue/composition-api'
 export default {
 
    props:['usuario'],
@@ -88,6 +89,14 @@ export default {
       const profileFile = ref(null)
       const refInputEl = ref(null)
 
+      const {divisa} = toRefs(store.state.divisa)
+
+      onMounted(() => {
+      
+         store.dispatch('divisa/getPrincipal')
+
+      })
+
       const cargarImagen = (file) => {
 
          let form = new FormData();
@@ -115,6 +124,7 @@ export default {
          profileFile,
          refInputEl,
          cargarImagen,
+         divisa,
          loading:computed(() => store.state.loading)
       }
       

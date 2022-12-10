@@ -17,7 +17,7 @@ return new class extends Migration
             $table->id();
             $table->string('nombre')->unique();
             $table->boolean('principal')->default(false);
-            $table->decimal('tasa');
+            $table->decimal('tasa')->nullable()->default(0);
             $table->string('iso');
             $table->string('simbolo');
             $table->timestamps();

@@ -32,7 +32,7 @@
                   </template>
 
                   <template #cell(usuario_id)="{item}">
-                     {{ item.usuario.nombre || 'Sin definir' }}
+                     {{ item.usuario ? item.usuario.nombre : 'Sin definir' }}
                   </template>
 
                   <template #cell(actions)="{item}">

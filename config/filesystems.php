@@ -55,6 +55,13 @@ return [
             'url' => env('APP_URL') . '/storage/negocios/categorias',
             'visibility' => 'public',
         ],
+        
+        'destino_imagenes' => [
+            'driver' => 'local',
+            'root' => storage_path('app/public/destinos/imagenes'),
+            'url' => env('APP_URL') . '/storage/destinos/imagenes',
+            'visibility' => 'public',
+        ],
 
         's3' => [
             'driver' => 's3',

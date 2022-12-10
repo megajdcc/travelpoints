@@ -15,10 +15,11 @@ class DatabaseSeeder extends Seeder
     {
 
         $this->call([
+            DivisaSeed::class,
         	UserSeeder::class,
             PaisSeed::class,
             EstadoSeed::class,
-            CiudadSeed::class
+            CiudadSeed::class,
         ]);
     }
 }

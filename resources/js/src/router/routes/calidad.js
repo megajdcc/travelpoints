@@ -27,11 +27,24 @@ export default [
                 name: 'miperfil',
                 component: () => import('views/socio/perfil/datos'),
                 meta: {
+
                    name: 'perfil',
                    layout: 'travel'
 
                    //  navActiveLink: 'socio'
                 },
+             },
+
+             {
+               path:'mi-cuenta',
+               name:'micuenta',
+               component:() => import('views/socio/perfil/cuenta.vue'),
+               meta:{
+                  name:'perfil',
+                  resource:'micuenta',
+                  action:'read',
+                  layout:'travel',
+               }
              },
 
              {
@@ -334,6 +347,254 @@ export default [
          }
       ]
    },
+
+   /*****************************************/
+   /* Movimientos de Cuentas
+   /*************************************** */
+   {
+      path:'/movimientos',
+      component:() => import('views/movimientos/index.vue'),
+      children:[
+         {
+            path:'',
+            component:() => import('views/socio/perfil/cuenta.vue'),
+            name:'movimientos',
+            meta:{
+               resources:'movimientos',
+               action:'read'
+            }
+
+         }
+      ]
+
+      
+   },
+
+   /*****************************************/
+   /* Iatas
+   /*************************************** */
+
+   {
+      path:'/iatas',
+      component:() => import('views/iatas/index.vue'),
+      name:'iata',
+      children:[
+         {
+            path:'',
+            component:() => import('views/iatas/lists.vue'),
+            name:'iata.lists',
+            meta:{
+               resource:'iatas',
+               action:'read',
+               pageTitle:'Códigos IATA',
+               breadcrumb:[
+                  {
+                     text:'Home',
+                     to:{name:'home'},
+                     active:false,
+                  },
+                  {
+                     text:'Listado de Iatas',
+                     active:true
+                  }
+               ]
+            }
+         },
+
+         {
+            path: 'create',
+            component: () => import('views/iatas/create.vue'),
+            name: 'iata.create',
+
+            meta: {
+               resource: 'iatas',
+               action: 'write',
+               pageTitle: 'Registrar Código Iata',
+               navActiveLink:'iata.lists',
+
+               breadcrumb: [
+                  {
+                     text: 'Home',
+                     to: { name: 'home' },
+                     active: false,
+                  },
+
+                  {
+                     text: 'Listado de Código IATA',
+                     active: false,
+                     to:{name:'iata.lists'}
+
+                  },
+                  {
+                     text: 'Registrar nuevo Iata',
+                     active: true,
+
+                  }
+               ]
+            }
+         },
+         {
+            path: ':id/edit',
+            component: () => import('views/iatas/edit.vue'),
+            name: 'iata.edit',
+            props:true,
+            meta: {
+               resource: 'iatas',
+               action: 'update',
+               pageTitle: 'Actualizar Código Iata',
+               navActiveLink: 'iata.lists',
+
+               breadcrumb: [
+                  {
+                     text: 'Home',
+                     to: { name: 'home' },
+                     active: false,
+                  },
+
+                  {
+                     text: 'Listado de Códigos IATA',
+                     active: false,
+                     to: { name: 'iata.lists' }
+
+                  },
+                  {
+                     text: 'Actualizar nuevo Iata',
+                     active: true,
+
+                  }
+               ]
+            }
+         }
+
+      ]
+   },
+
+
+   /*****************************************/
+   /* Destinos
+   /*************************************** */
+   {
+      path:'/destinos',
+      component:() => import('views/destinos/index.vue'),
+
+      children:[
+
+         {
+            path:'',
+            component:() => import('views/destinos/lists.vue'),
+            name:'destino.lists',
+            meta:{
+               resource:'destinos',
+               action:'read',
+
+               pageTitle:'Destinos',
+
+               breadcrumb:[
+                  {
+                     text:'Home',
+                     to:{name:'home'},
+                     active:false
+                  },
+                  {
+                     text:'Destinos',
+                     active:true
+                  }
+               ]
+            }
+
+         },
+         {
+            path:'create',
+            name:'create.destino',
+            component:() => import('views/destinos/create.vue'),
+
+            meta:{
+               pageTitle:'Registrar Destino',
+               navActiveLink:'destino.lists',
+               resource:'destinos',
+               action:'write',
+               breadcrumb: [
+                  {
+                     text: 'Home',
+                     to: { name: 'home' },
+                     active: false
+                  },
+                  {
+                     text: 'Destinos',
+                     active: false,
+                     to:{name:'destino.lists'},
+
+                  },
+                  {
+                     text:'Crear Registro',
+                     active:true
+                  }
+               ]
+            }
+         },
+
+         {
+            path: ':id/edit',
+            name: 'edit.destino',
+            props:true,
+            component: () => import('views/destinos/edit.vue'),
+            meta: {
+               pageTitle: 'Registrar Destino',
+               navActiveLink: 'destino.lists',
+               resource: 'destinos',
+               action: 'write',
+               breadcrumb: [
+                  {
+                     text: 'Home',
+                     to: { name: 'home' },
+                     active: false
+                  },
+                  {
+                     text: 'Destinos',
+                     active: false,
+                     to: { name: 'destino.lists' },
+
+                  },
+                  {
+                     text: 'Crear Registro',
+                     active: true
+                  }
+               ]
+            }
+         },
+
+         {
+            path: ':id/imagenes',
+            name: 'imagenes.destino',
+            props: true,
+            component: () => import('views/destinos/FormImagen.vue'),
+            meta: {
+               pageTitle: 'Imagenes de Destino',
+               navActiveLink: 'destino.lists',
+               resource: 'destinos',
+               action: 'write',
+               breadcrumb: [
+                  {
+                     text: 'Home',
+                     to: { name: 'home' },
+                     active: false
+                  },
+                  {
+                     text: 'Destinos',
+                     active: false,
+                     to: { name: 'destino.lists' },
+
+                  },
+                  {
+                     text: 'Imagenes',
+                     active: true
+                  }
+               ]
+            }
+         }
+      ]
+   },
+
 
 
    /*****************************************/
@@ -954,10 +1215,12 @@ export default [
          },
 
          {
-            path: ':id/edit',
-            name: 'edit.divisa',
+            
+            path:':id/edit',
+            name:'divisa.edit',
             props:true,
             component: () => import('views/divisas/edit.vue'),
+
             meta: {
                pageTitle: 'Divisas',
                resource: 'divisas',

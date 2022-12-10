@@ -18,7 +18,6 @@ class CreateUsersTable extends Migration
             $table->string('username')->unique();
             $table->string('nombre')->nullable();
             $table->string('apellido')->nullable();
-            $table->string('telefono')->nullable();
             $table->string('fecha_nacimiento')->nullable();
             $table->tinyInteger('genero')->default(1); // 1 => masculino, 2 => femenino
             $table->string('codigo_postal')->nullable();
@@ -32,7 +31,6 @@ class CreateUsersTable extends Migration
             $table->text('bio')->nullable();
             $table->string('website')->nullable();
             $table->smallInteger('lenguaje')->nullable();
-            $table->boolean('is_whatsapp')->default(false);
             $table->string('twitter')->nullable();
             $table->string('facebook')->nullable();
             $table->string('instagram')->nullable();
@@ -42,9 +40,10 @@ class CreateUsersTable extends Migration
             $table->string('token')->nullable();
             $table->timestamp('ultimo_login')->nullable();
             $table->string('codigo_referidor')->unique()->nullable();
-            $table->decimal('tps')->default(0);
+
             $table->rememberToken();
             $table->timestamps();
+            
         });
 
         Schema::create('usuario_referencia',function(Blueprint $table){

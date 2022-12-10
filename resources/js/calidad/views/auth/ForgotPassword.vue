@@ -115,8 +115,6 @@ export default {
       form.value.validate().then(success => {
 
         if (success) {
-        
-
 
           // fetch('/api/auth/recuperar/contrasena',{
           //   method:'POST',
@@ -139,7 +137,6 @@ export default {
           // }).then(() => store.commit('toggleLoading'));
           
           axios.post('/api/auth/recuperar/contrasena',formulario.value).then(respon => {
-            console.log(respon)
             Notification.success({
               title:'¡Hemos enviado su enlace de restablecimiento de contraseña por correo electrónico!'
             })

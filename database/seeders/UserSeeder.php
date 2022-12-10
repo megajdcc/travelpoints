@@ -68,10 +68,10 @@ class UserSeeder extends Seeder
                 'username' => '@megajdcc',
 				'nombre'   => 'Jhonatan Deivyth',
 				'apellido' => 'Crespo Colmenarez',
-				'telefono' => '+584128505504',
 				'email' => 'megajdcc2009@gmail.com',
-				'password' => Hash::make('20464273jd'),
+				'password' => '20464273jd',
                 'is_password' => true,
+                'activo' => true,
                 'rol_id' => Rol::where('nombre','Desarrollador')->first()->id
     		]);
 

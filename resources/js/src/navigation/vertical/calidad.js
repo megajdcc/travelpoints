@@ -33,6 +33,30 @@ export default [
 
 
    {
+      
+      title:'Destinos e Iata',
+      icon:'MapPinIcon',
+
+      children:[
+
+         {
+            title: 'Destinos',
+            route: 'destino.lists',
+            action: 'read',
+            resource: 'destinos'
+         },
+
+         {
+            title:'Códigos IATA',
+            route:'iata.lists',
+            action:'read',
+            resource:'iatas'
+         }
+      ]
+   },
+
+
+   {
       title:'Configuraciones',
       icon:'SettingsIcon',
       children:[

@@ -9,9 +9,11 @@
 
                      <b-container fluid>
                         <b-row class="px-0">
+                           
                            <b-col cols="2" class="px-0">
                               <b-avatar :src="usuario.avatar" />
                            </b-col>
+
                            <b-col cols="10" class="px-0">
                               {{ ` ${usuario.nombre ? usuario.nombre +' ' +usuario.apellido : usuario.username}` }}
                            </b-col>
@@ -27,7 +29,6 @@
 
                   <b-nav-item :to="{ name: 'socio.reservaciones' }" active-class="active">
                      <span class="fas fa-credit-card"></span>
-
                      Reservaciones
                   </b-nav-item>
 
@@ -85,12 +86,18 @@
             </b-card>
 
             <b-card v-if="route.meta.name == 'perfil'">
-               <b-nav vertical card-header class="menu-socio">
 
+               <b-nav vertical card-header class="menu-socio">
                   <b-nav-item :to="{ name: 'miperfil' }" exact active-class="active">
                      <span class="fas fa-user"></span>
                      Perfil de socio
                   </b-nav-item>
+
+                  <b-nav-item :to="{ name: 'micuenta' }" exact active-class="active">
+                     <span class="fas fa-money-check"></span>
+                     Cuenta y Movimientos
+                  </b-nav-item>
+
 
                   <b-nav-item :to="{ name: 'misreferidos' }" exact active-class="active">
                      <span class="fas fa-user-plus"></span>

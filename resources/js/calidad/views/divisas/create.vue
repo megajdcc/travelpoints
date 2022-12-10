@@ -6,7 +6,7 @@ import form from './form.vue'
 import store from '@/store'
 import router from '@/router'
 
-import {onMounted,h} from 'vue'
+import {onMounted,h} from '@vue/composition-api'
 
 export default {
 
@@ -18,7 +18,7 @@ export default {
 
       })
 
-      return h(form,{
+      return () =>  h(form,{
 
          on:{
             save:(data,formValidate)  => {

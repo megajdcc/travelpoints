@@ -11,10 +11,14 @@ class DivisaController extends Controller
 {   
     
 
-    public function fetch(Divisa $divisa){
-
+    public function getPrincipal(){
+        $divisa = Divisa::where('principal',true)->first();
         return response()->json($divisa);
+    }
 
+
+    public function fetch(Divisa $divisa){
+        return response()->json($divisa);
     }
 
     public function fetchData(Request $request){
@@ -60,8 +64,17 @@ class DivisaController extends Controller
     {
         try{
             DB::beginTransaction();
+            $divisa_principal = Divisa::where('principal', true)->first();
 
             $divisa = Divisa::create($this->validar($request));
+
+            if ($divisa_principal) {
+                if ($divisa->principal && ($divisa->id != $divisa_principal->id)) {
+                    $divisa_principal->principal = false;
+                    $divisa_principal->save();
+                }
+            }
+
 
             DB::commit();
             $result = true;
@@ -92,7 +105,18 @@ class DivisaController extends Controller
         try {
             DB::beginTransaction();
 
+            $divisa_principal = Divisa::where('principal',true)->first();
+
             $divisa->update($this->validar($request,$divisa));
+
+            if($divisa_principal){
+
+                if($divisa->principal && ($divisa->id != $divisa_principal->id)){
+                    $divisa_principal->principal = false;
+                    $divisa_principal->save();
+                }
+
+            }
 
 
             DB::commit();

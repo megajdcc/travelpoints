@@ -12,11 +12,10 @@ export default function useUsersList() {
 
    // Table Handlers
    const tableColumns = [
-      { key: 'usuario', sortable: true,label:'Usuario' },
+      { key: 'username', sortable: true,label:'Usuario' },
       { key: 'email', sortable: true,label:"Email" },
-      { key: 'rol', sortable: true,label:'rol' },
-      { key: 'telefono', sortable: true,label:'Telefono' },
-      { key: 'actions',sortable:false },
+      { key: 'rol', sortable: true,label:'rol',sortKey:'rol_id' },
+      { key: 'actions',sortable:true, sortKey:'id',sortBy:'id' },
    ]
    const totalUsers = ref(0)
    

@@ -39,27 +39,27 @@
         :sort-desc.sync="isSortDirDesc">
 
         <!-- Column: User -->
-        <template #cell(usuario)="data">
+        <template #cell(username)="{item}">
           <b-media vertical-align="center">
             <template #aside>
-              <b-avatar size="32" :src="data.item.avatar" :text="avatarText(data.item.usuario)"
-                :variant="`light-${resolveUserRoleVariant(data.item.rol)}`"
-                :to="{ name: 'mostrar.usuario', params: { id: data.item.id } }" disabled />
+              <b-avatar size="32" :src="item.avatar" :text="avatarText(`${item.nombre} ${item.apellido}`)"
+                :variant="`light-${resolveUserRoleVariant(item.rol.nombre)}`"
+                :to="{ name: 'mostrar.usuario', params: { id: item.id } }" disabled />
             </template>
-            <b-link :to="{ name: 'mostrar.usuario', params: { id: data.item.id } }" disabled
+            <b-link :to="{ name: 'mostrar.usuario', params: { id: item.id } }" disabled
               class="font-weight-bold d-block text-nowrap"> 
-              {{ data.item.usuario }}
+              {{ `${item.nombre} ${item.apellido}` }}
             </b-link>
-            <small class="text-muted" v-if="data.item.username">{{ data.item.username }}</small>
+            <small class="text-muted" v-if="item.username">{{ item.username }}</small>
           </b-media>
         </template>
 
         <!-- Column: Rol -->
-        <template #cell(rol)="data">
+        <template #cell(rol)="{item}">
           <div class="text-nowrap">
-            <feather-icon :icon="resolveUserRoleIcon(data.item.rol)" size="18" class="mr-50"
-              :class="`text-${resolveUserRoleVariant(data.item.rol)}`" />
-            <span class="align-text-top text-capitalize">{{ data.item.rol }}</span>
+            <feather-icon :icon="resolveUserRoleIcon(item.rol.nombre)" size="18" class="mr-50"
+              :class="`text-${resolveUserRoleVariant(item.rol.nombre)}`" />
+            <span class="align-text-top text-capitalize">{{ item.rol.nombre }}</span>
           </div>
         </template>
 

@@ -20,6 +20,10 @@ return new class extends Migration
             $table->string('sitio_web')->nullable();
             $table->string('email')->nullable();
             $table->foreignId('destino_id')->constrained('destinos')->cascadeOnDelete()->cascadeOnUpdate();
+            $table->string('lat')->nullable();
+            $table->string('lng')->nullable();
+            $table->json('incluye')->nullable();
+            $table->text('descripcion')->nullable();
             
             $table->timestamps();
         });

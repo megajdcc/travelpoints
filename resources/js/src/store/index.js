@@ -56,6 +56,10 @@ import iata from './modules/iatas/iata.js'
 
 import destino from './modules/destinos/destino.js'
 
+// atracciones
+
+import atraccion from './modules/destinos/atracciones/atraccion.js'
+
 
 Vue.use(Vuex)
 
@@ -153,7 +157,8 @@ export default new Vuex.Store({
     cuenta,
     movimiento,
     iata,
-    destino
+    destino,
+    atraccion
   },
 
   strict: process.env.DEV,

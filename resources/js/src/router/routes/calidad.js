@@ -591,10 +591,146 @@ export default [
                   }
                ]
             }
-         }
+         },
+
+         
       ]
    },
 
+
+
+   /*****************************************/
+   /* Atracciones
+   /*************************************** */
+   {
+      path: '/atracciones',
+      component: () => import('views/destinos/atracciones/index.vue'),
+      props: true,
+      children: [
+         {
+            path: ':destino',
+            props:true,
+            name: 'atracciones.lists',
+            component: () => import('views/destinos/atracciones/lists.vue'),
+            meta: {
+               resource: 'atracciones',
+               action: 'read',
+               pageTitle: 'Atracciones de Destinos',
+               breadcrumb: [
+                  {
+                     text: 'Home',
+                     to: { name: 'home' },
+                     active: false,
+                  },
+
+                  {
+                     text: 'Atracciones',
+                     active: true
+                  }
+               ]
+            }
+         },
+
+         {
+            path: ':destino/create',
+            props: true,
+            name: 'create.atraccion',
+            component: () => import('views/destinos/atracciones/create.vue'),
+            meta: {
+               resource: 'atracciones',
+               action: 'write',
+               pageTitle: 'Crear Atracción',
+               navActiveLink: 'atracciones.lists',
+               breadcrumb: [
+                  {
+                     text: 'Home',
+                     to: { name: 'home' },
+                     active: false,
+                  },
+                  {
+                     text: 'Atracciones',
+                     to: { name: 'atracciones.lists' },
+                     active: false,
+                  },
+                  {
+                     text: 'Crear',
+                     active: true
+                  }
+               ]
+            }
+         },
+
+          {
+            path: ':id/edit',
+            props: true,
+            name: 'edit.atraccion',
+            component: () => import('views/destinos/atracciones/edit.vue'),
+            meta: {
+               resource: 'atracciones',
+               action: 'write',
+               pageTitle: 'Actualizar Atracción',
+               navActiveLink: 'atracciones.lists',
+               breadcrumb: [
+
+                  {
+                     text: 'Home',
+                     to: { name: 'home' },
+                     active: false,
+                  },
+
+                  {
+                     text: 'Atracciones',
+                     active: false,
+                  },
+
+                  {
+                     text: 'Actualizar',
+                     active: true
+                  }
+
+               ]
+            }
+         },
+
+         {
+            path: ':id/imagenes',
+            name: 'imagenes.atraccion',
+            props: true,
+            component: () => import('views/destinos/atracciones/FormImagen.vue'),
+            meta: {
+               pageTitle: 'Imagenes de Atracción',
+               navActiveLink: 'atracciones.lists',
+               resource: 'atracciones',
+               action: 'write',
+               breadcrumb: [
+                  {
+                     text: 'Home',
+                     to: { name: 'home' },
+                     active: false
+                  },
+                  {
+                     text: 'Destinos',
+                     active: false,
+                     to: { name: 'destino.lists' },
+
+                  },
+
+                  {
+                     text: 'Atracciones',
+                     active: false,
+                  },
+
+                  {
+                     text: 'Imagenes',
+                     active: true
+                  }
+               ]
+            }
+         },
+
+
+      ]
+   },
 
 
    /*****************************************/

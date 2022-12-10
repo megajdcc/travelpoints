@@ -5,6 +5,7 @@ use App\Http\Controllers\{CategoriaFaqController, DestinoController, DivisaContr
 use App\Http\Middleware\convertirNull;
 use Laravel\Socialite\Facades\Socialite;
 use App\Models\{CategoriaFaq, Pais,Estado,Ciudad};
+use App\Http\Controllers\AtraccionController;
 
 /*
 |--------------------------------------------------------------------------
@@ -132,6 +133,16 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::resource('destinos',DestinoController::class);
     Route::put('destinos/{destino}/cargar/imagen',[DestinoController::class,'cargarImagen']);
     Route::delete('destinos/{destino}/eliminar/imagen/{imagen}',[DestinoController::class,'eliminarImagen']);
+
+    /*****************************/
+    /* Atracciones
+    /*****************************/
+
+    Route::get('atraccions/{atraccion}/fetch/data', [AtraccionController::class, 'fetch']);
+    Route::post('atraccions/fetch/data', [AtraccionController::class, 'fetchData']);
+    Route::resource('atraccions', AtraccionController::class);
+    Route::put('atraccions/{atraccion}/cargar/imagen', [AtraccionController::class, 'cargarImagen']);
+    Route::delete('atraccions/{atraccion}/eliminar/imagen/{imagen}', [AtraccionController::class, 'eliminarImagen']);
 
 
     /*****************************/

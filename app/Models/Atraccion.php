@@ -13,12 +13,29 @@ class Atraccion extends Model
 
     use HasFactory,hasTelefonos,hasImages;
 
+
+    public readonly string $model_type;
+
+    public function __construct()
+    {   
+        $this->model_type = 'App\Models\Atraccion';
+
+    }
+    
     public $fillable = [
         'nombre',
         'duracion_sugerida',
         'sitio_web',
         'email',
-        'destino_id'
+        'destino_id',
+        'lat',
+        'lng',
+        'incluye',
+        'descripcion'
+    ];
+
+    public $casts = [
+        'incluye' => 'array'
     ];
 
 

@@ -1,3 +1,5 @@
+import axios from "axios"
+
 export default {
    namespaced:true,
 
@@ -14,6 +16,7 @@ export default {
          lng              : null,
          incluye          : [],
          duracion_sugerida: '',
+         
          telefono:{
             telefono:'',
             is_whatsapp:false,
@@ -23,7 +26,8 @@ export default {
          imagenes:[],
          horarios:[],
          comentarios:[],
-         descripcion: ''
+         descripcion:'',
+         horarios:[]
 
       },
 
@@ -57,6 +61,7 @@ export default {
             horarios: [],
             comentarios: [],
             descripcion:'',
+            horarios: [],
 
             telefono: {
                telefono: '',
@@ -243,6 +248,54 @@ export default {
 
                if (data.result) {
                   commit('update', data.atraccion);
+               }
+
+               resolve(data)
+
+            }).catch(e => reject(e))
+
+         })
+      },
+
+      aperturarHorario({state,commit}){
+         return new Promise((resolve, reject) => {
+            
+            axios.get(`/api/atraccions/${state.atraccion.id}/aperturar/horario`).then(({data}) => {
+
+               if(data.result){
+                  commit('update',data.atraccion)
+               }
+               resolve(e)
+            }).catch(e => reject(e))
+
+
+         })
+      },
+
+      guardarHorario({state,commit},horario){
+         
+         return new Promise((resolve, reject) => {
+
+            axios.put(`/api/atraccions/${horario.model_id}}/guardar/horario`,horario).then(({data}) => {
+
+               if(data.result){
+                  commit('update',data.atraccion)
+               }
+
+               resolve(data)
+            
+            }).catch(e => reject(e))
+
+         })
+      },
+
+      quitarHorario({commit},atraccion_id){
+         return new Promise((resolve, reject) => {
+
+            axios.get(`/api/atraccions/${atraccion_id}/quitar/horario`).then(({ data }) => {
+
+               if (data.result) {
+                  commit('update', data.atraccion)
                }
 
                resolve(data)

@@ -6,13 +6,12 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Destino;
 
-use App\Trais\{hasTelefonos,hasImages};
+use App\Trais\{hasTelefonos,hasImages,hasHorario};
 
 class Atraccion extends Model
 {
 
-    use HasFactory,hasTelefonos,hasImages;
-
+    use HasFactory,hasTelefonos,hasImages, hasHorario;
 
     public readonly string $model_type;
 
@@ -46,7 +45,5 @@ class Atraccion extends Model
     public function telefono(){
         return $this->morphOne(Telefono::class,'model');
     }
-
-
 
 }

@@ -17,6 +17,7 @@ class AtraccionController extends Controller
         $atraccion->telefono;
         $atraccion->imagenes;
         $atraccion->destino;
+        $atraccion->horarios;
 
         return response()->json($atraccion);
     }
@@ -50,6 +51,8 @@ class AtraccionController extends Controller
             $atraccion->telefono;
             $atraccion->imagenes;
             $atraccion->destino;
+            $atraccion->horarios;
+
         }
 
         return response()->json([
@@ -96,6 +99,8 @@ class AtraccionController extends Controller
             $atraccion->telefono;
             $atraccion->imagenes;
             $atraccion->destino;
+            $atraccion->horarios;
+
 
             DB::commit();
             $result = true;
@@ -142,6 +147,8 @@ class AtraccionController extends Controller
             $atraccion->telefono;
             $atraccion->imagenes;
             $atraccion->destino;
+            $atraccion->horarios;
+
 
             DB::commit();
             $result = true;
@@ -206,6 +213,8 @@ class AtraccionController extends Controller
             $atraccion->telefono;
             $atraccion->imagenes;
             $atraccion->destino;
+            $atraccion->horarios;
+
             DB::commit();
             $result = true;
         } catch (\Exception $e) {
@@ -228,6 +237,7 @@ class AtraccionController extends Controller
             $atraccion->telefono;
             $atraccion->imagenes;
             $atraccion->destino;
+            $atraccion->horarios;
 
 
             DB::commit();
@@ -239,4 +249,83 @@ class AtraccionController extends Controller
 
         return response()->json(['result' => $result, 'atraccion' => $atraccion]);
     }
+
+    public function aperturarHorario(Atraccion $atraccion){
+        
+        try{
+            DB::beginTransaction();
+            
+            $atraccion->aperturarHorario();
+
+            $atraccion->telefono;
+            $atraccion->imagenes;
+            $atraccion->destino;
+            $atraccion->horarios;
+
+            DB::commit();
+            $result = true;
+        }catch(\Exception $e){
+            DB::rollBack();
+            $result =false;
+            dd($e->getMessage());
+        }
+
+        return response()->json(['result' => $result,'atraccion' => $atraccion]);
+
+    }
+
+    public function guardarHorario(Request $request,Atraccion $atraccion){
+
+        try{
+            DB::beginTransaction();
+            
+            $atraccion->actualizarHorario($request->all());
+
+            $atraccion->telefono;
+            $atraccion->imagenes;
+            $atraccion->destino;
+            $atraccion->horarios;
+
+            DB::commit();
+            $result = true;
+        
+        }catch(\Exception $e){
+            DB::rollBack();
+            $result = false;
+        }
+
+        return response()->json(['result' => $result,'atraccion' => $atraccion]);
+
+    }
+
+
+    public function quitarHorario(Atraccion $atraccion){
+        
+        try{
+            
+            DB::beginTransaction();
+            
+            $atraccion->quitarHorario();
+            $atraccion->telefono;
+            $atraccion->imagenes;
+            $atraccion->destino;
+            $atraccion->horarios;
+
+            DB::commit();
+            $result = true;
+
+        }catch(\Exception $e){
+            
+            DB::rollBack();
+            $result = false;
+
+            dd($e->getMessage());
+
+        }
+
+        return response()->json(['result' => $result,'atraccion' => $atraccion]);
+
+    }
+
+
 }

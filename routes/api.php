@@ -143,6 +143,9 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::resource('atraccions', AtraccionController::class);
     Route::put('atraccions/{atraccion}/cargar/imagen', [AtraccionController::class, 'cargarImagen']);
     Route::delete('atraccions/{atraccion}/eliminar/imagen/{imagen}', [AtraccionController::class, 'eliminarImagen']);
+    Route::get('atraccions/{atraccion}/aperturar/horario',[AtraccionController::class,'aperturarHorario']);
+    Route::put('atraccions/{atraccion}/guardar/horario',[AtraccionController::class, 'guardarHorario' ]);
+    Route::get('atraccions/{atraccion}/quitar/horario',[AtraccionController::class,'quitarHorario']);
 
 
     /*****************************/

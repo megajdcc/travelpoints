@@ -616,6 +616,7 @@ export default [
                resource: 'atracciones',
                action: 'read',
                pageTitle: 'Atracciones de Destinos',
+               navActiveLink: 'destino.lists',
                breadcrumb: [
                   {
                      text: 'Home',
@@ -640,7 +641,7 @@ export default [
                resource: 'atracciones',
                action: 'write',
                pageTitle: 'Crear Atracción',
-               navActiveLink: 'atracciones.lists',
+               navActiveLink: 'destino.lists',
                breadcrumb: [
                   {
                      text: 'Home',
@@ -669,7 +670,7 @@ export default [
                resource: 'atracciones',
                action: 'write',
                pageTitle: 'Actualizar Atracción',
-               navActiveLink: 'atracciones.lists',
+               navActiveLink: 'destino.lists',
                breadcrumb: [
 
                   {
@@ -699,7 +700,7 @@ export default [
             component: () => import('views/destinos/atracciones/FormImagen.vue'),
             meta: {
                pageTitle: 'Imagenes de Atracción',
-               navActiveLink: 'atracciones.lists',
+               navActiveLink: 'destino.lists',
                resource: 'atracciones',
                action: 'write',
                breadcrumb: [
@@ -727,10 +728,50 @@ export default [
                ]
             }
          },
+         // Horarios de Atracciones
+         {
+            path:':id/horarios',
+            component:() => import('views/destinos/atracciones/horarios.vue'),
+            name:'atraccion.horarios',
+            props:true,
+            meta:{
+               resource:'horarios',
+               action:'read',
+               pageTitle:'Horarios de Atracción',
+               navActiveLink:'destino.lists',
+
+               breadcrumb:[
+                  {
+                     text: 'Home',
+                     to: { name: 'home' },
+                     active: false
+                  },
+                  {
+                     text: 'Destinos',
+                     active: false,
+                     to: { name: 'destino.lists' },
+
+                  },
+
+                  {
+                     text: 'Atracciones',
+                     active: false,
+                  },
+
+                  {
+                     text: 'Horarios',
+                     active: true
+                  }
+               ]
+            }
+         }
 
 
       ]
    },
+
+
+
 
 
    /*****************************************/

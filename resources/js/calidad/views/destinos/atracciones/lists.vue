@@ -63,12 +63,10 @@
                            <b-button :to="{name:'edit.atraccion',params:{id:atraccion.id}}" v-if="$can('update','atracciones')"
                               variant="primary">
                               <feather-icon icon="EditIcon" />
-                              Editar
                            </b-button>
 
                            <b-button @click="eliminar(atraccion.id)" v-if="$can('delete','atracciones')" variant="danger">
                               <feather-icon icon="TrashIcon" />
-                              Eliminar
                            </b-button>
 
                            <b-button :to="{ name:'imagenes.atraccion',params:{id:atraccion.id}}"
@@ -76,6 +74,13 @@
                               <feather-icon icon="ImageIcon" />
                               Imagenes
                            </b-button>
+
+                           <b-button :to="{ name:'atraccion.horarios',params:{id:atraccion.id}}"
+                              v-if="$can('update','horarios')" variant="primary">
+                              <feather-icon icon="ClockIcon" />
+                              Horarios
+                           </b-button>
+
 
                         </b-button-group>
                      </template>

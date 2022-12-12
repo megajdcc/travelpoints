@@ -103,6 +103,7 @@ export default {
                commit('setMovimientos', data.movimientos)
                resolve(data)
             }).catch(e => reject(e))
+            
 
          })
 

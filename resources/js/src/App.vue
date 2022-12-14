@@ -1,9 +1,13 @@
 <template>
+  
   <div id="app" class="h-100" :class="[skinClasses]">
+
       <component :is="layout">
         <router-view />
       </component>
-    <scroll-to-top v-if="enableScrollToTop" />
+    
+      <scroll-to-top v-if="enableScrollToTop" />
+  
   </div>
 </template>
 
@@ -13,11 +17,17 @@ import ScrollToTop from '@core/components/scroll-to-top/ScrollToTop.vue'
 
 import { $themeColors, $themeBreakpoints, $themeConfig } from '@themeConfig'
 import { watch,onMounted,toRefs,onActivated,computed } from '@vue/composition-api'
+
 import useAppConfig from '@core/app-config/useAppConfig'
+
 import { useWindowSize, useCssVar, useNetwork } from '@vueuse/core'
+
 import store from '@/store'
+
 import {Notification} from 'element-ui'
+
 import { useRoute } from 'vue2-helpers/vue-router';
+
 export default {
 
   components: {
@@ -25,6 +35,7 @@ export default {
     LayoutVertical: () => import('@/layouts/vertical/LayoutVertical.vue'),
     LayoutFull: () => import('@/layouts/full/LayoutFull.vue'),
     LayoutTravel: () => import('@/layouts/travel/LayoutTravel.vue'),
+    LayoutNegocio: () => import('@/layouts/negocio/LayoutNegocio.vue'),
     ScrollToTop,
   },
 
@@ -50,8 +61,6 @@ export default {
     const { isRTL } = $themeConfig.layout
     document.documentElement.setAttribute('dir', isRTL ? 'rtl' : 'ltr')
 
-   
-
   },
  
 
@@ -64,10 +73,12 @@ export default {
       
       if (route.meta.layout === 'full') return 'layout-full'
       if (route.meta.layout === 'travel') return 'layout-travel'
+      if (route.meta.layout === 'negocio') return 'layout-negocio'
 
       return `layout-${contentLayoutType.value}`
 
     })
+
     const { skin, skinClasses } = useAppConfig()
     const { enableScrollToTop } = $themeConfig.layout
     const { isOnline } = useNetwork();
@@ -82,6 +93,7 @@ export default {
     watch(windowWidth, (val) => {
       store.commit('app/UPDATE_WINDOW_WIDTH', val)
     })
+
     onMounted(() => {
 
       if(localStorage.getItem('token')){      
@@ -89,10 +101,10 @@ export default {
       }
 
     })
+
     watch(isOnline,(val) => {
 
         if(!val){
-          
           Notification.info({
             title:'Sin Internet',
             message:"La conexíón ha caido, informalo a tú operadora",
@@ -100,6 +112,7 @@ export default {
           })
 
         }
+
     })
     
     return {

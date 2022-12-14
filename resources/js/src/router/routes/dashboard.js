@@ -8,4 +8,6 @@ export default [
     },
     component: () => import('views/home'),
   },
+  
+
 ]

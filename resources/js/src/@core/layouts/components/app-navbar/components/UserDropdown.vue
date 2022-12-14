@@ -18,10 +18,13 @@
 
     <b-dropdown-item :to="{ name: 'home' }" link-class="d-flex align-items-center" v-if="is_loggin && $can('read','home')">
       <feather-icon size="16" icon="HomeIcon" class="mr-50" />
-      <span>Home</span>
+      <span>Panel Travel</span>
     </b-dropdown-item>
 
-
+    <b-dropdown-item :to="{ name: 'negocio.home' }" link-class="d-flex align-items-center" v-if="is_loggin && $can('read','home.negocio')">
+      <font-awesome-icon icon="fas fa-store" class="mr-50 fa-2xl" />
+      <span>Panel Negocio</span>
+    </b-dropdown-item>
 
     <b-dropdown-item :to="{ name: 'miperfil' }" link-class="d-flex align-items-center" v-if="is_loggin">
       <feather-icon size="16" icon="SettingsIcon" class="mr-50" />

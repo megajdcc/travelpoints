@@ -95,7 +95,7 @@
       <div class="customizer-section">
 
         <!-- Layout Type -->
-        <b-form-group
+        <!-- <b-form-group
           label="Menu Layout"
         >
           <b-form-radio-group
@@ -103,7 +103,7 @@
             name="layout-type"
             :options="layoutTypeOptions"
           />
-        </b-form-group>
+        </b-form-group> -->
 
         <!-- Collapsible -->
         <div

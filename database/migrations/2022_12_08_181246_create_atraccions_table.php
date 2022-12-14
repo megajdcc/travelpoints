@@ -16,7 +16,7 @@ return new class extends Migration
         Schema::create('atraccions', function (Blueprint $table) {
             $table->id();
             $table->string('nombre');
-            $table->string('duracion_sugerida');
+            $table->string('duracion_sugerida')->nullable();
             $table->string('sitio_web')->nullable();
             $table->string('email')->nullable();
             $table->foreignId('destino_id')->constrained('destinos')->cascadeOnDelete()->cascadeOnUpdate();

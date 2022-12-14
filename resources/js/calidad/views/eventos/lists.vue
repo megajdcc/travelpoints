@@ -16,10 +16,10 @@
                   <b-input-group size="sm">
                      <b-form-input v-model="searchQuery" type="search" placeholder="..." />
                      <b-input-group-append>
-                        <b-button variant="dark" size="sm" :to="{ name: 'create.atraccion',params:{destino:destino} }"
-                           v-if="$can('write', 'destino')" class="d-flex">
+                        <b-button variant="dark" size="sm" :to="{ name: 'create.evento' }"
+                           v-if="$can('write', 'eventos')" class="d-flex">
                            <span class="d-flex align-items-center py-0">
-                              Agregar Atracción
+                              Agregar Evento
                            </span>
                         </b-button>
                      </b-input-group-append>
@@ -32,57 +32,56 @@
 
          <b-container fluid>
             <b-row>
-               <b-col cols="12" md="4" v-for="(atraccion,i) in items" :key="i">
-                  
+               <b-col cols="12" md="4" v-for="(evento, i) in items" :key="i">
                   <b-card>
-
                      <template #header>
-
                         <b-carousel :id="`carousel-${i}`" indicators controls background="#ababab" :intervals="3000">
-
-                           <b-carousel-slide v-for="(imagen,e) in atraccion.imagenes" :key="e" img-width="320px"
-                              img-height="auto" :img-src="`/storage/atracciones/imagenes/${imagen.imagen}`"
+                           <b-carousel-slide v-for="(imagen, e) in evento.imagenes" :key="e" img-width="320px"
+                              img-height="auto" :img-src="`/storage/eventos/imagenes/${imagen.imagen}`"
                               style="max-height:182px; height:182px; object-fit:cover">
 
                            </b-carousel-slide>
 
                         </b-carousel>
-
                      </template>
 
-                     <h4 v-b-popover.hover="atraccion.descripcion" :title="atraccion.nombre">
-                        {{ atraccion.nombre }}
-                     </h4>
+                     <b-badge :variant="getStatus(evento.status).variant">
+                        {{ getStatus(evento.status).status }}
+                     </b-badge>
+                     
+                     <br>
 
-                     <p class="text-justify" v-b-popover.hover="atraccion.descripcion" :title="atraccion.nombre">
-                        {{ atraccion.descripcion.substring(0, 80) }} ...
+                     <small>
+                        Del {{ evento.fecha_inicio | fecha('LL') }} al {{ evento.fecha_fin | fecha('LL') }}
+                     </small>
+
+                     <h4 :title="evento.titulo">
+                        {{ evento.titulo }}
+                     </h4>
+                 
+
+                     <p class="text-justify"  :title="evento.titulo" v-html="`${evento.contenido.substring(0, 80)}...`">
+                       
                      </p>
 
                      <template #footer>
                         <b-button-group size="sm">
 
-                           <b-button :to="{name:'edit.atraccion',params:{id:atraccion.id}}" v-if="$can('update','atracciones')"
+                           <b-button :to="{ name: 'edit.evento', params: { id: evento.id } }" v-if="$can('update', 'eventos')"
                               variant="primary">
                               <feather-icon icon="EditIcon" />
                            </b-button>
 
-                           <b-button @click="eliminar(atraccion.id)" v-if="$can('delete','atracciones')" variant="danger">
+                           <b-button @click="eliminar(evento.id)" v-if="$can('delete', 'eventos')" variant="danger">
                               <feather-icon icon="TrashIcon" />
                            </b-button>
 
-                           <b-button :to="{ name:'imagenes.atraccion',params:{id:atraccion.id}}"
-                              v-if="$can('update','atracciones')" variant="dark">
+                           <b-button :to="{ name: 'evento.imagenes', params: { id: evento.id } }"
+                              v-if="$can('update', 'eventos')" variant="dark">
                               <feather-icon icon="ImageIcon" />
                               Imagenes
                            </b-button>
-
-                           <b-button :to="{ name:'atraccion.horarios',params:{id:atraccion.id}}"
-                              v-if="$can('update','horarios')" variant="primary">
-                              <feather-icon icon="ClockIcon" />
-                              Horarios
-                           </b-button>
-
-
+                           
                         </b-button-group>
                      </template>
                   </b-card>
@@ -123,12 +122,14 @@ import {
    BCarousel,
    BCarouselSlide,
    BImg,
-   VBPopover
+   VBPopover,
+   BBadge
 
 } from 'bootstrap-vue'
 
-import useAtraccionesList from './useAtraccionesList.js'
+import useEventosList from './useEventosList.js'
 import store from '@/store'
+
 import { ref, toRefs, computed, onActivated } from '@vue/composition-api'
 
 import { regresar } from '@core/utils/utils.js'
@@ -136,6 +137,7 @@ import { regresar } from '@core/utils/utils.js'
 export default {
 
    components: {
+
       BContainer,
       BCard,
       BRow,
@@ -150,7 +152,9 @@ export default {
       BInputGroupAppend,
       BImg,
       perPage: () => import('components/PerPage.vue'),
-      paginateTable: () => import('components/PaginateTable.vue')
+      paginateTable: () => import('components/PaginateTable.vue'),
+      BBadge
+
 
    },
 
@@ -158,12 +162,9 @@ export default {
       'b-popover': VBPopover
    },
 
-   props:['destino'],
-
    setup(props) {
 
-      const { destino } = toRefs(props)
-       
+
       const {
          isSortDirDesc,
          sortBy,
@@ -177,7 +178,7 @@ export default {
          refetchData,
          fetchData,
          eliminar,
-      } = useAtraccionesList(destino.value);
+      } = useEventosList();
 
       onActivated(() => refetchData())
 
@@ -196,7 +197,39 @@ export default {
          fetchData,
          loading: computed(() => store.state.loading),
          regresar,
-         eliminar
+         eliminar,
+         getStatus: (estado) => {
+            let status = {
+               variant:'info',
+               status:'Sin definir'
+            };
+            switch (estado) {
+               case 1:
+                  status = {
+                     variant:'success',
+                     status:'Activo'
+                  };
+                  break;
+
+               case 2:
+                  status = {
+                     variant: 'danger',
+                     status: 'Vencido'
+                  };
+                  break;
+
+               case 3:
+                  status = {
+                     variant: 'warning',
+                     status: 'A Destiempo'
+                  };
+                  break;
+            
+            }
+
+            return status;
+         }
+
       }
 
    }

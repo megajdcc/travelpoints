@@ -79,6 +79,21 @@ export const optionsCurrency = ref({
          })
 
 
+export const dateOption = { dateFormat: 'Y-m-d H:i', enableTime: true }
+export const optionsEditor = {
+    selector: 'textarea#premiumskinsandicons-snow',
+    skin: 'snow',
+    icons: 'thin',
+
+    plugins: 'quickbars image lists code table codesample advlist autolink lists link image charmap print preview anchor searchreplace visualblocks code fullscreen insertdatetime media table paste code wordcount ',
+
+    toolbar: 'formatselect | forecolor backcolor | bold italic underline strikethrough | link image blockquote codesample | align bullist numlist | code | table',
+    height: 400,
+    content_style: 'body { margin: 2rem 10%; }',
+    branding: false,
+    language: 'es'
+  } 
+  
 export const getSituacionSolicitud = (situacion) => {
 
   const situaciones = [{

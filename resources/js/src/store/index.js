@@ -61,6 +61,11 @@ import destino from './modules/destinos/destino.js'
 import atraccion from './modules/destinos/atracciones/atraccion.js'
 
 
+// Evento
+
+import evento from './modules/eventos/evento.js'
+
+
 Vue.use(Vuex)
 
 export default new Vuex.Store({
@@ -158,7 +163,8 @@ export default new Vuex.Store({
     movimiento,
     iata,
     destino,
-    atraccion
+    atraccion,
+    evento
   },
 
   strict: process.env.DEV,

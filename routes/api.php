@@ -1,7 +1,7 @@
 <?php
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\{AuthController};
-use App\Http\Controllers\{CategoriaFaqController, DestinoController, DivisaController, FaqController, IataController, MovimientoController, NegocioCategoriaController, UserController,NotificacionController,RolController,PermisoController, SolicitudController, TelefonoController};
+use App\Http\Controllers\{CategoriaFaqController, DestinoController, DivisaController, EventoController, FaqController, IataController, MovimientoController, NegocioCategoriaController, UserController,NotificacionController,RolController,PermisoController, SolicitudController, TelefonoController};
 use App\Http\Middleware\convertirNull;
 use Laravel\Socialite\Facades\Socialite;
 use App\Models\{CategoriaFaq, Pais,Estado,Ciudad};
@@ -147,6 +147,18 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::put('atraccions/{atraccion}/guardar/horario',[AtraccionController::class, 'guardarHorario' ]);
     Route::get('atraccions/{atraccion}/quitar/horario',[AtraccionController::class,'quitarHorario']);
 
+
+
+    /*****************************/
+    /* Eventos
+    /*****************************/
+    Route::get('eventos/{evento}/fetch/data', [EventoController::class, 'fetch']);
+    Route::post('eventos/fetch/data', [EventoController::class, 'fetchData']);
+    Route::resource('eventos', EventoController::class);
+    Route::put('eventos/{evento}/cargar/imagen', [EventoController::class, 'cargarImagen']);
+    Route::delete('eventos/{evento}/eliminar/imagen/{imagen}', [EventoController::class, 'eliminarImagen']);
+
+    Route::get('get/all/destinos-y-atraccions',[EventoController::class,'getDestinosAtraccions']);
 
     /*****************************/
     /* Faqs y Categorias de Faqs

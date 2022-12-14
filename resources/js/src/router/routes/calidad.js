@@ -771,6 +771,132 @@ export default [
    },
 
 
+   /*****************************************/
+   /* Eventos
+   /*************************************** */
+   {
+      path:'/eventos',
+      component:() => import('views/eventos/index.vue'),
+      children:[
+         {
+            path:'',
+            name:'eventos.list',
+            component:() => import('views/eventos/lists.vue'),
+            meta:{
+               
+               pageTitle:'Eventos',
+               resource:'eventos',
+               action:'read',
+               breadcrumb:[
+                  {
+                     text:'Home',
+                     to:{name:'home'},
+                     active:false
+                  },
+                  {
+                     text:'Eventos',
+                     active:true
+                  }
+               ]
+            }
+         },
+
+         {
+            path: 'create',
+            name: 'create.evento',
+            component: () => import('views/eventos/create.vue'),
+            meta: {
+
+               pageTitle: 'Eventos',
+               resource: 'eventos',
+               action: 'write',
+               navActiveLink:'eventos.list',
+               breadcrumb: [
+                  {
+                     text: 'Home',
+                     to: { name: 'home' },
+                     active: false
+                  },
+                  {
+                     text: 'Eventos',
+                     to:{name:'eventos.list'},
+                     active: false,
+                  },
+
+                  {
+                     text:'Crear',
+                     active:true
+                  }
+               ]
+            }
+         },
+
+         {
+            path: ':id/edit',
+            name: 'edit.evento',
+            props:true,
+            component: () => import('views/eventos/edit.vue'),
+            meta: {
+
+               pageTitle: 'Eventos',
+               resource: 'eventos',
+               action: 'update',
+               navActiveLink: 'eventos.list',
+               breadcrumb: [
+                  {
+                     text: 'Home',
+                     to: { name: 'home' },
+                     active: false
+                  },
+                  {
+                     text: 'Eventos',
+                     to: { name: 'eventos.list' },
+                     active: false,
+                  },
+
+                  {
+                     text: 'Actualizar',
+                     active: true
+                  }
+               ]
+            }
+         },
+
+         {
+            path: ':id/imagenes',
+            name: 'evento.imagenes',
+            props: true,
+            component: () => import('views/eventos/imagenes.vue'),
+            meta: {
+
+               pageTitle: 'Eventos',
+               resource: 'eventos',
+               action: 'update',
+               navActiveLink: 'eventos.list',
+               breadcrumb: [
+                  {
+                     text: 'Home',
+                     to: { name: 'home' },
+                     active: false
+                  },
+                  {
+                     text: 'Eventos',
+                     to: { name: 'eventos.list' },
+                     active: false,
+                  },
+
+                  {
+                     text: 'Imagenes',
+                     active: true
+                  }
+               ]
+            }
+         }
+
+
+      ]
+   },
+
 
 
 

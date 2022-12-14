@@ -29,7 +29,7 @@ class Destino extends Model
         'lng',
         'titulo',
     ];
-
+    
 
     public function iata(){
         return $this->belongsTo(Iata::class,'iata_id','id');

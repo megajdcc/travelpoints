@@ -31,6 +31,13 @@ export default [
       ]
    },
 
+   {
+      title:'Eventos',
+      icon:'OctagonIcon',
+      route:'eventos.list',
+      resource:'eventos',
+      action:'read'
+   },
 
    {
       

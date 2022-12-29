@@ -2,6 +2,7 @@
 
 namespace App\Trais;
 use App\Models\Imagen;
+use Illuminate\Support\Facades\{Storage,File};
 
 /**
  * 

@@ -1,11 +1,13 @@
 <?php
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\{AuthController};
-use App\Http\Controllers\{CategoriaFaqController, DestinoController, DivisaController, EventoController, FaqController, IataController, MovimientoController, NegocioCategoriaController, UserController,NotificacionController,RolController,PermisoController, SolicitudController, TelefonoController};
+use App\Http\Controllers\{CategoriaFaqController, DestinoController, DivisaController, EventoController, FaqController, HorarioController, IataController, MovimientoController, NegocioCategoriaController, NegocioController, UserController,NotificacionController,RolController,PermisoController, SolicitudController, TelefonoController};
 use App\Http\Middleware\convertirNull;
 use Laravel\Socialite\Facades\Socialite;
 use App\Models\{CategoriaFaq, Pais,Estado,Ciudad};
 use App\Http\Controllers\AtraccionController;
+use App\Models\Divisa;
+use App\Http\Controllers\ImagenController;
 
 /*
 |--------------------------------------------------------------------------
@@ -120,7 +122,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::put('usuarios/{usuario}/add/telefono',[UserController::class,'agregarTelefono']);
 
     /*****************************/
-    /* USUARIOS TELEFONOS
+    /* TELEFONOS
     /*****************************/
     Route::resource('telefonos',TelefonoController::class);
 
@@ -161,6 +163,16 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::get('get/all/destinos-y-atraccions',[EventoController::class,'getDestinosAtraccions']);
 
     /*****************************/
+    /* Negocio Categorias
+    /*****************************/
+
+    Route::get('negocio/categorias/{categoria}/get', [NegocioCategoriaController::class, 'getCategoria']);
+    Route::resource('negocio/categorias', NegocioCategoriaController::class);
+    Route::post('negocio/categorias/fetch/data', [NegocioCategoriaController::class, 'fetchData']);
+    Route::get('negocio/categorias/get/all', [NegocioCategoriaController::class, 'getAll']);
+
+
+    /*****************************/
     /* Faqs y Categorias de Faqs
     /*****************************/
 
@@ -170,21 +182,9 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
 
     Route::post('faqs/categorias/fetch',[CategoriaFaqController::class,'fetchData']);
 
-    Route::resource('faqs/categorias',CategoriaFaqController::class);
+    Route::resource('faqs/faqs-categorias',CategoriaFaqController::class);
     Route::get('faqs/categorias/get/all',[CategoriaFaqController::class,'getAll']);
     Route::get('faqs/categorias/{categoria}/get',[CategoriaFaqController::class,'get']);
-
-
-
-    /*****************************/
-    /* Negocio Categorias
-    /*****************************/
-
-    Route::get('negocio/categorias/{categoria}/get',[NegocioCategoriaController::class,'getCategoria']);
-    // Route::resource('negocio/categorias',NegocioCategoriaController::class);
-    Route::post('negocio/categorias/fetch/data',[NegocioCategoriaController::class,'fetchData']);
-    Route::get('negocio/categorias/get/all',[NegocioCategoriaController::class,'getAll']);
-
 
 
     /*****************************/
@@ -197,6 +197,21 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::get('negocio/solicituds/{solicitud}/get',[SolicitudController::class,'getSolicitud']);
 
 
+    /*****************************/
+    /* Negocios
+    /*****************************/
+    Route::get('/negocios/{negocio}/fetch/data',[NegocioController::class,'fetch']);
+    Route::post('negocios/fetch/data',[NegocioController::class,'fetchData']);
+    Route::put('negocios/{negocio}/actualizar/logo',[NegocioController::class,'actualizarLogo']);
+    Route::resource('negocios',NegocioController::class);
+
+    Route::put('negocios/{negocio}/add/imagen',[NegocioController::class,'addImagen']);
+    Route::delete('negocios/eliminar/imagen/{imagen}',[NegocioController::class,'eliminarImagen']);
+    Route::put('negocios/{negocio}/add/telefono',[NegocioController::class,'addTelefono']);
+
+    Route::get('negocios/{negocio}/aperturar/horario',[NegocioController::class,'aperturarHorario']);
+    Route::get('negocios/{negocio}/quitar/horario',[NegocioController::class, 'quitarHorario']);
+
 
     /*****************************/
     /* Divisas
@@ -206,6 +221,8 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::post('divisas/fetch/data',[DivisaController::class,'fetchData']);
     Route::resource('divisas',DivisaController::class);
     Route::get('divisas/get/principal',[DivisaController::class,'getPrincipal']);
+    Route::get('divisas/get/all',fn() => response()->json(Divisa::all()));
+
 
     /*****************************/
     /* cuenta y movimientos
@@ -221,6 +238,18 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::post('iatas/fetch/data', [IataController::class, 'fetchData']);
     Route::resource('iatas',IataController::class);
     Route::get('iatas/get/all',[IataController::class, 'getIatas']);
+
+    /*****************************/
+    /* Imagenes
+    /*****************************/
+    Route::put('imagens/{imagen}/toggle', [ImagenController::class, 'togglePrincipal']);
+
+
+    /*****************************/
+    /* Horarios
+    /*****************************/
+
+    Route::resource('horarios',HorarioController::class);
 
 });
 
@@ -244,5 +273,7 @@ Route::get('get/ciudades/{estado}', function (Estado $estado) {
 
 Route::get('usuarios/verificar/codigo/{codigo}', [UserController::class, 'verificarCodigo']);
 Route::post('cargar/categorias', [CategoriaFaqController::class, 'cargar']);
+
+Route::post('auth/google',[AuthController::class, 'authGoogle']);
 
 

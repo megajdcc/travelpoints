@@ -29,7 +29,12 @@ export default {
             solicitud:null,
             ciudad:null,
             estado:null,
-            usuario:null
+            usuario:null,
+
+            divisa_id:null,
+            divisa:null,
+            iata_id:null,
+            iata:null
 
          },
          solicitudes: [],
@@ -81,7 +86,16 @@ export default {
             solicitud: null,
             ciudad: null,
             estado: null,
-            usuario: null
+            usuario: null,
+
+
+            divisa_id: null,
+            divisa: null,
+
+            iata_id: null,
+            iata: null
+            
+            
          }
       },
 

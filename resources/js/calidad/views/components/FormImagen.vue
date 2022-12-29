@@ -5,11 +5,11 @@
          <b-row v-loading="loading">
             <b-col md="8">
                <vue-perfect-scrollbar :settings="perfectScrollbarSettings" class="user-chats scroll-area w-100"
-                  style="height:950px">
+                  style="height:450px">
                   <b-container fluid>
                      <b-row>
                         <b-col cols="12" md="4" v-for="(imagen, i) in imagenes" :key="i" class="my-1">
-                           <b-card body-class="p-0 m-0" footer-class="p-0 m-0" header-class="p-0 m-0">
+                           <b-card body-class="p-0 m-0" footer-class="p-0 m-0" header-class="p-0 m-0 d-flex justify-content-center">
                               <template #header>
                                  <b-img :src="`${pathImagenes}${imagen.imagen}`"
                                     style="width:220px; height:220px; object-fit:cover; cursor:pointer; margin:auto 0px"
@@ -18,10 +18,18 @@
 
                               <template #footer>
                                  <b-button-group size="sm">
-                                    <b-button variant="danger" @click="eliminar(imagen.id)">
+                                    <b-button variant="danger" @click="eliminar(imagen.id)" size="sm" title="Eliminar" v-b-tooltip.hover="'Eliminar'">
                                        <feather-icon icon="TrashIcon" />
-                                       Eliminar
                                     </b-button>
+                                   
+                                    <b-button :variant="!imagen.portada ? 'dark' : 'success'" @click.stop="checkPrincipal(!imagen.portada,imagen.id)" size="sm">
+
+                                       <font-awesome-icon :icon="imagen.portada ? 'fa-check-double' : 'fa-check'" />
+                                       {{ imagen.portada ? 'Portada' : 'No portada' }}
+                                    </b-button>
+
+                                  
+
                                  </b-button-group>
                               </template>
                            </b-card>
@@ -93,7 +101,8 @@ import {
    BImg,
    BButtonGroup,
    BButton,
-   BFormInvalidFeedback
+   BFormInvalidFeedback,
+   BFormCheckbox,
 
 } from 'bootstrap-vue'
 
@@ -129,7 +138,9 @@ export default {
       BImg,
       BButtonGroup,
       BButton,
-      VuePerfectScrollbar
+      VuePerfectScrollbar,
+      BFormCheckbox
+
 
 
    },
@@ -146,7 +157,8 @@ export default {
 
       const {
          fotoSeleccionada,
-         eliminar
+         eliminar,
+         checkPrincipal
       } = props.actions();
 
       const index = ref(null)
@@ -164,6 +176,7 @@ export default {
          eliminar,
          imagens,
          regresar,
+         checkPrincipal,
          loading: computed(() => store.state.loading)
       }
 

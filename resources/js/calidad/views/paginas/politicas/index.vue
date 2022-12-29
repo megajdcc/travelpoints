@@ -124,8 +124,9 @@ import {
    BMedia,
    BEmbed
 } from 'bootstrap-vue'
+import useAuth from '@core/utils/useAuth';
 
-import {toRefs,computed} from '@vue/composition-api'
+import {toRefs,computed,onMounted} from '@vue/composition-api'
 import store from '@/store'
 export default {
 
@@ -141,6 +142,9 @@ export default {
 
    setup() {
       const { windowWidth } = toRefs(store.state.app)
+      const {authGoogle} = useAuth();
+
+      onMounted(() => authGoogle())
       return {
          windowWidth,
          relation:computed(() => {

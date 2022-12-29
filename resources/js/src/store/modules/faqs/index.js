@@ -212,7 +212,7 @@ export default{
             commit('toggleLoading', null, { root: true })
             if (data.id) {
 
-               axios.put(`/api/faqs/categorias/${data.id}`, data).then(({ data: datos }) => {
+               axios.put(`/api/faqs/faqs-categorias/${data.id}`, data).then(({ data: datos }) => {
                   commit('updateCategoria', datos.categoria)
                   resolve(datos)
                }).catch(e => reject(e))
@@ -221,7 +221,7 @@ export default{
                   })
 
             } else {
-               axios.post(`/api/faqs/categorias`, data).then(({ data: datos }) => {
+               axios.post(`/api/faqs/faqs-categorias`, data).then(({ data: datos }) => {
                   commit('pushCategoria', datos.categoria)
                   resolve(datos)
                }).catch(e => reject(e))
@@ -254,7 +254,7 @@ export default{
 
          return new Promise((resolve, reject) => {
             commit('toggleLoading', null, { root: true })
-            axios.delete(`/api/faqs/categorias/${data_id}`).then(({ data: datos }) => {
+            axios.delete(`/api/faqs/faqs-categorias/${data_id}`).then(({ data: datos }) => {
                if (datos.result) {
                   commit('putCategoria', data_id)
                   resolve(datos)

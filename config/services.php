@@ -34,7 +34,6 @@ return [
         'client_id' => env('CLIENT_ID_GOOGLE_AUTH'),
         'client_secret' => env('CLIENT_SECRET_GOOGLE_AUTH'),
         'redirect' => env('REDIRECT_AUTH')
-
     ]
 
 

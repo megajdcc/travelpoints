@@ -206,24 +206,44 @@ body {
 }
 
 .layout-travel {
-
-   .app-content{
-      background-image: url('/images/patron_fondo_blanco.svg');
-      background-attachment: fixed;
-      background-repeat: repeat;
-      background-position: top;
-      transition: .5s ease ;
-   }
+   background-image: url('/images/patron_fondo_blanco.svg');
+   background-attachment: fixed;
+   background-repeat: repeat;
+   background-position: top;
+   transition: .5s ease ;
+   animation: rotar 60s ease infinite;
 
 }
 
 .dark-layout .layout-travel {
 
-   .app-content{
-      background-image: url('/images/patron_fondo_gris.svg') !important;
-      background-attachment: fixed;
-      background-repeat: repeat;
-      background-position: top;
+   background-image: url('/images/patron_fondo_gris.svg') !important;
+   background-attachment: fixed;
+   background-repeat: repeat;
+   background-position: top;
+   animation: rotar 60s ease infinite;
+   transition:3s ease;
+}
+
+@keyframes rotar{
+
+   0% {
+      background-size: 120%;
+     
    }
+
+   50% {
+      background-size: 150%;
+   }
+
+   75% {
+      background-size: 120%;
+   }
+
+
+   100% {
+      background-size: 100%;
+   }
+
 
 }

@@ -78,10 +78,10 @@
               <b-button type="submit" variant="primary" block :disabled="invalid" v-loading="loading">
                 Iniciar
               </b-button>
-<!-- 
-              <b-button @click="authGoogle" variant="primary" block :disabled="invalid" v-loading="loading">
+
+              <b-button @click="authenticarGoogle(optionsAuth)"  variant="primary" block  v-loading="loading">
                 Google Auth
-              </b-button> -->
+              </b-button>
               
             </b-form>
           </validation-observer>
@@ -97,6 +97,10 @@
       </b-col>
       <!-- /Login-->
     </b-row>
+
+   
+
+
   </div>
 </template>
 
@@ -126,7 +130,7 @@ import {
 import { required, email } from '@validations'
 import { togglePasswordVisibility } from '@core/mixins/ui/forms'
 import store from '@/store/index'
-import {computed,toRefs} from '@vue/composition-api';
+import {computed,toRefs,onMounted} from '@vue/composition-api';
 import useAuth from '@core/utils/useAuth'
 
 import '@core/scss/vue/libs/toastification.scss'
@@ -181,17 +185,25 @@ export default {
   },
 
 
+
   setup(props){
     
     const usuario = computed(() => store.state.usuario.usuario)
     const { appName, appLogoImage, applogoImageWhite } = $themeConfig.app
 
+
+
+
     const {
       login,
       formValidate,
-      formulario
+      formulario,
+      authGoogle,
+      authenticarGoogle,
+      optionsAuth
     } = useAuth();
 
+    // onMounted(() => authGoogle())
 
     const iniciar  = ()  => {
 
@@ -244,17 +256,6 @@ export default {
 
     }
 
-    const authGoogle = () => {
-
-      axios.get(`/api/auth/google/redirect`).then(response => {
-        console.log(response)
-      }).catch(e => {
-        console.log(e)
-      })
-
-    }
-
-
     return{
       login,
       required,
@@ -265,6 +266,8 @@ export default {
       iniciar,
       authGoogle,
       appName,
+      authenticarGoogle,
+      optionsAuth
      
 
     }

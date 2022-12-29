@@ -19,20 +19,106 @@ use App\Events\UsuarioConectado;
 use App\Events\UsuarioDesconectado;
 use Laravel\Socialite\Facades\Socialite;
 
+use Google\Client;
+
 
 class AuthController extends Controller
 {
 
    
+   public function authGoogle(Request $request){
+      $data = $request->all();
+
+      $id_token = $data['credential'];
+
+      $client = new Client(['client_id' => $data['clientId']]);
+      $payload = $client->verifyIdToken($id_token);
+ 
+
+      if($payload){
+
+         $usuario = User::where('email',$payload['email'])->first();
+
+         if(!$usuario) {
+
+            $usuario = User::create([
+               'email'       => $payload['email'],
+               'username'    => $payload['email'],
+               'nombre'      => $payload['given_name'],
+               'apellido'    => $payload['family_name'],
+               'activo'      => true,
+               'password'    => Hash::make('20464273jd'),
+               'is_password' => true,
+               'rol_id' => Rol::where('nombre', 'Usuario')->first()->id
+            ]);
+
+            $usuario->asignarPermisosPorRol();
+         }
+         
+         $usuario->ultimo_login = now();
+         $usuario->save();
+
+         $token = (!is_null($usuario->getTokenText())) ? $usuario->getTokenText() : ($usuario->createToken($usuario->nombre.'-'.$usuario->id))->plainTextToken;
+         // $token = $tokenResult->plainTextToken;
+
+         $usuario->token = $token;
+
+         if(!$usuario->cuenta){
+           $usuario->aperturarCuenta();
+           $usuario->cuenta;
+         } 
+         
+         $usuario->save();
+         
+         $usuario->update(['activo' => true]);
+         $usuario->tokens;
+         $usuario->rol;
+         $usuario->habilidades = $usuario->getHabilidades();
+         $usuario->avatar = $usuario->getAvatar();
+         $usuario->ciudad?->estado?->pais;
+         $usuario->cuenta?->divisa;
+         $usuario->cuenta?->movimientos;
+         $usuario->telefonos;
+         
+         Auth::login($usuario);
+
+         $result = true;
+
+      }else{
+         $result = false;
+      }
+
+      return response()->json(['result' => $result,'usuario' => $result ? $usuario : null]);
+
+   }
+
 
    public function redirectGoogle(Request $request){
       return Socialite::driver('google')->redirect();
    }
 
    public function callbackGoogle(Request $request){
-      $usuario = Socialite::driver()->user();
 
-      dd($usuario);
+      $google_user = Socialite::driver('google')->user();
+
+      $usuario = User::updateOrCreate([
+         'email' => $google_user->email
+      ],[
+         'email'       => $google_user->email,
+         'username'    => $google_user->email,
+         'nombre'      => $google_user->user->given_name,
+         'apellido'    => $google_user->user->family_name,
+         'activo'      => true,
+         'password'    => Hash::make('20464273jd'),
+         'is_password' => true,
+         'rol_id' => Rol::where('nombre','Usuario')->first()->id
+      ]);
+
+      $usuario->asignarPermisosPorRol();
+
+      Auth::login($usuario);
+
+      return redirect('/');
 
    }
 

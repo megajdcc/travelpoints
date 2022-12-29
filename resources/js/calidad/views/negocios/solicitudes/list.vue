@@ -145,11 +145,24 @@
 
                         <tr>
                            <td>
-                              <b-img :src="item.logo" responsive thumbnail style="max-height:350px" />
+                              Divisa con la va a operar: 
+                           </td>
+                           <td>
+                              <strong class="text-success">
+                                 {{ item.divisa.nombre }} {{ item.divisa.iso }} {{ item.divisa.simbolo }}
+                              </strong>
+                           </td>
+                        </tr>
+
+
+
+                        <tr>
+                           <td>
+                              <b-img :src="`/storage/negocios/logos/${item.logo}`" responsive thumbnail style="max-height:350px" />
                            </td>
 
                            <td>
-                              <b-img :src="item.foto" responsive thumbnail style="max-height:350px" />
+                              <b-img :src="`/storage/negocios/fotos/${item.foto}`" responsive thumbnail style="max-height:350px" />
                            </td>
 
                         </tr>
@@ -174,15 +187,15 @@
 
                   <template #cell(nombre)="{item}">
                      <b-link :to="{ name:'negocio.show.solicitud',params:{id:item.id}}"
-                        v-if="$can('update', 'nagocio solicitudes')">
+                        v-if="$can('update', 'nagocio solicitudes')" class="text-nowrap">
                         {{ item.nombre }}
                      </b-link>
-                     <strong class="text-primary " v-else v-text="item.nombre"></strong>
+                     <strong class="text-primary text-nowrap " v-else v-text="item.nombre"></strong>
                   </template>
 
                   <template #cell(usuario_id)="{item}">
 
-                     <b-link :to="{ name:'show.usuario',params:{id:item.usuario_id}}">
+                     <b-link :to="{ name:'show.usuario',params:{id:item.usuario_id}}" class="text-nowrap">
                         <b-avatar size="sm" :src="item.usuario.avatar" />
                         {{ item.usuario.nombre }}
                      </b-link>
@@ -196,6 +209,11 @@
                            v-if="$can('read', 'solicitudes')">
                            <feather-icon icon="EyeIcon" />
                         </b-button>
+
+                           <b-button variant="danger" @click="eliminar(item.id)"
+                              v-if="$can('delete', 'solicitudes')">
+                              <feather-icon icon="TrashIcon" />
+                           </b-button>
 
                      </b-button-group>
                   </template>
@@ -232,7 +250,8 @@ import {
    BFormInput,
    BLink,
    BAvatar,
-   BBadge
+   BBadge,
+   BImg
 
 } from 'bootstrap-vue'
 
@@ -258,7 +277,9 @@ export default {
       BFormInput,
       BLink,
       BAvatar,
-      BBadge
+      BBadge,
+      BImg
+
 
 
    },

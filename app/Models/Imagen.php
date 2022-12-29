@@ -17,11 +17,6 @@ class Imagen extends Model
         'model_type',
     ];
 
-    public $attributes = [
-        'portada' => false,
-        'logo' => false
-    ];
-
 
     public $casts = [
         'portada' => 'boolean',

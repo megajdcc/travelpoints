@@ -1,6 +1,6 @@
 <template>
   
-  <div id="app" class="h-100" :class="[skinClasses]">
+  <div id="app" class="h-100" :class="[skinClasses]" >
 
       <component :is="layout">
         <router-view />
@@ -94,6 +94,8 @@ export default {
       store.commit('app/UPDATE_WINDOW_WIDTH', val)
     })
 
+
+
     onMounted(() => {
 
       if(localStorage.getItem('token')){      
@@ -119,7 +121,7 @@ export default {
       skinClasses,
       enableScrollToTop,
       layout,
-      contentLayoutType
+      contentLayoutType,
     }
   },
 

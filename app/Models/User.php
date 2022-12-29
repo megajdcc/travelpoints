@@ -98,9 +98,9 @@ class User extends Authenticatable
     ];
 
 
-    protected $attributes = [
-        'activo' => true,
-    ];
+    // protected $attributes = [
+    //     'activo' => true,
+    // ];
 
 
     // public function genero():Attribute{

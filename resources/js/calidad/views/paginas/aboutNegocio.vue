@@ -67,6 +67,9 @@ import {
    BButton
 
 } from 'bootstrap-vue'
+import useAuth from '@core/utils/useAuth';
+
+import {onMounted} from '@vue/composition-api'
 
 export default {
    components: {
@@ -83,6 +86,9 @@ export default {
    },
 
    setup() {
+
+      const {authGoogle} = useAuth();
+      onMounted(() => authGoogle())
 
       return {
          sales: require('@/assets/images/illustration/marketing.svg')

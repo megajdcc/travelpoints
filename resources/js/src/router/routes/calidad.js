@@ -597,8 +597,6 @@ export default [
       ]
    },
 
-
-
    /*****************************************/
    /* Atracciones
    /*************************************** */
@@ -896,8 +894,6 @@ export default [
 
       ]
    },
-
-
 
 
    /*****************************************/
@@ -1387,6 +1383,70 @@ export default [
             }
          }
       ]
+   },
+
+
+   /*****************************************/
+   /* Negocios
+   /*************************************** */
+
+   {
+      path:'/negocios',
+      component:() => import('views/negocios/index.vue'),
+
+      children:[
+
+         {
+            path:'',
+            name:'negocio.lists',
+            component:() => import('views/negocios/lists.vue'),
+            meta:{
+               resource:'negocios',
+               action:'read',
+               pageTitle:'Negocios asociados',
+
+               breadcrumb:[
+                  {text:'Home',to:{name:'home'},active:false},
+                  { text: 'Listado', active: false },
+
+               ]
+            }
+         },
+         {
+            path:':id/edit',
+            props:true,
+            component:() => import('views/negocios/edit.vue'),
+            name: 'negocio.edit',
+            meta:{
+               resource:'negocios',
+               action:'update',
+               pageTitle:'Editar negocios',
+               navActiveLink:'negocio.lists',
+               breadcrumb:[
+                  {
+                     text:'Home',
+                     to:{name:'home'},
+                     active:false
+                  },
+
+                  {
+                     text: 'Negocios',
+                     to: { name: 'negocio.lists' },
+                     active: false
+                  },
+
+                  {
+                     text: 'Actualizar',
+                     active: true
+                  }
+
+               ]
+               
+            }
+         }
+
+      ]
+
    },
 
    /*****************************************/

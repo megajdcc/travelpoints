@@ -46,6 +46,7 @@
     "element-ui": "^2.15.6",
     "file-saver": "^2.0.5",
     "google-auth-library": "^8.1.1",
+    "google-one-tap": "^1.0.6",
     "jquery": "^3.6.0",
     "jsonwebtoken": "8.5.1",
     "laravel-mix": "^6.0.49",

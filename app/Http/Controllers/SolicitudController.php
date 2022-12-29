@@ -14,9 +14,9 @@ use App\Notifications\{SolicitudNegocioActualizada,SolicitudEnviada};
 use App\Models\Negocio\Negocio;
 
 
+
 class SolicitudController extends Controller
 {
-    
 
     public function getAll(){
         
@@ -31,6 +31,11 @@ class SolicitudController extends Controller
             $solicitud->usuario->avatar = $solicitud->usuario->getUrlAvatar();
             $solicitud->ciudad;
             $solicitud->estado->pais;
+            $solicitud->divisa;
+            $solicitud->iata;
+
+
+            
         }
 
         return response()->json($solicitudes);
@@ -44,6 +49,9 @@ class SolicitudController extends Controller
         $solicitud->usuario->avatar = $solicitud->usuario->getUrlAvatar();
         $solicitud->ciudad;
         $solicitud->estado->pais;
+        $solicitud->divisa;
+        $solicitud->iata;
+
 
         return response()->json($solicitud);
 
@@ -78,6 +86,10 @@ class SolicitudController extends Controller
             $solicitud->usuario->avatar = $solicitud->usuario->getUrlAvatar();
             $solicitud->ciudad;
             $solicitud->estado->pais;
+            $solicitud->divisa;
+            $solicitud->iata;
+
+
         }
 
         return response()->json([
@@ -114,7 +126,9 @@ class SolicitudController extends Controller
             'logo'          => 'bail|required_without:id|nullable|max:2048',
             'foto'          => 'bail|required_without:id|nullable|max:2048',
             'comentario' => 'nullable',
-            'panel' => 'nullable'
+            'panel' => 'nullable',
+            'divisa_id' => 'required',
+            'iata_id' => 'nullable'
         ],[
             'logo.required_without' => 'El logo es importante no lo olvides',
             'foto.required_without' => 'La foto es importante no lo olvides',
@@ -180,6 +194,8 @@ class SolicitudController extends Controller
                 $solicitud->usuario->avatar = $solicitud->usuario->getUrlAvatar();
                 $solicitud->ciudad;
                 $solicitud->estado->pais;
+                $solicitud->divisa;
+                $solicitud->iata;
 
 
 
@@ -250,8 +266,9 @@ class SolicitudController extends Controller
                 
                
                 if(isset($datos['panel']) && $datos['panel'] == 'infochannel'){
-                  
+                    
                     $solicitud->usuario->notify(new SolicitudNegocioActualizada($solicitud));
+                    
                 }else{
 
                     Notification::send( User::whereHas('rol', fn (Builder $q) => $q->where('nombre', 'Administrador'))->get(), new NuevaSolicitudNegocio($solicitud));
@@ -267,11 +284,29 @@ class SolicitudController extends Controller
 
 
             if($solicitud->situacion == 3){
+
                 // Crear negocio
-                 $negocio = Negocio::create([
-                    ...\array_filter($solicitud->toArray(),fn($key) => !\in_array($key,['comentario','telefono']) )
+               
+                $negocio = Negocio::create([
+                    ...[
+                        'status' => true,
+                        'emails' => ['email' => $solicitud->telefono, 'principal' => true],
+                    ],
+                    ...\array_filter($solicitud->toArray(),fn($key) => !\in_array($key,['comentario','telefono','situacion','email']) )
                  ]);
 
+                $negocio->aperturarCuenta();
+
+                $negocio->addTelefono([
+                    'telefono'=> $solicitud->telefono,
+                    'principal' => true,
+                ]);
+
+                $negocio->addImagen([
+                    'imagen' => $solicitud->foto,
+                    'portada' => true,
+                    'logo' => false
+                ]);
 
             }
             
@@ -286,9 +321,8 @@ class SolicitudController extends Controller
             $solicitud->usuario->avatar = $solicitud->usuario->getUrlAvatar();
             $solicitud->ciudad;
             $solicitud->estado->pais;
-
-
-
+            $solicitud->divisa;
+            $solicitud->iata;
 
         return response()->json(['result' => $result, 'solicitud' => $result ? $solicitud : null]);
         
@@ -302,6 +336,21 @@ class SolicitudController extends Controller
      */
     public function destroy(Solicitud $solicitud)
     {
-        //
+        try{
+            DB::beginTransaction();
+            Storage::disk('public')->delete("negocios/logos/{$solicitud->logo}");
+            Storage::disk('public')->delete("negocios/fotos/{$solicitud->foto}");
+
+            $solicitud->delete();
+            $result = true;
+            DB::commit();
+
+        }catch(\Exception $e){
+            DB::rollBack();
+            $result = false;
+        }
+
+        return response()->json(['result' => $result]);
+
     }
 }

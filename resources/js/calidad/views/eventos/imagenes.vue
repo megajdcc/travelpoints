@@ -71,9 +71,30 @@ export default {
             }
          }
 
+         const checkPrincipal = (valor,imagen_id) => {
+
+            store.dispatch('evento/togglePortada',{imagen:imagen_id,portada:valor}).then(({result}) => {
+               
+               if(result){
+
+                  toast.success('Se ha actualizado con éxito',{ position:'bottom-right'})
+               
+               }else{
+               
+                  toast.info('No se pudo actualizar, inténte de nuevo...',{ position:'bottom-right'})
+               
+               }
+
+
+            }).catch(e => console.log(e))
+
+         }
+
+
          return {
             eliminar,
-            fotoSeleccionada
+            fotoSeleccionada,
+            checkPrincipal
          }
 
       }

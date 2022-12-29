@@ -54,14 +54,17 @@ export default function useNegocioSolicitudesList(){
       store.dispatch('solicitud/eliminar',id).then(({result}) => {
 
          if(result){
+           
+            toast.info('Solicitud eliminada con éxito',{position:'bottom-right'})
+            
             refetchData();
-            toast.info('Solicitud eliminada con éxito')
+
          }else{
-            toast.error('La solicitud no se pudo eliminar')
+            toast.error('La solicitud no se pudo eliminar', { position: 'bottom-right' })
          }
          
       }).catch(e => {
-         toast.error('La solicitud no se pudo eliminar')
+         toast.error('La solicitud no se pudo eliminar', { position: 'bottom-right' })
 
       })
 

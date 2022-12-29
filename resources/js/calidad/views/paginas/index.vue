@@ -5,6 +5,7 @@
             <h2>Hola a todos</h2>
          </b-col>
       </b-row>
+
    </b-container>
 </template>
 
@@ -15,7 +16,11 @@ import {
    BCol,
 } from 'bootstrap-vue'
 
+import {onMounted,onActivated} from '@vue/composition-api'
 
+
+import store from '@/store'
+import useAuth from '@core/utils/useAuth';
 export default {
 
    components:{
@@ -26,6 +31,10 @@ export default {
    },
 
    setup() {
+      const { authGoogle } = useAuth()
+
+      onMounted(() => authGoogle()) 
+     
 
    },
 }

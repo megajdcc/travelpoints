@@ -53,7 +53,7 @@
 
       <!-- Footer -->
 
-      <footer class="footer footer-light" :class="[footerTypeClass]" style="box-shadow: 0 -1rem 3rem rgb(34 41 47 / 8%) !important;">
+      <footer class="footer footer-light footer-static bg-transparent"  style="box-shadow: 0 -1rem 3rem rgb(34 41 47 / 8%) !important;">
          <slot name="footer">
             <app-travel-footer />
          </slot>

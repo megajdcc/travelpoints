@@ -9,9 +9,7 @@ export default {
 
    setup() {
       
-      onMounted(() => {
-         store.commit('solicitud/clear');
-      })
+      onMounted(() => store.commit('solicitud/clear'))
 
       return () => h(form,{
 
@@ -22,10 +20,10 @@ export default {
                store.dispatch('solicitud/guardar',data).then(({result}) => {
 
                   if(result){
-                     toast.success('Se ha enviado con éxito la solicitud de afiliación del negocio...')
+                     toast.success('Se ha enviado con éxito la solicitud de afiliación del negocio...', {position:'bottom-right'})
                      router.push({ name:'socio.negocio.list'})
                   }else{
-                     toast.error('No se pudo enviar la solicitud, intentelo de nuevo')
+                     toast.error('No se pudo enviar la solicitud, intentelo de nuevo', { position: 'bottom-right' })
                   }
 
                }).catch(e => {
@@ -38,6 +36,8 @@ export default {
          }
 
       })
-   },
+
+   }
+
 }
 </script>

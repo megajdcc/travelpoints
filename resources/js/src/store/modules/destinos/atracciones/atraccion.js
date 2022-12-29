@@ -130,7 +130,20 @@ export default {
             i,
             1
          )
+      },
+
+      togglePortada(state, { imagen_id, portada }) {
+         
+         if (state.atraccion.id) {
+
+            state.atraccion.imagenes.forEach(val => val.portada = false)
+
+            const image = state.atraccion.imagenes.find(val => val.id === imagen_id)
+            image.portada = portada
+         }
+      
       }
+
 
    },
 
@@ -303,7 +316,23 @@ export default {
             }).catch(e => reject(e))
 
          })
-      }
+      },
+
+      togglePortada({ commit }, datos) {
+
+         commit('togglePortada', { imagen_id: datos.imagen, portada: datos.portada })
+
+         return new Promise((resolve, reject) => {
+
+            axios.put(`/api/imagens/${datos.imagen}/toggle`, datos).then(({ data }) => {
+
+               resolve(data)
+
+            }).catch(e => reject(e))
+
+         })
+
+      },
 
 
 

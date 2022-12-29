@@ -77,6 +77,14 @@ return [
             'visibility' => 'public',
         ],
 
+        'logo_negocios' => [
+            'driver' => 'local',
+            'root' => storage_path('app/public/negocios/logos'),
+            'url' => env('APP_URL') . '/storage/negocios/logos',
+            'visibility' => 'public',
+        ],
+
+
         's3' => [
             'driver' => 's3',
             'key' => env('AWS_ACCESS_KEY_ID'),

@@ -46,7 +46,8 @@ class DivisaController extends Controller
             'iso'       => 'required',
             'simbolo'   => 'required',
             'tasa'      => 'nullable',
-            'principal' => 'required'
+            'principal' => 'required',
+            
         ],[
             'nombre.required' => 'El nombre de la divisa es importante',
             'nombre.unique' => 'La divisa ya está registrada',

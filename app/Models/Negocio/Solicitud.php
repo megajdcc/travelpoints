@@ -6,14 +6,15 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Support\Facades\{Storage};
-use App\Models\{User,Ciudad,Estado};
+use App\Models\{User,Ciudad,Estado,Iata};
+use App\Models\Divisa;
+
 
 class Solicitud extends Model
 {
     use HasFactory;
 
     public $estatus = [1 => "Enviada", 2 => "Desaprobada", 3  => "Aceptada", 4 => "Rechazada"];
-    
     
     protected $fillable = [
         'nombre',
@@ -36,7 +37,9 @@ class Solicitud extends Model
         'foto',
         'situacion',// 1 => solicitud enviada, 2 => solicitud regresada para mejorar 3 => solicitd aceptada 4 => solicitud rechazada
         'comentario',
-        'usuario_id'
+        'usuario_id',
+        'divisa_id',
+        'iata_id'
 
     ];
 
@@ -58,18 +61,18 @@ class Solicitud extends Model
         return $mensajes[$situacion];
     }
 
-    public function logo(): Attribute{
-        return Attribute::make(
-            get:fn($val) => Storage::url("negocios/logos/{$val}")
-        );
-    }
+    // public function logo(): Attribute{ 
+    //     return Attribute::make(
+    //         get:fn($val) => Storage::url("negocios/logos/{$val}")
+    //     );
+    // }
 
-    public function foto(): Attribute
-    {
-        return Attribute::make(
-            get: fn ($val) => Storage::url("negocios/fotos/{$val}")
-        );
-    }
+    // public function foto(): Attribute
+    // {
+    //     return Attribute::make(
+    //         get: fn ($val) => Storage::url("negocios/fotos/{$val}")
+    //     );
+    // }
 
 
 
@@ -108,6 +111,17 @@ class Solicitud extends Model
         return $this->belongsTo(User::class,'usuario_id','id');
     }
 
+
+    /**
+     * Una solicitud tiene que tener una divisa con la que va a operar el Negocio
+     */
+    public function divisa(){
+        return $this->belongsTo(Divisa::class,'divisa_id','id');
+    }
+
+    public function iata(){
+        return $this->belongsTo(Iata::class,'iata_id','id');
+    }
     
 
 }

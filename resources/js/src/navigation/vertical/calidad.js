@@ -14,12 +14,11 @@ export default [
       children:[
          {
             title: 'negocios',
-            route: 'listar.negocios',
+            route: 'negocio.lists',
             action: 'read',
             resource: 'negocios',
             icon: 'ListIcon',
          },
-
          {
             title: 'Solicitudes',
             route: 'listar.solicitudes.negocios',

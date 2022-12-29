@@ -19,6 +19,8 @@
 
   <!-- Favicon -->
   <link rel="shortcut icon" href="{{ asset('favicons/favicon-8x8.png') }}">
+  <script src="https://accounts.google.com/gsi/client" async defer ></script>
+
 </head>
 
 <body>
@@ -49,7 +51,6 @@
   </script> 
 
   @endif
-
 
     <script src="{{ mix('js/manifest.js')}}"></script>
     <script src="{{ mix('js/vendor.js')}}"></script>

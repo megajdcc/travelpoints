@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ApplicationController;
 use App\Models\User;
+use App\Http\Controllers\Auth\AuthController;
 
 /*
 |--------------------------------------------------------------------------
@@ -18,11 +19,14 @@ use App\Models\User;
 Route::get('/usuario/{usuario}/establecer/contrasena', function (User $usuario) {
 
    if ($usuario->is_password) {
-      return redirect('/login');
-   } else {
-      return view('application', ['usuario' => $usuario]);
-   }
 
+      return redirect('/login');
+   
+   } else {
+   
+      return view('application', ['usuario' => $usuario]);
+   
+   }
 
 });
 
@@ -33,6 +37,9 @@ Route::get('/reset-password/{token}', function ($token) {
    );
 })->middleware('guest')->name('password.reset');
 // Route::view('cotizacion/reserva/{reserva}','application');
+
+Route::get('/auth/redirect',[AuthController::class, 'redirectGoogle']);
+Route::get('/auth/google',[AuthController::class, 'callbackGoogle']);
 
 
 Route::get('/{any}', [ApplicationController::class, 'index'])->where('any', '.*');

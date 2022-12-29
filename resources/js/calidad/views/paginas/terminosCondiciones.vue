@@ -312,8 +312,11 @@ import {
    BEmbed
 } from 'bootstrap-vue'
 
-import { toRefs, computed } from '@vue/composition-api'
+import { toRefs, computed,onActivated,onMounted } from '@vue/composition-api'
 import store from '@/store'
+import useAuth from '@core/utils/useAuth';
+
+
 export default {
 
    components: {
@@ -328,6 +331,10 @@ export default {
 
    setup() {
       const { windowWidth } = toRefs(store.state.app)
+      const {authGoogle} = useAuth();
+      
+      onMounted(() => authGoogle())
+      
       return {
          windowWidth,
          relation: computed(() => {

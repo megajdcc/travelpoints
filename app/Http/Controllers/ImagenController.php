@@ -5,26 +5,38 @@ namespace App\Http\Controllers;
 use App\Models\Imagen;
 use Illuminate\Http\Request;
 
+use Illuminate\Support\Facades\{DB};
+
+
 class ImagenController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
-    {
-        //
-    }
+  
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
+    public function togglePrincipal(Request $request,Imagen $imagen){
+
+        $model = $imagen->model;
+        
+        try{
+            DB::beginTransaction();
+
+            
+            if($image = $model->imagenes->where('portada', true)->first()){
+                $image->portada = false;
+                $image->save();
+            }
+
+            $imagen->portada = $request->get('portada');
+            $imagen->save();
+
+            DB::commit();
+            $result  = true;
+        }catch(\Exception $e){
+            DB::rollBack();
+            $result = false;
+        }
+
+        return response()->json(['result' => $result,'imagenes'=> $model->imagenes]);
+
     }
 
     /**
@@ -38,27 +50,7 @@ class ImagenController extends Controller
         //
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Imagen  $imagen
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Imagen $imagen)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Imagen  $imagen
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Imagen $imagen)
-    {
-        //
-    }
+  
 
     /**
      * Update the specified resource in storage.

@@ -75,12 +75,16 @@ export default function useDireccion(){
 
 
 
-   const cargarBuscador = ()  => {
+   const cargarBuscador = (elementId = 'myAutocomplete')  => {
 
       input.value.$mapPromise.then((map) => {
-         var myControl = document.getElementById('myAutocomplete');
+
+         var myControl = document.getElementById(elementId);
          myControl.index = 1;
-         map.controls[google.maps.ControlPosition.TOP_CENTER].push(myControl);
+         
+     
+
+         map.controls[google.maps.ControlPosition.TOP_LEFT].push(myControl);
       });
    }
 

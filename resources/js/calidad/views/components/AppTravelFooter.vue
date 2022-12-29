@@ -16,7 +16,7 @@
                </li>
 
                <li class="nav-item">
-                  <b-link :to="{name:'afiliar.negocio'}" class="nav-link px-2 font-weight-bolder">
+                  <b-link :to="{ name:'socio.negocio.afiliar'}" class="nav-link px-2 font-weight-bolder">
                      Afilia tú negocio
                   </b-link>
                </li>

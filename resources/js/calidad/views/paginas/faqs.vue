@@ -110,11 +110,12 @@ import {
 
 import FaqQuestionAnswer from './FaqQuestionAnswer.vue'
 import store from '@/store'
-import {ref,onMounted,watch,toRefs,computed} from '@vue/composition-api'
+import {ref,onMounted,watch,toRefs,computed,onActivated} from '@vue/composition-api'
 
 
 import useAppConfig from '@core/app-config/useAppConfig';
 
+import useAuth from '@core/utils/useAuth';
 
 export default {
 
@@ -142,7 +143,10 @@ export default {
 
 
       const {skin} = useAppConfig();
+      const {authGoogle} = useAuth();
 
+      onMounted(() => authGoogle())
+      
       const faqSearchQuery = ref('')
 
       const cargarForm = ()  =>  {

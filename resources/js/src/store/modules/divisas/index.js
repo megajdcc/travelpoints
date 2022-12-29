@@ -1,5 +1,3 @@
-import axios from "axios"
-
 export default {
 
    namespaced:true,
@@ -97,6 +95,21 @@ export default {
 
 
    actions:{
+
+
+      getDivisas({commit}){
+         return new Promise((resolve, reject) => {
+            
+            axios.get(`/api/divisas/get/all`).then(({data}) => {
+
+               commit('setDivisas',data)
+
+               resolve(data)
+               
+            }).catch(e => reject(e))
+
+         })
+      },
 
       fetchData({commit},datos){
 

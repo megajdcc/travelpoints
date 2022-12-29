@@ -134,6 +134,20 @@
 
                      </b-form-group>
 
+                     <b-form-group>
+                        <template #label>
+                           Divisa: <span class="text-danger">*</span>
+
+                           <validation-provider name="divisa_id" rules="required" #default="{valid,errors}">
+                              <v-select v-model="formulario.divisa_id" :reduce="(option) => option.id" :options="divisas" label="nombre" class="w-100" />
+
+                                 <b-form-invalid-feedback :state="valid">
+                                    {{ errors[0] }}
+                                 </b-form-invalid-feedback>
+                           </validation-provider>
+                        </template>
+                     </b-form-group>
+
 
 
                   </b-col>
@@ -237,7 +251,7 @@
                                  <feather-icon icon="PhoneIcon" />
                               </b-input-group-prepend>
                               <b-form-input type="tel" v-model="formulario.telefono"
-                                 :state="errors.length ? false : null" placeholder="Número telefónico" />
+                                 :state="errors.length ? false : null" placeholder="Número telefónico" v-mask="'+#############'" />
                            </b-input-group>
 
 
@@ -285,18 +299,19 @@
             <hr>
             <b-container fluid>
                <b-row>
-                  <b-col cols="12" md="8">
+                  <b-col cols="12" md="7">
                      <b-form-group>
                         <template #label>
                            Dirección del negocio: <span class="text-danger">*</span>
                         </template>
-                        <validation-provider name="direccion" rules="required" #default="{errors}">
+                        <validation-provider name="direccion" rules="required" #default="{errors,valid}">
                            <b-input-group>
                               <b-input-group-prepend is-text>
                                  <feather-icon icon="MapIcon" />
                               </b-input-group-prepend>
-                              <b-form-input v-model="formulario.direccion" :state="errors.length ? false : null"
-                                 placeholder="Dirección del negocio" />
+
+                              <b-form-textarea v-model="formulario.direccion" :state="valid"
+                                 placeholder="Dirección del negocio" :rows="4" />
 
                            </b-input-group>
                            <b-form-invalid-feedback>
@@ -305,7 +320,43 @@
                         </validation-provider>
                      </b-form-group>
                   </b-col>
-                  <b-col cols="12" md="4">
+                  <b-col cols="12" md="5">
+
+                     <b-form-group description="Seleccione el Aeropuerto mas cercano a este negocio, esto no es importante">
+                        <template #label>
+                           Iata | Aeropuerto mas cercano:
+                        </template>
+                        <validation-provider name="iata_id"  #default="{errors,valid}">
+                           <b-input-group>
+                           
+                              <v-select v-model="formulario.iata_id" :reduce="(option) => option.id" :options="iatas" label="aeropuerto" class=" w-100">
+                                 
+                                 <template #no-options>
+                                       NO Hay Código Iata para esta busqueda
+                                 </template>
+
+                                  <template #option="{ aeropuerto, codigo }">
+                                    <strong style="margin: 0">{{ aeropuerto }}</strong>
+                                    <em>{{ codigo }}</em>
+                                 </template>
+
+                                  <template #selected-option="{ aeropuerto, codigo }">
+                                       <div style="display: flex; align-items: baseline">
+                                          <strong>{{ aeropuerto }}</strong>
+                                          <em style="margin-left: 0.5rem">{{  codigo  }}</em>
+                                       </div>
+                                 </template>
+
+                              </v-select>
+                             
+
+                           </b-input-group>
+                           <b-form-invalid-feedback :state="valid">
+                              {{ errors[0] }}
+                           </b-form-invalid-feedback>
+                        </validation-provider>
+                     </b-form-group>
+
 
                      <b-form-group>
                         <template #label>
@@ -411,6 +462,7 @@
 
                   </b-col>
                </b-row>
+
                <!-- google map -->
                <b-row>
                   <b-col>
@@ -520,7 +572,7 @@
                         </section>
 
                         <validation-provider name="logo" #default="{errors}">
-                           <b-form-file v-model="logo" ref="refLogo" plain accept=".jpb, .png" class="d-none"
+                           <b-form-file v-model="logo" ref="refLogo" plain accept="image/*" class="d-none"
                               @input="logoSeleccionado" :state="errors.length ? false : null" />
 
                            <b-form-invalid-feedback :state="errors.length ? false : null">
@@ -550,7 +602,7 @@
 
                         <validation-provider name="foto" #default="{errors}">
 
-                           <b-form-file v-model="foto" ref="refFoto" plain accept=".jpb, .png" class="d-none"
+                           <b-form-file v-model="foto" ref="refFoto" plain accept="image/*" class="d-none"
                               @input="fotoSeleccionada" :state="errors.length ? false : null" />
 
                            <b-form-invalid-feedback :state="errors.length ? false : null">
@@ -652,6 +704,7 @@ import {
 } from 'bootstrap-vue'
 
 import useDireccion from '@core/utils/useDireccion'
+import vSelect from 'vue-select'
 
 import {toRefs,ref,onMounted,watch,computed} from '@vue/composition-api'
 import store from '@/store'
@@ -683,6 +736,7 @@ export default {
       BFormTextarea,
       BFormFile,
       BBadge,
+      vSelect,
       CurrencyInput:() => import('components/CurrencyInput')
    },
 
@@ -731,7 +785,9 @@ export default {
       const foto = ref(null)
       const formSolicitud = ref(null)
 
+      const iatas = computed(() => store.state.iata.iatas);
 
+      const divisas = computed(() => store.state.divisa.divisas)
       const optionsPlace = ref({
          content: '<strong>Méxio City</strong>',
       })
@@ -772,9 +828,18 @@ export default {
             })
          }
 
+         if(!divisas.value.length){
+            store.dispatch('divisa/getDivisas')
+         }
+
+         if(!iatas.value.length){
+            store.dispatch('iata/getIatas')
+         }
+
          if(formulario.value.id){
-            urlLogo.value = formulario.value.logo
-            urlFoto.value = formulario.value.foto
+            urlLogo.value = `/storage/negocios/logos/${formulario.value.logo}`
+            urlFoto.value =  `/storage/negocios/fotos/${formulario.value.foto}`
+
             formulario.value.logo = null
             formulario.value.foto = null
             pais_id.value = formulario.value.estado.pais_id
@@ -790,7 +855,7 @@ export default {
 
          cargarForm()
          
-            input.value.$mapPromise.then((map) => {
+         input.value.$mapPromise.then((map) => {
             var myControl = document.getElementById('myAutocomplete');
             myControl.index = 1;
             map.controls[google.maps.ControlPosition.TOP_CENTER].push(myControl);
@@ -937,6 +1002,8 @@ export default {
          aceptar,
          regresar,
          rechazar,
+         divisas,
+         iatas,
          status:computed(() => getSituacionSolicitud(formulario.value.situacion))
       }
 

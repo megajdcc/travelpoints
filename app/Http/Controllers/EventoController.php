@@ -19,8 +19,6 @@ class EventoController extends Controller
         $evento->model->model_type;
 
 
-
-
         return response()->json($evento);
     }
 
@@ -79,6 +77,7 @@ class EventoController extends Controller
 
         $model = $request->get('model');
         $datos = $this->validar($request);
+
         try{    
             DB::beginTransaction();
 

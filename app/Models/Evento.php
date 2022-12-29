@@ -17,7 +17,7 @@ class Evento extends Model
 
     public function __construct()
     {
-        $this->model_type = 'App\Models\evento';
+        $this->model_type = 'App\Models\Evento';
     }
 
     protected $fillable = [

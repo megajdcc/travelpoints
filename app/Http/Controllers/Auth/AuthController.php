@@ -79,6 +79,7 @@ class AuthController extends Controller
          $usuario->cuenta?->divisa;
          $usuario->cuenta?->movimientos;
          $usuario->telefonos;
+         $usuario->likes;
          
          Auth::login($usuario);
 
@@ -230,6 +231,8 @@ class AuthController extends Controller
          $user->cuenta?->divisa;
          $user->cuenta?->movimientos;
          $user->telefonos;
+         $user->likes;
+
 
          // broadcast(new UsuarioConectado($user))->toOthers();
 
@@ -246,8 +249,6 @@ class AuthController extends Controller
          'token_type' => 'Bearer',
          'usuario' =>  $user
       ]);
-
-
 
    }
 

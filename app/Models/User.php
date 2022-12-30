@@ -219,9 +219,9 @@ class User extends Authenticatable
         return $this->hasMany(Solicitud::class, 'usuario_id', 'id');
     }
 
+    public function likes(){
+        return $this->hasMany(Like::class,'usuario_id','id');
+    }
 
-
-
-    
 
 }

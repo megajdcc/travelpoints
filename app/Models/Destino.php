@@ -6,11 +6,11 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Iata;
 use App\Trais\HasDireccion;
-use App\Trais\{hasImages};
+use App\Trais\{hasImages, hasLike};
 
 class Destino extends Model
 {
-    use HasFactory,HasDireccion,hasImages;
+    use HasFactory,HasDireccion,hasImages,hasLike;
 
     public readonly  string  $model_type;
 

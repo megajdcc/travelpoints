@@ -1,6 +1,6 @@
 <template>
   
-  <div id="app" class="h-100" :class="[skinClasses]" >
+  <div id="app" class="h-100" style="min-height:100%" :class="[skinClasses]" >
 
       <component :is="layout">
         <router-view />

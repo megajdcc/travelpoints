@@ -38,6 +38,7 @@ export default {
 				codigo_referidor:null,
 				referidos:[],
 				referidor:[],
+				likes:[]
 
 
 			},
@@ -243,6 +244,7 @@ export default {
 				codigo_referidor: null,
 				referidos: [],
 				referidor: [],
+				likes:[],
 			}
 			
 		},
@@ -298,6 +300,11 @@ export default {
 					i,
 					1
 				) 
+		},
+
+
+		setLikesUser(state,likes){
+			state.usuario.likes = likes
 		}
 	},
 
@@ -311,8 +318,16 @@ export default {
 			return clone(state.usuario)
 		},
 
+		isLikeModel:(state) => {
+
+			return ({model_id,model_type}) => {
+				return state.usuario.likes.filter(val => val.model_id === model_id && val.model_type == model_type).length ? true : false
+			}
+		},
 
 		conPermiso:(state) => {
+
+
 			return (permiso) => {
 
 				if(state.usuario){
@@ -322,6 +337,7 @@ export default {
 				return false;
 				
 			}
+
 		},
 
 
@@ -692,7 +708,25 @@ export default {
 				}).catch(e => reject(e))
 
 			})
+		},
+
+
+		toggleLike({state,commit},model){
+
+			return new Promise((resolve, reject) => {
+				
+				axios.put(`/api/usuarios/${state.usuario.id}/toggle-like`,model).then(({data}) => {
+
+					if(data.result){
+						commit('setLikesUser',data.likes)
+						commit('updatePerfil',state.usuario)
+					} 
+					resolve(data)
+				}).catch(e => reject(e))
+
+			})
 		}
+
 
 
 

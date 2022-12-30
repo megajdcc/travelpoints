@@ -114,23 +114,23 @@ export default function useAuth(){
 
       }
 
-      
-
       if (!client_id) {
          throw new Error("client_id is required");
       }
 
       if (typeof window !== "undefined" && window.document) {
 
-         const contextValue = ["signin", "signup", "use"].includes(context)
-            ? context
-            : "signin";
-         // const googleScript = document.createElement("script");
+         setTimeout(() => {
 
-         // googleScript.src = "https://accounts.google.com/gsi/client";
-         // googleScript.async = true;
-         // googleScript.defer = true;
-         // document.head.appendChild(googleScript);
+            const contextValue = ["signin", "signup", "use"].includes(context)
+               ? context
+               : "signin";
+            // const googleScript = document.createElement("script");
+
+            // googleScript.src = "https://accounts.google.com/gsi/client";
+            // googleScript.async = true;
+            // googleScript.defer = true;
+            // document.head.appendChild(googleScript);
 
             window.google.accounts.id.initialize({
                client_id: client_id,
@@ -142,7 +142,12 @@ export default function useAuth(){
             });
 
             window.google.accounts.id.prompt();
+
+         }, 2000);
+
+         
       }
+      
    }
 
    const authGoogle = () => {

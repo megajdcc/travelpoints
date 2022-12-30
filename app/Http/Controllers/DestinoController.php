@@ -13,12 +13,32 @@ use App\Models\Imagen;
 class DestinoController extends Controller
 {
 
+
+    public function getAll(){
+
+        $destinos = Destino::limit(10)->get();
+
+        foreach($destinos as $destino){
+            $destino->iata;
+            $destino->imagenes;
+            $destino->ciudad;
+            $destino->estado?->pais;
+            $destino->likes;
+            $destino->modelType = $destino->model_type;
+            
+        }
+
+        return response()->json($destinos);
+
+    }
+
     public function fetch(Destino $destino){
 
         $destino->iata;
         $destino->imagenes;
         $destino->ciudad;
         $destino->estado?->pais;
+        $destino->likes;
 
         return response()->json($destino);
         
@@ -48,6 +68,8 @@ class DestinoController extends Controller
             $destino->imagenes;
             $destino->ciudad;
             $destino->estado?->pais;
+            $destino->likes;
+
         }
 
         return response()->json([
@@ -88,6 +110,7 @@ class DestinoController extends Controller
             $destino->ciudad;
             $destino->estado?->pais;
             $destino->imagenes;
+            $destino->likes;
             
             DB::commit();
             $result = true;
@@ -120,6 +143,8 @@ class DestinoController extends Controller
             $destino->ciudad;
             $destino->estado?->pais;
             $destino->imagenes;
+            $destino->likes;
+
 
             DB::commit();
             $result = true;
@@ -178,6 +203,8 @@ class DestinoController extends Controller
             $destino->iata;
             $destino->ciudad;
             $destino->estado?->pais;
+            $destino->likes;
+
             DB::commit();
             $result = true;
         }catch(\Exception $e) {
@@ -202,7 +229,8 @@ class DestinoController extends Controller
             $destino->iata;
             $destino->ciudad;
             $destino->estado?->pais;
-        
+            $destino->likes;
+            
 
             DB::commit();
             $result = true;

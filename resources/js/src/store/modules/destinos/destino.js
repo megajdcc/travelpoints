@@ -253,6 +253,17 @@ export default{
       },
 
 
+      getDestinos({commit}){
+         return new Promise((resolve, reject) => {
+            axios.get(`/api/destinos/get/all`).then(({data}) => {
+               commit('setDestinos',data)
+               resolve(data)
+            }).catch(e => reject(e))
+            
+         })
+      }
+
+
 
 
 

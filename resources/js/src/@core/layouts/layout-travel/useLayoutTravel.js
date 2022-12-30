@@ -20,9 +20,9 @@ export default function useLayoutHorizontal(navbarMenuType, footerType, isVertic
     classes.push(`navbar-${navbarMenuType.value}`)
 
     // Footer
-    if (footerType.value === 'sticky') classes.push('footer-fixed')
-    if (footerType.value === 'static') classes.push('footer-static')
-    if (footerType.value === 'hidden') classes.push('footer-hidden')
+    // if (footerType.value === 'sticky') classes.push('footer-fixed')
+    // if (footerType.value === 'static') classes.push('footer-static')
+    // if (footerType.value === 'hidden') classes.push('footer-hidden')
 
     return classes
   })

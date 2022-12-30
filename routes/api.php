@@ -120,7 +120,8 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
 
     Route::post('usuario/perfil/referidos',[UserController::class,'misReferidos']);
     Route::put('usuarios/{usuario}/add/telefono',[UserController::class,'agregarTelefono']);
-
+    Route::put('usuarios/{usuario}/toggle-like',[UserController::class,'toggleLike']);
+    
     /*****************************/
     /* TELEFONOS
     /*****************************/
@@ -135,7 +136,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::resource('destinos',DestinoController::class);
     Route::put('destinos/{destino}/cargar/imagen',[DestinoController::class,'cargarImagen']);
     Route::delete('destinos/{destino}/eliminar/imagen/{imagen}',[DestinoController::class,'eliminarImagen']);
-
+    
     /*****************************/
     /* Atracciones
     /*****************************/
@@ -148,7 +149,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::get('atraccions/{atraccion}/aperturar/horario',[AtraccionController::class,'aperturarHorario']);
     Route::put('atraccions/{atraccion}/guardar/horario',[AtraccionController::class, 'guardarHorario' ]);
     Route::get('atraccions/{atraccion}/quitar/horario',[AtraccionController::class,'quitarHorario']);
-
+   
 
 
     /*****************************/
@@ -277,3 +278,8 @@ Route::post('cargar/categorias', [CategoriaFaqController::class, 'cargar']);
 Route::post('auth/google',[AuthController::class, 'authGoogle']);
 
 
+// Destinos 
+Route::get('destinos/get/all', [DestinoController::class, 'getAll']);
+
+// Atracciones
+Route::get('atraccions/get/all', [AtraccionController::class, 'getAll']);

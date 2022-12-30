@@ -37,7 +37,8 @@ mix.webpackConfig({
       'mixins': path.resolve(__dirname, 'resources/js/mixins'),
       'store': path.resolve(__dirname, 'resources/js/src/store'),
       'components': path.resolve(__dirname, 'resources/js/calidad/views/components'),
-      '@fuentes':path.resolve(__dirname,'resources/js/src/assets/fonts/')
+      '@fuentes':path.resolve(__dirname,'resources/js/src/assets/fonts/'),
+      '@images':path.resolve(__dirname,'resources/js/src/assets/images/')
     }
   },
   module: {

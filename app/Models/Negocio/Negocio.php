@@ -4,16 +4,17 @@ namespace App\Models\Negocio;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Trais\{HasDireccion,hasCuenta,hasImages,hasTelefonos,hasEvento, hasHorario};
+use App\Trais\{HasDireccion,hasCuenta,hasImages,hasTelefonos,hasEvento, hasHorario, hasLike};
 use App\Models\{Divisa,User,Iata};
 
 class Negocio extends Model
 {
     use HasFactory;
 
-    use HasDireccion,hasCuenta, hasImages, hasTelefonos, hasEvento,hasHorario;
+    use HasDireccion,hasCuenta, hasImages, hasTelefonos, hasEvento,hasHorario,hasLike;
 
     public readonly string $model_type;
+
 
     public $table = 'negocios';
 

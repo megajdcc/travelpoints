@@ -11,6 +11,24 @@ use App\Models\Imagen;
 
 class AtraccionController extends Controller
 {
+
+    public function getAll(){
+        
+        $atracciones = Atraccion::all();
+
+        foreach($atracciones as $atraccion){
+            $atraccion->telefono;
+            $atraccion->imagenes;
+            $atraccion->destino;
+            $atraccion->horarios;
+            $atraccion->likes;
+            $atraccion->modelType = $atraccion->model_type;
+        }
+
+        return response()->json($atracciones);
+
+
+    }
     public function fetch(Atraccion $atraccion)
     {
 
@@ -18,6 +36,7 @@ class AtraccionController extends Controller
         $atraccion->imagenes;
         $atraccion->destino;
         $atraccion->horarios;
+        $atraccion->likes;
 
         return response()->json($atraccion);
     }
@@ -52,6 +71,7 @@ class AtraccionController extends Controller
             $atraccion->imagenes;
             $atraccion->destino;
             $atraccion->horarios;
+            $atraccion->likes;
 
         }
 
@@ -100,6 +120,7 @@ class AtraccionController extends Controller
             $atraccion->imagenes;
             $atraccion->destino;
             $atraccion->horarios;
+            $atraccion->likes;
 
 
             DB::commit();
@@ -148,7 +169,7 @@ class AtraccionController extends Controller
             $atraccion->imagenes;
             $atraccion->destino;
             $atraccion->horarios;
-
+            $atraccion->likes;
 
             DB::commit();
             $result = true;
@@ -214,6 +235,7 @@ class AtraccionController extends Controller
             $atraccion->imagenes;
             $atraccion->destino;
             $atraccion->horarios;
+            $atraccion->likes;
 
             DB::commit();
             $result = true;
@@ -238,6 +260,7 @@ class AtraccionController extends Controller
             $atraccion->imagenes;
             $atraccion->destino;
             $atraccion->horarios;
+            $atraccion->likes;
 
 
             DB::commit();
@@ -261,6 +284,7 @@ class AtraccionController extends Controller
             $atraccion->imagenes;
             $atraccion->destino;
             $atraccion->horarios;
+            $atraccion->likes;
 
             DB::commit();
             $result = true;
@@ -285,6 +309,7 @@ class AtraccionController extends Controller
             $atraccion->imagenes;
             $atraccion->destino;
             $atraccion->horarios;
+            $atraccion->likes;
 
             DB::commit();
             $result = true;
@@ -310,6 +335,7 @@ class AtraccionController extends Controller
             $atraccion->imagenes;
             $atraccion->destino;
             $atraccion->horarios;
+            $atraccion->likes;
 
             DB::commit();
             $result = true;

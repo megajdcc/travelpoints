@@ -334,6 +334,19 @@ export default {
 
       },
 
+      getAtracciones({commit}){
+         return new Promise((resolve,reject) => {
+
+            axios.get(`/api/atraccions/get/all`).then(({data}) => {
+               commit('setAtracciones',data)
+               resolve(data)
+
+            }).catch(e => reject(e))
+            
+         })
+
+      }
+
 
 
 

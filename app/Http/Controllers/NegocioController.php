@@ -26,6 +26,7 @@ class NegocioController extends Controller
         $negocio->eventos;
         $negocio->iata;
         $negocio->horarios;
+        $negocio->likes;
 
         return response()->json($negocio);
     }
@@ -63,6 +64,7 @@ class NegocioController extends Controller
             $negocio->eventos;
             $negocio->iata;
             $negocio->horarios;
+            $negocio->likes;
 
 
         }   
@@ -151,6 +153,7 @@ class NegocioController extends Controller
         $negocio->eventos;
         $negocio->iata;
         $negocio->horarios;
+        $negocio->likes;
 
 
 
@@ -211,6 +214,7 @@ class NegocioController extends Controller
             $negocio->eventos;
             $negocio->iata;
             $negocio->horarios;
+            $negocio->likes;
 
 
             DB::commit();
@@ -267,6 +271,7 @@ class NegocioController extends Controller
         $negocio->eventos;
         $negocio->iata;
         $negocio->horarios;
+        $negocio->likes;
 
 
 
@@ -308,11 +313,9 @@ class NegocioController extends Controller
         $negocio->eventos;
         $negocio->iata;
         $negocio->horarios;
-
-
+        $negocio->likes;
 
         return response()->json(['result' => $result,'negocio' => $negocio]);
-
 
     }
 
@@ -352,9 +355,10 @@ class NegocioController extends Controller
         $negocio->eventos;
         $negocio->iata;
         $negocio->horarios;
+        $negocio->likes;
+
 
         return response()->json(['result' => $result,'negocio' => $negocio]);
-
 
     }
 
@@ -374,11 +378,9 @@ class NegocioController extends Controller
         $negocio->eventos;
         $negocio->iata;
         $negocio->horarios;
+        $negocio->likes;
 
         return response()->json(['result' => true, 'negocio' => $negocio]);
-        
-
-
     }
 
 
@@ -413,6 +415,8 @@ class NegocioController extends Controller
         $negocio->eventos;
         $negocio->iata;
         $negocio->horarios;
+        $negocio->likes;
+
 
         return response()->json(['result' => $result,'negocio' => $negocio]);
 
@@ -445,6 +449,7 @@ class NegocioController extends Controller
         $negocio->eventos;
         $negocio->iata;
         $negocio->horarios;
+        $negocio->likes;
 
 
         return response()->json(['result' => $result,'negocio' => $negocio]);

@@ -1,6 +1,6 @@
 <template>
 <section>
-   <b-tabs vertical pill>
+   <b-tabs vertical pills justified fill small nav-wrapper-class="col-12 col-md-4 col-lg-3 col-xl-2">
 
       <!-- Informacion del negocio -->
       <b-tab lazy>
@@ -284,7 +284,7 @@
             </b-form>
          </validation-observer>
       
-         </b-tab>
+      </b-tab>
 
       <!-- INformacion de direccion del negocio -->
       <b-tab>

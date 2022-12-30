@@ -2,7 +2,7 @@ export default [
    {
       path: '/',
       name: 'inicio',
-      component: () => import('views/paginas'),
+      component: () => import('views/paginas/index.vue'),
       meta: {
         layout:'travel',
          resource: 'Auth',

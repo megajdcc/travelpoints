@@ -6,19 +6,18 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Destino;
 
-use App\Trais\{hasTelefonos,hasImages,hasHorario};
+use App\Trais\{hasTelefonos,hasImages,hasHorario, hasLike};
 
 class Atraccion extends Model
 {
 
-    use HasFactory,hasTelefonos,hasImages, hasHorario;
+    use HasFactory,hasTelefonos,hasImages, hasHorario,hasLike;
 
     public readonly string $model_type;
 
     public function __construct()
     {   
         $this->model_type = 'App\Models\Atraccion';
-
     }
     
     public $fillable = [

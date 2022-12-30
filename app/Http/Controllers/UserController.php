@@ -19,6 +19,7 @@ use App\Models\Usuario\Rol;
 use Illuminate\Support\Str;
 use App\Models\Telefono;
 
+use App\Models\Like;
 
 
 
@@ -35,6 +36,8 @@ class UserController extends Controller
         $usuario->cuenta?->divisa;
 
         $usuario->telefonos;
+        $usuario->likes;
+
 
 
         return response()->json($usuario);
@@ -93,6 +96,8 @@ class UserController extends Controller
             $usuario->avatar = $usuario->getAvatar();
             $usuario->cuenta?->divisa;
             $usuario->telefonos;
+            $usuario->likes;
+
 
             
             $result = true;
@@ -155,6 +160,8 @@ class UserController extends Controller
                 $usuario->avatar = $usuario->getAvatar();
             $usuario->cuenta;
             $usuario->cuenta?->divisa;
+            $usuario->likes;
+
 
                 $result = true;
             
@@ -186,6 +193,8 @@ class UserController extends Controller
         
         $usuario->cuenta;
         $usuario->cuenta?->divisa;
+
+        $usuario->likes;
 
         $usuario->telefonos;
 
@@ -247,7 +256,7 @@ class UserController extends Controller
             $usuario->rol->permisos;
             $usuario->telefonos;
             $usuario->cuenta?->divisa;
-
+            $usuario->likes;
 
             $usuario->avatar = $usuario->getAvatar();
             $result = true;
@@ -298,7 +307,8 @@ class UserController extends Controller
             $usuario->avatar = $usuario->getAvatar();
             $usuario->cuenta?->divisa;
             $usuario->telefonos;
-        }
+            $usuario->likes;
+                }
         return response()->json($usuarios);
     }
 
@@ -375,9 +385,7 @@ class UserController extends Controller
         $user->avatar = $user->getAvatar();
         $user->telefonos;
         $user->cuenta?->divisa;
-
-
-        
+        $usuario->likes;
         return response()->json(['result' => $result, 'usuario' => $user]);
 
     }
@@ -450,6 +458,7 @@ class UserController extends Controller
             $usuario->save();
             $usuario->cuenta;
             $usuario->telefonos;
+            $usuario->likes;
             $usuario->cuenta?->divisa;
 
 
@@ -576,12 +585,11 @@ class UserController extends Controller
 
         foreach($usuarios as $key => $usuario){
 
-           
             $usuario->telefonos;
             $usuario->rol;
             $usuario->cuenta;
             $usuario->cuenta?->divisa;
-
+            $usuario->likes;
 
             if($usuario->avatar){
                $usuarios[$key]->avatar =asset('storage/img-perfil/' . $usuario->avatar); 
@@ -695,7 +703,7 @@ class UserController extends Controller
         $usuario->telefonos;
         $usuario->cuenta;
         $usuario->cuenta?->divisa;
-
+        $usuario->likes;
         
         return response()->json(['result' => $result,'usuario' => $usuario]);
         
@@ -743,5 +751,48 @@ class UserController extends Controller
         
 
     }
+
+
+    public function toggleLike(Request $request, User $usuario){
+
+        try{
+        
+            DB::beginTransaction();
+                $datos = $request->all();
+
+                if($like = Like::where([
+                    ['usuario_id', $usuario->id],
+                    ['model_id',$datos['model_id']],
+                    ['model_type',$datos['model_type']]
+                    ])->first()){
+                    $like->delete();
+               
+                }else{
+
+                    $like = Like::create([
+                        'usuario_id' => $usuario->id,
+                        'model_id'   => $datos['model_id'],
+                        'model_type' => $datos['model_type'],
+                        'comentario' => ''
+                    ]);
+
+                }
+
+              
+
+            DB::commit();
+            $result  = true;
+        
+        }catch(\Exception $e){
+            DB::rollBack();
+            $result = false;
+        }
+
+       $likes = $usuario->likes;
+        
+        return response()->json(['result' => $result,'likes' => $result ? $likes : null]);
+    
+    }
+
 
 }

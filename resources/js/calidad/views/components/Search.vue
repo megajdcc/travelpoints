@@ -17,9 +17,17 @@
          <b-list-group class="collapseSearch d-flex flex-column align-items-center" ref="refToggle" v-if="search">
             <!-- <b-spinner v-show="loading" variant="primary" class="my-1"></b-spinner> -->
             
-            <b-list-group-item button variant="light" @click="searchGPS">
-               <feather-icon icon="SendIcon" />
-               Cerca de mí
+            <b-list-group-item button variant="light" @click="searchGPS" class="d-flex align-items-center justify-content-between">
+
+               <section class="w-25">
+                  <feather-icon icon="SendIcon" />
+                  Cerca de mí
+               </section>
+
+               <section class="w-75">
+                  <v-select v-model="km" @input="searchGPS" :reduce="(option) => option.value" :options="kms" class="w-100" ></v-select>
+               </section>
+              
             </b-list-group-item>
 
             <b-list-group-item v-for="({nombre,id,ruta,tipo,imagen},i) in resultados" :key="i" class="cursor-pointer" button :to="ruta" >
@@ -55,6 +63,7 @@ import {toRefs,ref,computed,onMounted,watch} from '@vue/composition-api'
 import store from '@/store'
 import router from '@/router'
 import {useGeolocation}  from '@vueuse/core'
+import vSelect from 'vue-select'
 
 import {
    BFormInput,
@@ -90,6 +99,7 @@ export default {
       BInputGroupText,
       BInputGroupPrepend,
       BLink,
+      vSelect
    },
 
    directives:{
@@ -107,9 +117,46 @@ export default {
       const listenToggle = ref(false)
 
       const { coords, locatedAt, error, resume, pause } = useGeolocation()
-         
+
+      const kms = ref([
+         {
+            label:'30 Km',
+            value:30
+         },
+         {
+            label: '50 Km',
+            value: 50
+         },
+
+         {
+            label: '100 Km',
+            value: 100
+         },
+         {
+            label: '150 Km',
+            value: 150
+         },
+
+         {
+            label: '200 Km',
+            value: 200
+         },
+
+         {
+            label: '250 Km',
+            value: 250
+         },
+
+         {
+            label: '300 Km',
+            value: 300
+         }
 
 
+
+      ]);
+
+      const km = ref(300)
       const remoteMethod = (query) => {
 
          if(query !== ''){
@@ -131,7 +178,7 @@ export default {
             toast.info(error.value.message,{position:'bottom-right'})
          }
          
-         store.dispatch('searchLocation',{lat:coords.value.latitude,lng:coords.value.longitude}).then(data => {
+         store.dispatch('searchLocation',{lat:coords.value.latitude,lng:coords.value.longitude,km:km.value}).then(data => {
             resultados.value = data
          }).catch(e => console.log(e))
 
@@ -154,7 +201,9 @@ export default {
          searchGPS,
          refInput,
          inputSearch,
-         listenToggle
+         listenToggle,
+         kms,
+         km
       }
 
    }

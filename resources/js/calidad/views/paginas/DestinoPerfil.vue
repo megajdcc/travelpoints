@@ -1,5 +1,5 @@
 <template>
-   <b-container fluid>
+   <b-container fluid class="px-0 mx-0">
       <b-row>
          <b-col>
             <h3 class="font-weight-bolder titulo">
@@ -36,6 +36,11 @@
             <p class="text-justify">{{ destino.descripcion  }}</p>
          </b-col>
       </b-row>
+
+      <!-- Atracciones -->
+
+      <atracciones :atracciones="destino.atracciones" :titulo="`Las atracciones más populares en ${destino.nombre}`"  />
+
    </b-container>
 </template>
 
@@ -66,6 +71,7 @@ export default {
       BRow,
       BCol,
       BImg,
+      atracciones:() => import('components/Atracciones.vue')
    }, 
 
    setup(props){

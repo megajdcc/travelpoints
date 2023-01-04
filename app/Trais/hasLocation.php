@@ -10,7 +10,7 @@ trait hasLocation
 {
    
 
-   public static function cerca(array $datos,Model $model,Int $distancia = 1000):bool{
+   public static function cerca(array $datos,Model $model,Int $distancia = 300):bool{
 
       $theta = $datos['lng'] - $model->lng;
       $dist = sin(deg2rad($datos['lat'])) * sin(deg2rad($model->lat)) +  cos(deg2rad($datos['lat'])) * cos(deg2rad($model->lat)) * cos(deg2rad($theta));

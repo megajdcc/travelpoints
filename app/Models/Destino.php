@@ -40,7 +40,7 @@ class Destino extends Model
     public static function getLocation($datos) : Collection{
         
         $destinos = Destino::all()->filter(function($val) use($datos) {
-            return Destino::cerca($datos,$val);
+            return Destino::cerca($datos,$val,$datos['km']);
         });
 
         foreach ($destinos as $key => $destino) {
@@ -52,6 +52,10 @@ class Destino extends Model
 
         return $destinos;
 
+    }
+
+    public function atracciones(){
+        return $this->hasMany(Atraccion::class,'destino_id','id');
     }
 
 }

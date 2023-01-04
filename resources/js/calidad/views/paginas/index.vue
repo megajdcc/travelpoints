@@ -11,61 +11,7 @@
       </b-row>
 
       <!-- Atracciones -->
-      <b-row>
-         <b-col cols="12">
-
-            <h3>Las experiencias más populares en TravelPoints</h3>
-            <p>Los mejores tours, actividades y boletos</p>
-
-         </b-col>
-
-         <b-col cols="12">
-            <!-- <SwiperComponent /> -->
-
-            <swiper class="swiper-centered-slides px-0 py-1" :options="swiperOptions"  >
-            
-               <!-- slides -->
-               <swiper-slide v-for="(atraccion,i) in atracciones" :key="i" class="rounded ">
-
-                  <b-card class="cursor-pointer" header-class="p-0 header-card" body-class="mt-1 px-1 " >
-                     
-                     <template #header>
-
-                        <b-img v-if="atraccion.imagenes.length" :src="`/storage/atracciones/imagenes/${atraccion.imagenes[0].imagen}`" thumbnail class="card-img" @click="irAtraccion(atraccion)"  />
-
-                        <has-like v-if="is_loggin && atraccion.imagenes.length" :model="{model_id:atraccion.id,model_type:atraccion.modelType}" />
-
-                     </template>
-
-                   
-                     <b-link :to="{name:'edit.atraccion',params:{id:atraccion.id}}">
-                        
-                        <b-badge variant="primary" v-if="atraccion.duracion_sugerida"> Duración Sugerida: {{ atraccion.duracion_sugerida  }}</b-badge>
-
-                        <h4 class="title-card mt-1 mb-0">
-                           {{ atraccion.nombre }}
-                        </h4>
-
-
-                     </b-link>
-                     <section class="section-rate d-flex mt-0 p-0">
-                        <b-form-rating id="rating-sm-no-border" :value="5" no-border variant="warning" inline size="sm" readonly class="ml-0 pl-0" /> <span class="d-flex align-items-center" >{{ atraccion.likes.length }}</span>
-                     </section>
-                     
-                     <p class="text-justify">{{  atraccion.descripcion.substring(0,80)  }}</p>
-
-                  </b-card>
-               
-               </swiper-slide>
-            
-               <!-- Add Arrows -->
-               <div slot="button-next" class="swiper-button-next" />
-               <div slot="button-prev" class="swiper-button-prev" />
-            </swiper>
-
-
-         </b-col>
-      </b-row>
+      <atracciones :atracciones="atracciones"  />
 
       <!-- Destinos -->
       <b-row>
@@ -85,7 +31,7 @@
             
                   <swiper-slide v-for="(destino,i) in destinos" :key="i" class="rounded ">
             
-                     <b-card class="cursor-pointer" header-class="p-0 header-card" body-class="mt-1 px-1 ">
+                     <b-card class="cursor-pointer" header-class="p-0 header-card" body-class="mt-1 px-1 " @click="$router.push(destino.ruta)">
             
                         <template #header>
                            <b-img :src="`/storage/destinos/imagenes/${destino.imagenes[0].imagen}`" thumbnail class="card-img"
@@ -96,7 +42,7 @@
                         </template>
             
             
-                     <b-link :to="{name:'edit.destino',params:{id:destino.id}}">
+                     <b-link :to="destino.ruta">
                      
                         <h4 class="title-card mt-1 mb-0">
                            {{ destino.nombre }}
@@ -152,7 +98,7 @@
          <b-col cols="12">
 
          </b-col>
-         
+
       </b-row>
 
       <b-row>
@@ -215,7 +161,8 @@ export default {
       NabvarPagina: () => import('components/NabvarPagina'),
       HasLike:() => import('components/HasLike.vue'),
       FormWizard:() => import('@/views/forms/form-wizard/FormWizard.vue'),
-      Search:() => import('components/Search.vue')
+      Search:() => import('components/Search.vue'),
+      Atracciones: () => import('components/Atracciones.vue')
    },
 
    directives: {

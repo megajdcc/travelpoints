@@ -13,7 +13,7 @@ class HomeController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth');
+        $this->middleware('auth')->except(['searchPublic','searchLocation']);
     }
 
     /**
@@ -86,7 +86,7 @@ class HomeController extends Controller
         ])->get();
 
         foreach ($destinos as $key => $destino) {
-            $destino->ruta ="/Destinos?q={$destino->nombre}";;
+            $destino->ruta ="/Destinos?q={$destino->nombre}";
             $destino->tipo = 'Destino';
             $destino->imagenes;
             $destino->imagen = $destino->imagenes[0] ? "/storage/destinos/imagenes/{$destino->imagenes[0]->imagen}" : '';

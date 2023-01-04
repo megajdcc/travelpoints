@@ -50,7 +50,7 @@ class Atraccion extends Model
     {
 
         $atraccions = Atraccion::all()->filter(function ($val) use ($datos) {
-            return Atraccion::cerca($datos, $val);
+            return Atraccion::cerca($datos, $val,$datos['km']);
         });
 
         foreach ($atraccions as $key => $atraccion) {

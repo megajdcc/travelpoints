@@ -1,6 +1,6 @@
 <template>
       <article class="icon-like">
-         <font-awesome-icon :icon="['fa-solid', iconLike]" :color="is_loggin && isLike ? '#a20000' : '#3f3f3f'" @click="toggleLike" size="2x" />
+         <font-awesome-icon :icon="['fa-solid', iconLike]" :color="is_loggin && isLike ? '#a20000' : '#3f3f3f'" @click.stop="toggleLike" size="2x" />
       </article>
 </template>
 

@@ -18,7 +18,8 @@ export default{
          lat:0,
          lng:0,
          titulo:'',
-         imagenes:[]
+         imagenes:[],
+         atracciones:[]
       },
 
       destinos:[]
@@ -57,6 +58,7 @@ export default{
             lat: 0,
             lng: 0,
             titulo: '',
+            atracciones: [],
             imagenes: []
          }
       },

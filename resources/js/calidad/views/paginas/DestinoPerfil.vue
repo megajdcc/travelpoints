@@ -12,11 +12,17 @@
       <!-- Imagenes del Banner -->
       <b-row>
 
-         <b-col cols="12" class="banner-imagenes">
+         <b-col cols="12" class="banner-imagenes" v-if="destino.imagenes.length">
             
           
             <article class="portada" >
                <b-img :src="portada" class="w-100"></b-img>
+
+               <b-button variant="dark" @click="() => showGallerie = !showGallerie" size="sm" class="btn-gallerie" rounded>
+                  <font-awesome-icon icon="fa-images" class="mr-1" />
+                  Ver todas las fotos
+               </b-button>
+
             </article>
 
             <article class="imagenes-principales">
@@ -24,6 +30,11 @@
                   :src="`/storage/destinos/imagenes/${imagen}`" class="w-100" v-if="i <= 1"></b-img>
             </article>
             
+
+         </b-col>
+
+         <b-col cols="12">
+            <small>Turismo en {{ destino.nombre }}, {{ destino.estado.pais.pais }} - Viajes a {{ destino.nombre }}</small>
          </b-col>
 
 
@@ -37,9 +48,12 @@
          </b-col>
       </b-row>
 
+      <el-divider></el-divider>
+
       <!-- Atracciones -->
 
       <atracciones :atracciones="destino.atracciones" :titulo="`Las atracciones más populares en ${destino.nombre}`"  />
+      <gallerie :galleries="destino.imagenes" :showGallerie.sync="showGallerie" path="/storage/destinos/imagenes" />
 
    </b-container>
 </template>
@@ -56,6 +70,7 @@ import {
    BRow,
    BCol,
    BImg,
+   BButton,
 
 } from 'bootstrap-vue'
 
@@ -70,17 +85,20 @@ export default {
       BCard,
       BRow,
       BCol,
+      BButton,
       BImg,
-      atracciones:() => import('components/Atracciones.vue')
+      atracciones:() => import('components/Atracciones.vue'),
+      Gallerie:() => import('components/Gallerie.vue')
    }, 
 
    setup(props){
       
       const {destino} = toRefs(store.state.destino)
+      const showGallerie = ref(false)
 
       return {
          destino,
-
+         showGallerie,
          portada: computed(() => store.getters['destino/getPortada'])
       }
       
@@ -102,11 +120,21 @@ export default {
 
       .portada{
          flex:1 1 60%;
+         position:relative;
          img {
               height:250px;
               object-fit:cover;
                border: 2px solid white;
          }
+
+         .btn-gallerie{
+            position:absolute;
+            left:1.5rem;
+            top:auto;
+            bottom:1.5rem;
+            right:auto;
+         }
+
       }
 
       .imagenes-principales{

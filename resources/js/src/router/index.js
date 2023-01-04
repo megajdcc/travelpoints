@@ -10,6 +10,7 @@ import paginas from './routes/paginas';
 import negocio from './routes/negocio';
 
 Vue.use(VueRouter)
+
 const router = new VueRouter({
   
   mode: 'history',

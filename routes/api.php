@@ -1,7 +1,7 @@
 <?php
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\{AuthController};
-use App\Http\Controllers\{CategoriaFaqController, DestinoController, DivisaController, EventoController, FaqController, HorarioController, IataController, MovimientoController, NegocioCategoriaController, NegocioController, UserController,NotificacionController,RolController,PermisoController, SolicitudController, TelefonoController};
+use App\Http\Controllers\{CategoriaFaqController, DestinoController, DivisaController, EventoController, FaqController, HomeController, HorarioController, IataController, MovimientoController, NegocioCategoriaController, NegocioController, UserController,NotificacionController,RolController,PermisoController, SolicitudController, TelefonoController};
 use App\Http\Middleware\convertirNull;
 use Laravel\Socialite\Facades\Socialite;
 use App\Models\{CategoriaFaq, Pais,Estado,Ciudad};
@@ -283,3 +283,8 @@ Route::get('destinos/get/all', [DestinoController::class, 'getAll']);
 
 // Atracciones
 Route::get('atraccions/get/all', [AtraccionController::class, 'getAll']);
+
+// Search Public
+Route::post('search/public',[HomeController::class,'searchPublic']);
+Route::post('search/location',[HomeController::class,'searchLocation']);
+Route::post('destinos/obtener/por-nombre',[DestinoController::class,'getPorNombre']);

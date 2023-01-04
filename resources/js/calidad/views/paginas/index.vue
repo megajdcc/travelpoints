@@ -4,26 +4,8 @@
       <!-- Search -->
       <b-row>
          <b-col cols="12">
-            <b-card class="banner-search" body-class="d-flex justify-content-center align-items-center py-3" :style="{'background-image':`url(${imageBanner})`}" >
-               <el-select v-model="search" 
-                     multiple 
-                     filterable 
-                     remote 
-                     reserve-keyword 
-                     placeholder="¿ A Donde ?"
-                     :remote-method="remoteMethod" 
-                     :loading="loading"
-                     class="el-search">
-                        
-                  <template #prefix>
-
-                     <article class="h-100 d-flex align-items-center">
-                        <feather-icon icon="SearchIcon" size="2x"/>
-                     </article>
-                  
-                  </template>
-               
-               </el-select>
+            <b-card class="banner-search" body-class="d-flex justify-content-center align-items-center py-3 w-100" :style="{'background-image':`url(${imageBanner})`}" >
+               <search />
             </b-card>
          </b-col>
       </b-row>
@@ -168,10 +150,9 @@
          </b-col>
       
          <b-col cols="12">
-      
+
          </b-col>
-      
-      
+         
       </b-row>
 
       <b-row>
@@ -233,7 +214,8 @@ export default {
       SwiperComponent:() => import('@/views/extensions/swiper/Swiper.vue'),
       NabvarPagina: () => import('components/NabvarPagina'),
       HasLike:() => import('components/HasLike.vue'),
-      FormWizard:() => import('@/views/forms/form-wizard/FormWizard.vue')
+      FormWizard:() => import('@/views/forms/form-wizard/FormWizard.vue'),
+      Search:() => import('components/Search.vue')
    },
 
    directives: {
@@ -362,15 +344,7 @@ export default {
    position:relative;
 }
 
-.el-search {
-   width:100%;
-}
 
-@media (min-width:762px){
-   .el-search {
-      width:75% !important;
-   }
-}
 .swiper-button-prev,.swiper-button-next{
    display:none;
 }

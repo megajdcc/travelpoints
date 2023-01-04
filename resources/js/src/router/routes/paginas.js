@@ -1,3 +1,6 @@
+
+import store from '@/store'
+
 export default [
    {
       path: '/',
@@ -112,6 +115,47 @@ export default [
       },
 
    },
+
+
+   {
+      path:'/search',
+      component:() => import('views/paginas/Search.vue'),
+      props:(route) => ({query:route.query.q}),
+      name:'searchResult',
+      meta:{
+         resource:'Auth',
+         layout:'travel'
+      }
+   },
+
+   {
+      path: '/Destinos',
+      component: () => import('views/paginas/DestinoPerfil.vue'),
+      props: (route) => ({ query: route.query.q }),
+      name: 'destino.perfil',
+
+      beforeEnter:(to,from,next) => {
+         store.dispatch('destino/fetchName',to.query.q).then(({result}) => {
+            if(result){
+               next()
+            }else{
+              next({name:'inicio'})
+            }
+
+
+         }).catch(e => {
+            console.log(e)
+            next({ name: 'inicio' })
+         })
+
+      },
+
+      meta: {
+         resource: 'Auth',
+         layout: 'travel'
+      }
+   }
+
 
 
 ]

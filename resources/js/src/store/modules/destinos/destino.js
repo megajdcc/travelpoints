@@ -30,7 +30,15 @@ export default{
 
       draft(state){
          return clone(state.destino)
+      },
+
+
+      getPortada(state){
+         const portada = state.destino.imagenes.find(val => val.portada)
+
+         return `/storage/destinos/imagenes/${portada.imagen}`  
       }
+
    },
 
    mutations:{
@@ -124,6 +132,20 @@ export default{
             }).catch(e => reject(e))
 
          })
+      },
+
+      fetchName({commit},destino_name){
+         return new Promise((resolve,reject) => {
+
+            axios.post(`/api/destinos/obtener/por-nombre`,{nombre:destino_name}).then(({data}) => {
+               if(data.result){
+                  commit('setDestino',data.destino)
+               }
+               resolve(data)
+            }).catch(e => reject(e))
+
+         })
+
       },
 
       fetchData({commit},datos){
@@ -254,7 +276,9 @@ export default{
 
 
       getDestinos({commit}){
+         
          return new Promise((resolve, reject) => {
+
             axios.get(`/api/destinos/get/all`).then(({data}) => {
                commit('setDestinos',data)
                resolve(data)

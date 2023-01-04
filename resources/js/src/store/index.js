@@ -144,6 +144,23 @@ export default new Vuex.Store({
         }
       });
 
+    },
+
+
+    searchPublic({commit},query){
+      return new Promise((resolve, reject) => {
+        
+        axios.post(`/api/search/public`,{q:query}).then(({data}) => {
+          resolve(data)
+        }).catch(e => reject(e))
+
+      })
+    },
+
+    searchLocation({commit},location){
+      return new Promise((resolve, reject) => {
+        axios.post(`/api/search/location`,location).then(({data}) => resolve(data)).catch(e => reject(e))
+      })
     }
 
 

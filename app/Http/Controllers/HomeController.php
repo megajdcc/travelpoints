@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 use Illuminate\Http\Request;
-use App\Models\{User};
+use App\Models\{Atraccion, Destino, User};
 
 class HomeController extends Controller
 {
@@ -73,5 +73,54 @@ class HomeController extends Controller
         $result = [];
         return response()->json($result);
     }
+
+    public function searchPublic(request $request){
+
+       
+        $q = $request->get('q');
+        
+        $destinos = Destino::where([
+            ['nombre','LIKE',"%{$q}%","OR"],
+            ['descripcion', 'LIKE', "%{$q}%", "OR"],
+            ['titulo', 'LIKE', "%{$q}%", "OR"],
+        ])->get();
+
+        foreach ($destinos as $key => $destino) {
+            $destino->ruta ="/Destinos?q={$destino->nombre}";;
+            $destino->tipo = 'Destino';
+            $destino->imagenes;
+            $destino->imagen = $destino->imagenes[0] ? "/storage/destinos/imagenes/{$destino->imagenes[0]->imagen}" : '';
+
+        }
+
+        $atracciones = Atraccion::where([
+            ['nombre', 'LIKE', "%{$q}%", "OR"],
+            ['descripcion', 'LIKE', "%{$q}%", "OR"],
+            ['incluye', 'LIKE', "%{$q}%", "OR"],
+        ])->get();
+
+        foreach ($atracciones as $key => $atraccion) {
+            $atraccion->ruta = "/Atraccions?q={$atraccion->nombre}";
+            $atraccion->tipo = 'Atracción';
+            $atraccion->imagenes;
+            $atraccion->imagen = $atraccion->imagenes[0] ? "/storage/atracciones/imagenes/{$atraccion->imagenes[0]->imagen}" : '';
+        }
+        
+
+        $resultados = collect([...$destinos,...$atracciones]);
+
+        return response()->json($resultados);
+    }
+
+
+    public function searchLocation(Request $request){
+
+        $datos = $request->all();
+        return response()->json(collect([...Destino::getLocation($datos),...Atraccion::getLocation($datos)]));
+
+    }
+
+
+
 
 }

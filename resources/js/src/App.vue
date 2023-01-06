@@ -1,6 +1,6 @@
 <template>
   
-  <div id="app" class="h-100" style="min-height:100%" :class="[skinClasses]" >
+  <div id="app" :class="{ 'h-100' : route.meta.layout !=  'travel', ...skinClasses }" style="min-height:100%" >
 
       <component :is="layout">
         <router-view />
@@ -122,6 +122,7 @@ export default {
       enableScrollToTop,
       layout,
       contentLayoutType,
+      route
     }
   },
 

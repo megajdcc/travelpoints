@@ -26,6 +26,7 @@ class DestinoController extends Controller
             $destino->likes;
             $destino->modelType = $destino->model_type;
             $destino->ruta = "/Destinos?q={$destino->nombre}";
+            $destino->negocios = $destino->negocios();
             
         }
 
@@ -258,8 +259,11 @@ class DestinoController extends Controller
         $destino->likes;
         $destino->modelType = $destino->model_type;
         
+        $destino->negocios = $destino->negocios();
+        
+
         foreach($destino->atracciones as $atraccion){
-            $atraccion->ruta = "/Atracciones?q={$atraccion->nombre}";
+            $atraccion->ruta = "/Atraccions?q={$atraccion->nombre}";
 
             $atraccion->telefono;
             $atraccion->imagenes;
@@ -268,7 +272,6 @@ class DestinoController extends Controller
             $atraccion->likes;
             $atraccion->modelType = $atraccion->model_type;
         }
-
 
         return response()->json(['result' => $destino ? true : false,'destino' => $destino]);
     }

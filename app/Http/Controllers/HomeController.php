@@ -103,6 +103,7 @@ class HomeController extends Controller
             $atraccion->ruta = "/Atraccions?q={$atraccion->nombre}";
             $atraccion->tipo = 'Atracción';
             $atraccion->imagenes;
+            $atraccion->opinions;
             $atraccion->imagen = $atraccion->imagenes[0] ? "/storage/atracciones/imagenes/{$atraccion->imagenes[0]->imagen}" : '';
         }
         

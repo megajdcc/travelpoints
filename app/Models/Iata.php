@@ -20,5 +20,10 @@ class Iata extends Model
     ];
 
 
+    public function destinos(){
+        return $this->hasMany(Destino::class,'iata_id','id');
+    }
+
+
 
 }

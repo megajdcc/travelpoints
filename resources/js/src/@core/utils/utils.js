@@ -170,6 +170,19 @@ export const getFecha = (fecha) => {
   return moment(fecha).format('LLL');
 } 
 
+export const getDay = (dia) => {
+
+  const dias = ['Lunes','Martes','Miércoles','Jueves','Viernes','Sabado','Domingo'];
+
+
+  return dias[dia -1];
+
+} 
+
+export const getHora = (hora) => {
+  return moment(moment().format(`Y-M-D ${hora}`)).format('h:mm A');
+}
+
 
 export const getImage = (archivo) => {
 

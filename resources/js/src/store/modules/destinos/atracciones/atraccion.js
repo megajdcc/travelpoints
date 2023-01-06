@@ -27,7 +27,8 @@ export default {
          horarios:[],
          comentarios:[],
          descripcion:'',
-         horarios:[]
+         horarios:[],
+         opinions:[],
 
       },
 
@@ -40,7 +41,86 @@ export default {
 
       draft(state) {
          return clone(state.atraccion)
+      },
+
+
+      getPortada(state) {
+         const portada = state.atraccion.imagenes.find(val => val.portada)
+
+         if (portada) {
+            return `/storage/atracciones/imagenes/${portada.imagen}`
+
+
+         } else {
+            const primeraImagen = state.atraccion.imagenes[0]
+
+            if (primeraImagen) {
+               return `/storage/atracciones/imagenes/${primeraImagen.imagen}`
+            } else {
+               return `/storage/atracciones/imagenes/`
+            }
+
+         }
+
+      },
+
+      legendHorario(state){
+         let legend = 'Cerrado ahora';
+       
+         const dia = state.atraccion.horarios.find(val => val.dia == moment().day());
+
+         if(dia){
+         const hora1 = moment(moment().format(`Y-M-D ${dia.apertura}`));
+         const hora2 = moment(moment().format(`Y-M-D ${dia.cierre}`));
+
+            const horaActual = moment();
+            
+            if(horaActual.isBetween(hora1,hora2)){
+               legend = 'Abierto Ahora'
+            }
+
+         }
+
+         return legend;
+      },
+
+      horarioHoy(state){
+
+         const dia = state.atraccion.horarios.find(val => val.dia == moment().day());
+         
+         if(dia){
+
+            const hora1 = moment(moment().format(`Y-M-D ${dia.apertura}`));
+            const hora2 = moment(moment().format(`Y-M-D ${dia.cierre}`));
+            
+            return `De ${hora1.format('h:mm A')} a ${hora2.format('h:mm A')}`
+
+         }
+
+
+         return null;
+
+      },
+
+
+      promedioCalificacion(state) {
+
+         let result = 0;
+
+         if(state.atraccion.opinions.length){
+            const sum_calificacion = state.atraccion.opinions.reduce((a, b) => a + Number(b.calificacion), 0);
+
+            result = sum_calificacion / state.atraccion.opinions.length;
+
+         }
+       
+
+         return result;
+        
       }
+
+
+
    },
 
    mutations: {
@@ -62,7 +142,7 @@ export default {
             comentarios: [],
             descripcion:'',
             horarios: [],
-
+            opinions: [],
             telefono: {
                telefono: '',
                is_whatsapp: false,
@@ -345,7 +425,22 @@ export default {
             
          })
 
-      }
+      },
+
+      fetchName({ commit }, atraccion_name) {
+         return new Promise((resolve, reject) => {
+
+            axios.post(`/api/atraccions/obtener/por-nombre`, { nombre: atraccion_name }).then(({ data }) => {
+               if (data.result) {
+                  commit('setAtraccion', data.atraccion)
+               }
+               resolve(data)
+            }).catch(e => reject(e))
+
+         })
+
+      },
+
 
 
 

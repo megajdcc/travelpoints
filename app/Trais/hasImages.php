@@ -17,7 +17,6 @@ trait hasImages
 
    public function addImagen(array $data): Imagen
    {
-
       $imagen = Imagen::create([...$data, ...['model_id' => $this->id, 'model_type' => $this->model_type]]);
       $imagen->model;
       return $imagen;

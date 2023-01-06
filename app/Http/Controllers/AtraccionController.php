@@ -20,9 +20,14 @@ class AtraccionController extends Controller
             $atraccion->telefono;
             $atraccion->imagenes;
             $atraccion->destino;
+            $atraccion->destino->estado?->pais;
+            $atraccion->destino->ciudad;
             $atraccion->horarios;
             $atraccion->likes;
+            $atraccion->ruta = "/Atraccions?q={$atraccion->nombre}";
             $atraccion->modelType = $atraccion->model_type;
+            $atraccion->opinions;
+
         }
 
         return response()->json($atracciones);
@@ -32,11 +37,16 @@ class AtraccionController extends Controller
     public function fetch(Atraccion $atraccion)
     {
 
-        $atraccion->telefono;
+         $atraccion->telefono;
         $atraccion->imagenes;
         $atraccion->destino;
+        $atraccion->destino->estado?->pais;
+        $atraccion->destino->ciudad;
         $atraccion->horarios;
         $atraccion->likes;
+        $atraccion->ruta = "/Atraccions?q={$atraccion->nombre}";
+        $atraccion->modelType = $atraccion->model_type;
+        $atraccion->opinions;
 
         return response()->json($atraccion);
     }
@@ -67,11 +77,19 @@ class AtraccionController extends Controller
         $atracciones = $pagination->items();
 
         foreach ($atracciones as $key => $atraccion) {
+            
+
             $atraccion->telefono;
             $atraccion->imagenes;
             $atraccion->destino;
+            $atraccion->destino->estado?->pais;
+            $atraccion->destino->ciudad;
             $atraccion->horarios;
             $atraccion->likes;
+            $atraccion->ruta = "/Atraccions?q={$atraccion->nombre}";
+            $atraccion->modelType = $atraccion->model_type;
+            $atraccion->opinions;
+
 
         }
 
@@ -116,12 +134,19 @@ class AtraccionController extends Controller
                 $atraccion->addTelefono($telefono);
             }
 
-            $atraccion->telefono;
+           
+
+
+             $atraccion->telefono;
             $atraccion->imagenes;
             $atraccion->destino;
+            $atraccion->destino->estado?->pais;
+            $atraccion->destino->ciudad;
             $atraccion->horarios;
             $atraccion->likes;
-
+            $atraccion->ruta = "/Atraccions?q={$atraccion->nombre}";
+            $atraccion->modelType = $atraccion->model_type;
+            $atraccion->opinions;
 
             DB::commit();
             $result = true;
@@ -165,11 +190,19 @@ class AtraccionController extends Controller
             }
 
 
+
             $atraccion->telefono;
             $atraccion->imagenes;
             $atraccion->destino;
+            $atraccion->destino->estado?->pais;
+            $atraccion->destino->ciudad;
             $atraccion->horarios;
             $atraccion->likes;
+            $atraccion->ruta = "/Atraccions?q={$atraccion->nombre}";
+            $atraccion->modelType = $atraccion->model_type;
+            $atraccion->opinions;
+
+
 
             DB::commit();
             $result = true;
@@ -230,12 +263,17 @@ class AtraccionController extends Controller
             }
 
 
-
             $atraccion->telefono;
             $atraccion->imagenes;
             $atraccion->destino;
+            $atraccion->destino->estado?->pais;
+            $atraccion->destino->ciudad;
             $atraccion->horarios;
             $atraccion->likes;
+            $atraccion->ruta = "/Atraccions?q={$atraccion->nombre}";
+            $atraccion->modelType = $atraccion->model_type;
+            $atraccion->opinions;
+
 
             DB::commit();
             $result = true;
@@ -256,11 +294,20 @@ class AtraccionController extends Controller
             DB::beginTransaction();
             Storage::disk('atracciones_imagenes')->delete($imagen->imagen);
             $imagen->delete();
-            $atraccion->telefono;
+
+
+
+             $atraccion->telefono;
             $atraccion->imagenes;
             $atraccion->destino;
+            $atraccion->destino->estado?->pais;
+            $atraccion->destino->ciudad;
             $atraccion->horarios;
             $atraccion->likes;
+            $atraccion->ruta = "/Atraccions?q={$atraccion->nombre}";
+            $atraccion->modelType = $atraccion->model_type;
+            $atraccion->opinions;
+
 
 
             DB::commit();
@@ -283,8 +330,14 @@ class AtraccionController extends Controller
             $atraccion->telefono;
             $atraccion->imagenes;
             $atraccion->destino;
+            $atraccion->destino->estado?->pais;
+            $atraccion->destino->ciudad;
             $atraccion->horarios;
             $atraccion->likes;
+            $atraccion->ruta = "/Atraccions?q={$atraccion->nombre}";
+            $atraccion->modelType = $atraccion->model_type;
+            $atraccion->opinions;
+
 
             DB::commit();
             $result = true;
@@ -308,8 +361,14 @@ class AtraccionController extends Controller
             $atraccion->telefono;
             $atraccion->imagenes;
             $atraccion->destino;
+            $atraccion->destino->estado?->pais;
+            $atraccion->destino->ciudad;
             $atraccion->horarios;
             $atraccion->likes;
+            $atraccion->ruta = "/Atraccions?q={$atraccion->nombre}";
+            $atraccion->modelType = $atraccion->model_type;
+            $atraccion->opinions;
+
 
             DB::commit();
             $result = true;
@@ -334,8 +393,13 @@ class AtraccionController extends Controller
             $atraccion->telefono;
             $atraccion->imagenes;
             $atraccion->destino;
+            $atraccion->destino->estado?->pais;
+            $atraccion->destino->ciudad;
             $atraccion->horarios;
             $atraccion->likes;
+            $atraccion->opinions;
+            $atraccion->ruta = "/Atraccions?q={$atraccion->nombre}";
+            $atraccion->modelType = $atraccion->model_type;
 
             DB::commit();
             $result = true;
@@ -350,6 +414,29 @@ class AtraccionController extends Controller
         }
 
         return response()->json(['result' => $result,'atraccion' => $atraccion]);
+
+    }
+
+
+    public function getPorNombre(Request $request){
+        $datos = $request->all();
+
+
+        $atraccion = Atraccion::where('nombre',$datos['nombre'])->first();
+
+        $atraccion->telefono;
+        $atraccion->imagenes;
+        $atraccion->destino;
+        $atraccion->destino->estado?->pais;
+        $atraccion->destino->ciudad;
+        $atraccion->horarios;
+        $atraccion->likes;
+        $atraccion->opinions;
+
+        $atraccion->modelType = $atraccion->model_type;
+    
+        return response()->json(['result' => $atraccion ? true : false, 'atraccion' => $atraccion]);
+
 
     }
 

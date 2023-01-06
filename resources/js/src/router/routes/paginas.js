@@ -154,7 +154,38 @@ export default [
          resource: 'Auth',
          layout: 'travel'
       }
+   },
+
+   // Atraccions
+   {
+      path: '/Atraccions',
+      component: () => import('views/paginas/AtraccionPerfil.vue'),
+      props: (route) => ({ query: route.query.q }),
+      name: 'atraccion.perfil',
+
+      beforeEnter: (to, from, next) => {
+         store.dispatch('atraccion/fetchName', to.query.q).then(({ result }) => {
+          
+            if (result) {
+               next()
+            } else {
+               next({ name: 'inicio' })
+            }
+
+
+         }).catch(e => {
+            console.log(e)
+            next({ name: 'inicio' })
+         })
+
+      },
+
+      meta: {
+         resource: 'Auth',
+         layout: 'travel'
+      }
    }
+
 
 
 

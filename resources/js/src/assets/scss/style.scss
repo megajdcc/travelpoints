@@ -8,7 +8,7 @@ h1,h2,h3,h4,h5,h6{
 
 body{
    font-family: 'Myriad Light';
-   font-size: 16pt;
+   font-size: 12pt;
 }
 
 strong{
@@ -72,6 +72,10 @@ strong{
 
 .dark-layout .el-table__expanded-cell {
    background-color: #283046;
+}
+
+.dark-layout .el-rate__text{
+   color:white !important; 
 }
 
 .dark-layout .el-tabs--border-card {

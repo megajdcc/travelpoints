@@ -231,8 +231,12 @@ export default {
    transition:1.5s ease;
    list-style:none;
    z-index: 6000;
-   height:0px;
+
    animation:establecerAltura 1.5s ;
+
+   height: auto;
+   max-height:300px;
+   overflow-y: scroll;
 
 }
 

@@ -786,6 +786,7 @@ class UserController extends Controller
         }catch(\Exception $e){
             DB::rollBack();
             $result = false;
+            dd($e->getMessage());
         }
 
        $likes = $usuario->likes;

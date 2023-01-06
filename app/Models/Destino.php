@@ -5,8 +5,10 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Iata;
+use App\Models\Negocio\Negocio;
 use App\Trais\HasDireccion;
 use App\Trais\{hasImages, hasLike,hasLocation};
+use Illuminate\Contracts\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 
 class Destino extends Model
@@ -58,4 +60,28 @@ class Destino extends Model
         return $this->hasMany(Atraccion::class,'destino_id','id');
     }
 
+
+    public function negocios(){
+        
+        $negocios = Negocio::where('iata_id',$this->iata_id)->get();
+        
+        foreach($negocios as $negocio){
+            $negocio->telefonos;
+            $negocio->imagenes;
+            $negocio->cuenta;
+            $negocio->categoria;
+            $negocio->solicitud;
+            $negocio->encargado;
+            $negocio->divisa;
+            $negocio->ciudad;
+            $negocio->estado?->pais;
+            $negocio->eventos;
+            $negocio->iata;
+            $negocio->horarios;
+            $negocio->likes;
+        }
+
+        return $negocios;
+
+    }
 }

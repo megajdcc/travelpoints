@@ -19,7 +19,8 @@ export default{
          lng:0,
          titulo:'',
          imagenes:[],
-         atracciones:[]
+         atracciones:[],
+         negocios:[]
       },
 
       destinos:[]
@@ -36,8 +37,22 @@ export default{
 
       getPortada(state){
          const portada = state.destino.imagenes.find(val => val.portada)
+         
+         if(portada){
+            return `/storage/destinos/imagenes/${portada.imagen}`  
+         }else{
+            const primeraImagen = state.destino.imagenes[0]
 
-         return `/storage/destinos/imagenes/${portada.imagen}`  
+            if(primeraImagen){
+               return `/storage/destinos/imagenes/${primeraImagen.imagen}`  
+            }else{
+               return `/storage/destinos/imagenes/`  
+            }
+            
+         }
+
+       
+         
       }
 
    },
@@ -59,7 +74,9 @@ export default{
             lng: 0,
             titulo: '',
             atracciones: [],
-            imagenes: []
+            imagenes: [],
+            negocios: []
+
          }
       },
 

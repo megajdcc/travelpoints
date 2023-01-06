@@ -1,7 +1,7 @@
 <?php
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\{AuthController};
-use App\Http\Controllers\{CategoriaFaqController, DestinoController, DivisaController, EventoController, FaqController, HomeController, HorarioController, IataController, MovimientoController, NegocioCategoriaController, NegocioController, UserController,NotificacionController,RolController,PermisoController, SolicitudController, TelefonoController};
+use App\Http\Controllers\{CategoriaFaqController, DestinoController, DivisaController, EventoController, FaqController, HomeController, HorarioController, IataController, MovimientoController, NegocioCategoriaController, NegocioController, UserController,NotificacionController,RolController,PermisoController, SolicitudController, TelefonoController,OpinionController};
 use App\Http\Middleware\convertirNull;
 use Laravel\Socialite\Facades\Socialite;
 use App\Models\{CategoriaFaq, Pais,Estado,Ciudad};
@@ -252,6 +252,13 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
 
     Route::resource('horarios',HorarioController::class);
 
+    /*****************************/
+    /* Opinions
+    /*****************************/
+
+    Route::post('opinions/fetch/data',[OpinionController::class,'fetchData']);
+    Route::resource('opinions',OpinionController::class);
+
 });
 
 Route::put('usuario/{usuario}/establecer/contrasena', [UserController::class, 'EstablecerContrasena'])->name('establecercontrasena');
@@ -288,3 +295,6 @@ Route::get('atraccions/get/all', [AtraccionController::class, 'getAll']);
 Route::post('search/public',[HomeController::class,'searchPublic']);
 Route::post('search/location',[HomeController::class,'searchLocation']);
 Route::post('destinos/obtener/por-nombre',[DestinoController::class,'getPorNombre']);
+
+Route::post('atraccions/obtener/por-nombre', [AtraccionController::class, 'getPorNombre']);
+

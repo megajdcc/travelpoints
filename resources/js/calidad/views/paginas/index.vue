@@ -14,66 +14,10 @@
       <atracciones :atracciones="atracciones"  />
 
       <!-- Destinos -->
-      <b-row>
-         <b-col cols="12">
-         
-            <h3>Los destinos más populares para los amantes del viaje</h3>
-            <p>Recomendado en función de tus actividades</p>
-         
-         </b-col>
-
-            <b-col cols="12">
-               <!-- <SwiperComponent /> -->
-            
-               <swiper class="swiper-centered-slides px-0 py-1" :options="swiperOptions">
-            
-                  <!-- slides -->
-            
-                  <swiper-slide v-for="(destino,i) in destinos" :key="i" class="rounded ">
-            
-                     <b-card class="cursor-pointer" header-class="p-0 header-card" body-class="mt-1 px-1 " @click="$router.push(destino.ruta)">
-            
-                        <template #header>
-                           <b-img :src="`/storage/destinos/imagenes/${destino.imagenes[0].imagen}`" thumbnail class="card-img"
-                              @click="irDestino(destino)" />
-
-                            <has-like :model="{model_id:destino.id,model_type:destino.modelType}" />
-
-                        </template>
-            
-            
-                     <b-link :to="destino.ruta">
-                     
-                        <h4 class="title-card mt-1 mb-0">
-                           {{ destino.nombre }}
-                        </h4>
-                     
-                     
-                     </b-link>
-                     <section class="section-rate d-flex mt-0 p-0">
-                        <b-form-rating id="rating-sm-no-border" :value="5" no-border variant="warning" inline size="sm" readonly
-                           class="ml-0 pl-0" /> <span class="d-flex align-items-center">{{ destino.likes.length }}</span>
-                     </section>
-                     
-                     <p class="text-justify">{{ destino.titulo.substring(0,80) }}</p>
-            
-                     </b-card>
-            
-                  </swiper-slide>
-            
-                  <!-- Add Arrows -->
-                  <div slot="button-next" class="swiper-button-next" />
-                  <div slot="button-prev" class="swiper-button-prev" />
-               </swiper>
-            
-            
-            </b-col>
-
-
-      </b-row>
+      <destinos :destinos="destinos"/>
 
       <!-- Certificados -->
-      <b-row >  
+      <!-- <b-row >  
          <b-col  cols="12" class="d-flex justify-content-center" >
       
             <h3>Certificados de Regalos</h3>
@@ -85,10 +29,10 @@
          </b-col>
       
       
-      </b-row>
+      </b-row> -->
 
       <!-- Actividades y Eventos... -->
-      <b-row>
+      <!-- <b-row>
          <b-col cols="12" class="d-flex justify-content-center">
       
             <h3>Actividades & Eventos</h3>
@@ -99,7 +43,7 @@
 
          </b-col>
 
-      </b-row>
+      </b-row> -->
 
       <b-row>
          <b-col cols="12">
@@ -162,7 +106,8 @@ export default {
       HasLike:() => import('components/HasLike.vue'),
       FormWizard:() => import('@/views/forms/form-wizard/FormWizard.vue'),
       Search:() => import('components/Search.vue'),
-      Atracciones: () => import('components/Atracciones.vue')
+      Atracciones: () => import('components/Atracciones.vue'),
+      Destinos : () => import('components/Destinos.vue')
    },
 
    directives: {

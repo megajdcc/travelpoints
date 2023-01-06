@@ -1,54 +1,48 @@
 <template>
-      <b-row>
-         <b-col cols="12">
-            <h3>{{ titulo }}</h3>
-            <p>Los mejores tours, actividades y boletos</p>
-         </b-col>
-         <b-col cols="12">
+         <b-row>
+            <b-col cols="12">
+         
+               <h3>{{ titulo }}</h3>
+               <p>Recomendado en función de tus actividades</p>
+         
+            </b-col>
+         
+            <b-col cols="12">
                <!-- <SwiperComponent /> -->
+         
                <swiper class="swiper-centered-slides px-0 py-1" :options="swiperOptions">
          
                   <!-- slides -->
-                  <swiper-slide v-for="(atraccion, i) in atracciones" :key="i" class="rounded ">
          
-                     <b-card class="cursor-pointer" header-class="p-0 header-card" body-class="mt-1 px-1" @click="$router.push(atraccion.ruta)">
+                  <swiper-slide v-for="(destino, i) in destinos" :key="i" class="rounded ">
+         
+                     <b-card class="cursor-pointer" header-class="p-0 header-card" body-class="mt-1 px-1 "
+                        @click="$router.push(destino.ruta)">
          
                         <template #header>
+                           <b-img  v-if="destino.imagenes.length" :src="`/storage/destinos/imagenes/${destino.imagenes[0].imagen}`" thumbnail class="card-img"/>
          
-                           <b-img v-if="atraccion.imagenes.length"
-                              :src="`/storage/atracciones/imagenes/${atraccion.imagenes[0].imagen}`" thumbnail class="card-img"
-                             />
-         
-                           <has-like v-if="is_loggin && atraccion.imagenes.length"
-                              :model="{ model_id: atraccion.id, model_type: atraccion.modelType }" />
+                           <has-like :model="{ model_id: destino.id, model_type: destino.modelType }" />
          
                         </template>
          
          
-                        <b-link :to="atraccion.ruta">
-         
-                           <b-badge variant="primary" v-if="atraccion.duracion_sugerida"> Duración Sugerida: {{
-                                 atraccion.duracion_sugerida
-                           }}</b-badge>
+                        <b-link :to="destino.ruta">
          
                            <h4 class="title-card mt-1 mb-0">
-                              {{ atraccion.nombre }}
+                              {{ destino.nombre }}
                            </h4>
          
          
                         </b-link>
                         <section class="section-rate d-flex mt-0 p-0">
-                          
                            <b-form-rating id="rating-sm-no-border" :value="5" no-border variant="warning" inline size="sm"
-                              readonly class="ml-0 pl-0" /> 
-
-                              <span class="d-flex align-items-center">
-                                 {{ atraccion.likes.length}}
-                              </span>
-
+                              readonly class="ml-0 pl-0" /> <span class="d-flex align-items-center">{{
+                                 destino.likes.length
+                              }}</span>
                         </section>
          
-                        <p class="text-justify">{{ atraccion.descripcion.substring(0, 80) }}</p>
+                        <p class="text-justify">{{ destino.titulo.substring(0, 80) }}</p>
          
                      </b-card>
          
@@ -58,10 +52,13 @@
                   <div slot="button-next" class="swiper-button-next" />
                   <div slot="button-prev" class="swiper-button-prev" />
                </swiper>
-         </b-col>
-      </b-row>
+         
+         
+            </b-col>
+         
+         
+         </b-row>
 </template>
-
 
 <script>
 
@@ -74,31 +71,31 @@ import {
    BImg,
    BFormRating,
    BLink,
-   BCard, 
+   BCard,
    BBadge
 
 } from 'bootstrap-vue'
 import { Swiper, SwiperSlide } from 'vue-awesome-swiper'
 import 'swiper/css/swiper.css'
 
-import {ref} from '@vue/composition-api'
+import { ref } from '@vue/composition-api'
 import useAuth from '@core/utils/useAuth'
 export default {
-   
-   props:{
-      atracciones:{
-         type:Array,
-         required:true
+
+   props: {
+      destinos: {
+         type: Array,
+         required: true
       },
-      
-      titulo:{
-         type:String,
-         required:false,
-         default:'Las experiencias más populares en TravelPoints',
+
+      titulo: {
+         type: String,
+         required: false,
+         default: 'Los destinos más populares para los amantes del viaje',
       }
    },
 
-   components:{
+   components: {
       BContainer,
       BRow,
       BCol,
@@ -109,7 +106,7 @@ export default {
       BImg,
       BLink,
       BFormRating,
-      hasLike:() => import('components/HasLike.vue'),
+      hasLike: () => import('components/HasLike.vue'),
       BCard,
       BBadge
 
@@ -118,7 +115,7 @@ export default {
    },
 
 
-   setup(props){
+   setup(props) {
 
       const swiperOptions = ref({
          slidesPerView: 4,
@@ -220,3 +217,4 @@ export default {
    display: none;
 }
 </style>
+

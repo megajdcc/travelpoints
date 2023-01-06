@@ -70,6 +70,11 @@ import evento from './modules/eventos/evento.js'
 import negocio from './modules/negocios/index.js'
 
 
+// Opinion
+
+import opinion from './modules/opinions/opinion.js'
+
+
 Vue.use(Vuex)
 
 export default new Vuex.Store({
@@ -186,7 +191,8 @@ export default new Vuex.Store({
     destino,
     atraccion,
     evento,
-    negocio
+    negocio,
+    opinion
   },
 
   strict: process.env.DEV,

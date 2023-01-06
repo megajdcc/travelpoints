@@ -298,3 +298,4 @@ Route::post('destinos/obtener/por-nombre',[DestinoController::class,'getPorNombr
 
 Route::post('atraccions/obtener/por-nombre', [AtraccionController::class, 'getPorNombre']);
 
+Route::post('opinions/fetch/data/model',[OpinionController::class,'fetchDataModel']);

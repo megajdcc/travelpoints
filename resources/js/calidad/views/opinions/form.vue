@@ -207,12 +207,14 @@ export default {
          formulario.value.model_id = modelId.value
          formulario.value.model_type = modelType.value
 
-         store.dispatch('opinion/guardar',formulario.value).then(({result}) => {
+         store.dispatch('opinion/guardar',formulario.value).then(({result,opinion}) => {
 
             if(result){
              
                store.commit('opinion/clear')
                cerrar();
+
+               emit('opinionGuardada',opinion)
                toast.success('Se ha agregado con éxito la opinión', { position: 'bottom-right' })
             }else{
                toast.success('No se pudo agregar la opinión, intente de nuevo', { position: 'bottom-right' })

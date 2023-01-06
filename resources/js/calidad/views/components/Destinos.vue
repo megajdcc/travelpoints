@@ -49,8 +49,10 @@
                   </swiper-slide>
          
                   <!-- Add Arrows -->
-                  <div slot="button-next" class="swiper-button-next" />
-                  <div slot="button-prev" class="swiper-button-prev" />
+                  <div slot="button-next" class="swiper-button-next btn-swiper-next" >
+                     <font-awesome-icon icon="fa-angle-right" size="2x" />
+                  </div>
+                  <!-- <div slot="button-prev" class="swiper-button-prev" /> -->
                </swiper>
          
          
@@ -121,6 +123,7 @@ export default {
          slidesPerView: 4,
          // allowSlidePrev:false,
          // allowSlideNext: false,
+         // loop:true,
          autoplay: {
             delay: 5000,
          },
@@ -188,7 +191,7 @@ export default {
 </script>
 
 
-<style lang="scss">
+<style lang="scss" scoped>
 .banner-search {
    height: 300px;
    background-position: center top;
@@ -214,7 +217,15 @@ export default {
 
 .swiper-button-prev,
 .swiper-button-next {
-   display: none;
+   // display: none;
+}
+.btn-swiper-next{
+   background: #1e9ad7;
+   border-radius: 50%;
+   width: 40px;
+   height: 40px;
+   color: white;
+   font-weight: 900;
 }
 </style>
 

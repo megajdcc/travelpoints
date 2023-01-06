@@ -237,8 +237,8 @@ export default {
 }
 
 
-.swiper-button-prev,.swiper-button-next{
-   display:none;
-}
+// .swiper-button-prev,.swiper-button-next{
+//    display:none;
+// }
 
 </style>

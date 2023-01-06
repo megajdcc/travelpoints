@@ -65,7 +65,7 @@
 
                   <li class="list-inline-item mr-2">
                    
-                    <OpinionForm :model-type="atraccion.modelType" :model-id="atraccion.id" />
+                    <OpinionForm :model-type="atraccion.modelType" :model-id="atraccion.id" @opinionGuardada="opinionGuardada" />
                   
                   </li>
 
@@ -135,8 +135,34 @@
          </b-col>
 
       </b-row>
+
+      <!-- Opinions reviews -->
+
+      <b-row id="opinions">
+         <b-col cols="12">
+            <b-tabs pills >
+               <b-tab>
+                  <template #title>
+                    <strong>Opiniones</strong> 
+                  </template>
+
+                  
+                  <!-- Reviews.Opinions -->
+
+                  <reviews-opinion :promedioCalificacion="promedioCalificacion" :cantidad="atraccion.opinions.length" :porcentajeOpinions="porcentajeOpinions" :model="{model_id:atraccion.id,model_type:atraccion.modelType}"  />
+
+               </b-tab>
+
+              
+
+            </b-tabs>
+         </b-col>
+      </b-row>
+
       <horario :horarios="atraccion.horarios" :showHorario.sync="showHorario" />
-      <gallerie :galleries="atraccion.imagenes" :showGallerie.sync="showGallerie" path="/storage/atracciones/imagenes" />
+      <gallerie :galleries="atraccion.imagenes" :showGallerie.sync="showGallerie" path="/storage/atracciones/imagenes" />  
+
+
 
    </b-container>
 </template>
@@ -162,8 +188,10 @@ import {
    BFormRating,
    BLink,
    BListGroup,
-   BListGroupItem
-
+   BListGroupItem,
+   BTabs,
+   BTab,
+   BProgress
 } from 'bootstrap-vue'
 
 
@@ -188,8 +216,11 @@ export default {
       BLink,
       BListGroup,
       BListGroupItem,
-      OpinionForm:() => import('views/opinions/form.vue')
-
+      BTabs,
+      BTab,
+      BProgress,
+      OpinionForm:() => import('views/opinions/form.vue'),
+      ReviewsOpinion:() => import('components/ReviewsOpinion.vue')
 
    }, 
 
@@ -239,6 +270,9 @@ export default {
 
       })
       
+      const opinionGuardada = (opinion) => {
+         store.commit('atraccion/pushOpinion',opinion)
+      } 
 
 
       return {
@@ -250,6 +284,9 @@ export default {
          showGallerie,
          showHorario,
          swiperData,
+         opinionGuardada,
+         porcentajeOpinions: (cal) => store.getters['atraccion/porcentajeOpinions'](cal),
+         colorRandon: computed(() => colorRand()),
          portada: computed(() => store.getters['atraccion/getPortada']),
          legendHorario:computed(() => store.getters['atraccion/legendHorario']),
          horarioHoy:computed(() => store.getters['atraccion/horarioHoy']),
@@ -300,4 +337,9 @@ export default {
       // }
    
    }
+
+   .table-calificacion tr td{
+      padding-left:0px !important;
+   }
+
 </style>

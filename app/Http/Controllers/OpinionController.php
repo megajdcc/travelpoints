@@ -50,6 +50,46 @@ class OpinionController extends Controller
     }
 
 
+    public function fetchDataModel(Request $request){
+
+        $datos = $request->all();
+
+        $paginator = Opinion::where('model_id', $datos['model_id'])
+            ->where('model_type', $datos['model_type'])
+            ->where([
+                ['titulo', 'LIKE', "%{$datos['q']}%", 'OR'],
+                ['opinion', 'LIKE', "%{$datos['q']}%", 'OR'],
+            ])
+            ->whereHas('usuario', function (Builder $q) use ($datos) {
+
+            $q->orWhere([
+                ['nombre', 'LIKE', "%{$datos['q']}%", 'OR'],
+                ['apellido', 'LIKE', "%{$datos['q']}%", 'OR'],
+                ['email', 'LIKE', "%{$datos['q']}%", 'OR']
+            ]);
+        })
+      
+        ->orderBy('id', 'desc')
+        ->paginate($datos['perPage'] ?: 10000);
+
+        $opinions = $paginator->items();
+
+        foreach ($opinions as $opinion) {
+            $opinion->model;
+            $opinion->usuario->avatar = $opinion->usuario?->getAvatar();
+            
+            
+            $opinion->imagenes;
+        
+        }
+
+        return response()->json([
+            'total' => $paginator->total(),
+            'opinions' => $opinions
+        ]);
+      
+    }
+
     private function validar(Request $request){
 
         return $request->validate([

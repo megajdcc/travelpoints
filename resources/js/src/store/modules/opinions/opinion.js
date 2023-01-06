@@ -207,6 +207,18 @@ export default {
          return new Promise((resolve, reject) => {
             axios.post(`/api/opinions`,datos).then(({data}) => resolve(data)).catch(e => reject(e))
          })
+      },
+
+
+      fetchDataModel({commit},datos){
+         return new Promise((resolve, reject) => {
+               axios.post(`/api/opinions/fetch/data/model`,datos).then(({data}) => {
+
+                  resolve(data)
+               }).catch(e => reject(e))
+               
+         })
+
       }
 
    }

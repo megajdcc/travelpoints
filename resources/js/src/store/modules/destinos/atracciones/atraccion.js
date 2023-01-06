@@ -117,7 +117,16 @@ export default {
 
          return result;
         
-      }
+      },
+
+      porcentajeOpinions(state){
+         return (calificacion) => {
+            const cant_cali = state.atraccion.opinions.filter(val => val.calificacion == calificacion).length;
+            const total_cali = state.atraccion.opinions.length;
+            return { porcentaje: cant_cali * 100 / total_cali, cantidad:cant_cali};
+         }
+
+      } 
 
 
 
@@ -222,6 +231,11 @@ export default {
             image.portada = portada
          }
       
+      },
+
+
+      pushOpinion(state,opinion){
+         state.atraccion.opinions.push(opinion)
       }
 
 

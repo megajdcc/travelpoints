@@ -290,7 +290,7 @@ Route::get('destinos/get/all', [DestinoController::class, 'getAll']);
 
 // Atracciones
 Route::get('atraccions/get/all', [AtraccionController::class, 'getAll']);
-
+Route::get('atraccions/{atraccion}/otras/cercanas',[AtraccionController::class,'otrasCercanas']);
 // Search Public
 Route::post('search/public',[HomeController::class,'searchPublic']);
 Route::post('search/location',[HomeController::class,'searchLocation']);
@@ -299,3 +299,4 @@ Route::post('destinos/obtener/por-nombre',[DestinoController::class,'getPorNombr
 Route::post('atraccions/obtener/por-nombre', [AtraccionController::class, 'getPorNombre']);
 
 Route::post('opinions/fetch/data/model',[OpinionController::class,'fetchDataModel']);
+

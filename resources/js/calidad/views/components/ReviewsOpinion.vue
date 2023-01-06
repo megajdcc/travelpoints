@@ -182,7 +182,6 @@ export default {
       BMedia,
       BAvatar,
       BLink
-
    },
 
    props:{

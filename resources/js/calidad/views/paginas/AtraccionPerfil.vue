@@ -136,6 +136,13 @@
 
       </b-row>
 
+      <!-- Atracciones Relacionadas al Destino -->
+      <b-row>
+         <b-col cols="12">
+            <atracciones :atracciones="atraccionesCercanas"  titulo="Otras Atracciones cercanas"  v-if="atraccionesCercanas.length"/>
+         </b-col>
+      </b-row>
+
       <!-- Opinions reviews -->
 
       <b-row id="opinions">
@@ -220,7 +227,8 @@ export default {
       BTab,
       BProgress,
       OpinionForm:() => import('views/opinions/form.vue'),
-      ReviewsOpinion:() => import('components/ReviewsOpinion.vue')
+      ReviewsOpinion:() => import('components/ReviewsOpinion.vue'),
+      Atracciones:() => import('components/Atracciones.vue')
 
    }, 
 
@@ -230,6 +238,7 @@ export default {
       const {atraccion} = toRefs(store.state.atraccion)
       const showGallerie = ref(false)
       const showHorario = ref(false)
+      const atraccionesCercanas = ref([])
 
       const swiperOptions = ref({
          loop        : true,
@@ -261,6 +270,11 @@ export default {
 
 
       onMounted(() => {
+
+         store.dispatch('atraccion/getAtraccionesCercanas',atraccion.value.id).then((atracciones) => {
+            atraccionesCercanas.value = atracciones
+         })
+
          nextTick(() => {
             const swiperTopC = swiperTop.value.$swiper
             const swiperThumbsC = swiperThumbs.value.$swiper
@@ -290,7 +304,8 @@ export default {
          portada: computed(() => store.getters['atraccion/getPortada']),
          legendHorario:computed(() => store.getters['atraccion/legendHorario']),
          horarioHoy:computed(() => store.getters['atraccion/horarioHoy']),
-         promedioCalificacion:computed(() => store.getters['atraccion/promedioCalificacion'])
+         promedioCalificacion:computed(() => store.getters['atraccion/promedioCalificacion']),
+         atraccionesCercanas
       }
       
    }

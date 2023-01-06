@@ -455,12 +455,13 @@ export default {
 
       },
 
+      getAtraccionesCercanas({commit},atraccion_id){
 
+         return new Promise((resolve, reject) => {
+            axios.get(`/api/atraccions/${atraccion_id}/otras/cercanas`).then(({data}) => resolve(data)).catch(e => reject(e))
+         })
 
-
-
-
-
+      }
 
 
    }

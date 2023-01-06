@@ -55,12 +55,21 @@ class Atraccion extends Model
 
         foreach ($atraccions as $key => $atraccion) {
 
-         
-            $atraccion->ruta = "/Atraccions?q={$atraccion->nombre}";
 
-            $atraccion->tipo = 'Atracción';
+            $atraccion->telefono;
             $atraccion->imagenes;
+            $atraccion->destino;
+            $atraccion->destino->estado?->pais;
+            $atraccion->destino->ciudad;
+            $atraccion->horarios;
+            $atraccion->likes;
+            $atraccion->ruta = "/Atraccions?q={$atraccion->nombre}";
+            $atraccion->modelType = $atraccion->model_type;
+            $atraccion->opinions;
             $atraccion->imagen = $atraccion->imagenes[0] ? "/storage/atracciones/imagenes/{$atraccion->imagenes[0]->imagen}" : '';
+            $atraccion->tipo = 'Atracción';
+       
+           
         }
         
 

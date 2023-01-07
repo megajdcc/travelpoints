@@ -259,6 +259,11 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::post('opinions/fetch/data',[OpinionController::class,'fetchData']);
     Route::resource('opinions',OpinionController::class);
 
+    /*****************************/
+    /* Cargar negocio Loggin emp
+    /*****************************/
+    Route::get('empleado/cargar/negocio',[NegocioController::class,'cargarNegocioEmpleado']);
+
 });
 
 Route::put('usuario/{usuario}/establecer/contrasena', [UserController::class, 'EstablecerContrasena'])->name('establecercontrasena');

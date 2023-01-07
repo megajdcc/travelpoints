@@ -71,15 +71,8 @@ class AuthController extends Controller
          $usuario->save();
          
          $usuario->update(['activo' => true]);
-         $usuario->tokens;
-         $usuario->rol;
-         $usuario->habilidades = $usuario->getHabilidades();
-         $usuario->avatar = $usuario->getAvatar();
-         $usuario->ciudad?->estado?->pais;
-         $usuario->cuenta?->divisa;
-         $usuario->cuenta?->movimientos;
-         $usuario->telefonos;
-         $usuario->likes;
+      
+         $usuario->cargar();
          
          Auth::login($usuario);
 
@@ -223,15 +216,9 @@ class AuthController extends Controller
          $user->save();
          
          $user->update(['activo' => true]);
-         $user->tokens;
-         $user->rol;
-         $user->habilidades = $user->getHabilidades();
-         $user->avatar = $user->getAvatar();
-         $user->ciudad?->estado?->pais;
-         $user->cuenta?->divisa;
-         $user->cuenta?->movimientos;
-         $user->telefonos;
-         $user->likes;
+       
+
+         $user->cargar();
 
 
          // broadcast(new UsuarioConectado($user))->toOthers();

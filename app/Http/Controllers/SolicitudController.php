@@ -307,6 +307,9 @@ class SolicitudController extends Controller
                     'portada' => true,
                     'logo' => false
                 ]);
+                
+                 $negocio->asignarEmpleado($negocio->usuario,$negocio->primeroCargo());
+             
 
             }
             

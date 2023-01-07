@@ -105,17 +105,21 @@ export default {
 
       promedioCalificacion(state) {
 
-         let result = 0;
+         return (atraccion) => {
 
-         if(state.atraccion.opinions.length){
-            const sum_calificacion = state.atraccion.opinions.reduce((a, b) => a + Number(b.calificacion), 0);
+            let result = 0;
 
-            result = sum_calificacion / state.atraccion.opinions.length;
+            if (atraccion.opinions.length) {
+               const sum_calificacion = atraccion.opinions.reduce((a, b) => a + Number(b.calificacion), 0);
 
+               result = sum_calificacion / atraccion.opinions.length;
+
+            }
+
+
+            return result;
          }
        
-
-         return result;
         
       },
 

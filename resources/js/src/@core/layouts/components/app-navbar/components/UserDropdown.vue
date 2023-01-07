@@ -21,7 +21,7 @@
       <span>Panel Travel</span>
     </b-dropdown-item>
 
-    <b-dropdown-item :to="{ name: 'negocio.home' }" link-class="d-flex align-items-center" v-if="is_loggin && $can('read','home.negocio')">
+    <b-dropdown-item :to="{ name: 'negocio.home' }" link-class="d-flex align-items-center" v-if="is_loggin && isNegocios">
       <font-awesome-icon icon="fas fa-store" class="mr-50 fa-2xl" />
       <span>Panel Negocio</span>
     </b-dropdown-item>
@@ -72,7 +72,8 @@ export default {
 
     const {
       logout,
-      is_loggin
+      is_loggin,
+      isNegocios
     } = useAuth();
 
     return {
@@ -80,8 +81,8 @@ export default {
       loading:computed(() => store.state.loading),
       avatarText,
       logout,
+      isNegocios,
       is_loggin
-
     };
   },
 

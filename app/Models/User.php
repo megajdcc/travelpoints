@@ -21,7 +21,7 @@ use App\Trais\{hasCuenta, Has_roles, hasTelefonos};
 
 use App\Models\Divisa;
 
-
+use App\Models\Negocio\Negocio;
 class User extends Authenticatable
 {
     use HasApiTokens,HasFactory, Notifiable;
@@ -221,6 +221,29 @@ class User extends Authenticatable
 
     public function likes(){
         return $this->hasMany(Like::class,'usuario_id','id');
+    }
+
+    public function negocios(){
+        return $this->belongsToMany(Negocio::class,'empleados','usuario_id','negocio_id')->withPivot(['cargo_id']);
+    }
+
+
+    public function cargar(): User{
+
+
+
+        $this->tokens;
+        $this->rol;
+        $this->habilidades = $this->getHabilidades();
+        $this->avatar = $this->getAvatar();
+        $this->ciudad?->estado?->pais;
+        $this->cuenta?->divisa;
+        $this->cuenta?->movimientos;
+        $this->telefonos;
+        $this->likes;
+        $this->negocios;
+
+        return $this;
     }
 
 

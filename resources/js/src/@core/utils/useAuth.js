@@ -166,7 +166,7 @@ export default function useAuth(){
 
    const sendResponseAuthGoogle = (response) => {
       // Send response to server
-      console.log(response);
+      // console.log(response);
 
       axios.post('/api/auth/google', response).then(({ data }) => {
 
@@ -203,7 +203,10 @@ export default function useAuth(){
 
 
       }).catch(e => console.log(e))
-   }
+   }  
+
+
+   const isNegocios = computed(() => usuario.value.negocios.length > 0 ? true : false);
 
 
    return {
@@ -214,7 +217,8 @@ export default function useAuth(){
       authGoogle,
       is_loggin:computed(() => usuario.value.id ? true : false),
       authenticarGoogle,
-      optionsAuth
+      optionsAuth, 
+      isNegocios
    };
 
 }

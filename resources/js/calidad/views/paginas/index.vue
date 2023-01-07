@@ -124,13 +124,13 @@ export default {
 
       
       const cargarForm = () => {
-         if(!atracciones.value.length){
+         // if(!atracciones.value.length){
             store.dispatch('atraccion/getAtracciones')
-         }
+         // }
 
-         if (!destinos.value.length) {
+         // if (!destinos.value.length) {
             store.dispatch('destino/getDestinos')
-         }
+         // }
 
       }
 

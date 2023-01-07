@@ -439,7 +439,21 @@ export default{
                }).catch(e => reject(e))
 
          })
+
+      },
+
+      cargarNegocio({commit}){
+
+         return new Promise((resolve, reject) => {
+            axios.get(`/api/empleado/cargar/negocio`).then(({data}) => {
+               commit('setNegocio',data)
+               resolve(data)
+
+            }).catch(e => reject())
+         })
+
       }
+
 
 
    }

@@ -442,9 +442,11 @@ class AtraccionController extends Controller
 
 
     public function otrasCercanas(Atraccion $atraccion){
-        
-        $atracciones = Atraccion::getLocation(['lat' => $atraccion->lat,'lng' => $atraccion->lng,'km' => 50]);
-        return response()->json($atracciones->filter(fn ($val) => $val->id != $atraccion->id));
+  
+        $atracciones = Atraccion::getLocation(['lat' => $atraccion->lat,'lng' => $atraccion->lng,'km' => 300]);
+
+        $atracciones  = $atracciones->filter(fn ($val) => $val->id != $atraccion->id)->all();
+        return response()->json([...$atracciones]);
     }
 
 }

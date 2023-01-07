@@ -10,10 +10,7 @@
                      {{ promedioCalificacion }}
                   </h2>
       
-                  <el-rate v-model="promedioCalificacion" disabled disabled-void-color="#4f4f4f" void-color="#000000"
-                     :icon-classes="[
-                        'el-icon-star-on', 'el-icon-star-on', 'el-icon-star-on'
-                     ]" />
+                  <el-rate v-model="promedioCalificacion" disabled disabled-void-color="#4f4f4f" void-color="#000000"/>
       
                   <p class="my-0 font-weight-bolder">
                      {{ cantidad }} <small>Opiniones</small>
@@ -92,7 +89,7 @@
                            <b-row>
                               <b-col cols="12" >
                                  
-                                 <b-media vertical-align="center">
+                                 <b-media vertical-align="center" >
                                     <template #aside>
                                        <b-avatar size="32" :src="usuario.avatar" :text="avatarText(`${usuario.nombre} ${usuario.apellido}`)"
                                           :variant="`light-info`" disabled />
@@ -160,10 +157,12 @@ import {
    BLink
 
 } from 'bootstrap-vue'
-import {computed,ref,toRefs} from '@vue/composition-api'
+import {computed,ref,toRefs,watch} from '@vue/composition-api'
 import store from '@/store'
 import useCalificacionsList  from  './useCalificacionsList.js'
 import { avatarText } from '@core/utils/filter'
+import { useRoute } from 'vue2-helpers/vue-router';
+
 
 export default {
    
@@ -198,6 +197,11 @@ export default {
    setup(props){
       
       const { promedioCalificacion, model,cantidad,porcentajeOpinions} = toRefs(props)
+      watch([cantidad, promedioCalificacion],() => {
+         refetchData()
+      })
+
+
 
       const {
          fetchData,
@@ -210,7 +214,10 @@ export default {
          perPage,
          currentPage,
          total,
-      } = useCalificacionsList(model.value)
+      } = useCalificacionsList(model)
+
+    
+
 
       return {
          colorRandon:computed(() => colorRand()),
@@ -230,3 +237,10 @@ export default {
    }
 }
 </script>
+
+<style lang="scss">
+   .media-body{
+      overflow-x: hidden;
+   }
+
+</style>

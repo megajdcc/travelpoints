@@ -39,12 +39,19 @@
                         </b-link>
                         <section class="section-rate d-flex mt-0 p-0">
                           
-                           <b-form-rating id="rating-sm-no-border" :value="5" no-border variant="warning" inline size="sm"
-                              readonly class="ml-0 pl-0" /> 
-
-                              <span class="d-flex align-items-center">
-                                 {{ atraccion.likes.length}}
-                              </span>
+                           <section class="d-flex align-items-center ">
+                           
+                              <!-- <h2 class="font-weight-bolder my-0 mr-1">
+                                 {{ promedioCalificacion(atraccion) }}
+                              </h2> -->
+                           
+                              <el-rate :value="promedioCalificacion(atraccion)" disabled disabled-void-color="#4f4f4f" void-color="#000000" />
+                           
+                              <p class="my-0 font-weight-bolder">
+                                 {{ atraccion.opinions.length }} <small>Opiniones</small>
+                              </p>
+                           
+                           </section>
 
                         </section>
          
@@ -88,8 +95,10 @@ import {
 import { Swiper, SwiperSlide } from 'vue-awesome-swiper'
 import 'swiper/css/swiper.css'
 
-import {ref} from '@vue/composition-api'
+import {ref,computed} from '@vue/composition-api'
 import useAuth from '@core/utils/useAuth'
+import store from '@/store'
+
 export default {
    
    props:{
@@ -188,7 +197,9 @@ export default {
 
       return {
          swiperOptions,
-         is_loggin
+         is_loggin,
+
+         promedioCalificacion:(atraccion) => store.getters['atraccion/promedioCalificacion'](atraccion)
       }
 
    }

@@ -35,12 +35,12 @@
          
          
                         </b-link>
-                        <section class="section-rate d-flex mt-0 p-0">
+                        <!-- <section class="section-rate d-flex mt-0 p-0">
                            <b-form-rating id="rating-sm-no-border" :value="5" no-border variant="warning" inline size="sm"
                               readonly class="ml-0 pl-0" /> <span class="d-flex align-items-center">{{
                                  destino.likes.length
                               }}</span>
-                        </section>
+                        </section> -->
          
                         <p class="text-justify">{{ destino.titulo.substring(0, 80) }}</p>
          

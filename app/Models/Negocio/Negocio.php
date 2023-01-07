@@ -96,4 +96,55 @@ class Negocio extends Model
     }
 
 
+    public function cargos(){
+        return $this->hasMany(Cargo::class,'negocio_id','id');
+    }   
+
+    public function empleados(){
+        return $this->belongsToMany(User::class,'empleados','negocio_id','usuario_id')->withPivot(['cargo_id']);
+    }
+
+
+    public function primerCargo(String $cargo = 'Gerente')  : Cargo{
+        
+        $cargo = Cargo::create([
+            'negocio_id' => $this->id,
+            'cargo' => $cargo
+        ]);
+
+        return $cargo;
+    }
+
+
+
+    public function cargar() : Negocio{
+        $this->telefonos;
+        $this->imagenes;
+        $this->cuenta;
+        $this->categoria;
+        $this->solicitud;
+        $this->encargado;
+        $this->divisa;
+        $this->ciudad;
+        $this->estado?->pais;
+        $this->eventos;
+        $this->iata;
+        $this->horarios;
+        $this->likes;
+        $this->cargos;
+        return $this;
+    }
+    
+
+    /**
+     * @param App\Models\User $empleado;
+     * @param App\Models\Negocio\Cargo $cargo;
+     * 
+     * @return void;
+     */
+    public function asignarEmpleado(User $empleado,Cargo $cargo){
+        $this->empleados()->attach($empleado->id,['cargo_id' => $cargo->id]);
+    }
+
+
 }

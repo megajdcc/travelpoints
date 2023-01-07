@@ -61,7 +61,7 @@ export default function useCalificacionList(model) {
    
    const fetchData = (next) => {
       store.dispatch('opinion/fetchDataModel',{
-         ...model,
+         ...model.value,
          q: searchQuery.value,
          perPage: perPage.value,
          page: currentPage.value,

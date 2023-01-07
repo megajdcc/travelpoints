@@ -38,7 +38,8 @@ export default {
 				codigo_referidor:null,
 				referidos:[],
 				referidor:[],
-				likes:[]
+				likes:[],
+				negocios:[]
 
 
 			},
@@ -75,6 +76,8 @@ export default {
 				codigo_referidor: null,
 				referidos: [],
 				referidor: [],
+				negocios: []
+
 
 			},
 
@@ -147,6 +150,8 @@ export default {
 				codigo_referidor: null,
 				referidos: [],
 				referidor: [],
+				negocios: []
+
 
 			}
 		},

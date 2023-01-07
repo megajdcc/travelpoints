@@ -139,7 +139,7 @@
       <!-- Atracciones Relacionadas al Destino -->
       <b-row>
          <b-col cols="12">
-            <atracciones :atracciones="atraccionesCercanas"  titulo="Otras Atracciones cercanas"  v-if="atraccionesCercanas.length"/>
+            <atracciones :atracciones="atraccionesCercanas"  titulo="Otras Atracciones cercanas"  v-if="atraccionesCercanas.length > 0"/>
          </b-col>
       </b-row>
 
@@ -156,7 +156,7 @@
                   
                   <!-- Reviews.Opinions -->
 
-                  <reviews-opinion :promedioCalificacion="promedioCalificacion" :cantidad="atraccion.opinions.length" :porcentajeOpinions="porcentajeOpinions" :model="{model_id:atraccion.id,model_type:atraccion.modelType}"  />
+                  <reviews-opinion :promedioCalificacion="promedioCalificacion" :cantidad="atraccion.opinions.length" :porcentajeOpinions="porcentajeOpinions" :model="{model_id:atraccion.id,model_type:atraccion.modelType}"   />
 
                </b-tab>
 
@@ -176,7 +176,7 @@
 
 <script>
 
-import {toRefs, ref,onMounted,computed,nextTick} from '@vue/composition-api'
+import {toRefs, ref,onMounted,computed,nextTick,watch} from '@vue/composition-api'
 import store from '@/store'
 
 import { Swiper, SwiperSlide } from 'vue-awesome-swiper'
@@ -240,6 +240,18 @@ export default {
       const showHorario = ref(false)
       const atraccionesCercanas = ref([])
 
+      const {query} = toRefs(props)
+
+      watch(query,() => {
+         store.dispatch('atraccion/fetchName',query.value).then(({result}) => {
+            if(result){
+               cargarAtraccionesCercanas()
+               
+            }
+
+         })
+      })
+
       const swiperOptions = ref({
          loop        : true,
          // autoplay:{
@@ -268,12 +280,15 @@ export default {
       })
 
 
+      const cargarAtraccionesCercanas = () => {
+         store.dispatch('atraccion/getAtraccionesCercanas', atraccion.value.id).then((atracciones) => {
+            atraccionesCercanas.value = atracciones
+         })
+      }
 
       onMounted(() => {
 
-         store.dispatch('atraccion/getAtraccionesCercanas',atraccion.value.id).then((atracciones) => {
-            atraccionesCercanas.value = atracciones
-         })
+         cargarAtraccionesCercanas()
 
          nextTick(() => {
             const swiperTopC = swiperTop.value.$swiper
@@ -304,7 +319,7 @@ export default {
          portada: computed(() => store.getters['atraccion/getPortada']),
          legendHorario:computed(() => store.getters['atraccion/legendHorario']),
          horarioHoy:computed(() => store.getters['atraccion/horarioHoy']),
-         promedioCalificacion:computed(() => store.getters['atraccion/promedioCalificacion']),
+         promedioCalificacion:computed(() => store.getters['atraccion/promedioCalificacion'](atraccion.value)),
          atraccionesCercanas
       }
       

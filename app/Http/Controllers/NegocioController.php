@@ -9,25 +9,9 @@ use App\Models\Imagen;
 
 class NegocioController extends Controller
 {
-   
-
 
     public function fetch(Negocio $negocio){
-        
-        $negocio->telefonos;
-        $negocio->imagenes;
-        $negocio->cuenta;
-        $negocio->categoria;
-        $negocio->solicitud;
-        $negocio->encargado;
-        $negocio->divisa;
-        $negocio->ciudad;
-        $negocio->estado?->pais;
-        $negocio->eventos;
-        $negocio->iata;
-        $negocio->horarios;
-        $negocio->likes;
-
+        $negocio->cargar();
         return response()->json($negocio);
     }
 
@@ -52,19 +36,7 @@ class NegocioController extends Controller
         $negocios = $paginator->items();
 
         foreach ($negocios as $key => $negocio) {
-            $negocio->telefonos;
-            $negocio->imagenes;
-            $negocio->cuenta;
-            $negocio->categoria;
-            $negocio->solicitud;
-            $negocio->encargado;
-            $negocio->divisa;
-            $negocio->ciudad;
-            $negocio->estado?->pais;
-            $negocio->eventos;
-            $negocio->iata;
-            $negocio->horarios;
-            $negocio->likes;
+            $negocio->cargar();
 
 
         }   
@@ -141,21 +113,7 @@ class NegocioController extends Controller
             $result = false;
         }
 
-        $negocio->telefonos;
-        $negocio->imagenes;
-        $negocio->cuenta;
-        $negocio->categoria;
-        $negocio->solicitud;
-        $negocio->encargado;
-        $negocio->divisa;
-        $negocio->ciudad;
-        $negocio->estado?->pais;
-        $negocio->eventos;
-        $negocio->iata;
-        $negocio->horarios;
-        $negocio->likes;
-
-
+        $negocio->cargar();
 
         return response()->json(['result' => $result,'negocio' => $negocio]);
 
@@ -202,19 +160,8 @@ class NegocioController extends Controller
 
             $negocio->update(['logo' => $logo_name]);
 
-            $negocio->telefonos;
-            $negocio->imagenes;
-            $negocio->cuenta;
-            $negocio->categoria;
-            $negocio->solicitud;
-            $negocio->encargado;
-            $negocio->divisa;
-            $negocio->ciudad;
-            $negocio->estado?->pais;
-            $negocio->eventos;
-            $negocio->iata;
-            $negocio->horarios;
-            $negocio->likes;
+            $negocio->cargar();
+
 
 
             DB::commit();
@@ -259,21 +206,7 @@ class NegocioController extends Controller
 
         }
 
-        $negocio->telefonos;
-        $negocio->imagenes;
-        $negocio->cuenta;
-        $negocio->categoria;
-        $negocio->solicitud;
-        $negocio->encargado;
-        $negocio->divisa;
-        $negocio->ciudad;
-        $negocio->estado?->pais;
-        $negocio->eventos;
-        $negocio->iata;
-        $negocio->horarios;
-        $negocio->likes;
-
-
+        $negocio->cargar();
 
         return response()->json(['result' => $result,'negocio' => $negocio]);
 
@@ -301,19 +234,7 @@ class NegocioController extends Controller
             dd($e->getMessage());
         }
 
-        $negocio->telefonos;
-        $negocio->imagenes;
-        $negocio->cuenta;
-        $negocio->categoria;
-        $negocio->solicitud;
-        $negocio->encargado;
-        $negocio->divisa;
-        $negocio->ciudad;
-        $negocio->estado?->pais;
-        $negocio->eventos;
-        $negocio->iata;
-        $negocio->horarios;
-        $negocio->likes;
+        $negocio->cargar();
 
         return response()->json(['result' => $result,'negocio' => $negocio]);
 
@@ -343,19 +264,7 @@ class NegocioController extends Controller
         
         }
 
-        $negocio->telefonos;
-        $negocio->imagenes;
-        $negocio->cuenta;
-        $negocio->categoria;
-        $negocio->solicitud;
-        $negocio->encargado;
-        $negocio->divisa;
-        $negocio->ciudad;
-        $negocio->estado?->pais;
-        $negocio->eventos;
-        $negocio->iata;
-        $negocio->horarios;
-        $negocio->likes;
+        $negocio->cargar();
 
 
         return response()->json(['result' => $result,'negocio' => $negocio]);
@@ -366,19 +275,7 @@ class NegocioController extends Controller
         
         $negocio->aperturarHorario();
 
-        $negocio->telefonos;
-        $negocio->imagenes;
-        $negocio->cuenta;
-        $negocio->categoria;
-        $negocio->solicitud;
-        $negocio->encargado;
-        $negocio->divisa;
-        $negocio->ciudad;
-        $negocio->estado?->pais;
-        $negocio->eventos;
-        $negocio->iata;
-        $negocio->horarios;
-        $negocio->likes;
+        $negocio->cargar();
 
         return response()->json(['result' => true, 'negocio' => $negocio]);
     }
@@ -401,21 +298,9 @@ class NegocioController extends Controller
             DB::rollBack();
             $result = false;
 
-        }   
+        }
 
-        $negocio->telefonos;
-        $negocio->imagenes;
-        $negocio->cuenta;
-        $negocio->categoria;
-        $negocio->solicitud;
-        $negocio->encargado;
-        $negocio->divisa;
-        $negocio->ciudad;
-        $negocio->estado?->pais;
-        $negocio->eventos;
-        $negocio->iata;
-        $negocio->horarios;
-        $negocio->likes;
+        $negocio->cargar();
 
 
         return response()->json(['result' => $result,'negocio' => $negocio]);
@@ -437,24 +322,22 @@ class NegocioController extends Controller
 
         }
 
-        $negocio->telefonos;
-        $negocio->imagenes;
-        $negocio->cuenta;
-        $negocio->categoria;
-        $negocio->solicitud;
-        $negocio->encargado;
-        $negocio->divisa;
-        $negocio->ciudad;
-        $negocio->estado?->pais;
-        $negocio->eventos;
-        $negocio->iata;
-        $negocio->horarios;
-        $negocio->likes;
+        $negocio->cargar();
 
 
         return response()->json(['result' => $result,'negocio' => $negocio]);
     }
 
+
+    public function cargarNegocioEmpleado(Request $request){
+        
+        $negocio = $request->user()->negocios->first();
+
+        $negocio->cargar();
+
+        return response()->json($negocio);
+        
+    }
 
 
 }

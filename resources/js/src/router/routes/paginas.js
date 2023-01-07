@@ -166,8 +166,13 @@ export default [
       beforeEnter: (to, from, next) => {
          store.dispatch('atraccion/fetchName', to.query.q).then(({ result }) => {
           
+            console.log(to,from)
             if (result) {
-               next()
+               
+               if(to.name !== from.name){
+                  next()
+               }
+               
             } else {
                next({ name: 'inicio' })
             }

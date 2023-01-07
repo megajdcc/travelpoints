@@ -353,7 +353,7 @@ class AuthController extends Controller
     protected function sendResetLinkResponse(Request $request, $response)
     {
 
-      dd($response);
+      // dd($response);
 
       //   return $request->wantsJson()
       //               ? new JsonResponse(['message' => trans($response)], 200)

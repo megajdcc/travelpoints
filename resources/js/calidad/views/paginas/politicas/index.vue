@@ -3,9 +3,11 @@
       <b-row>
          <b-col cols="12">
             <b-card :class="{ 'w-75 mx-auto': windowWidth >= 762}">
+               
                <b-embed type="iframe" :aspect="relation" src="https://www.youtube.com/embed/1MorMmT-hPs"
                   allowfullscreen>
                </b-embed>
+               
             </b-card>
          </b-col>
       </b-row>

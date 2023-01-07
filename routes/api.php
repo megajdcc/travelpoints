@@ -263,7 +263,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     /* Cargar negocio Loggin emp
     /*****************************/
     Route::get('empleado/cargar/negocio',[NegocioController::class,'cargarNegocioEmpleado']);
-
+    Route::get('empleado/cambiar/negocio/{negocio}',[NegocioController::class,'cambiarNegocioEmpleado']);
 });
 
 Route::put('usuario/{usuario}/establecer/contrasena', [UserController::class, 'EstablecerContrasena'])->name('establecercontrasena');

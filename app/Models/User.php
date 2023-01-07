@@ -230,10 +230,9 @@ class User extends Authenticatable
 
     public function cargar(): User{
 
-
-
+        
         $this->tokens;
-        $this->rol;
+        $this->rol->permisos;
         $this->habilidades = $this->getHabilidades();
         $this->avatar = $this->getAvatar();
         $this->ciudad?->estado?->pais;
@@ -242,6 +241,11 @@ class User extends Authenticatable
         $this->telefonos;
         $this->likes;
         $this->negocios;
+        $this->solicitudes;
+        $this->faqs;
+        $this->referidor;
+        $this->referidos;
+        $this->permisos;
 
         return $this;
     }

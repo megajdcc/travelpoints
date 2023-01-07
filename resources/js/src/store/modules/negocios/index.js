@@ -452,7 +452,26 @@ export default{
             }).catch(e => reject())
          })
 
+      },
+
+      cambiarNegocio({commit},id_negocio){
+
+         return new Promise((resolve, reject) => {
+            
+            axios.get(`/api/empleado/cambiar/negocio/${id_negocio}`).then(({data}) => {
+
+               if(data.result){
+                  commit('setNegocio',data.negocio)
+               }
+
+               resolve(data)
+
+            }).catch(e => reject(e))
+            
+
+         })
       }
+
 
 
 

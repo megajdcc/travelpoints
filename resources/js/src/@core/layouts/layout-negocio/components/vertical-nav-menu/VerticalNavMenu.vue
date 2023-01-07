@@ -81,7 +81,7 @@
 <script>
 import VuePerfectScrollbar from 'vue-perfect-scrollbar'
 import { BLink, BImg } from 'bootstrap-vue'
-import { provide, computed, ref } from '@vue/composition-api'
+import { provide, computed, ref,toRefs } from '@vue/composition-api'
 import useAppConfig from '@core/app-config/useAppConfig'
 import { $themeConfig } from '@themeConfig'
 import VerticalNavMenuItems from './components/vertical-nav-menu-items/VerticalNavMenuItems.vue'
@@ -115,6 +115,10 @@ export default {
 
   },
   setup(props) {
+
+
+    const {negocio} = toRefs(store.state.negocio)
+
     const {
       isMouseHovered,
       isVerticalMenuCollapsed,
@@ -160,7 +164,8 @@ export default {
       appName,
       appLogoImage,
       logo:computed(() => {
-        return skin.value == 'dark' || skin.value == 'semi-dark' ? applogoImageWhite : appLogoImage;
+        // return skin.value == 'dark' || skin.value == 'semi-dark' ? applogoImageWhite : appLogoImage;
+        return `/storage/negocios/logos/${negocio.value.logo}`
       })
 
     }
@@ -173,7 +178,7 @@ export default {
 
 .brand-logo img{
   max-width: 180px !important;
-  height: 50px;
+  height: 56px !important;
   object-fit: contain;
 
 }

@@ -27,18 +27,7 @@ class UserController extends Controller
 {
 
     public function getUsuario(User $usuario){
-        $usuario->rol;
-        $usuario->rol->permisos;
-        $usuario->referidor;
-        $usuario->referidos;
-        $usuario->avatar = $usuario->getAvatar();
-        $usuario->cuenta;
-        $usuario->cuenta?->divisa;
-
-        $usuario->telefonos;
-        $usuario->likes;
-
-
+        $usuario->cargar();
 
         return response()->json($usuario);
 
@@ -89,16 +78,9 @@ class UserController extends Controller
             $usuario = $this->crearUsuario($datos);
             $usuario->notify(new WelcomeUsuario($usuario));
             DB::commit();
-            $usuario->rol;
-            $usuario->referidor;
-            $usuario->referidos;
-            $usuario->rol->permisos;
-            $usuario->avatar = $usuario->getAvatar();
-            $usuario->cuenta?->divisa;
-            $usuario->telefonos;
-            $usuario->likes;
 
 
+            $usuario->cargar();
             
             $result = true;
 
@@ -151,17 +133,7 @@ class UserController extends Controller
                     $usuario->referidor()->attach(User::where('codigo_referidor',$datos['referidor'])->first()->id,['codigo' => $datos['referidor']]);
                 }
 
-                $usuario->rol;
-                $usuario->rol->permisos;
-                $usuario->referidor;
-                $usuario->referidos;
-            $usuario->telefonos;
-
-                $usuario->avatar = $usuario->getAvatar();
-            $usuario->cuenta;
-            $usuario->cuenta?->divisa;
-            $usuario->likes;
-
+                $usuario->cargar();
 
                 $result = true;
             
@@ -190,14 +162,8 @@ class UserController extends Controller
         $usuario = User::create([...$datos,...['password' => '20464273jd']]);
         $usuario->asignarPermisosPorRol();
         // $usuario->aperturarCuenta();
-        
-        $usuario->cuenta;
-        $usuario->cuenta?->divisa;
 
-        $usuario->likes;
-
-        $usuario->telefonos;
-
+        $usuario->cargar();
 
         return $usuario;
     
@@ -249,16 +215,8 @@ class UserController extends Controller
             
             DB::commit();
 
-            $usuario->rol;
-            $usuario->ciudad;
-            $usuario->referidor;
-            $usuario->referidos;
-            $usuario->rol->permisos;
-            $usuario->telefonos;
-            $usuario->cuenta?->divisa;
-            $usuario->likes;
+            $usuario->cargar();
 
-            $usuario->avatar = $usuario->getAvatar();
             $result = true;
         }catch(Exception $e){
             DB::rollBack();
@@ -298,18 +256,11 @@ class UserController extends Controller
     public function getUsuarios(){
         $usuarios = User::get();
         foreach ($usuarios as $key => $usuario) {
-            $usuario->rol;
-            $usuario->ciudad?->estado?->pais;
-            $usuario->rol->permisos;
-            $usuario->referidor;
-            $usuario->referidos;
-            $usuario->telefonos;
-            $usuario->avatar = $usuario->getAvatar();
-            $usuario->cuenta?->divisa;
-            $usuario->telefonos;
-            $usuario->likes;
-                }
+            $usuario->cargar();
+        }
+
         return response()->json($usuarios);
+
     }
 
     public function EstablecerContrasena(Request $request,User $usuario){
@@ -376,16 +327,8 @@ class UserController extends Controller
         $user = User::find($usuario->id);
 
         $user->tokens;
-        $user->ciudad?->estado?->pais;
-
-        $user->rol;
-        $user->referidor;
-        $user->referidos;
         $user->habilidades = $user->getHabilidades();
-        $user->avatar = $user->getAvatar();
-        $user->telefonos;
-        $user->cuenta?->divisa;
-        $usuario->likes;
+        $user->cargar();
         return response()->json(['result' => $result, 'usuario' => $user]);
 
     }
@@ -455,13 +398,10 @@ class UserController extends Controller
         try{
             DB::beginTransaction();
             $usuario->password = $data['contrasenaNueva'];
+            
             $usuario->save();
-            $usuario->cuenta;
-            $usuario->telefonos;
-            $usuario->likes;
-            $usuario->cuenta?->divisa;
 
-
+            $usuario->cargar();
 
             DB::commit();
 
@@ -585,11 +525,8 @@ class UserController extends Controller
 
         foreach($usuarios as $key => $usuario){
 
-            $usuario->telefonos;
-            $usuario->rol;
-            $usuario->cuenta;
-            $usuario->cuenta?->divisa;
-            $usuario->likes;
+            $usuario->cargar();
+
 
             if($usuario->avatar){
                $usuarios[$key]->avatar =asset('storage/img-perfil/' . $usuario->avatar); 
@@ -695,15 +632,9 @@ class UserController extends Controller
         $result = $usuario->update($datos);
 
         $usuario->tokens;
-        $usuario->ciudad?->estado?->pais;
-
-        $usuario->rol;
         $usuario->habilidades = $usuario->getHabilidades();
-        $usuario->avatar = $usuario->getAvatar();
-        $usuario->telefonos;
-        $usuario->cuenta;
-        $usuario->cuenta?->divisa;
-        $usuario->likes;
+
+        $usuario->cargar();
         
         return response()->json(['result' => $result,'usuario' => $usuario]);
         
@@ -732,15 +663,15 @@ class UserController extends Controller
         $usuarios = $paginator->items();
 
         foreach ($usuarios as $key => $usuario) {
-            $usuario->telefonos;
-            $usuario->cuenta?->divisa;
-
-
             if(empty($usuario->imagen)){
                 $usuario->imagen =  asset('storage/img-perfil/default.jpg');
             }else{
                 $usuario->imagen =  asset('storage/img-perfil/').$usuario->imagen;
             }
+
+            $usuario->cargar();
+
+
         }
 
         return response()->json([

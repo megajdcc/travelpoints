@@ -339,5 +339,10 @@ class NegocioController extends Controller
         
     }
 
+    public function cambiarNegocioEmpleado(Negocio $negocio){
+        $negocio->cargar();
+        return response()->json(['result' => $negocio->id ? true : false , 'negocio' => $negocio]);
+    }
+
 
 }

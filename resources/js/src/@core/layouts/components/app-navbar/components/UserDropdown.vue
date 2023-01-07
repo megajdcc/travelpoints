@@ -5,7 +5,7 @@
         <p class="user-name font-weight-bolder mb-0">
           {{ usuario.nombre || usuario.username }}
         </p>
-        <span class="user-status">{{ usuario.rol.nombre }}</span>
+        <span class="user-status">{{ getRolPanel }}</span>
       </div>
 
       <b-avatar size="40" :src=" is_loggin ? usuario.avatar : '/storage/img-perfil/default.jpg'" variant="light-primary"
@@ -54,7 +54,7 @@ import {
 } from 'bootstrap-vue'
 
 import { avatarText } from '@core/utils/filter'
-import { computed } from '@vue/composition-api';
+import { computed,toRefs } from '@vue/composition-api';
 import store from '@/store';
 
 import useAuth from '@core/utils/useAuth'
@@ -65,10 +65,28 @@ export default {
     BDropdownItem,
     BDropdownDivider,
     BAvatar,
+  }, 
+
+  props:{
+    
+    panel:{
+      type:String,
+      default:'travel',
+    },
+
+    negocioId:{
+      type:Number,
+      required:false
+    }
+
   },
+
 
   setup(props){
     const usuario = computed(() => store.state.usuario.usuario)
+    const { panel,negocioId } = toRefs(props)
+
+    const {negocio} = toRefs(store.state.negocio)
 
     const {
       logout,
@@ -76,13 +94,49 @@ export default {
       isNegocios
     } = useAuth();
 
+    const getRolPanel = computed(() => {
+
+      if(panel.value === 'negocio'){
+        
+        const neg = usuario.value.negocios.find(val => val.id === negocioId.value);
+
+        if(neg){
+            const cargo_id = neg.pivot.cargo_id;
+
+            if (cargo_id) {
+
+              const cargo = negocio.value.cargos.find(val => val.id === cargo_id)
+
+              if (cargo) {
+                return cargo.cargo;
+              }
+
+              return 'Sin definir';
+
+            }
+
+        }
+        
+        
+      
+       
+
+        return 'Sin definir';
+
+      }
+
+      return usuario.value.rol.nombre ;
+    })
+
     return {
       usuario,
       loading:computed(() => store.state.loading),
       avatarText,
       logout,
       isNegocios,
-      is_loggin
+      is_loggin,
+      getRolPanel
+
     };
   },
 

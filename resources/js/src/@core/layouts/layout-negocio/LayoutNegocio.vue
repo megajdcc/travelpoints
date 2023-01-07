@@ -54,10 +54,10 @@
 
 <script>
 import { onUnmounted, computed } from '@vue/composition-api'
-import AppNavbarVerticalLayout from '@core/layouts/components/app-navbar/AppNavbarVerticalLayout.vue'
+import AppNavbarVerticalLayout from './AppNabvarVerticalLayout.vue'
 import AppFooter from '@core/layouts/components/AppFooter.vue'
 import useAppConfig from '@core/app-config/useAppConfig'
-import { BNavbar } from 'bootstrap-vue'
+import { BNavbar } from 'bootstrap-vue' 
 
 import LayoutContentRendererDefault from '@core/layouts/components/layout-content-renderer/LayoutContentRendererDefault.vue'
 

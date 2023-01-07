@@ -263,7 +263,6 @@ class SolicitudController extends Controller
             $result = true;
 
             if($solicitud->usuario_id === $request->user()->id){
-                
                
                 if(isset($datos['panel']) && $datos['panel'] == 'infochannel'){
                     
@@ -276,7 +275,6 @@ class SolicitudController extends Controller
                     $solicitud->usuario->notify(new SolicitudEnviada($solicitud));
 
                 }
-
 
             }else{
                 $solicitud->usuario->notify(new SolicitudNegocioActualizada($solicitud));
@@ -308,7 +306,7 @@ class SolicitudController extends Controller
                     'logo' => false
                 ]);
                 
-                 $negocio->asignarEmpleado($negocio->usuario,$negocio->primeroCargo());
+                 $negocio->asignarEmpleado($negocio->encargado,$negocio->primerCargo());
              
 
             }

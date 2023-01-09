@@ -262,7 +262,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     /*****************************/
     /* Cargar negocio Loggin emp
     /*****************************/
-    Route::get('empleado/cargar/negocio',[NegocioController::class,'cargarNegocioEmpleado']);
+    Route::get('empleado/cargar/negocio/{ultimoNegocio?}',[NegocioController::class,'cargarNegocioEmpleado'])->middleware('convertir.null');
     Route::get('empleado/cambiar/negocio/{negocio}',[NegocioController::class,'cambiarNegocioEmpleado']);
 });
 

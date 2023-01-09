@@ -38,9 +38,9 @@ export default {
       
       store.dispatch('negocio/cargarNegocio').then((negocio) => {
 
-            if (!negocio.id) {
-               router.push({ name: 'inicio' })
-            }
+         if (!negocio.id) {
+            router.push({ name: 'inicio' })
+         }
 
       }).catch(e => {
          router.push({ name: 'inicio' })

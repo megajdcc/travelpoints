@@ -16,7 +16,7 @@ class convertirNull
      */
     public function handle(Request $request, Closure $next)
     {
-        
+
         foreach($request->all() as $key =>  $valor){
             if($valor == "null"){
                 $request->merge([$key => null]);

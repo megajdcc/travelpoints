@@ -24,24 +24,18 @@ class RolController extends Controller
         $datos = $request->all();
 
         $paginator = Rol::where([
-            ['nombre','LIKE','%'.$datos['q'].'%','OR'],
-            
+            ['nombre','LIKE','%'.$datos['q'].'%','OR'],            
         ])->where('nombre','!=','Desarrollador')
+        ->with(['permisos','usuarios'])
         ->orderBy($datos['sortBy'], $datos['isSortDirDesc'] ? 'desc' : 'asc')
         ->paginate($datos['perPage']  == 0 ? 10000 : $datos['perPage']);
-
         
         $roles = $paginator->items();
-
-        foreach($roles as $rol){
-            $rol->permisos;
-            $rol->usuarios;
-        }
-
         return response()->json([
             'roles' => $roles,
             'total' => $paginator->total()
         ]);
+
 
     }
 
@@ -49,11 +43,8 @@ class RolController extends Controller
         $roles = Rol::get();
         $rols = collect([]);
         if (Auth::user()->rol->nombre == 'Desarrollador') {
-            
             $rols = $roles;
-
         }else{
-
             foreach($roles as $rol){
 
                 if ($rol->nombre != 'Desarrollador') {
@@ -160,6 +151,7 @@ class RolController extends Controller
     }
 
     private function validar(Request $request,Rol $role = null) : array{
+
         return $request->validate([
             'nombre' => ['required',$role ?  Rule::unique('rols', 'nombre')->ignore($role) : 'unique:rols,nombre'],
             'permisos.*' => 'required',
@@ -182,14 +174,16 @@ class RolController extends Controller
         $datos = $this->validar($request,$role);
 
          try{
-            DB::beginTransaction();
+            
+                DB::beginTransaction();
+
                 $role->nombre = $datos['nombre'];
 
                 $role->save();
 
                 if(isset($datos['permisos'])){
 
-                    $role->permisos()->detach();
+                        $role->permisos()->detach();
 
 
                      foreach($datos['permisos'] as $key => $permiso){

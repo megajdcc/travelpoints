@@ -445,8 +445,12 @@ export default{
       cargarNegocio({commit}){
 
          return new Promise((resolve, reject) => {
-            axios.get(`/api/empleado/cargar/negocio`).then(({data}) => {
-               commit('setNegocio',data)
+            axios.get(`/api/empleado/cargar/negocio/${localStorage.getItem('ultimo-negocio') || ''}`).then(({data}) => {
+               
+               if(data.id){
+                  localStorage.setItem('ultimo-negocio', data.id)
+                  commit('setNegocio', data)
+               }
                resolve(data)
 
             }).catch(e => reject())
@@ -456,11 +460,13 @@ export default{
 
       cambiarNegocio({commit},id_negocio){
 
+
          return new Promise((resolve, reject) => {
-            
+
             axios.get(`/api/empleado/cambiar/negocio/${id_negocio}`).then(({data}) => {
 
                if(data.result){
+                  localStorage.setItem('ultimo-negocio', data.negocio.id)
                   commit('setNegocio',data.negocio)
                }
 

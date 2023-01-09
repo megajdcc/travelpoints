@@ -9,6 +9,7 @@ export default{
 			rol:{
 				nombre    :null,
 				id      :null,
+			
 				permisos: [],
 			},
 			roles:[],
@@ -42,8 +43,9 @@ export default{
 
 		clearRol(state){
 			state.rol = {
-				nombre    :null,
-				id      :null,
+				nombre  : null,
+				id      : null,
+			
 				permisos: [],
 			}
 

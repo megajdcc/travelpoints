@@ -39,6 +39,14 @@
 				:sort-by.sync="sortBy" empty-text="No se encontró ningún Permiso" :sort-desc.sync="isSortDirDesc"
 				sticky-header="700px" :no-border-collapse="false" borderless outlined small>
 
+
+				<template #cell(panel_id)="{item}">
+					<div class="text-nowrap">
+						{{  item.panel ? item.panel.panel : 'Sin definir'  }}
+					</div>
+
+				</template>
+
 				<!-- Column: Actions -->
 				<template #cell(actions)="{ item }">
 

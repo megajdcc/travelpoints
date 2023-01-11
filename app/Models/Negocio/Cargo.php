@@ -4,10 +4,19 @@ namespace App\Models\Negocio;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Trais\hasPermisos;
+
 
 class Cargo extends Model
 {
-    use HasFactory;
+    use HasFactory,hasPermisos;
+
+    public readonly string $model_type ;
+
+    public function __construct()
+    {
+        $this->model_type = 'App\Models\Negocio\Cargo';
+    }
 
     protected $fillable = [
         'cargo',

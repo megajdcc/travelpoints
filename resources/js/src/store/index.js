@@ -75,6 +75,16 @@ import negocio from './modules/negocios/index.js'
 import opinion from './modules/opinions/opinion.js'
 
 
+// Paneles 
+
+import panel from './modules/panel.js'
+
+// Cargos
+
+import cargo from './modules/negocio/cargo.js'
+
+
+
 Vue.use(Vuex)
 
 export default new Vuex.Store({
@@ -166,7 +176,16 @@ export default new Vuex.Store({
       return new Promise((resolve, reject) => {
         axios.post(`/api/search/location`,location).then(({data}) => resolve(data)).catch(e => reject(e))
       })
+    },
+
+    getPermisosPorPanel({commit},panel){
+
+      return new Promise((resolve, reject) => {
+        axios.get(`/api/panels/${panel}/get/permisos`).then(({data}) => resolve(data)).catch(e => reject(e))
+        
+      })
     }
+
 
 
 	},
@@ -192,7 +211,9 @@ export default new Vuex.Store({
     atraccion,
     evento,
     negocio,
-    opinion
+    opinion,
+    panel,
+    cargo
   },
 
   strict: process.env.DEV,

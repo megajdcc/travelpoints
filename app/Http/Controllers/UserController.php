@@ -467,29 +467,7 @@ class UserController extends Controller
             ->orderBy($datos['sortBy'],$datos['sortDesc'] ? 'desc' : 'asc')
             ->paginate($datos['perPage'] == 0 ? 10000 : $datos['perPage']);
 
-            // $paginator = DB::table('users','u')
-            //             ->selectRaw("
-            //                 concat(u.nombre,' ',u.apellido) as usuario,
-            //                 u.username,
-            //                 u.email,
-            //                 r.nombre as rol,
-            //                 u.id,
-            //                 u.imagen as avatar
-
-            //             ")
-            //     ->join('rols as r','u.rol_id','r.id')
-            //     ->where('u.rol_id', $datos['role'] ? $datos['role'] : '>', 0)
-            //     ->where([
-            //             ['u.nombre', 'LIKE', '%' . $datos['q'] . '%', 'OR'],
-            //             ['u.email', 'LIKE', '%' . $datos['q'] . '%', 'OR'],
-            //             ['u.apellido', 'LIKE', '%' . $datos['q'] . '%', 'OR'],
-            //             ['u.bio', 'LIKE', '%' . $datos['q'] . '%', 'OR'],
-            //             ['u.direccion', 'LIKE', '%' . $datos['q'] . '%','OR'],
-            //             ['r.nombre', 'LIKE', '%' . $datos['q'] . '%','OR'],
-
-            //     ])
-            //     ->orderBy($datos['sortBy'] ?: 'u.id', ($datos['sortDesc']) ? 'desc' : 'asc')
-            //     ->paginate($datos['perPage'] == 0 ? 10000 : $datos['perPage']);
+   
 
                
         }else{

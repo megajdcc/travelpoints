@@ -4,13 +4,12 @@ import useFilterTable from '@core/utils/useFilterTable'
 
 import store from '@/store';
 
-export default function usePermiso() {
+export default function useCargosList(negocio) {
 
 
    const tableColumns = [
       { key: 'id', sortable: true, label: '#' },
-      { key: 'nombre', sortable: true, label: "Permiso" },
-      { key:'panel_id',sortable:true,label:'Panel'},
+      { key: 'cargo', sortable: true, label: "Cargo" },
       { key: 'actions', sortKey: "id", sortable: true },
    ];
 
@@ -27,31 +26,34 @@ export default function usePermiso() {
       refetchData,
    } = useFilterTable();
 
-   const fetchData = (context, next) => {
+   const fetchData = (ctx, next) => {  
 
-      store.dispatch('permiso/fetchData', {
-         perPage: perPage.value,
-         sortBy: sortBy.value,
-         isSortDirDesc: isSortDirDesc.value,
-         q: searchQuery.value,
-         page: currentPage.value
-      }).then((data) => {
+   
+         store.dispatch('cargo/fetchData', {
+            perPage: perPage.value,
+            sortBy: sortBy.value,
+            isSortDirDesc: isSortDirDesc.value,
+            q: searchQuery.value,
+            page: currentPage.value,
+            negocio_id: negocio.value ? negocio.value.id : null
+         }).then(({ cargos, total: all }) => {
+            total.value = all
+            next(cargos)
+         }).catch(e => {
+            toast.error('Error trayendo data ')
+         })
 
-         next(data.permisos)
-         total.value = Number(data.total)
 
-      }).catch(e => {
-         toast.error('Error trayendo data ')
-      })
+    
 
    }
 
-   const eliminarPermiso = (id) => {
+   const eliminar = (id) => {
 
-      store.dispatch('permiso/eliminarPermiso', id).then(({ result }) => {
+      store.dispatch('cargo/eliminar', id).then(({ result }) => {
 
          if (result) {
-            toast.success('Permiso Eliminado con éxito.')
+            toast.success('Cargo Eliminado con éxito.')
             refetchData();
          } else {
             toast.error('El Permiso no se pudo eliminar, inténtelo de nuevo mas tarde')
@@ -62,8 +64,6 @@ export default function usePermiso() {
       })
 
    }
-
-
 
    return {
       perPageOptions,
@@ -78,7 +78,7 @@ export default function usePermiso() {
       refetchData,
       fetchData,
       tableColumns,
-      eliminarPermiso
+      eliminar
    }
 
 

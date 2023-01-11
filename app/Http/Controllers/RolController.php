@@ -12,10 +12,9 @@ class RolController extends Controller
 
 
     public function getRol(Rol $role){
-
-        $role->permisos;
+        $role->permisos->groupBy('panel.panel');
         $role->usuarios;
-        
+
         return response()->json($role);
     }
 
@@ -31,6 +30,7 @@ class RolController extends Controller
         ->paginate($datos['perPage']  == 0 ? 10000 : $datos['perPage']);
         
         $roles = $paginator->items();
+            
         return response()->json([
             'roles' => $roles,
             'total' => $paginator->total()
@@ -40,6 +40,7 @@ class RolController extends Controller
     }
 
     public function getRoles(){
+
         $roles = Rol::get();
         $rols = collect([]);
         if (Auth::user()->rol->nombre == 'Desarrollador') {
@@ -54,6 +55,9 @@ class RolController extends Controller
             }
             
         }
+
+
+        
         return response()->json($rols);
     }
 

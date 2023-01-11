@@ -82,6 +82,13 @@ export default [
          },
 
          {
+            title   : 'Paneles',
+            route   : 'panel.list',
+            action  : 'read',
+            resource: 'panels'
+         },
+
+         {
             title: 'Preguntas Frecuentes (Faqs)',
             route: 'listar.faqs',
             icon:'HelpCircleIcon',

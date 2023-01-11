@@ -4,6 +4,7 @@ namespace App\Models\Usuario;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Casts\Attibute;
 
 class Rol extends Model
 {
@@ -21,7 +22,6 @@ class Rol extends Model
     public function usuarios(){
         return $this->hasMany('App\Models\User','rol_id','id');
     }
-
 
 
 

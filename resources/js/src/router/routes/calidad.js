@@ -1619,6 +1619,104 @@ export default [
 
 
    /*****************************************/
+   /* PAnels
+   /*************************************** */
+
+   {
+      path:'/panels',
+      component:() => import('views/panels/index.vue'),
+
+      children:[
+         {
+            path:'',
+            component:() => import('views/panels/list.vue'),
+            name:'panel.list',
+            meta:{
+               resource:'panels',
+               action:'read',
+               pageTitle:'Paneles',
+               breadcrumb:[
+                  {
+                     text:'Home',
+                     to:{name:'home'},
+                     active:false,
+                  },
+
+                  {
+                     text: 'Listado',
+                     active:true
+                  }
+
+               ]
+            }
+         },
+         {
+            path:'create',
+            name:'panel.create',
+            component:() => import('views/panels/create.vue'),
+            meta: {
+               resource: 'panels',
+               action: 'write',
+               pageTitle: 'Paneles',
+               navActiveLink: 'panel.list',
+               breadcrumb: [
+                  {
+                     text: 'Home',
+                     to: { name: 'home' },
+                     active: false,
+                  },
+
+                  {
+                     text: 'Listado',
+                     active: false,
+                     to:{name:"panel.list"}
+                  },
+                  {
+                     text: 'Crear',
+                     active: true
+                  }
+
+               ]
+            }
+            
+         },
+
+         {
+            path: ':id/edit',
+            name: 'panel.edit',
+            props:true,
+            component: () => import('views/panels/edit.vue'),
+            meta: {
+               resource: 'panels',
+               action: 'update',
+               pageTitle: 'Paneles',
+               navActiveLink:'panel.list',
+               breadcrumb: [
+                  {
+                     text: 'Home',
+                     to: { name: 'home' },
+                     active: false,
+                  },
+
+                  {
+                     text: 'Listado',
+                     active: false,
+                     to: { name: "panel.list" }
+                  },
+                  {
+                     text: 'Editar',
+                     active: true
+                  }
+
+               ]
+            }
+
+         }
+
+      ]
+   },
+
+   /*****************************************/
    /* PAGINA DE Mantenimiento
    /*************************************** */
    {

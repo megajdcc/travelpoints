@@ -4,10 +4,14 @@ export default{
 
 	state(){
 		return{
+
 			permiso:{
-				id:null,
-				nombre:'',
+				id      : null,
+				nombre  : '',
+				panel_id: null,
+				panel   : null
 			},
+			
 			permisos:[],
 		}
 	},
@@ -30,8 +34,10 @@ export default{
 		clearPermiso(state){
 
 			state.permiso = {
-				id      :null,
-				nombre  :'',
+				id: null,
+				nombre: '',
+				panel_id: null,
+				panel: null
 			}
 		
 		},
@@ -79,31 +85,69 @@ export default{
 
 		getPermissionUser:(state) => {
 			
-			return (RolPermiso) => {
+			return ({rol,permisos}) => {	
 
-
-				return state.permisos.map(val => {
-
+				return permisos.map(val => {
 					let actions = null;
 
-					if(RolPermiso.permissions){
-						const rolPermissions = RolPermiso.permissions.find(va => va.id == val.id);
-
+					if (rol.permissions) {
+						const rolPermissions = rol.permissions.find(va => va.id == val.id);
 						actions = rolPermissions ? JSON.parse(rolPermissions.pivot.actions) : null;
 					}
 
 					return {
-						module:val.nombre,
-						read:actions ? actions.find(v => v == 'read') ? true : false : false,
+						module: val.nombre,
+						read: actions ? actions.find(v => v == 'read') ? true : false : false,
 						write: actions ? actions.find(v => v == 'write') ? true : false : false,
 						update: actions ? actions.find(v => v == 'update') ? true : false : false,
 						delete: actions ? actions.find(v => v == 'delete') ? true : false : false,
 					}
+				})
+
+
+			}
+
+		},
+
+		getPermissionUserForPanel:(state) => {
+
+			return ({panels,rol}) => {
+
+			
+				const permisos = [];
+
+				panels.forEach(val => permisos.push(...val.permisos))
+
+			
+
+				return permisos.map(val => {
+
+					let actions = null;
+
+					if (rol.permissions) {
+						const rolPermissions = rol.permissions.find(va => va.id == val.id);
+						actions = rolPermissions ? JSON.parse(rolPermissions.pivot.actions) : null;
+					}
+
+					const result = {
+						panel_id:val.panel_id,
+						module: val.nombre,
+						read: actions ? actions.find(v => v == 'read') ? true : false : false,
+						write: actions ? actions.find(v => v == 'write') ? true : false : false,
+						update: actions ? actions.find(v => v == 'update') ? true : false : false,
+						delete: actions ? actions.find(v => v == 'delete') ? true : false : false,
+					};
+
+				
+					
+					return result
 
 				})
 			}
-
 		}
+
+
+
 
 	},
 
@@ -209,9 +253,6 @@ export default{
 			})
 
 		}
-
-
-
 
 	}
 

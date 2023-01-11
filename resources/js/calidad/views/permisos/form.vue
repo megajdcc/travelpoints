@@ -20,6 +20,22 @@
 								</validation-provider>
 							</b-form-group>
 						</b-col>
+
+						<b-col cols="12" md="6">
+							<b-form-group >
+								<template #label>
+									Panel | <span class="text-danger">*</span>
+								</template>
+						
+								<validation-provider name="panel_id" rules="required" #default="{errors,valid}">
+									<v-select v-model="formulario.panel_id" :reduce="(option) => option.id" :options="panels" label="panel" />
+									<b-form-invalid-feedback :state="valid">
+										{{ errors[0] }}
+									</b-form-invalid-feedback>
+								</validation-provider>
+							</b-form-group>
+						</b-col>
+
 					</b-row>
 
 					<b-row>
@@ -72,8 +88,10 @@ import {
 	import {required } from '@validations'
 	import { regresar } from '@core/utils/utils';
 
-	import { ref,computed,toRefs} from '@vue/composition-api'
+	import { ref,computed,toRefs,onMounted} from '@vue/composition-api'
 	import store from '@/store'
+
+	import vSelect from 'vue-select'
 
 	export default{  
 
@@ -95,7 +113,8 @@ import {
 			BFormInvalidFeedback,
 			BContainer,
 			ValidationObserver,
-			ValidationProvider
+			ValidationProvider,
+			vSelect
 		},
 
 		setup(props,{emit}){
@@ -109,19 +128,33 @@ import {
 
 				const { permiso:formulario } = toRefs(store.state.permiso)
 
+				const {panels} = toRefs(store.state.panel)
+
 
 				const guardar = () => {
 
 					emit('save',formulario.value,formValidate.value)
 
 				}
+
+				const cargarForm = () => {
+
+					if(!panels.value.length){
+						store.dispatch('panel/getPanels')
+					}
+
+				}
+
+				onMounted(() => cargarForm())
+
 				return{
 					required,
 					regresar,
 					guardar,
 					formulario,
 					loading:computed(() => store.state.loading),
-					PickerOptions
+					PickerOptions,
+					panels
 				}
 			}
 

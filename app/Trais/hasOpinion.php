@@ -15,12 +15,9 @@ trait hasOpinion
    public function updateOpinion(array $data): Opinion{
 
       $opinion = Opinion::find($data['id']);
-
       $opinion->update([...$data]);
-
       $opinion->model;
       $opinion->imagenes;
-
       return $opinion;
    }
 

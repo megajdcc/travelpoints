@@ -1,7 +1,7 @@
 <?php
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\{AuthController};
-use App\Http\Controllers\{CategoriaFaqController, DestinoController, DivisaController, EventoController, FaqController, HomeController, HorarioController, IataController, MovimientoController, NegocioCategoriaController, NegocioController, UserController,NotificacionController,RolController,PermisoController, SolicitudController, TelefonoController,OpinionController};
+use App\Http\Controllers\{CargoController, CategoriaFaqController, DestinoController, DivisaController, EventoController, FaqController, HomeController, HorarioController, IataController, MovimientoController, NegocioCategoriaController, NegocioController, UserController,NotificacionController,RolController,PermisoController, SolicitudController, TelefonoController,OpinionController, PanelController};
 use App\Http\Middleware\convertirNull;
 use Laravel\Socialite\Facades\Socialite;
 use App\Models\{CategoriaFaq, Pais,Estado,Ciudad};
@@ -258,6 +258,28 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
 
     Route::post('opinions/fetch/data',[OpinionController::class,'fetchData']);
     Route::resource('opinions',OpinionController::class);
+
+
+    /*****************************/
+    /* Panels
+    /*****************************/
+
+    Route::post('panels/fetch/data',[PanelController::class,'fetchData']);
+    Route::get('panels/{panel}/fetch/data',[PanelController::class,'fetch']);
+    Route::get('panels/get/all',[PanelController::class,'getAll']);
+
+    Route::resource('panels',PanelController::class);
+    Route::get('panels/{panel}/get/permisos',[PanelController::class,'getPermisosPanel']);
+
+
+    /*****************************/
+    /* Cargos de negocios
+    /*****************************/
+    Route::get('cargos/get/all',[CargoController::class,'getAll']);
+    Route::post('cargos/fetch/data',[CargoController::class,'fetchData']);
+    Route::resource('cargos',CargoController::class);
+    Route::get('cargos/{cargo}/fetch/data',[CargoController::class,'fetch']);
+
 
     /*****************************/
     /* Cargar negocio Loggin emp

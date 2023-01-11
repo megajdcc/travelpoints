@@ -26,40 +26,49 @@
 					<b-row>
 						<b-col cols="12">
 							<b-card no-body class="border mt-1">
+								
 								<b-card-header class="p-1">
 									<b-card-title class="font-medium-2">
 										<feather-icon icon="LockIcon" size="18" />
 										<span class="align-middle ml-50">Permisos</span>
 									</b-card-title>
 								</b-card-header>
-								<b-table striped responsive class="mb-0" :items="formulario.permisos">
-									<template #cell(module)="data">
-										{{ data.value }}
+
+								<section v-for="({id,panel},p) in panels" :key="p">
+
+										<template >
+											<el-divider content-position="left">{{ panel }}</el-divider>
+
+											<b-table striped :fields="fieldsTable" small class="mb-0" :items="formulario.permisos.filter(val => val.panel_id === id)">
+												<template #cell(module)="data">
+													{{ data.value }}
+												</template>
+											
+												<template #cell(read)="{ item }">
+													<b-form-checkbox v-model="item.read" />
+												</template>
+											
+												<template #cell(write)="{ item }">
+													<b-form-checkbox v-model="item.write" />
+												</template>
+											
+											
+												<template #cell(update)="{ item }">
+													<b-form-checkbox v-model="item.update" />
+												</template>
+											
+											
+												<template #cell(delete)="{ item }">
+													<b-form-checkbox v-model="item.delete" />
+												</template>
+										
+											</b-table>
 									</template>
 
-									<template #cell(read)="{ item }">
-										<!-- <span v-for="val in field">{{ val }}</span> -->
-										<b-form-checkbox v-model="item.read" />
-									</template>
+									
+								</section>
 
-									<template #cell(write)="{ item }">
-										<!-- <span v-for="val in field">{{ val }}</span> -->
-										<b-form-checkbox v-model="item.write" />
-									</template>
-
-
-									<template #cell(update)="{ item }">
-										<!-- <span v-for="val in field">{{ val }}</span> -->
-										<b-form-checkbox v-model="item.update" />
-									</template>
-
-
-									<template #cell(delete)="{ item }">
-										<!-- <span v-for="val in field">{{ val }}</span> -->
-										<b-form-checkbox v-model="item.delete" />
-									</template>
-
-								</b-table>
+								
 							</b-card>
 						</b-col>
 					</b-row>
@@ -141,7 +150,10 @@ import {
 			
 		setup(_,{emit}){
 
-			const formValidate = ref(null)
+			const formValidate = ref(null)	
+
+			const { panels } = toRefs(store.state.panel)
+			const refTable = ref(null)
 
 			const PickerOptions = ref({
 				disabledDate(time){
@@ -149,22 +161,50 @@ import {
 				}		
 			})
 
+			const permisos = ref([])
+
+
 			const {rol:formulario} = toRefs(store.state.rol) 
 
-			const getPermissionUser = computed(() => store.getters['permiso/getPermissionUser'](formulario.value))
+			const getPermissionUser = computed({
+				get: () =>store.getters['permiso/getPermissionUser'],
+				set: (permis) => store.getters['permiso/getPermissionUser'](permis)
+			});
 
-			onMounted(() => {
 
-				formulario.value.permisos = clone(getPermissionUser.value)
+			const getPermissionUserForPanel = computed({
+				get:() => store.getters['permiso/getPermissionUserForPanel'],
+				set: (data) => store.getters['permiso/getPermissionUserForPanel'](data)
 			})
 
-			watch(formulario,() => {
-				formulario.value.permisos = clone(getPermissionUser.value)
+			const cargarForm = () => {
+
+				formulario.value.permisos = clone(getPermissionUserForPanel.value({panels:panels.value,rol:formulario.value}))
+
+				if(!panels.value.length){
+					store.dispatch('panel/getPanels')
+				}
+
+			}
+
+			onMounted(() => {
+				cargarForm();
+			})
+
+			watch([formulario,panels],() => {
+				cargarForm()
 			})
 
 			const guardar = () => {
+				// formulario.value.permisos = refTable.value
 				emit('save',formulario.value,formValidate.value)
 			}
+
+			const getPermisosPorPanel = computed(() => {
+
+				return store.getters['permiso/permisosGroupByPanel'](formulario.value)
+
+			})
 
 			return {
 				guardar,
@@ -172,9 +212,14 @@ import {
 				required,
 				formulario,
 				loading:computed(() => store.state.loading),
-				permisos:computed(() => store.state.permisos),
 				PickerOptions,
-				regresar
+				regresar,
+				getPermissionUser,
+				panels,
+				refTable,
+				permisos,
+				fieldsTable:[{ key: 'module' }, { key: 'read' }, { key: 'write' }, { key: 'update' }, { key: 'delete' }]
+
 
 			}
 		}

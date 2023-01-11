@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 
 
 use App\Models\Usuario\Permiso;
-
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Validation\Rule;
 
 use Illuminate\Support\Facades\DB;
@@ -31,26 +31,32 @@ class PermisoController extends Controller
         $paginator = Permiso::where([
             ['nombre','LIKE','%'.$datos['q'].'%','OR'],
         ])
+        ->whereHas('panel',function(Builder $q) use($datos){
+            $q->orWhere('panel','LIKE',"%{$datos['q']}%");
+        })
+        ->with(['roles','usuarios','panel'])
         ->orderBy($datos['sortBy'], $datos['isSortDirDesc'] ? 'desc' : 'asc')
         ->paginate($datos['perPage']  == 0 ? 10000 : $datos['perPage']);
 
         
-        $permisos = $paginator->items();
-
-        foreach($permisos as $permiso){
-            $permiso->roles;
-            $permiso->usuarios;
-        }
-
         return response()->json([
-            'permisos' => $permisos,
+            'permisos' => $paginator->items(),
             'total' => $paginator->total()
         ]);
 
     }
 
 
+    private function  validar(Request $request, Permiso $permiso = null): array{
 
+        return $request->validate([
+            'nombre' => ['required',$permiso ? Rule::unique('permisos','nombre')->ignore($permiso) : 'unique:permisos,nombre'],
+            'panel_id' => 'required'
+        ],[
+            'nombre.unique' => 'El nombre del permiso ya está registrado, inténte con otro'
+        ]);
+
+    } 
     /**
      * Store a newly created resource in storage.
      *
@@ -59,20 +65,10 @@ class PermisoController extends Controller
      */
     public function store(Request $request)
     {
-        $datos = $request->validate([
-            'nombre' => 'required|unique:permisos,nombre',
-        ],[
-            'nombre.required' => 'Este campo es necesario',
-            'nombre.unique' => 'Este Permiso ya está creado, no puede crear uno igual',
-        ]);
-
 
         try{
-
             DB::beginTransaction();
-                $permiso  = Permiso::create([
-                'nombre' => $datos['nombre'],
-                ]);
+                $permiso  = Permiso::create($this->validar($request));
                 
             DB::commit();
             $result = true;
@@ -109,18 +105,11 @@ class PermisoController extends Controller
      */
     public function update(Request $request, Permiso $permiso)
     {
-        $datos = $request->validate([
-            'nombre' => ['required',Rule::unique('permisos','nombre')->ignore($permiso)],
-        ],[
-            'nombre.required' => 'Este campo es necesario',
-            'nombre.unique' => 'Este permiso ya está creado, no puede crear uno igual',
-        ]);
 
         try{
                 DB::beginTransaction();
-                $permiso->nombre = $datos['nombre'];
-                $permiso->save();
-                    
+                $permiso->update($this->validar($request,$permiso));
+
                 DB::commit();
                 $message = 'Se ha actualizado con éxito el permiso';
                 $result = true;
@@ -160,24 +149,6 @@ class PermisoController extends Controller
 
 
 
-    public function listarPermisos(Request $request){
-
-            $datos = Permiso::get();
-
-               return \DataTables::of($datos)
-                    ->addIndexColumn()
-                    ->addColumn('action',function($row){
-
-                        $btn = '<button type="button" class="btn btn-outline-primary" title="Editar permiso" data-action="editarPermiso" data-toggle="tooltip"><i class="fas fa-edit mx-2 " data-action="editarPermiso"></i></button>';
-
-                        $btn .= '<button type="button" class="btn btn-outline-danger eliminar-permiso" data-action="eliminarPermiso" title="Eliminar Permiso"><i class="fa fa-trash mx-2" data-action="eliminarPermiso"></i></button>';
-
-                        return '<div class="btn-group btn-group-sm">'.$btn.'</div>';
-
-                    })
-                    ->rawColumns(['action'])
-                    ->make(true);
-    }
 
 
     public function getPermissions(){

@@ -95,11 +95,30 @@ export default [
 
    // Personal
    {
-      title:'Personal',
-      route:'negocio.personal',
+      title:'Personal y Cargos',
       icon:'fas fa-people-group',
-      action:'negocio.personal',
-      rosource:'negocio.personal',
+     
+      children:[
+
+         {
+            icon: 'fas fa-people-group',
+            title: 'Personal',
+            route: 'personal.list',
+            action: 'read',
+            rosource: 'personal',
+
+         },
+
+         {
+         
+            title:'Cargos',
+            route:'cargos.list',
+            action: 'read',
+            rosource: 'cargos',
+            
+
+         }
+      ]
    },
 
    // preferencias del Negocio
@@ -139,11 +158,7 @@ export default [
 
          },
 
-         {
-            title: 'Divisa y precios',
-            route: 'negocio.informacion',
-
-         },
+       
 
          {
             title: 'Redes Sociales',

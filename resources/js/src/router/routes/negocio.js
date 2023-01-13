@@ -14,7 +14,9 @@ export default [
             component: () => import('views/panels/negocio/home.vue'),
       },
 
-
+      /***************************************
+       *    Cargos Negocio
+       * *************************************/
       {
             path:'/negocio/cargos',
             component:() => import('views/panels/negocio/cargos/index.vue'),
@@ -114,7 +116,104 @@ export default [
 
 
             ]
+      },
+
+      /***************************************
+       *    Personal Negocio
+       * *************************************/
+
+      {
+            path:'/negocio/personal',
+            component:() => import('views/panels/negocio/personal/index.vue'),
+            children:[
+                  {
+                        path:'',
+                        name:'personal.list',
+                        component:() => import('views/panels/negocio/personal/list.vue'),
+                        meta:{
+                              pageTitle:'Personal',
+                              resource:'personal',
+                              action:'read',
+                              layout:'negocio',
+                              breadcrumb:[
+                                    {
+                                          text: 'Home',
+                                          to: { name: 'negocio.home' },
+                                          active: false
+                                    },
+                                    {
+                                          text: 'Personal',
+                                          active: true
+                                    }
+                              ]
+                        }
+
+                  },
+
+                  {
+                        path: 'create',
+                        name: 'personal.create',
+                        component: () => import('views/panels/negocio/personal/create.vue'),
+                        meta: {
+                              pageTitle: 'Asociar Personal',
+                              resource: 'personal',
+                              action: 'write',
+                              layout: 'negocio',
+                              navActiveLink:'personal.list',
+                              breadcrumb: [
+                                    {
+                                          text: 'Home',
+                                          to: { name: 'negocio.home' },
+                                          active: false
+                                    },
+                                    {
+                                          text: 'Personal',
+                                          active: false,
+                                          to:{name:'personal.list'}
+                                    },
+                                    {
+                                          text: 'Asociar',
+                                          active: true,
+                                    }
+                              ]
+                        }
+
+                  },
+
+
+                  {
+                        path: ':id/edit',
+                        name: 'personal.edit',
+                        props:true,
+                        component: () => import('views/panels/negocio/personal/edit.vue'),
+                        meta: {
+                              pageTitle: 'Editar Personal',
+                              resource: 'personal',
+                              action: 'update',
+                              layout: 'negocio',
+                              navActiveLink: 'personal.list',
+                              breadcrumb: [
+                                    {
+                                          text: 'Home',
+                                          to: { name: 'negocio.home' },
+                                          active: false
+                                    },
+                                    {
+                                          text: 'Personal',
+                                          active: false,
+                                          to: { name: 'personal.list' }
+                                    },
+                                    {
+                                          text: 'Actualizar Personal',
+                                          active: true,
+                                    }
+                              ]
+                        }
+
+                  }
+
+
+            ]
       }
-      
 
 ]

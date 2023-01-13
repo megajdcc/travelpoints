@@ -1,7 +1,7 @@
 <?php
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\{AuthController};
-use App\Http\Controllers\{CargoController, CategoriaFaqController, DestinoController, DivisaController, EventoController, FaqController, HomeController, HorarioController, IataController, MovimientoController, NegocioCategoriaController, NegocioController, UserController,NotificacionController,RolController,PermisoController, SolicitudController, TelefonoController,OpinionController, PanelController};
+use App\Http\Controllers\{CargoController, CategoriaFaqController, DestinoController, DivisaController, EmpleadoController, EventoController, FaqController, HomeController, HorarioController, IataController, MovimientoController, NegocioCategoriaController, NegocioController, UserController,NotificacionController,RolController,PermisoController, SolicitudController, TelefonoController,OpinionController, PanelController};
 use App\Http\Middleware\convertirNull;
 use Laravel\Socialite\Facades\Socialite;
 use App\Models\{CategoriaFaq, Pais,Estado,Ciudad};
@@ -280,6 +280,13 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::resource('cargos',CargoController::class);
     Route::get('cargos/{cargo}/fetch/data',[CargoController::class,'fetch']);
 
+    /*****************************/
+    /* Empleados de negocios
+    /*****************************/
+    Route::get('empleados/get/all', [EmpleadoController::class, 'getAll']);
+    Route::post('empleados/fetch/data', [EmpleadoController::class, 'fetchData']);
+    Route::resource('empleados', EmpleadoController::class);
+    Route::get('empleados/{empleado}/fetch/data', [EmpleadoController::class, 'fetch']);
 
     /*****************************/
     /* Cargar negocio Loggin emp

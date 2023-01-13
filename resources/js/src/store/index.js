@@ -83,7 +83,9 @@ import panel from './modules/panel.js'
 
 import cargo from './modules/negocio/cargo.js'
 
+// Empledos 
 
+import empleado from './modules/negocio/empleado.js'
 
 Vue.use(Vuex)
 
@@ -213,7 +215,8 @@ export default new Vuex.Store({
     negocio,
     opinion,
     panel,
-    cargo
+    cargo,
+    empleado
   },
 
   strict: process.env.DEV,

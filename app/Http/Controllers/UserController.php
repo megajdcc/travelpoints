@@ -254,6 +254,7 @@ class UserController extends Controller
     }
 
     public function getUsuarios(){
+        
         $usuarios = User::get();
         foreach ($usuarios as $key => $usuario) {
             $usuario->cargar();

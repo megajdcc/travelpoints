@@ -103,7 +103,7 @@ export default{
 
          return new Promise((resolve, reject) => {
 
-            console.log('cargas')
+ 
 
             axios.post('/api/cargos/fetch/data', datos).then(({ data }) => {
                

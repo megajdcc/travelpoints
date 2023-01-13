@@ -22,6 +22,8 @@ use App\Trais\{hasCuenta, Has_roles, hasTelefonos};
 use App\Models\Divisa;
 
 use App\Models\Negocio\Negocio;
+use App\Models\Usuario\Permiso;
+
 class User extends Authenticatable
 {
     use HasApiTokens,HasFactory, Notifiable;
@@ -163,7 +165,7 @@ class User extends Authenticatable
     }
 
     public function permisos(){
-        return $this->belongsToMany('App\Models\Usuario\Permiso','usuario_permisos','usuario_id','permiso_id')->withPivot(['action']);
+        return $this->belongsToMany(Permiso::class,'usuario_permisos','usuario_id','permiso_id')->withPivot(['action']);
     }
 
     public function getTokenText(){

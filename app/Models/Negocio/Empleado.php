@@ -4,6 +4,8 @@ namespace App\Models\Negocio;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\User;
+use App\Models\Negocio\Cargo;
 
 class Empleado extends Model
 {

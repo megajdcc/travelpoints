@@ -131,7 +131,8 @@ class Negocio extends Model
         $this->iata;
         $this->horarios;
         $this->likes;
-        $this->cargos;
+        $this->cargos->load('permisos.permiso');
+        $this->empleados->load(['permisos','rol']);
         return $this;
     }
     

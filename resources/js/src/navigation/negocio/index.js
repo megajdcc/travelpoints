@@ -10,7 +10,7 @@ export default [
             title:'Tablero',
             route:'negocio.home',
             action:'read',
-            resource:'negocio.home',
+            resource:'home negocio',
             icon: 'fa-solid fa-gauge',
          
          },
@@ -19,7 +19,7 @@ export default [
             title: 'Movimientos de cuenta',
             route: 'negocio.movimientos',
             action: 'read',
-            resource: 'negocio.movimientos',
+            resource: 'movimientos negocio',
             icon: 'fa-solid fa-money-check-dollar',
 
          },
@@ -37,7 +37,7 @@ export default [
             title:'Nueva Venta',
             route:'negocio.nueva.venta',
             icon:'fas fa-money-bill',
-            resource: 'negocio.ventas',
+            resource: 'ventas negocio',
             action: 'write',
          },
 
@@ -45,7 +45,7 @@ export default [
             title: 'Historial de Ventas',
             route: 'negocio.venta.historial',
             icon: 'fa-solid fa-database',
-            resource: 'negocio.ventas.historial',
+            resource: 'ventas historial negocio',
             action: 'write',
          }
 
@@ -57,7 +57,7 @@ export default [
       title: 'Certificados',
       icon: 'fas fa-certificate',
       route: 'negocio.certificados',
-      resource: 'negocio.certificados',
+      resource: 'certificados negocio',
       action: 'read'
    },
 
@@ -71,21 +71,21 @@ export default [
          {
             title:'Galerias de Imagenes',
             route:'negocio.galerias',
-            resource:'negocio.galerias',
+            resource:'galerias negocio',
             action:'read',
          },
 
          {
             title: 'Publicaciones',
             route: 'negocio.publicaciones',
-            resource: 'negocio.publicaciones',
+            resource: 'publicaciones negocio',
             action: 'read',
          },
 
          {
             title: 'Eventos',
             route: 'negocio.eventos',
-            resource: 'negocio.eventos',
+            resource: 'eventos negocio',
             action: 'read',
          }
 
@@ -105,7 +105,7 @@ export default [
             title: 'Personal',
             route: 'personal.list',
             action: 'read',
-            rosource: 'personal',
+            rosource: 'personal negocio',
 
          },
 
@@ -114,7 +114,7 @@ export default [
             title:'Cargos',
             route:'cargos.list',
             action: 'read',
-            rosource: 'cargos',
+            rosource: 'cargos negocio',
             
 
          }
@@ -129,12 +129,17 @@ export default [
          {
             title:'Información del Negocio',
             route:'negocio.informacion',
+            resource:'preferencias negocio',
+            action:'read'
 
          },
 
          {
             title: 'Logo y portal',
             route: 'negocio.informacion',
+            resource: 'preferencias negocio',
+            action: 'read'
+
 
          },
 
@@ -142,6 +147,8 @@ export default [
           {
             title: 'Amenidades',
             route: 'negocio.informacion',
+             resource: 'preferencias negocio',
+             action: 'read'
 
          },
 
@@ -149,12 +156,16 @@ export default [
           {
             title: 'Horario de Trabajo',
             route: 'negocio.informacion',
+             resource: 'preferencias negocio',
+             action: 'read'
 
          },
 
          {
             title: 'Divisa y precios',
             route: 'negocio.informacion',
+            resource: 'preferencias negocio',
+            action: 'read'
 
          },
 
@@ -163,12 +174,16 @@ export default [
          {
             title: 'Redes Sociales',
             route: 'negocio.informacion',
+            resource: 'preferencias negocio',
+            action: 'read'
          },
 
 
          {
             title: 'Publica un video',
             route: 'negocio.informacion',
+            resource: 'preferencias negocio',
+            action: 'read'
          }
 
 
@@ -188,11 +203,15 @@ export default [
 
       children:[
          {
-            title:'Ventas'
+            title:'Ventas',
+            resource: 'reportes negocio',
+            action: 'read'
          },
 
          {
-            title: 'Certificados'
+            title: 'Certificados',
+            action: 'read',
+            resource: 'reportes negocio' ,
          },
       ]
 

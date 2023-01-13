@@ -7,7 +7,7 @@ export default [
             path:'/negocio/home',
             name: 'negocio.home',
             meta: {
-                  resource:'home',
+                  resource:'home negocio',
                   action:'read',
                   layout:'negocio',
             },
@@ -28,7 +28,7 @@ export default [
                         name:'cargos.list',
                         meta:{
                               pageTitle:"Cargos",
-                              resources:'cargos',
+                              resources:'cargos negocio',
                               action:'read',
                               layout:'negocio',
                               breadcrumb:[
@@ -52,7 +52,7 @@ export default [
                         component:() => import('views/panels/negocio/cargos/create.vue'),
                         meta:{
                               layout:'negocio',
-                              resource:'cargos',
+                              resource:'cargos negocio',
                               action:'write',
                               navActiveLink:'cargos.list',
                               pagetTitle:'Crear Cargo',
@@ -86,7 +86,7 @@ export default [
                         component: () => import('views/panels/negocio/cargos/edit.vue'),
                         meta: {
                               layout: 'negocio',
-                              resource: 'cargos',
+                              resource: 'cargos negocio',
                               action: 'update',
                               navActiveLink: 'cargos.list',
                               pagetTitle: 'Editar cargo',
@@ -132,7 +132,7 @@ export default [
                         component:() => import('views/panels/negocio/personal/list.vue'),
                         meta:{
                               pageTitle:'Personal',
-                              resource:'personal',
+                              resource:'personal negocio',
                               action:'read',
                               layout:'negocio',
                               breadcrumb:[
@@ -156,7 +156,7 @@ export default [
                         component: () => import('views/panels/negocio/personal/create.vue'),
                         meta: {
                               pageTitle: 'Asociar Personal',
-                              resource: 'personal',
+                              resource: 'personal negocio',
                               action: 'write',
                               layout: 'negocio',
                               navActiveLink:'personal.list',
@@ -188,7 +188,7 @@ export default [
                         component: () => import('views/panels/negocio/personal/edit.vue'),
                         meta: {
                               pageTitle: 'Editar Personal',
-                              resource: 'personal',
+                              resource: 'personal negocio',
                               action: 'update',
                               layout: 'negocio',
                               navActiveLink: 'personal.list',

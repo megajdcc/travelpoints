@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 use App\Trais\{HasDireccion,hasCuenta,hasImages,hasTelefonos,hasEvento, hasHorario, hasLike, hasOpinion,hasPermisos};
 use App\Models\{Divisa,User,Iata};
 
+use App\Models\Amenidad;
+
 class Negocio extends Model
 {
     use HasFactory;
@@ -145,6 +147,11 @@ class Negocio extends Model
      */
     public function asignarEmpleado(User $empleado,Cargo $cargo){
         $this->empleados()->attach($empleado->id,['cargo_id' => $cargo->id]);
+    }
+
+    public function amenidades()
+    {
+        $this->belongsToMany(Amenidad::class, 'amenidad_negocio', 'negocio_id', 'amenidad_id');
     }
 
 

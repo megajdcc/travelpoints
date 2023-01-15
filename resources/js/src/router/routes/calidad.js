@@ -1716,6 +1716,116 @@ export default [
       ]
    },
 
+
+   /*****************************************/
+   /* Amenidades
+   /*************************************** */
+
+   {
+      path:'/amenidads',
+      component:() => import('views/amenidades/index.vue'),
+
+      children:[
+         {
+            path:'',
+            name:'amenidad.list',
+            component:() => import('views/amenidades/list.vue'),
+
+            meta:{
+               resource:'amenidades',
+               action:'read',
+               pageTitle:'Amenidades',
+               breadcrumb:[
+                  {
+                     text: 'Home',
+                     to: 'home',
+                     active: false,
+                  },
+                  {
+                     text: 'Listado',
+                     active: false,
+                  },
+
+                 
+               ]
+            }
+         },
+
+
+         {
+            path: 'create',
+            name: 'create.amenidad',
+            component: () => import('views/amenidades/create.vue'),
+
+            meta: {
+               resource: 'amenidades',
+               action: 'read',
+               pageTitle: 'Crear Amenidad',
+               navActiveLink:'amenidad.list',
+               breadcrumb: [
+                  {
+                     text: 'Home',
+                     to: 'home',
+                     active: false,
+                  },
+                  {
+                     text: 'Listado',
+                     active:false,
+                     to:{name:'amenidad.list'}
+                  },
+
+                  {
+                     text: 'Crear',
+                     active: true,
+                    
+                  },
+
+
+
+               ]
+            }
+         },
+
+         {
+            path: ':id/edit',
+            name: 'edit.amenidad',
+            props:true,
+            component: () => import('views/amenidades/edit.vue'),
+
+            meta: {
+               resource: 'amenidades',
+               action: 'read',
+               pageTitle: 'Editar Amenidad',
+               navActiveLink: 'amenidad.list',
+               breadcrumb: [
+                  {
+                     text: 'Home',
+                     to: 'home',
+                     active: false,
+                  },
+                  {
+                     text: 'Listado',
+                     active: false,
+                     to: { name: 'amenidad.list' }
+                  },
+
+                  {
+                     text: 'Editar',
+                     active: true,
+
+                  },
+
+
+
+               ]
+            }
+         }
+
+
+      ]
+   },
+
+
    /*****************************************/
    /* PAGINA DE Mantenimiento
    /*************************************** */

@@ -116,6 +116,13 @@ export default [
             icon: 'DollarSignIcon',
             action: 'read',
             resource: 'divisas'
+         },
+
+         {
+            title:'Amenidades',
+            route:'amenidad.list',
+            action:'read',
+            resource:'amenidades'
          }
 
 

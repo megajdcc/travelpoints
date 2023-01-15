@@ -135,8 +135,8 @@ export default [
          },
 
          {
-            title: 'Logo y portal',
-            route: 'negocio.informacion',
+            title: 'Logo y portada',
+            route: 'negocio.logo',
             resource: 'preferencias negocio',
             action: 'read'
 
@@ -146,7 +146,7 @@ export default [
 
           {
             title: 'Amenidades',
-            route: 'negocio.informacion',
+            route: 'negocio.amenidades',
              resource: 'preferencias negocio',
              action: 'read'
 
@@ -155,7 +155,7 @@ export default [
 
           {
             title: 'Horario de Trabajo',
-            route: 'negocio.informacion',
+            route: 'negocio.horario',
              resource: 'preferencias negocio',
              action: 'read'
 
@@ -163,7 +163,7 @@ export default [
 
          {
             title: 'Divisa y precios',
-            route: 'negocio.informacion',
+            route: 'negocio.divisa',
             resource: 'preferencias negocio',
             action: 'read'
 
@@ -173,7 +173,7 @@ export default [
 
          {
             title: 'Redes Sociales',
-            route: 'negocio.informacion',
+            route: 'negocio.redes',
             resource: 'preferencias negocio',
             action: 'read'
          },
@@ -181,7 +181,7 @@ export default [
 
          {
             title: 'Publica un video',
-            route: 'negocio.informacion',
+            route: 'negocio.video',
             resource: 'preferencias negocio',
             action: 'read'
          }

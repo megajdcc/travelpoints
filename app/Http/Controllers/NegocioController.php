@@ -76,6 +76,7 @@ class NegocioController extends Controller
             'url'             => 'required',
             'sitio_web'       => 'nullable',
             'emails'          => 'nullable',
+            'telefonos' => 'nullable',
             'direccion'       => 'required',
             'codigo_postal'   => 'nullable',
             'ciudad_id'       => 'nullable',
@@ -101,16 +102,27 @@ class NegocioController extends Controller
      */
     public function update(Request $request, Negocio $negocio)
     {
+
+        $datos = $this->validar($request, $negocio);
+
         try{
             DB::beginTransaction();
 
-            $negocio->update($this->validar($request,$negocio));
+            $negocio->update($datos);
+            
+
+            foreach($datos['telefonos'] as $telefono){
+                $negocio->actualizarTelefono($telefono);
+            }
+            
 
             DB::commit();
             $result = true;
         }catch(\Exception $e){
             DB::rollBack();
             $result = false;
+
+            dd($e->getMessage());
         }
 
         $negocio->cargar();

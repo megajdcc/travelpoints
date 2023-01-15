@@ -160,7 +160,6 @@ export default {
          aperturarHorario,
          guardarHorario,
          quitarHorario
-
       } = props.actions();
 
 

@@ -214,6 +214,98 @@ export default [
 
 
             ]
+      },
+
+      /***************************************
+       *    Información del Negocio
+       * *************************************/
+
+      {
+            
+            path:'/negocio/preferencias/informacion',
+            component:() => import('views/panels/negocio/preferencias/informacion.vue'),
+            name:'negocio.informacion',
+
+            meta:{
+                  resource:"preferencias negocio",
+                  action:'update',
+                  layout:'negocio',
+                  pageTitle:'Información del negocio',
+                  breadcrumb:[
+                        {
+                              text:'Home',
+                              to:{name:'home'},
+                              active:false
+                        },
+
+                        {
+                              text: 'Preferencias',
+                              active: true
+                        }
+                  ]
+            }
+
+      },
+
+       /***************************************
+       *    Logo y Portada
+       * *************************************/
+
+      {
+            path:'/negocio/preferencias/logo-y-portada',
+            name:'negocio.logo',
+            component:() => import('views/panels/negocio/preferencias/Logo.vue'),
+
+            meta:{
+                  
+                  resource:'preferencias negocio',
+                  action:"read",
+                  layout:'negocio',
+                  pageTitle:'Logo y Portada',
+                  breadcrumb:[
+                        {
+                              text: 'Home',
+                              to: { name: 'home' },
+                              active: false
+                        },
+
+                        {
+                              text: 'Logo y Portada',
+                              active: true
+                        }
+                  ]
+
+            }
+      },
+
+
+      /***************************************
+      *    Horario del Negocio
+      * *************************************/
+
+      {
+            path:'/negocio/preferencias/horarios',
+            component:() => import('views/panels/negocio/preferencias/Horario.vue'),
+            name:'negocio.horario',
+            meta:{
+                  pageTitle:'Horario del Negocio',
+                  resource:'preferencias negocio',
+                  action:'read',
+                  layout:'negocio',
+                  breadcrumb:[
+                        {
+                              text: 'Home',
+                              to: { name: 'home' },
+                              active: false
+                        },
+
+                        {
+                              text: 'Horario',
+                              active: true
+                        }
+                  ]
+            }
+
       }
 
 ]

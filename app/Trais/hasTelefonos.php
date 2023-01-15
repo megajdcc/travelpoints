@@ -13,14 +13,16 @@ trait hasTelefonos
    }
 
    public function actualizarTelefono(array $data): Telefono{
-
-      $telefono = Telefono::find($data['id']);
-
-      $telefono->update($data);
-      $telefono->model;
-
+      if(isset($data['id'])){
+         $telefono = Telefono::find($data['id']);
+         $telefono->update($data);
+         $telefono->model;
+      }else{
+         $telefono = $this->addTelefono($data);
+      }
       return $telefono;
    }
+
 
    public function addTelefono(array $data) : Telefono{
 
@@ -30,7 +32,14 @@ trait hasTelefonos
    
    }
 
-   
+   public function eliminarTelefonos(){
+
+      foreach($this->telefonos as $telefono){
+         $telefono->delete();
+      }
+   }
+
+
 
 }
 

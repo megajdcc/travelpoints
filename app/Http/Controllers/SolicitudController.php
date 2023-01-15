@@ -288,7 +288,7 @@ class SolicitudController extends Controller
                 $negocio = Negocio::create([
                     ...[
                         'status' => true,
-                        'emails' => ['email' => $solicitud->telefono, 'principal' => true],
+                        'emails' => [['email' => $solicitud->email, 'principal' => true]],
                     ],
                     ...\array_filter($solicitud->toArray(),fn($key) => !\in_array($key,['comentario','telefono','situacion','email']) )
                  ]);

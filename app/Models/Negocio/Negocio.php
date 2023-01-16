@@ -153,7 +153,7 @@ class Negocio extends Model
 
     public function amenidades()
     {
-        $this->belongsToMany(Amenidad::class, 'amenidad_negocio', 'negocio_id', 'amenidad_id');
+        return $this->belongsToMany(Amenidad::class, 'amenidad_negocio', 'negocio_id', 'amenidad_id');
     }
 
 

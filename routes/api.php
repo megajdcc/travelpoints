@@ -212,6 +212,8 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
 
     Route::get('negocios/{negocio}/aperturar/horario',[NegocioController::class,'aperturarHorario']);
     Route::get('negocios/{negocio}/quitar/horario',[NegocioController::class, 'quitarHorario']);
+    Route::put('negocios/{negocio}/guardar/amenidads',[NegocioController::class,'guardarAmenidad']);
+    Route::put('negocios/{negocio}/guardar/formas-pago', [NegocioController::class, 'guardarFormasPagos']);
 
 
     /*****************************/

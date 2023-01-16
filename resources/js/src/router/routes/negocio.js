@@ -306,6 +306,36 @@ export default [
                   ]
             }
 
+      },
+
+      /***************************************
+       *    Amenidades y Formas de Pago
+       * *************************************/
+
+      {
+            path: '/negocio/preferencias/amenidades',
+            component: () => import('views/panels/negocio/preferencias/Amenidades.vue'),
+            name: 'negocio.amenidades',
+            meta: {
+                  pageTitle: 'Amenidades y Formas de Pago',
+                  resource: 'preferencias negocio',
+                  action: 'read',
+                  layout: 'negocio',
+                  breadcrumb: [
+                        {
+                              text: 'Home',
+                              to: { name: 'home' },
+                              active: false
+                        },
+
+                        {
+                              text: 'Amenidades y Formas de Pago',
+                              active: true
+                        }
+                  ]
+            }
+
       }
+
 
 ]

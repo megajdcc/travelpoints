@@ -361,5 +361,55 @@ class NegocioController extends Controller
         return response()->json(['result' => $negocio->id ? true : false , 'negocio' => $negocio]);
     }
 
+    public function guardarAmenidad(Request $request,Negocio $negocio){
+
+        $amenidades = $request->get('amenidads');
+
+            try{
+                DB::beginTransaction();
+                    $negocio->amenidades()->detach();
+
+                    foreach($amenidades as $amenidad){
+                        $negocio->amenidades()->attach(is_array($amenidad) ? $amenidad['id'] : $amenidad);
+                    }
+
+                DB::commit();
+                $result =    true; 
+            }catch(\Exception $e){
+                DB::rollBack();
+                $result = false;
+
+            }
+        $negocio->cargar();
+
+
+        return response()->json(['result' => $result,'negocio' => $negocio]);
+        
+    }
+
+    public function guardarFormasPagos(Request $request, Negocio $negocio){
+        $formas_pago = $request->get('formas');
+
+        try {
+            DB::beginTransaction();
+            $negocio->formasPago()->detach();
+
+            foreach ($formas_pago as $forma) {
+                $negocio->formasPago()->attach(is_array($forma) ? $forma['id'] : $forma);
+            }
+
+            DB::commit();
+            $result =    true;
+        } catch (\Exception $e) {
+            DB::rollBack();
+            $result = false;
+        }
+        $negocio->cargar();
+
+
+        return response()->json(['result' => $result, 'negocio' => $negocio]);
+    }
+
+
 
 }

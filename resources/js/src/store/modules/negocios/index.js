@@ -38,6 +38,9 @@ export default{
          cuenta:null,
          horarios:[],
 
+         amenidades:[],
+         formas_pago:[],
+
       },
 
       negocios:[]
@@ -85,6 +88,8 @@ export default{
             iata_id: null,
             iata: null,
             horarios: [],
+            amenidades: [],
+            formas_pago: [],
 
          }
       },
@@ -476,7 +481,46 @@ export default{
             
 
          })
+      },
+
+      guardarAmenidad({ commit }, { negocio, amenidads }){
+         
+         return new Promise((resolve, reject) => {
+            axios.put(`api/negocios/${negocio}/guardar/amenidads`, {amenidads}).then(({ data }) => {
+
+               if (data.result) {
+                  commit('update', data.negocio)
+               }
+               resolve(data)
+
+
+            }).catch(e => reject(e))
+
+         })
+
+        
+         
+      },
+
+      guardarFormaPago({commit},{negocio,formas}){
+
+         return new Promise((resolve, reject) => {
+            axios.put(`api/negocios/${negocio}/guardar/formas-pago`, { formas }).then(({ data }) => {
+
+               if (data.result) {
+                  commit('update', data.negocio)
+               }
+               resolve(data)
+
+
+            }).catch(e => reject(e))
+
+         })
+
+
+  
       }
+
 
 
 

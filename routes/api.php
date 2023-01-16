@@ -1,7 +1,7 @@
 <?php
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\{AuthController};
-use App\Http\Controllers\{AmenidadController, CargoController, CategoriaFaqController, DestinoController, DivisaController, EmpleadoController, EventoController, FaqController, HomeController, HorarioController, IataController, MovimientoController, NegocioCategoriaController, NegocioController, UserController,NotificacionController,RolController,PermisoController, SolicitudController, TelefonoController,OpinionController, PanelController};
+use App\Http\Controllers\{AmenidadController, CargoController, CategoriaFaqController, DestinoController, DivisaController, EmpleadoController, EventoController, FaqController, FormaPagoController, HomeController, HorarioController, IataController, MovimientoController, NegocioCategoriaController, NegocioController, UserController,NotificacionController,RolController,PermisoController, SolicitudController, TelefonoController,OpinionController, PanelController};
 use App\Http\Middleware\convertirNull;
 use Laravel\Socialite\Facades\Socialite;
 use App\Models\{CategoriaFaq, Pais,Estado,Ciudad};
@@ -303,6 +303,16 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::post('amenidads/fetch/data',[AmenidadController::class,'fetchData']);
     Route::resource('amenidads',AmenidadController::class);
     Route::get('amenidads/{amenidad}/fetch/data',[AmenidadController::class,'fetch']);
+
+    /*****************************/
+    /* Formas de Pago
+    /*****************************/
+
+    Route::get('formas-pago/get/all', [FormaPagoController::class, 'getAll']);
+    Route::post('formas-pago/fetch/data', [FormaPagoController::class, 'fetchData']);
+    Route::resource('formas-pago', FormaPagoController::class);
+    Route::get('formas-pago/{forma}/fetch/data', [FormaPagoController::class, 'fetch']);
+
 
 });
 

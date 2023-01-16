@@ -5,7 +5,7 @@ namespace App\Models\Negocio;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Trais\{HasDireccion,hasCuenta,hasImages,hasTelefonos,hasEvento, hasHorario, hasLike, hasOpinion,hasPermisos};
-use App\Models\{Divisa,User,Iata};
+use App\Models\{Divisa, FormaPago, User,Iata};
 
 use App\Models\Amenidad;
 
@@ -135,6 +135,8 @@ class Negocio extends Model
         $this->likes;
         $this->cargos->load('permisos.permiso');
         $this->empleados->load(['permisos','rol']);
+        $this->amenidades;
+        $this->formasPago;
         return $this;
     }
     
@@ -152,6 +154,12 @@ class Negocio extends Model
     public function amenidades()
     {
         $this->belongsToMany(Amenidad::class, 'amenidad_negocio', 'negocio_id', 'amenidad_id');
+    }
+
+
+    public function formasPago()
+    {
+        return $this->belongsToMany(FormaPago::class, 'formas_pago_negocio', 'negocio_id', 'forma_id');
     }
 
 

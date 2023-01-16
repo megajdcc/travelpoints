@@ -123,6 +123,12 @@ export default [
             route:'amenidad.list',
             action:'read',
             resource:'amenidades'
+         },
+         {
+            title: 'Formas de Pago',
+            route: 'formasPago.list',
+            action: 'read',
+            resource: 'formas de pago'
          }
 
 

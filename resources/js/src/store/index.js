@@ -91,6 +91,11 @@ import empleado from './modules/negocio/empleado.js'
 
 import amenidad from './modules/amenidad.js'
 
+// Formas de Pago
+
+import formasPago from './modules/formasPago.js'
+
+
 
 Vue.use(Vuex)
 
@@ -222,7 +227,8 @@ export default new Vuex.Store({
     panel,
     cargo,
     empleado,
-    amenidad
+    amenidad,
+    formasPago
   },
 
   strict: process.env.DEV,

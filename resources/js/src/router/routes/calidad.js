@@ -1825,6 +1825,116 @@ export default [
       ]
    },
 
+   /*****************************************/
+   /* formas de pago
+   /*************************************** */
+
+   {
+      path: '/formas-pago',
+      component: () => import('views/formas-pago/index.vue'),
+
+      children: [
+         {
+            path: '',
+            name: 'formasPago.list',
+            component: () => import('views/formas-pago/list.vue'),
+
+            meta: {
+               resource: 'formas de pago',
+               action: 'read',
+               pageTitle: 'Formas de pago',
+               breadcrumb: [
+                  {
+                     text: 'Home',
+                     to: 'home',
+                     active: false,
+                  },
+                  {
+                     text: 'Listado',
+                     active: false,
+                  },
+
+
+               ]
+            }
+         },
+
+
+         {
+            path: 'create',
+            name: 'create.formasPago',
+            component: () => import('views/formas-pago/create.vue'),
+
+            meta: {
+               resource: 'formas de pago',
+               action: 'read',
+               pageTitle: 'Crear Forma de pago',
+               navActiveLink: 'formasPago.list',
+               breadcrumb: [
+                  {
+                     text: 'Home',
+                     to: 'home',
+                     active: false,
+                  },
+                  {
+                     text: 'Listado',
+                     active: false,
+                     to: { name: 'formasPago.list' }
+                  },
+
+                  {
+                     text: 'Crear',
+                     active: true,
+
+                  },
+
+
+
+               ]
+            }
+         },
+
+         {
+            path: ':id/edit',
+            name: 'edit.formasPago',
+            props: true,
+            component: () => import('views/formas-pago/edit.vue'),
+
+            meta: {
+               resource: 'formas de pago',
+               action: 'read',
+               pageTitle: 'Editar Forma',
+               navActiveLink: 'formasPago.list',
+               breadcrumb: [
+                  {
+                     text: 'Home',
+                     to: 'home',
+                     active: false,
+                  },
+                  {
+                     text: 'Listado',
+                     active: false,
+                     to: { name: 'formasPago.list' }
+                  },
+
+                  {
+                     text: 'Editar',
+                     active: true,
+
+                  },
+
+
+
+               ]
+            }
+         }
+
+
+      ]
+   },
+
+
+
 
    /*****************************************/
    /* PAGINA DE Mantenimiento

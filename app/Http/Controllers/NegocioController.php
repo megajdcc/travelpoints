@@ -87,7 +87,8 @@ class NegocioController extends Controller
             'acepta_reservas' => 'nullable',
             'usuario_id'      => 'required',
             'divisa_id'       => 'required',
-            'iata_id' => 'nullable'
+            'iata_id' => 'nullable',
+            'precios' => 'nullable'
         ]);
 
     }

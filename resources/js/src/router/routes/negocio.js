@@ -335,7 +335,41 @@ export default [
                   ]
             }
 
+      },
+
+
+      /***************************************
+       *    Divisa predeterminada Negocio
+       * *************************************/
+
+      {
+            path:'/negocio/preferencias/divisa',
+            component: () => import('views/panels/negocio/preferencias/Divisa.vue'),
+
+            name:'negocio.divisa',
+            meta:{
+                  resource: 'preferencias negocio',
+                  pageTitle:'Divisa Predeterminada',
+                  action:'read',
+
+                  layout: 'negocio',
+                  breadcrumb: [
+                        {
+                              text: 'Home',
+                              to: { name: 'home' },
+                              active: false
+                        },
+
+                        {
+                              text: 'Divisa',
+                              active: true
+                        }
+                  ]
+            }
+
+
       }
+
 
 
 ]

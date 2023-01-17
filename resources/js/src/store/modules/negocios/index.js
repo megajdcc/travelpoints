@@ -40,6 +40,9 @@ export default{
 
          amenidades:[],
          formas_pago:[],
+         
+
+         precios:[]
 
       },
 
@@ -90,6 +93,8 @@ export default{
             horarios: [],
             amenidades: [],
             formas_pago: [],
+            precios: []
+
 
          }
       },

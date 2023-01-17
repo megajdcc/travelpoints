@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Trais\{HasDireccion,hasCuenta,hasImages,hasTelefonos,hasEvento, hasHorario, hasLike, hasOpinion,hasPermisos};
 use App\Models\{Divisa, FormaPago, User,Iata};
+use Illuminate\Database\Eloquent\Casts\Attribute;
 
 use App\Models\Amenidad;
 
@@ -52,6 +53,7 @@ class Negocio extends Model
         'solicitud_id',
         'iata_id',
         'divisa_id',
+        'precios', // [precio_minimo => 0,precio_maximo => 0]
 
     ];
 
@@ -61,9 +63,16 @@ class Negocio extends Model
         'ultima_recarga'  => 'datetime: Y-m-d H: i: s',
         'floor_plan'      => 'boolean',
         'acepta_reservas' => 'boolean',
+        // 'precios'         => 'object'
     ];
 
 
+    public function precios():Attribute{
+            return Attribute::make(
+                get:fn($val) => $val ? json_decode($val) : ['precio_minimo' => 0,'precio_maximo' => 0],
+                set:fn($val) => \json_encode($val)   
+            );
+    }
 
     public function categoria(){
         return $this->belongsTo(NegocioCategoria::class,'categoria_id','id');
@@ -137,6 +146,7 @@ class Negocio extends Model
         $this->empleados->load(['permisos','rol']);
         $this->amenidades;
         $this->formasPago;
+        // $this->precios = $this->precios ?: ['precio_minimo' => 0, 'precio_maximo' => 0];
         return $this;
     }
     

@@ -21,6 +21,26 @@ export default {
    getters:{
       draft(state){
          return clone(state.divisa)
+      },
+
+      getCurrency(state){
+         return (divisa_id) => {
+
+            const divisa = state.divisas.find(val => val.id === divisa_id)
+
+            if(divisa){
+               return {
+                  iso: divisa.iso,
+                  simbolo: divisa.simbolo
+               };
+            }
+
+            return {
+               iso:'MXN',
+               simbolo:'$'
+            };
+         } 
+
       }
    },
 

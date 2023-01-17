@@ -214,7 +214,9 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::get('negocios/{negocio}/quitar/horario',[NegocioController::class, 'quitarHorario']);
     Route::put('negocios/{negocio}/guardar/amenidads',[NegocioController::class,'guardarAmenidad']);
     Route::put('negocios/{negocio}/guardar/formas-pago', [NegocioController::class, 'guardarFormasPagos']);
-
+    Route::put('negocios/{negocio}/agregar/red-social',[NegocioController::class,'agregarRed']);
+    Route::delete('negocios/{negocio}/quitar/red-social/{red}',[NegocioController::class,'quitarRed']);
+    Route::get('negocios/{negocio}/quitar/all-redes',[NegocioController::class,'quitarRedes']);
 
     /*****************************/
     /* Divisas

@@ -6,7 +6,7 @@ use App\Models\Negocio\Negocio;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\{DB,Storage,File};
 use App\Models\Imagen;
-
+use App\Models\Red;
 class NegocioController extends Controller
 {
 
@@ -411,6 +411,61 @@ class NegocioController extends Controller
         return response()->json(['result' => $result, 'negocio' => $negocio]);
     }
 
+    public function agregarRed(Request $request, Negocio $negocio){
+
+        try{
+            DB::beginTransaction();
+            $negocio->agregarRed($request->all());
+
+            DB::commit();
+            $result = true;
+
+        }catch(\Exception $e){
+            DB::rollBack();
+            $result = false;
+        }
+        
+        $negocio->cargar();
+
+        return response()->json(['result' => $result, 'negocio' => $negocio]);
+
+    }
+
+    public function quitarRed(Negocio $negocio,Red $red){
+        try {
+            DB::beginTransaction();
+            $negocio->quitarRed($red);
+            DB::commit();
+            $result = true;
+        } catch (\Exception $e) {
+            DB::rollBack();
+            $result = false;
+        }
+
+        $negocio->cargar();
+
+        return response()->json(['result' => $result, 'negocio' => $negocio]);
+        
+    }
+
+    public function quitarRedes(Negocio $negocio){
+        try {
+            DB::beginTransaction();
+                $negocio->quitarRedes();
+            DB::commit();
+            
+                $result = true;
+        } catch (\Exception $e) {
+            
+            DB::rollBack();
+            $result = false;
+          
+        }
+
+        $negocio->cargar();
+
+        return response()->json(['result' => $result, 'negocio' => $negocio]);
+    }
 
 
 }

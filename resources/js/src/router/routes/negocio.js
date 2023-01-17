@@ -368,7 +368,40 @@ export default [
             }
 
 
+      },
+
+      /***************************************
+       *    Redes sociales de Negocios
+       * *************************************/
+
+      {
+            path: '/negocio/preferencias/redes',
+            component: () => import('views/panels/negocio/preferencias/redes.vue'),
+
+            name: 'negocio.redes',
+            meta: {
+                  resource: 'preferencias negocio',
+                  pageTitle: 'Redes Sociales',
+                  action: 'read',
+
+                  layout: 'negocio',
+                  breadcrumb: [
+                        {
+                              text: 'Home',
+                              to: { name: 'home' },
+                              active: false
+                        },
+
+                        {
+                              text: 'Redes',
+                              active: true
+                        }
+                  ]
+            }
+
+
       }
+
 
 
 

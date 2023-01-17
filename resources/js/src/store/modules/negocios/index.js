@@ -42,7 +42,9 @@ export default{
          formas_pago:[],
          
 
-         precios:[]
+         precios:[],
+         redes: [],
+
 
       },
 
@@ -93,7 +95,8 @@ export default{
             horarios: [],
             amenidades: [],
             formas_pago: [],
-            precios: []
+            precios: [],
+            redes:[],
 
 
          }
@@ -194,10 +197,25 @@ export default{
 
          state.negocio.horarios = []
 
+      },
+
+
+      agregarRed(state){
+
+         state.negocio.redes.push({
+            nombre:'',
+            icono:'',
+            url:''
+         })
+      },
+
+      quitarRed(state,i){
+         state.negocio.redes.splice(i,1)
+      },
+
+      quitarRedes(state){
+         state.negocio.redes = [];
       }
-
-
-
    },
 
    actions:{
@@ -524,7 +542,59 @@ export default{
 
 
   
+      },
+
+
+      agregarRed({state,commit},datos){
+
+         return new Promise((resolve, reject) => {
+               axios.put(`/api/negocios/${state.negocio.id}/agregar/red-social`,datos).then(({data}) => {
+
+                  if(data.result){
+                     commit('update',data.negocio)
+                  }
+                  resolve(data)
+               }).catch(e => reject())
+
+         })
+      },
+
+      quitarRed({state,commit},red){
+         return new Promise((resolve, reject) => {
+            axios.delete(`/api/negocios/${state.negocio.id}/quitar/red-social/${red}`).then(({data}) => {
+               if(data.result){
+                  commit('update',data.negocio)
+               }
+               resolve(data)
+
+            }).catch(e => reject(e))
+
+
+         })
+      },
+
+      quitarAllRedes({commit,state}){
+         
+        
+
+         return new Promise((resolve, reject) => {
+            
+            axios.get(`/api/negocios/${state.negocio.id}/quitar/all-redes`).then(({data}) => {
+               
+               if(data.result){
+                 
+                  commit('quitarRedes')
+               }
+               resolve(data)
+
+            }).catch(e => reject(e))
+
+
+         })
       }
+
+
+
 
 
 

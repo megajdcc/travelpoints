@@ -83,6 +83,12 @@ return [
             'url' => env('APP_URL') . '/storage/negocios/logos',
             'visibility' => 'public',
         ],
+        'videos_negocios' => [
+            'driver' => 'local',
+            'root' => storage_path('app/public/negocios/videos'),
+            'url' => env('APP_URL') . '/storage/negocios/videos',
+            'visibility' => 'public',
+        ],
 
 
         's3' => [

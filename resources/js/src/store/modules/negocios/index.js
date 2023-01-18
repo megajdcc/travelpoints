@@ -44,6 +44,7 @@ export default{
 
          precios:[],
          redes: [],
+         videos:[]
 
 
       },
@@ -97,7 +98,7 @@ export default{
             formas_pago: [],
             precios: [],
             redes:[],
-
+            videos: []
 
          }
       },
@@ -209,13 +210,31 @@ export default{
          })
       },
 
+      agregarVideo(state){
+         state.negocio.videos.push({
+            nombre: '',
+            youtube: false,
+            url: ''
+         })
+      },
+
       quitarRed(state,i){
          state.negocio.redes.splice(i,1)
       },
 
+      quitarVideo(state, i) {
+         state.negocio.videos.splice(i, 1)
+      },
+
+
       quitarRedes(state){
          state.negocio.redes = [];
+      },
+
+      quitarVideos(state) {
+         state.negocio.videos = [];
       }
+
    },
 
    actions:{
@@ -589,6 +608,38 @@ export default{
 
             }).catch(e => reject(e))
 
+
+         })
+      },
+
+      guardarVideo({state,commit},datos){
+
+         return new Promise((resolve, reject) => {
+            
+            const formData = new FormData();
+
+
+            Object.keys(datos).forEach(val => {
+               formData.append(val, datos[val])
+            })
+
+            formData.append('_method','PUT');
+
+            axios.post(`/api/negocios/${state.negocio.id}/guardar/video`,formData,{
+               headers:{
+                  ContentType:'multipart/form-data'
+               }
+            }).then(({data}) => {
+
+               if(data.result){
+                  commit('update',data.negocio)
+               }
+               
+               resolve(data)
+
+            }).catch(e => {
+               reject(e)
+            })
 
          })
       }

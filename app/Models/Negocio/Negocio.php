@@ -4,7 +4,7 @@ namespace App\Models\Negocio;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Trais\{HasDireccion,hasCuenta,hasImages,hasTelefonos,hasEvento, hasHorario, hasLike, hasOpinion,hasPermisos,hasRedes};
+use App\Trais\{HasDireccion,hasCuenta,hasImages,hasTelefonos,hasEvento, hasHorario, hasLike, hasOpinion,hasPermisos,hasRedes,hasVideos};
 use App\Models\{Divisa, FormaPago, User,Iata};
 use Illuminate\Database\Eloquent\Casts\Attribute;
 
@@ -15,6 +15,7 @@ class Negocio extends Model
     use HasFactory;
 
     use HasDireccion,hasCuenta, hasImages, hasTelefonos, hasEvento,hasHorario,hasLike,hasOpinion, hasPermisos, hasRedes;
+    use hasVideos;
 
     public readonly string $model_type;
 
@@ -147,6 +148,7 @@ class Negocio extends Model
         $this->amenidades;
         $this->formasPago;
         $this->redes;
+        $this->videos;
         // $this->precios = $this->precios ?: ['precio_minimo' => 0, 'precio_maximo' => 0];
         return $this;
     }

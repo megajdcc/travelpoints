@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\{DB,Storage,File};
 use App\Models\Imagen;
 use App\Models\Red;
+use App\Models\Video;
+
 class NegocioController extends Controller
 {
 
@@ -465,6 +467,49 @@ class NegocioController extends Controller
         $negocio->cargar();
 
         return response()->json(['result' => $result, 'negocio' => $negocio]);
+    }
+
+    public function guardarVideo(Request $request, Negocio $negocio){
+
+        
+        if($request->get('id')){
+         
+            $video = Video::find((integer) $request->get('id'));
+            // dd($video);
+            try {
+                DB::beginTransaction();
+                $negocio->updateVideo($request,$video);
+                DB::commit();
+                $result = true;
+            } catch (\Exception $e) {
+                DB::rollBack();
+                $result = false;
+
+                dd($e->getMessage());
+            }
+        }else{
+            $negocio->quitarVideos();
+            try {
+                DB::beginTransaction();
+                $negocio->agregarVideo($request);
+                DB::commit();
+                $result = true;
+            } catch (\Exception $e) {
+                DB::rollBack();
+                $result = false;
+
+                dd($e->getMessage());
+            }
+
+           
+
+        }
+
+        $negocio = Negocio::find($negocio->id);
+        $negocio->cargar();
+        $negocio->videos = $negocio->videos;
+
+        return response()->json(['result' => $result,'negocio' => $negocio]);
     }
 
 

@@ -400,9 +400,38 @@ export default [
             }
 
 
+      },
+
+      /***************************************
+      *    Videos de Negocio
+      * *************************************/
+
+      {
+            path: '/negocio/preferencias/videos',
+            component: () => import('views/panels/negocio/preferencias/videos.vue'),
+
+            name: 'negocio.video',
+            meta: {
+                  resource: 'preferencias negocio',
+                  pageTitle: 'Video del negocio',
+                  action: 'read',
+                  layout: 'negocio',
+                  breadcrumb: [
+                        {
+                              text: 'Home',
+                              to: { name: 'home' },
+                              active: false
+                        },
+
+                        {
+                              text: 'Video del negocio',
+                              active: true
+                        }
+                  ]
+            }
+
+
       }
-
-
 
 
 ]

@@ -217,6 +217,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::put('negocios/{negocio}/agregar/red-social',[NegocioController::class,'agregarRed']);
     Route::delete('negocios/{negocio}/quitar/red-social/{red}',[NegocioController::class,'quitarRed']);
     Route::get('negocios/{negocio}/quitar/all-redes',[NegocioController::class,'quitarRedes']);
+    Route::put('negocios/{negocio}/guardar/video',[NegocioController::class,'guardarVideo'])->middleware('convertir.null');
 
     /*****************************/
     /* Divisas

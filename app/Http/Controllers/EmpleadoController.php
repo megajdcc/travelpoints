@@ -108,10 +108,9 @@ class EmpleadoController extends Controller
                     array_push($actions, 'delete');
                 }   
 
-              
-
                 $empleado->usuario->addPermiso($permision,$actions);
             }
+
 
                 $empleado->usuario->cargar();
                 $empleado->cargo;

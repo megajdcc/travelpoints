@@ -307,7 +307,7 @@ export default{
                   commit('put',negocio_id)
                }
 
-               resolve(e)
+               resolve(data)
 
             }).catch(e => reject(e))
 

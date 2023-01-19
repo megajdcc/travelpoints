@@ -431,6 +431,35 @@ export default [
             }
 
 
+      },
+
+      /***************************************
+      *    Galerias de Negocio
+      * *************************************/
+      {
+            path: '/negocio/galerias',
+            component: () => import('views/panels/negocio/galeria.vue'),
+
+            name: 'negocio.galerias',
+            meta: {
+                  resource: 'galerias negocio',
+                  pageTitle: 'Galería de Imagenes',
+                  action: 'read',
+                  layout: 'negocio',
+                  breadcrumb: [
+                        {
+                              text: 'Home',
+                              to: { name: 'home' },
+                              active: false
+                        },
+
+                        {
+                              text: 'Galerías de imagenes',
+                              active: true
+                        }
+                  ]
+            }
+
       }
 
 

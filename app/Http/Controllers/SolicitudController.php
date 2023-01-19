@@ -12,8 +12,7 @@ use App\Models\User;
 
 use App\Notifications\{SolicitudNegocioActualizada,SolicitudEnviada};
 use App\Models\Negocio\Negocio;
-
-
+use App\Models\Usuario\Permiso;
 
 class SolicitudController extends Controller
 {
@@ -306,15 +305,19 @@ class SolicitudController extends Controller
                     'logo' => false
                 ]);
                 
-                 $negocio->asignarEmpleado($negocio->encargado,$negocio->primerCargo());
+                $negocio->asignarEmpleado($negocio->encargado,$negocio->primerCargo());
+                $permisos = Permiso::whereHas('panel', fn (Builder $q) => $q->where('panel', 'Negocio'))->get();
+                $negocio->encargado->asignarPermisos($permisos);
              
+            
 
             }
             
         }catch(\Exception $e) {
-            dd($e);
+           
             DB::rollBack();
             $result = false;
+            dd($e);
         }
 
             $solicitud->categoria;

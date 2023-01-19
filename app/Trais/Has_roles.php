@@ -22,7 +22,7 @@ trait Has_roles
       
       foreach ($permisos as $key => $permiso) {
             
-         $this->permisos->detach($permiso->id);
+         $this->permisos()->detach($permiso->id);
 
          $this->permisos()->attach($permiso->id,['action' => json_encode($actions)]);
       }

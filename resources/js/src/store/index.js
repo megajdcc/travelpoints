@@ -95,6 +95,14 @@ import amenidad from './modules/amenidad.js'
 
 import formasPago from './modules/formasPago.js'
 
+// Publicaciones
+
+import publicacion from './modules/publicacion.js'
+
+
+
+
+
 
 
 Vue.use(Vuex)
@@ -228,7 +236,8 @@ export default new Vuex.Store({
     cargo,
     empleado,
     amenidad,
-    formasPago
+    formasPago,
+    publicacion
   },
 
   strict: process.env.DEV,

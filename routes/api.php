@@ -1,7 +1,7 @@
 <?php
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\{AuthController};
-use App\Http\Controllers\{AmenidadController, CargoController, CategoriaFaqController, DestinoController, DivisaController, EmpleadoController, EventoController, FaqController, FormaPagoController, HomeController, HorarioController, IataController, MovimientoController, NegocioCategoriaController, NegocioController, UserController,NotificacionController,RolController,PermisoController, SolicitudController, TelefonoController,OpinionController, PanelController};
+use App\Http\Controllers\{AmenidadController, CargoController, CategoriaFaqController, DestinoController, DivisaController, EmpleadoController, EventoController, FaqController, FormaPagoController, HomeController, HorarioController, IataController, MovimientoController, NegocioCategoriaController, NegocioController, UserController,NotificacionController,RolController,PermisoController, SolicitudController, TelefonoController,OpinionController, PanelController, PublicacionController};
 use App\Http\Middleware\convertirNull;
 use Laravel\Socialite\Facades\Socialite;
 use App\Models\{CategoriaFaq, Pais,Estado,Ciudad};
@@ -208,6 +208,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
 
     Route::put('negocios/{negocio}/add/imagen',[NegocioController::class,'addImagen']);
     Route::delete('negocios/eliminar/imagen/{imagen}',[NegocioController::class,'eliminarImagen']);
+
     Route::put('negocios/{negocio}/add/telefono',[NegocioController::class,'addTelefono']);
 
     Route::get('negocios/{negocio}/aperturar/horario',[NegocioController::class,'aperturarHorario']);
@@ -317,6 +318,19 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::post('formas-pago/fetch/data', [FormaPagoController::class, 'fetchData']);
     Route::resource('formas-pago', FormaPagoController::class);
     Route::get('formas-pago/{forma}/fetch/data', [FormaPagoController::class, 'fetch']);
+
+
+    /*****************************/
+    /* Publicacions
+    /*****************************/
+
+    Route::post('publicacions/fetch/data', [PublicacionController::class, 'fetchData']);
+    Route::get('publicacions/{publicacion}/fetch/data', [PublicacionController::class, 'fetch']);
+    Route::post('publicacions/get/all', [PublicacionController::class, 'getAll']);
+    Route::resource('publicacions', PublicacionController::class);
+
+    Route::put('publicacions/{publicacion}/add/imagen', [PublicacionController::class, 'addImagen']);
+    Route::delete('publicacions/eliminar/imagen/{imagen}', [PublicacionController::class, 'eliminarImagen']);
 
 
 });

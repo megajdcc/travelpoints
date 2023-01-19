@@ -15,6 +15,10 @@ return new class extends Migration
     {
         Schema::create('publicacions', function (Blueprint $table) {
             $table->id();
+            $table->string('titulo');
+            $table->longText('contenido');
+            $table->unsignedBigInteger('model_id');
+            $table->string('model_type');
             $table->timestamps();
         });
     }

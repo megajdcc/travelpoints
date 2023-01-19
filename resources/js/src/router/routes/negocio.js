@@ -460,7 +460,148 @@ export default [
                   ]
             }
 
+      },
+
+      /***************************************
+    *    Publicaciones  de Negocio
+    * *************************************/
+      {
+            path: '/negocio/publicaciones',
+            component: () => import('views/publicaciones/index.vue'),
+
+            children:[
+                  {
+                        path:'',
+                        name:"negocio.publicaciones",
+                        component:() => import('views/publicaciones/list.vue'),
+                        meta:{
+                              layout:'negocio',
+                              resource:'publicaciones negocio',
+                              pageTitle: 'Publicaciones',
+                              action: 'read',
+                              breadcrumb: [
+                                    {
+                                          text: 'Home',
+                                          to: { name: 'home' },
+                                          active: false
+                                    },
+
+                                    {
+                                          text: 'Publicaciones',
+                                          active: true
+                                    }
+                              ]
+
+                        }
+
+                  },
+
+
+                  {
+                        path: 'create',
+                        name: "negocio.publicacion.create",
+                        component: () => import('views/publicaciones/create.vue'),
+                        meta: {
+                              layout: 'negocio',
+                              resource: 'publicaciones negocio',
+                              pageTitle: 'Crear Publicación',
+                              navActiveLink:'negocio.publicaciones',
+                              action: 'write',
+                              breadcrumb: [
+                                    {
+                                          text: 'Home',
+                                          to: { name: 'home' },
+                                          active: false
+                                    },
+
+                                    {
+                                          text: 'Publicaciones',
+                                          active: false,
+                                          to:{name:'negocio.publicaciones'}
+                                    },
+                                    {
+                                          text: 'Crear',
+                                          active: true,
+                                    }
+                              ]
+
+                        }
+
+                  },
+
+                  {
+                        path: ':id/edit',
+                        props:true,
+                        name: "negocio.publicacion.edit",
+                        component: () => import('views/publicaciones/edit.vue'),
+                        meta: {
+                              layout: 'negocio',
+                              resource: 'publicaciones negocio',
+                              pageTitle: 'Editar Publicación',
+                              navActiveLink:'negocio.publicaciones',
+                              action: 'update',
+                              breadcrumb: [
+                                    {
+                                          text: 'Home',
+                                          to: { name: 'home' },
+                                          active: false
+                                    },
+
+                                    {
+                                          text: 'Publicaciones',
+                                          active: false,
+                                          to:{name:'negocio.publicaciones'}
+                                    },
+                                    {
+                                          text: 'Editar',
+                                          active: true,
+                                    }
+                              ]
+
+                        }
+
+                  },
+
+
+                  {
+                        path: ':id/imagenes',
+                        props: true,
+                        name: "negocio.publicacion.imagenes",
+                        component: () => import('views/publicaciones/imagenes.vue'),
+                        meta: {
+                              layout: 'negocio',
+                              resource: 'publicaciones negocio',
+                              pageTitle: 'Imagenes de Publicación',
+                              navActiveLink: 'negocio.publicaciones',
+                              action: 'update',
+                              breadcrumb: [
+                                    {
+                                          text: 'Home',
+                                          to: { name: 'home' },
+                                          active: false
+                                    },
+
+                                    {
+                                          text: 'Publicaciones',
+                                          active: false,
+                                          to: { name: 'negocio.publicaciones' }
+                                    },
+                                    {
+                                          text: 'Imagenes',
+                                          active: true,
+                                    }
+                              ]
+
+                        }
+
+                  }
+
+
+            ]
+          
+
       }
+
 
 
 ]

@@ -149,6 +149,7 @@ class Negocio extends Model
         $this->formasPago;
         $this->redes;
         $this->videos;
+        $this->modelType = $this->model_type;
         // $this->precios = $this->precios ?: ['precio_minimo' => 0, 'precio_maximo' => 0];
         return $this;
     }

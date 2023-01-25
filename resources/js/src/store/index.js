@@ -100,9 +100,20 @@ import formasPago from './modules/formasPago.js'
 import publicacion from './modules/publicacion.js'
 
 
+// Certificado
+
+import certificado from './modules/certificado.js'
+
+// venta 
+import venta from './modules/venta.js'
+
+// HorarioReservacion
+import horarioReservacion from './modules/negocios/horarioReservacion/horario.js'
 
 
+// Reservacions
 
+import reservacion from './modules/negocios/reservacion.js'
 
 
 Vue.use(Vuex)
@@ -237,7 +248,11 @@ export default new Vuex.Store({
     empleado,
     amenidad,
     formasPago,
-    publicacion
+    publicacion,
+    certificado,
+    venta,
+    horarioReservacion,
+    reservacion
   },
 
   strict: process.env.DEV,

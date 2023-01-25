@@ -4,7 +4,7 @@
             <b-form @submit.prevent="handleSubmit(guardar)">
                   <b-container fluid>
                      <b-row>
-                        <b-col cols="12" md="6">
+                        <b-col cols="12" md="4">
                            <b-form-group>
                               <template #label>
                                  Titulo: <span class="text-danger">*</span>
@@ -21,7 +21,7 @@
                            </b-form-group>
                         </b-col>
 
-                        <b-col cols="12" md="6">
+                        <b-col cols="12" md="4" v-if="!negocio">
 
                            <b-form-group label="Seleccione un Destino o Atracción: " >
 
@@ -41,88 +41,87 @@
                            </b-form-group>
 
                         </b-col>
-                     </b-row>
 
-                     <b-row>
                         <b-col cols="12" md="4">
                            <b-form-group>
                               <template #label>
                                  Fecha de inicio: <span class="text-danger">*</span>
                               </template>
-                              
+                        
                               <validation-provider name="fecha_inicio" rules="required" #default="{valid,errors}">
-
-                                 <flat-pickr v-model="formulario.fecha_inicio" class="form-control" :config="{ ...dateOption ,...{maxDate:formulario.fecha_fin}}"/>
-
+                        
+                                 <flat-pickr v-model="formulario.fecha_inicio" class="form-control"
+                                    :config="{ ...dateOption ,...{maxDate:formulario.fecha_fin}}" />
+                        
                                  <b-form-invalid-feedback :state="valid">
                                     {{ errors[0] }}
                                  </b-form-invalid-feedback>
-
+                        
                               </validation-provider>
-                           
+                        
                            </b-form-group>
                         </b-col>
-
-                         <b-col cols="12" md="4">
+                        
+                        <b-col cols="12" md="4">
                            <b-form-group>
                               <template #label>
                                  Fecha de Culminación: <span class="text-danger">*</span>
                               </template>
-                           
+                        
                               <validation-provider name="fecha_fin" rules="required" #default="{valid,errors}">
-                           
-                                 <flat-pickr v-model="formulario.fecha_fin" class="form-control" :config="{...dateOption,...{minDate:formulario.fecha_inicio}}" />
-                           
+                        
+                                 <flat-pickr v-model="formulario.fecha_fin" class="form-control"
+                                    :config="{...dateOption,...{minDate:formulario.fecha_inicio}}" />
+                        
                                  <b-form-invalid-feedback :state="valid">
                                     {{ errors[0] }}
                                  </b-form-invalid-feedback>
-                           
+                        
                               </validation-provider>
-                           
-                           </b-form-group>
-                        </b-col>
-
-                        <b-col cols="12" md="4">
-                           <b-form-group description="Cuando sea sí su elección, El evento estará activo en la misma fecha todos los años, el sistema se encargará de actualizar las fecha de inicio y de fin una vez culminado el primer evento del año en curso...">
-                              <template #label>
-                                 ¿ Es recurrente ? 
-                              </template>
-
-                              <validation-provider name="recurrente" rules="required" #default="{valid,errors}">
-
-                                 <b-form-checkbox switch  v-model="formulario.recurrente" :value="true" :unchecked-value="false"/>
-
-                                 <b-form-invalid-feedback :state="valid">
-                                    {{ errors[0] }}
-                                 </b-form-invalid-feedback>
-
-                              </validation-provider>
+                        
                            </b-form-group>
                         </b-col>
                         
-                     </b-row>
-                     <b-row>
+                        <b-col cols="12" md="4">
+                           <b-form-group
+                              description="Cuando sea sí su elección, El evento estará activo en la misma fecha todos los años, el sistema se encargará de actualizar las fecha de inicio y de fin una vez culminado el primer evento del año en curso...">
+                              <template #label>
+                                 ¿ Es recurrente ?
+                              </template>
+                        
+                              <validation-provider name="recurrente" rules="required" #default="{valid,errors}">
+                        
+                                 <b-form-checkbox switch v-model="formulario.recurrente" :value="true" :unchecked-value="false" />
+                        
+                                 <b-form-invalid-feedback :state="valid">
+                                    {{ errors[0] }}
+                                 </b-form-invalid-feedback>
+                        
+                              </validation-provider>
+                           </b-form-group>
+                        </b-col>
 
                         <b-col md="6">
                            <b-form-group>
                               <template #label>
                                  Url: <span class="text-danger">*</span>
                               </template>
-
+                        
                               <validation-provider name="url" rules="required" #default="{valid,errors}">
                                  <b-input-group :prepend="url_app">
                                     <b-form-input v-model="formulario.url" :state="valid" />
-                                      
+                        
                                  </b-input-group>
-
+                        
                                  <b-form-invalid-feedback :state="valid">
                                     {{ errors[0] }}
                                  </b-form-invalid-feedback>
-
+                        
                               </validation-provider>
                            </b-form-group>
                         </b-col>
-                     
+
+
                      </b-row>
 
                      <b-row>
@@ -223,8 +222,16 @@ export default {
 
    },
 
+   props:{
+      negocio:{
+         type:Boolean,
+         default:false
+      }
+   },
+
    setup(props,{emit}){
 
+      const {negocio} = toRefs(props)
       const { evento:formulario } = toRefs(store.state.evento)
       const optionsEventos = ref([])
       const formValidate = ref(null)
@@ -234,11 +241,15 @@ export default {
       }
 
       onMounted(() => {
-         axios.get(`/api/get/all/destinos-y-atraccions`).then(({data}) => {
-            optionsEventos.value = data
-         }).catch(e => {
-            console.log(e)
-         })
+         
+         if(!negocio.value){
+            axios.get(`/api/get/all/destinos-y-atraccions`).then(({ data }) => {
+               optionsEventos.value = data
+            }).catch(e => {
+               console.log(e)
+            })
+         }
+        
 
       })
 

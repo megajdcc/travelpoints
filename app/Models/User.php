@@ -22,6 +22,7 @@ use App\Trais\{hasCuenta, Has_roles, hasTelefonos};
 use App\Models\Divisa;
 
 use App\Models\Negocio\Negocio;
+use App\Models\Negocio\Reservacion;
 use App\Models\Usuario\Permiso;
 
 class User extends Authenticatable
@@ -230,6 +231,17 @@ class User extends Authenticatable
     }
 
 
+    public function reservaciones()
+    {
+        return $this->hasMany(Reservacion::class, 'usuario_id', 'id');
+    }
+
+
+    public function reservacionesOperadas()
+    {
+        return $this->hasMany(Reservacion::class, 'operador_id', 'id');
+    }
+
     public function cargar(): User{
 
         
@@ -248,6 +260,8 @@ class User extends Authenticatable
         $this->referidor;
         $this->referidos;
         $this->permisos;
+        $this->reservaciones;
+        $this->reservacionesOperadas;
 
         return $this;
     }

@@ -40,11 +40,10 @@ export default{
 
          amenidades:[],
          formas_pago:[],
-         
-
          precios:[],
          redes: [],
-         videos:[]
+         videos:[],
+         ventas:[]
 
 
       },
@@ -55,7 +54,19 @@ export default{
 
 
    getters:{
-      draft:(state) => clone(state.negocio)
+      draft:(state) => clone(state.negocio),
+
+      diasAbiertos:(state) => {
+         const diasAbiertos = state.negocio.horarios.filter(val => val.apertura && val.cierre)
+
+         const dias = ['Lunes','Martes','Miercoles','Jueves','Viernes','Sabado','Domingo'];
+
+         return diasAbiertos.map(val => ({
+            dia:val.dia,
+            label:dias[val.dia - 1]
+         }))
+
+      }
    },
 
    mutations:{
@@ -98,7 +109,9 @@ export default{
             formas_pago: [],
             precios: [],
             redes:[],
-            videos: []
+            videos: [],
+            ventas: []
+
 
          }
       },

@@ -6,8 +6,12 @@ use App\Models\Negocio\Negocio;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\{DB,Storage,File};
 use App\Models\Imagen;
+use App\Models\Negocio\HorarioReservacion;
 use App\Models\Red;
 use App\Models\Video;
+use Carbon\Carbon;
+
+
 
 class NegocioController extends Controller
 {
@@ -510,6 +514,21 @@ class NegocioController extends Controller
         $negocio->videos = $negocio->videos;
 
         return response()->json(['result' => $result,'negocio' => $negocio]);
+    }
+
+    public function consultarHoras(Request $request, Negocio $negocio){
+
+        $fecha = new Carbon(new \DateTime($request->get('fecha')));
+
+        $dia_fecha = $fecha->dayOfWeekIso;
+        // dd($dia_fecha);
+        $horarios = HorarioReservacion::where('negocio_id' ,$negocio->id)->where('dia' , $dia_fecha)->get();
+
+
+        return response()->json($horarios);
+ 
+        
+
     }
 
 

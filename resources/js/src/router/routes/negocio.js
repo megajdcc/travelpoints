@@ -463,8 +463,8 @@ export default [
       },
 
       /***************************************
-    *    Publicaciones  de Negocio
-    * *************************************/
+       *    Publicaciones  de Negocio
+       * *************************************/
       {
             path: '/negocio/publicaciones',
             component: () => import('views/publicaciones/index.vue'),
@@ -600,8 +600,407 @@ export default [
             ]
           
 
-      }
+      },
 
+      /***************************************
+      *    Eventos  de Negocio
+      * *************************************/
+
+      {
+            path:'/negocio/eventos',
+            component:()=> import('views/panels/negocio/eventos/index.vue'),
+
+            children:[
+                  {
+                        path:'',
+                        name:'negocio.eventos',
+                        component:() => import('views/panels/negocio/eventos/list.vue'),
+
+                        meta:{
+                              resource: "negocio eventos",
+                              action: 'read',
+                              layout: 'negocio',
+                              pageTitle:'Eventos',
+                              breadcrumb:[
+                                    {
+                                          text: 'Home',
+                                          to: { name: 'home' },
+                                          active: false
+                                    },
+
+                                    {
+                                          text: 'Eventos ',
+                                          active: true
+                                    }
+                              ]     
+                        }
+
+                        
+                  },
+                  {
+                        path: 'create',
+                        name: 'negocio.evento.create',
+                        component: () => import('views/panels/negocio/eventos/create.vue'),
+
+                        meta: {
+                              resource: "negocio eventos",
+                              action: 'read',
+                              layout: 'negocio',
+                              pageTitle: 'Crear Evento',
+                              navActiveLink:'negocio.eventos',
+                              breadcrumb: [
+                                    {
+                                          text: 'Home',
+                                          to: { name: 'home' },
+                                          active: false
+                                    },
+
+                                    {
+                                          text: 'Eventos ',
+                                          active: false,
+                                          to:{name:'negocio.eventos'}
+                                    },
+
+                                    {
+                                          text: 'Crear ',
+                                          active: true,
+                                    }
+
+                              ]
+                        }
+
+
+                  },
+
+                  {
+                        path: ':id/edit',
+                        name: 'negocio.evento.edit',
+                        props:true,
+                        component: () => import('views/panels/negocio/eventos/edit.vue'),
+
+                        meta: {
+                              resource: "negocio eventos",
+                              action: 'update',
+                              layout: 'negocio',
+                              pageTitle: 'Editar Evento',
+                              navActiveLink: 'negocio.eventos',
+                              breadcrumb: [
+                                    {
+                                          text: 'Home',
+                                          to: { name: 'home' },
+                                          active: false
+                                    },
+
+                                    {
+                                          text: 'Eventos ',
+                                          active: false,
+                                          to: { name: 'negocio.eventos' }
+                                    },
+
+                                    {
+                                          text: 'Editar ',
+                                          active: true,
+                                    }
+
+                              ]
+                        }
+
+
+                  },
+
+                  {
+                        path: ':id/imagenes',
+                        name: 'negocio.evento.imagenes',
+                        props: true,
+                        component: () => import('views/eventos/imagenes.vue'),
+
+                        meta: {
+                              resource: "negocio eventos",
+                              action: 'update',
+                              layout: 'negocio',
+                              pageTitle: 'Imagenes del Evento',
+                              navActiveLink: 'negocio.eventos',
+                              breadcrumb: [
+                                    {
+                                          text: 'Home',
+                                          to: { name: 'home' },
+                                          active: false
+                                    },
+
+                                    {
+                                          text: 'Eventos ',
+                                          active: false,
+                                          to: { name: 'negocio.eventos' }
+                                    },
+
+                                    {
+                                          text: 'Imagenes',
+                                          active: true,
+                                    }
+
+                              ]
+                        }
+
+
+                  }
+
+
+            ]
+
+      },
+
+
+      /***************************************
+       *    Certificados  de Negocio
+       * *************************************/
+      {
+            path:'/negocios/certificados',
+            component:() => import('views/panels/negocio/certificados/index.vue'),
+
+            children:[
+                  {
+                        path:'',
+                        component:() => import('views/panels/negocio/certificados/list.vue'),
+                        name:'negocio.certificados',
+                        meta:{
+                              resource:'negocio certificados',
+                              action:'read',
+                              pageTitle:'Certificados',
+                              layout:'negocio',
+
+                              breadcrumb:[
+                                    {
+                                          text: 'Home',
+                                          to: { name: 'home' },
+                                          active: false
+                                    },
+
+                                    {
+                                          text: 'Certificados ',
+                                          active: true
+                                    } 
+                              ]
+                        }
+                  },
+
+                  {
+                        path: 'create',
+                        component: () => import('views/panels/negocio/certificados/create.vue'),
+                        name: 'negocio.certificado.create',
+                        meta: {
+                              resource: 'negocio certificados',
+                              action: 'write',
+                              pageTitle: 'Crear Certificado',
+                              layout: 'negocio',
+                              navActiveLink:'negocio.certificados',
+                              breadcrumb: [
+                                    {
+                                          text: 'Home',
+                                          to: { name: 'home' },
+                                          active: false
+                                    },
+
+                                    {
+                                          text: 'Certificados ',
+                                          active: false,
+                                          to:{name:'negocio.certificados'}
+                                    },
+                                    {
+                                          text: 'Crear ',
+                                          active: true,
+                                    }
+                              ]
+                        }
+                  },
+
+
+                  {
+                        path: ':id/edit',
+                        props:true,
+                        component: () => import('views/panels/negocio/certificados/edit.vue'),
+                        name: 'negocio.certificado.edit',
+                        meta: {
+                              resource: 'negocio certificados',
+                              action: 'update',
+                              pageTitle: 'Edit Certificado',
+                              layout: 'negocio',
+                              navActiveLink: 'negocio.certificados',
+                              breadcrumb: [
+                                    {
+                                          text: 'Home',
+                                          to: { name: 'home' },
+                                          active: false
+                                    },
+
+                                    {
+                                          text: 'Certificados ',
+                                          active: false,
+                                          to: { name: 'negocio.certificados' }
+                                    },
+                                    {
+                                          text: 'Editar ',
+                                          active: true,
+                                    }
+                              ]
+                        }
+                  }
+            ]
+      },
+
+
+      /*********************************************
+       *    Horario de reservaciones y reservacion
+       * ******************************************/
+      {
+            path:'/negocios/reservaciones/horario',
+            component:() => import('views/panels/negocio/reservaciones/horario/index.vue'),
+
+            children:[
+                  {
+                        path:'',
+                        name:'negocio.reservacion.horario',
+                        component:() => import('views/panels/negocio/reservaciones/horario/list.vue'),
+
+                        meta:{
+                              resource:'negocio reservacion horario',
+                              action:'read',
+                              layout:'negocio',
+                              pageTitle:'Horario de reservaciones',
+                              breadcrumb:[
+                                    {
+                                          text:'Home',
+                                          to:{name:'home'}
+                                    },
+
+                                    {
+                                          text:'Horario de reservaciones',
+                                          active:true,
+                                    }
+                              ]
+                        }
+                  }
+            ]
+      },
+
+
+      /*********************************************
+       *    Reservaciones
+       * ******************************************/
+
+      {
+            path:'/negocios/reservaciones',
+            component:() => import('views/panels/negocio/reservaciones/index.vue'),
+
+            children:[
+                  {
+                        path:'',
+                        name:'negocio.reservaciones',
+                        component: () => import('views/panels/negocio/reservaciones/list.vue'),
+                        meta:{
+                              resource:'negocio reservaciones',
+                              layout:'negocio',
+                              action:'read',
+                              pageTitle:'Reservaciones',
+                              breadcrumb:[
+                                    { text: 'Home', to: { name: 'home' }, active: false },
+                                    { text: 'Reservaciones', active: true },
+                              ]
+                        }
+
+                  },
+
+                  {
+                        path: 'create',
+                        name: 'negocio.reservacion.create',
+                        component: () => import('views/panels/negocio/reservaciones/create.vue'),
+                        meta: {
+                              resource: 'negocio reservaciones',
+                              layout: 'negocio',
+                              action: 'write',
+                              pageTitle: 'Generar Reservación',
+                              navActiveLink:'negocio.reservaciones',
+                              breadcrumb: [
+                                    { text: 'Home', to: { name: 'home' }, active: false },
+                                    { text: 'Reservaciones', active: false,to:{name:'negocio.reservaciones'} },
+                                    { text: 'Generar Reservación', active: true},
+
+                              ]
+                        }
+
+                  },
+
+
+                  {
+                        path: ':id/edit',
+                        props:true,
+                        name: 'negocio.reservacion.edit',
+                        component: () => import('views/panels/negocio/reservaciones/edit.vue'),
+                        meta: {
+                              resource: 'negocio reservaciones',
+                              layout: 'negocio',
+                              action: 'write',
+                              pageTitle: 'Editar Reservación',
+                              navActiveLink: 'negocio.reservaciones',
+                              breadcrumb: [
+                                    { text: 'Home', to: { name: 'home' }, active: false },
+                                    { text: 'Reservaciones', active: false, to: { name: 'negocio.reservaciones' } },
+                                    { text: 'Editar Reservación', active: true },
+
+                              ]
+                        }
+
+                  }
+            ]
+      },
+
+
+
+      /***************************************
+       *    Ventas de Negocio
+       * *************************************/
+
+      {
+            path:'/negocios/ventas',
+            component:() => import('views/panels/negocio/ventas/index.vue'),
+            children:[
+                  {
+                        path:'',
+                        name:'negocio.ventas',
+                        component:() => import('views/panels/negocio/ventas/list.vue'),
+                        meta:{
+                              pageTitle: 'Ventas de Negocio',
+                              resource: 'ventas negocio',
+                              action: 'read',
+                              layout:'negocio',
+                              breadcrumb:[
+                                    {text:'Home',to:'home',active:false},
+                                    { text: 'Historial de venta', active: true },
+
+                              ]
+
+                        }
+                  },
+
+                  {
+                        path: 'create',
+                        name: 'negocio.venta.create',
+                        component: () => import('views/panels/negocio/ventas/create.vue'),
+                        meta: {
+                              pageTitle: 'Generar Venta',
+                              resource: 'ventas negocio',
+                              action: 'write',
+                              layout: 'negocio',
+                              breadcrumb: [
+                                    { text: 'Home', to: 'home', active: false },
+                                    { text: 'Historial de venta', active: false},
+                                    { text: 'Generar', active: true, to: { name: 'negocio.ventas'}}
+                              ]
+
+                        }
+                  }
+
+            ]
+      }
 
 
 ]

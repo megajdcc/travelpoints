@@ -27,26 +27,34 @@ class EventoController extends Controller
 
         $datos = $request->all();
 
-        $paginator = Evento::where([
-            ['titulo','LIKE',"%{$datos['q']}%",'OR'],
-            ['contenido', 'LIKE', "%{$datos['q']}%", 'OR'],
-        ])
-        ->orderBy($datos['sortBy'] ?: 'id' , $datos['isSortDirDesc'] ? 'desc' : 'asc')
-        ->paginate($datos['perPage'] ?: 10000);
+
+        // dd($datos);
+
+        if(isset($datos['model_type'])){
+            $paginator = Evento::where([
+                ['titulo', 'LIKE', "%{$datos['q']}%", 'OR'],
+                ['contenido', 'LIKE', "%{$datos['q']}%", 'OR'],
+            ])
+                ->where('model_id', $datos['model_id'])
+                ->where('model_type', $datos['model_type'])
+                ->with(['imagenes', 'model'])
+                ->orderBy($datos['sortBy'] ?: 'id', $datos['isSortDirDesc'] ? 'desc' : 'asc')
+                ->paginate($datos['perPage'] ?: 10000);
+        }else{
+            $paginator = Evento::where([
+                ['titulo', 'LIKE', "%{$datos['q']}%", 'OR'],
+                ['contenido', 'LIKE', "%{$datos['q']}%", 'OR'],
+            ])
+            ->with(['imagenes', 'model'])
+            ->orderBy($datos['sortBy'] ?: 'id', $datos['isSortDirDesc'] ? 'desc' : 'asc')
+            ->paginate($datos['perPage'] ?: 10000);
+        }
+        
+    
         
 
-        $eventos = $paginator->items();
-
-        foreach($eventos as $evento){
-
-            $evento->imagenes;
-            $evento->model;
-            $evento->model->model_type ;
-
-        }
-
         return response()->json([
-            'eventos' => $eventos,
+            'eventos' => $paginator->items(),
             'total' => $paginator->total()
         ]);
     }

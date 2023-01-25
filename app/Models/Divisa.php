@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Negocio\Certificado;
 
 class Divisa extends Model
 {
@@ -28,5 +29,11 @@ class Divisa extends Model
 
         return $divisa;
 
-    } 
+    }
+
+    public function certificados()
+    {
+        return $this->hasMany(Certificado::class, 'negocio_id', 'id');
+    }
+
 }

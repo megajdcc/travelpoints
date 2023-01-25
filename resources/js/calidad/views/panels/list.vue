@@ -47,7 +47,7 @@
                   
                   <b-button-group size="sm">
 
-                     <b-button :to="{ name: 'panel.edit', params: { id: item.id } }" variant="primary" v-if="$can('update', 'panles')">
+                     <b-button :to="{ name: 'panel.edit', params: { id: item.id } }" variant="primary" v-if="$can('update', 'paneles')">
                         Editar
                      </b-button>
       

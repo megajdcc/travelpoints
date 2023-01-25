@@ -35,7 +35,7 @@ export default [
 
          {
             title:'Nueva Venta',
-            route:'negocio.nueva.venta',
+            route:'negocio.venta.create',
             icon:'fas fa-money-bill',
             resource: 'ventas negocio',
             action: 'write',
@@ -43,12 +43,38 @@ export default [
 
          {
             title: 'Historial de Ventas',
-            route: 'negocio.venta.historial',
+            route: 'negocio.ventas',
             icon: 'fa-solid fa-database',
-            resource: 'ventas historial negocio',
+            resource: 'ventas negocio',
             action: 'write',
          }
 
+      ]
+   },
+
+   // Reservaciones y HOrario de Reservacion
+   {
+      title:'Horario y Reservaciones',
+      icon: 'fas fa-calendar-alt',
+      children:[
+
+         {
+            title:'Horario de reservaciones',
+            route:'negocio.reservacion.horario',
+            resource:'negocio reservacion horario',
+            action:'read',
+            icon:'fas fa-calendar-week'
+         },
+
+         {
+            title:'Reservaciones',
+            route:'negocio.reservaciones',
+            resource:'negocio reservaciones',
+            action:'read',
+            icon:'fas fa-calendar-check'
+         }
+
+         
       ]
    },
 

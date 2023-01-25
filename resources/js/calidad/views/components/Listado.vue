@@ -27,13 +27,15 @@
 
       </b-card>
 
-      <section class="w-100 d-flex justify-content-center py-3" v-if="loading">
+      <section class="w-100 d-flex justify-content-center py-3" v-if="!isTable && loading" >
          <b-spinner>
          </b-spinner>
       </section>
 
 
-      <slot name="contenido" :items="items" :eliminar="eliminar">
+      <slot name="contenido" :items="items" :eliminar="eliminar" :fetchData="fetchData" :tableColumns="tableColumns" :sortB="sortBy" :isSortDirDesc="isSortDirDesc" :perPage="perPage" :refTable="refTable">
+
+        
 
       </slot>
 
@@ -111,7 +113,8 @@ export default {
 
 
    props:{
-      actions:Object|Function
+      actions:Object|Function,
+      isTable:Boolean
    },
 
 
@@ -132,6 +135,8 @@ export default {
          refetchData,
          fetchData,
          eliminar,
+         tableColumns,
+         refTable,
       } = actions.value;
 
       onActivated(() => refetchData())
@@ -151,6 +156,8 @@ export default {
          loading: computed(() => store.state.loading),
          regresar,
          eliminar,
+         tableColumns,
+         refTable,
          irEditar: (negocio) => router.push({ name: 'negocio.edit', params: { id: negocio.id } })
       }
 

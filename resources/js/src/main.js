@@ -54,10 +54,13 @@ import moment from 'moment';
 window.moment = require('moment');
 moment.locale('es')
 
-Vue.filter('fecha',(val,format = 'LL') => {
-  if(val) {
+Vue.filter('fecha',(val,format = 'LL', time= false) => {
+  if(val && !time) {
     return moment(new Date(val)).format(format);
+  }else if(val && time){
+    return moment(`2020-01-01 ${val}`).format(format);
   }
+  
   return 'error en la fecha';
 
 })

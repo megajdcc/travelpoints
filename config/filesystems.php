@@ -97,6 +97,14 @@ return [
             'visibility' => 'public',
         ],
 
+        'negocio_certificados' => [
+            'driver' => 'local',
+            'root' => storage_path('app/public/negocios/certificados'),
+            'url' => env('APP_URL') . '/storage/negocios/certificados',
+            'visibility' => 'public',
+        ],
+
+
 
 
         's3' => [

@@ -1,13 +1,14 @@
 <?php
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\{AuthController};
-use App\Http\Controllers\{AmenidadController, CargoController, CategoriaFaqController, DestinoController, DivisaController, EmpleadoController, EventoController, FaqController, FormaPagoController, HomeController, HorarioController, IataController, MovimientoController, NegocioCategoriaController, NegocioController, UserController,NotificacionController,RolController,PermisoController, SolicitudController, TelefonoController,OpinionController, PanelController, PublicacionController};
+use App\Http\Controllers\{AmenidadController, CargoController, CategoriaFaqController, CertificadoController, DestinoController, DivisaController, EmpleadoController, EventoController, FaqController, FormaPagoController, HomeController, HorarioController, HorarioReservacionController, IataController, MovimientoController, NegocioCategoriaController, NegocioController, UserController,NotificacionController,RolController,PermisoController, SolicitudController, TelefonoController,OpinionController, PanelController, PublicacionController, ReservacionController, VentaController};
 use App\Http\Middleware\convertirNull;
 use Laravel\Socialite\Facades\Socialite;
 use App\Models\{CategoriaFaq, Pais,Estado,Ciudad};
 use App\Http\Controllers\AtraccionController;
 use App\Models\Divisa;
 use App\Http\Controllers\ImagenController;
+use App\Models\Negocio\HorarioReservacion;
 
 /*
 |--------------------------------------------------------------------------
@@ -220,6 +221,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::get('negocios/{negocio}/quitar/all-redes',[NegocioController::class,'quitarRedes']);
     Route::put('negocios/{negocio}/guardar/video',[NegocioController::class,'guardarVideo'])->middleware('convertir.null');
 
+    Route::put('negocios/{negocio}/consultar/horas',[NegocioController::class,'consultarHoras']);
     /*****************************/
     /* Divisas
     /*****************************/
@@ -331,6 +333,57 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
 
     Route::put('publicacions/{publicacion}/add/imagen', [PublicacionController::class, 'addImagen']);
     Route::delete('publicacions/eliminar/imagen/{imagen}', [PublicacionController::class, 'eliminarImagen']);
+
+
+
+    /*****************************/
+    /* Certificados Negocio
+    /*****************************/
+
+    Route::post('certificados/fetch/data', [CertificadoController::class, 'fetchData']);
+    Route::get('certificados/{certificado}/fetch/data', [CertificadoController::class, 'fetch']);
+    Route::get('certificados/negocio/{negocio}/get/all', [CertificadoController::class, 'getAll']);
+
+    Route::resource('certificados', CertificadoController::class);
+
+
+    /*****************************/
+    /* Ventas de negocio
+    /*****************************/
+
+    Route::post('ventas/fetch/data', [VentaController::class, 'fetchData']);
+    Route::get('ventas/{venta}/fetch/data', [VentaController::class, 'fetch']);
+    Route::get('ventas/negocio/{negocio}/get/all', [VentaController::class, 'getAll']);
+
+    Route::resource('ventas', VentaController::class);
+
+
+
+    /***********************************/
+    /* Horario Reservacion Negocio
+    /**********************************/
+
+
+    Route::post('horario-reservacion/fetch/data', [HorarioReservacionController::class, 'fetchData']);
+    Route::get('horario-reservacion/{horario}/fetch/data', [HorarioReservacionController::class, 'fetch']);
+    Route::get('horario-reservacion/negocio/{negocio}/get/all', [HorarioReservacionController::class, 'getAll']);
+
+
+    Route::resource('horario-reservacion', HorarioReservacionController::class);
+
+    Route::post('horarios/asignar/horario',[HorarioReservacionController::class,'asignarHorario']);
+
+
+    /***********************************/
+    /* Reservacions
+    /**********************************/
+
+
+    Route::post('reservacions/fetch/data', [ReservacionController::class, 'fetchData']);
+    Route::get('reservacions/{reservacion}/fetch/data', [ReservacionController::class, 'fetch']);
+    Route::get('reservacions/get/all', [ReservacionController::class, 'getAll']);
+    Route::get('reservacions/negocio/{negocio}/get/all',[ReservacionController::class,'getAll']);
+    Route::resource('reservacions', ReservacionController::class);
 
 
 });

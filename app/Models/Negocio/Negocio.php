@@ -4,18 +4,19 @@ namespace App\Models\Negocio;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Trais\{HasDireccion,hasCuenta,hasImages,hasTelefonos,hasEvento, hasHorario, hasLike, hasOpinion,hasPermisos,hasRedes,hasVideos};
+use App\Trais\{HasDireccion,hasCuenta,hasImages,hasTelefonos,hasEvento, hasHorario, hasLike, hasOpinion,hasPermisos,hasRedes, hasVenta, hasVideos};
 use App\Models\{Divisa, FormaPago, User,Iata};
 use Illuminate\Database\Eloquent\Casts\Attribute;
 
 use App\Models\Amenidad;
+
 
 class Negocio extends Model
 {
     use HasFactory;
 
     use HasDireccion,hasCuenta, hasImages, hasTelefonos, hasEvento,hasHorario,hasLike,hasOpinion, hasPermisos, hasRedes;
-    use hasVideos;
+    use hasVideos,hasVenta;
 
     public readonly string $model_type;
 
@@ -150,6 +151,8 @@ class Negocio extends Model
         $this->redes;
         $this->videos;
         $this->modelType = $this->model_type;
+        $this->certificados;
+        $this->ventas;
         // $this->precios = $this->precios ?: ['precio_minimo' => 0, 'precio_maximo' => 0];
         return $this;
     }
@@ -170,10 +173,21 @@ class Negocio extends Model
         return $this->belongsToMany(Amenidad::class, 'amenidad_negocio', 'negocio_id', 'amenidad_id');
     }
 
+    public function certificados(){
+        return $this->hasMany(Certificado::class,'negocio_id','id');
+    }
 
     public function formasPago()
     {
         return $this->belongsToMany(FormaPago::class, 'formas_pago_negocio', 'negocio_id', 'forma_id');
+    }
+
+    public function horarioReservacions(){
+        return $this->hasMany(HorarioReservacion::class,'negocio_id','id');
+    }
+
+    public function reservaciones(){
+        return $this->hasMany(Reservacion::class,'negocio_id','id');
     }
 
 

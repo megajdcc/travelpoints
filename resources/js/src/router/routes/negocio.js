@@ -986,7 +986,7 @@ export default [
                         name: 'negocio.venta.create',
                         component: () => import('views/panels/negocio/ventas/create.vue'),
                         meta: {
-                              pageTitle: 'Generar Venta',
+                              pageTitle: 'Registrar Venta',
                               resource: 'ventas negocio',
                               action: 'write',
                               layout: 'negocio',
@@ -1000,7 +1000,26 @@ export default [
                   }
 
             ]
-      }
+      },
 
+
+      /***************************************
+       *    Movimientos de Negocio
+       * *************************************/
+      {
+            path:'/negocio/movimientos',
+            name:'negocio.movimientos',
+            component:() => import('views/panels/negocio/movimientos.vue'),
+            meta:{
+                  resource:'movimientos negocio',
+                  action:'read',
+                  layout:'negocio',
+                  pageTile:'Movimientos de Cuenta',
+                  breadcrumb:[
+                        { text: 'Home', to: { name: 'home' }, active: false },
+                        { text: 'Movimientos de Cuenta', active: true},
+                  ]
+            }
+      }
 
 ]

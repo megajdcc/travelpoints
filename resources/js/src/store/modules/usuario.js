@@ -730,6 +730,14 @@ export default {
 				}).catch(e => reject(e))
 
 			})
+		},
+
+
+		searchUser({commit},query){
+			return new Promise((resolve, reject) => {
+				
+				axios.post(`/api/users/search`,{q:query}).then(({data}) => resolve(data)).catch(e => reject(e))
+			})
 		}
 
 

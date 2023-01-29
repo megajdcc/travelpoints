@@ -27,6 +27,8 @@ class MovimientoController extends Controller
 
         $datos = $request->all();
 
+
+
         switch ($datos['model_type']) {
             
             case 'User':
@@ -42,6 +44,7 @@ class MovimientoController extends Controller
                 break;
 
         }
+
 
         if(!$model->cuenta){
             $cuenta = $model->aperturarCuenta();

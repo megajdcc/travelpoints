@@ -532,4 +532,26 @@ class NegocioController extends Controller
     }
 
 
+    public function agregarSaldo(Request $request,Negocio $negocio){
+
+
+        try {
+
+            DB::beginTransaction();
+                $negocio->generarMovimiento($request->get('monto'), $request->get('concepto'));
+                $negocio->cargar();
+            DB::commit();
+            
+            $result = true;
+
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            $result = false;
+        }
+
+        return response()->json(['result' => $result ,'negocio' => $negocio]);
+
+    }
+
+
 }

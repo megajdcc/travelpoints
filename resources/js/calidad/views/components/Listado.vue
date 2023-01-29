@@ -27,17 +27,16 @@
 
       </b-card>
 
-      <section class="w-100 d-flex justify-content-center py-3" v-if="!isTable && loading" >
+      <!-- <section class="w-100 d-flex justify-content-center py-3" v-if="!isTable && loading"  >
          <b-spinner>
          </b-spinner>
+      </section> -->
+
+      <section v-loading="loading" class="w-100 mt-1" style="min-height:100px">
+         <slot name="contenido" :items="items" :eliminar="eliminar" :fetchData="fetchData" :tableColumns="tableColumns"
+            :sortB="sortBy" :isSortDirDesc="isSortDirDesc" :perPage="perPage" :refTable="refTable">
+            </slot>
       </section>
-
-
-      <slot name="contenido" :items="items" :eliminar="eliminar" :fetchData="fetchData" :tableColumns="tableColumns" :sortB="sortBy" :isSortDirDesc="isSortDirDesc" :perPage="perPage" :refTable="refTable">
-
-        
-
-      </slot>
 
       <paginate-table :dataMeta="dataMeta" :currentPage.sync="currentPage" :perPage="perPage" :total="total"
          class="mt-1" />
@@ -48,13 +47,23 @@
          <b-container class="mb-1">
             <b-row>
                <b-col class="px-1">
-                  <b-button @click="regresar" size="sm">Regresar</b-button>
+                  <b-button-group size="sm">
+
+                     <slot name="botonera-footer">
+
+                     </slot>
+                     
+                     <b-button @click="regresar" size="sm">Regresar</b-button>
+                  </b-button-group>
+                 
                </b-col>
             </b-row>
          </b-container>
 
 
       </b-card>
+      <slot name="otros"></slot>
+
    </b-container>
 </template>
 
@@ -135,8 +144,8 @@ export default {
          refetchData,
          fetchData,
          eliminar,
-         tableColumns,
-         refTable,
+         tableColumns = [],
+         refTable = null,
       } = actions.value;
 
       onActivated(() => refetchData())

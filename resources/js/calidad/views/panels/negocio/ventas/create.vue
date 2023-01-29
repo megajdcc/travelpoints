@@ -12,9 +12,9 @@ import router from '@/router'
 export default {
   
   setup(){
+    store.commit('venta/clear')
 
-    onMounted(() => store.commit('venta/clear'))
-
+    
     return () => h(form,{
 
       on:{

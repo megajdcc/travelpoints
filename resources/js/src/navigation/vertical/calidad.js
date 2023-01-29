@@ -68,6 +68,14 @@ export default [
       children:[
          
          {
+            title:'Datos de sistema',
+            route:'sistema',
+            icon:'SettingsIcon',
+            resource:'sistema',
+            action:'read'
+         },
+
+         {
             title: 'Roles',
             // exact:false,
             route: 'listar.roles',

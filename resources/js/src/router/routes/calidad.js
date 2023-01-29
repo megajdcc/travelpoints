@@ -1933,6 +1933,28 @@ export default [
       ]
    },
 
+   {  
+      path:'/admin/sistema',
+      name:'sistema',
+      component:() => import('views/sistema.vue'),
+      meta:{
+         resource:'sistema',
+         action:'read',
+         pageTitle:'Datos del sistema',
+         breadcrumb:[
+            {
+               text: 'Home',
+               to: 'home',
+               active: false,
+            },
+            {
+               text: 'Configuración de sistema',
+               active: true,
+            },
+         ]
+      }
+   },
+
 
 
 

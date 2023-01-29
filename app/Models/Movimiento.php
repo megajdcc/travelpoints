@@ -34,13 +34,18 @@ class Movimiento extends Model
 
     public static function add(EstadoCuenta $cuenta,$monto, $concepto = 'Apertura de cuenta', int $tipo_movimiento = 1) : Movimiento  {
       
-        return Movimiento::create([
+        $movimiento =  Movimiento::create([
             'estado_cuenta_id' => $cuenta->id,
             'monto'            => $monto,
             'tipo_movimiento'  => $tipo_movimiento,
-            'balance'          => $tipo_movimiento == 1 ? $cuenta->saldo += $monto : $cuenta->saldo -= $monto,
+            'balance'          => $tipo_movimiento == 1 ? $cuenta->saldo + $monto : $cuenta->saldo - $monto,
             'concepto' => $concepto
         ]);
+
+        $cuenta->saldo = $movimiento->balance;
+        $cuenta->save();
+        return $movimiento;
+        
 
     }
 

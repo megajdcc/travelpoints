@@ -10,6 +10,7 @@ export default{
          divisa_id:null,
          monto:0,
          comision:0,
+         tipo_comision:1,
          tps:0,
          tps_referente:0,
          certificado:false,
@@ -17,12 +18,13 @@ export default{
          model_type:null,
          empleado_id:null,
          cliente_id:null,
-
-
          divisa:null,
          model:null,
          empleado:null,
-         cliente:null
+         cliente:null,
+         personas:1,
+         reservacion_id:null,
+         reservacion:null
       },
 
 
@@ -44,6 +46,7 @@ export default{
             divisa_id: null,
             monto: 0,
             comision: 0,
+            tipo_comision: 1,
             tps: 0,
             tps_referente: 0,
             certificado: false,
@@ -56,7 +59,11 @@ export default{
             divisa: null,
             model: null,
             empleado: null,
-            cliente: null
+            cliente: null,
+
+            personas: 1,
+            reservacion_id: null,
+            reservacion: null
          }
       },
 

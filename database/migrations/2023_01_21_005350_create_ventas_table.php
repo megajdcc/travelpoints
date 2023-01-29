@@ -17,7 +17,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('divisa_id')->nullable()->constrained('divisas')->cascadeOnUpdate()->onDelete('set null');
             $table->decimal('monto');
-            $table->decimal('comision');
+            $table->decimal('comision')->nullable();
             $table->decimal('tps')->nullable();
             $table->decimal('tps_referente')->nullable();
             $table->boolean('certificado')->default(false);

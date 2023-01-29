@@ -2,32 +2,69 @@
 
 import store from '@/store'
 import { toRefs, ref, watch, onMounted, computed } from '@vue/composition-api'
-import useFilterTable from '@core/utils/useFilterTable'
 
 export default function useVentasList(negocio) {
 
    const items = ref([])
 
-   const tableColumns = ref([
-      {key:'id',label:'#',sortBy:'id'},
-      {key:'monto', label:'Monto',sortable:true},
-      {key:'actions',label:'Actions',sortBy:'id', sortKey:'id'}
-   ]);
+   const isSortDirDesc = ref(true)
+   const sortBy = ref('id')
+   const searchQuery = ref('')
+   const perPage = ref(100)
+   const currentPage = ref(1)
+   const total = ref(0);
 
-   const {
-      perPageOptions,
-      currentPage,
-      perPage,
-      searchQuery,
-      sortBy,
-      isSortDirDesc,
-      refTable,
-      total,
-      dataMeta,
-      refetchData,
-   } = useFilterTable();
+   const perPageOptions = ref([
+      {
+         label: '10',
+         value: 10,
+      },
+      {
+         label: '25',
+         value: 25,
+      },
+      {
+         label: '50',
+         value: 50,
+      },
+      {
+         label: '100',
+         value: 100,
+      },
+      {
+         label: 'Todas',
+         value: 0,
+      },
 
-   const fetchData = (ctx,next) => {
+   ])
+
+
+
+   const dataMeta = computed(() => {
+
+      const localItemsCount =  items.value.length
+
+      return {
+         from: perPage.value * (currentPage.value - 1) + (localItemsCount ? 1 : 0),
+         to: perPage.value * (currentPage.value - 1) + localItemsCount,
+         of: total.value,
+      }
+
+   })
+
+   const refetchData = () => {
+      fetchData((ventas) => {
+         items.value = ventas
+      })
+   }
+   
+
+   watch([currentPage, perPage, searchQuery], () => {
+      refetchData()
+   })
+
+
+   const fetchData = (next) => {
 
       store.dispatch('venta/fetchData', {
          perPage: perPage.value,
@@ -62,6 +99,8 @@ export default function useVentasList(negocio) {
 
    }
 
+   onMounted(() => refetchData())
+
    return {
       fetchData,
       perPageOptions,
@@ -70,13 +109,11 @@ export default function useVentasList(negocio) {
       searchQuery,
       sortBy,
       isSortDirDesc,
-      refTable,
       total,
       dataMeta,
       refetchData,
       eliminar,
       items,
-      tableColumns
 
    }
 

@@ -46,13 +46,13 @@
 
                <template #cell(monto)="{item}">
                   <span style="color:black" class="font-weight-bolder">
-                  {{ item.tipo_movimiento == 1 ? '+' : '-' }}{{  item.monto | currency({symbol:item.cuenta.divisa.simbolo}) }}
+                  {{ item.tipo_movimiento == 1 ? '+' : '-' }} {{ item.cuenta.divisa.iso.toUpperCase() }}{{ item.monto | currency({symbol:item.cuenta.divisa.simbolo}) }}
                   </span>
                </template>
 
                <template #cell(balance)="{item}">
                   <span style="color:black" class="font-weight-bolder">
-                     {{ item.tipo_movimiento == 1 ? '+' : '-' }}{{ item.balance | currency({symbol:item.cuenta.divisa.simbolo}) }}
+                     {{ item.tipo_movimiento == 1 ? '+' : '-' }}{{ item.cuenta.divisa.iso.toUpperCase() }}{{ item.balance | currency({symbol:item.cuenta.divisa.simbolo}) }}
                   </span>
                </template>
 
@@ -130,7 +130,7 @@ export default {
          items,
          tableColumns
       } = useCuentaList({
-         model_id:usuario.value.id,
+         model_id:computed(() => usuario.value.id),
          model_type:'User'
       });
 

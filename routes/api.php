@@ -1,10 +1,10 @@
 <?php
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\{AuthController};
-use App\Http\Controllers\{AmenidadController, CargoController, CategoriaFaqController, CertificadoController, DestinoController, DivisaController, EmpleadoController, EventoController, FaqController, FormaPagoController, HomeController, HorarioController, HorarioReservacionController, IataController, MovimientoController, NegocioCategoriaController, NegocioController, UserController,NotificacionController,RolController,PermisoController, SolicitudController, TelefonoController,OpinionController, PanelController, PublicacionController, ReservacionController, VentaController};
+use App\Http\Controllers\{AmenidadController, CargoController, CategoriaFaqController, CertificadoController, DestinoController, DivisaController, EmpleadoController, EventoController, FaqController, FormaPagoController, HomeController, HorarioController, HorarioReservacionController, IataController, MovimientoController, NegocioCategoriaController, NegocioController, UserController,NotificacionController,RolController,PermisoController, SolicitudController, TelefonoController,OpinionController, PanelController, PublicacionController, ReservacionController, SistemaController, VentaController};
 use App\Http\Middleware\convertirNull;
 use Laravel\Socialite\Facades\Socialite;
-use App\Models\{CategoriaFaq, Pais,Estado,Ciudad};
+use App\Models\{CategoriaFaq, Pais,Estado,Ciudad,};
 use App\Http\Controllers\AtraccionController;
 use App\Models\Divisa;
 use App\Http\Controllers\ImagenController;
@@ -122,6 +122,9 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::post('usuario/perfil/referidos',[UserController::class,'misReferidos']);
     Route::put('usuarios/{usuario}/add/telefono',[UserController::class,'agregarTelefono']);
     Route::put('usuarios/{usuario}/toggle-like',[UserController::class,'toggleLike']);
+
+    Route::post('users/search',[UserController::class,'searchUser']);
+
     
     /*****************************/
     /* TELEFONOS
@@ -222,6 +225,10 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::put('negocios/{negocio}/guardar/video',[NegocioController::class,'guardarVideo'])->middleware('convertir.null');
 
     Route::put('negocios/{negocio}/consultar/horas',[NegocioController::class,'consultarHoras']);
+
+    Route::put('negocios/{negocio}/cargar/saldo',[NegocioController::class,'agregarSaldo']);
+
+    
     /*****************************/
     /* Divisas
     /*****************************/
@@ -384,7 +391,14 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::get('reservacions/get/all', [ReservacionController::class, 'getAll']);
     Route::get('reservacions/negocio/{negocio}/get/all',[ReservacionController::class,'getAll']);
     Route::resource('reservacions', ReservacionController::class);
+    Route::get('reservacions/{reservacion}/cancelar',[ReservacionController::class,'cancelar']);
 
+
+    /*****************************/
+    /* Admin sistema
+    /*****************************/
+
+    Route::put('sistema/{sistema}',[ SistemaController::class, 'update' ]);
 
 });
 
@@ -427,3 +441,6 @@ Route::post('atraccions/obtener/por-nombre', [AtraccionController::class, 'getPo
 
 Route::post('opinions/fetch/data/model',[OpinionController::class,'fetchDataModel']);
 
+// Sistema
+
+Route::get('sistema/fetch',[SistemaController::class,'fetch']);

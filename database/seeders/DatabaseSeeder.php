@@ -20,6 +20,7 @@ class DatabaseSeeder extends Seeder
             PaisSeed::class,
             EstadoSeed::class,
             CiudadSeed::class,
+            SistemaSeed::class
         ]);
     }
 }

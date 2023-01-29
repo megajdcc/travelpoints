@@ -655,6 +655,23 @@ export default{
             })
 
          })
+      },
+
+
+      agregarSaldo({commit,state},{negocio_id,monto,concepto}){
+
+         return new Promise((resolve, reject) => {
+            
+            axios.put(`/api/negocios/${negocio_id}/cargar/saldo`,{monto,concepto}).then(({data}) => {
+               
+               if(data.result){
+                  commit('update',data.negocio)
+               }
+               resolve(data)
+            }).catch(e => reject(e))
+            
+
+         })
       }
 
 

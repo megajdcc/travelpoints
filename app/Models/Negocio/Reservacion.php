@@ -3,6 +3,7 @@
 namespace App\Models\Negocio;
 
 use App\Models\User;
+use App\Models\Venta;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -19,7 +20,8 @@ class Reservacion extends Model
         'negocio_id',
         'usuario_id',
         'operador_id',
-        'observacion'
+        'observacion',
+        
 
     ];
 
@@ -36,6 +38,10 @@ class Reservacion extends Model
         return $this->belongsTo(User::class, 'operador_id', 'id');
     }
 
+
+    public function venta(){
+        return $this->hasOne(Venta::class,'reservacion_id','id');
+    }
 
     
     

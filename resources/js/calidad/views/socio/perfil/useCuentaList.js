@@ -11,7 +11,7 @@ export default function useCuentaList({model_type,model_id}) {
       { key:'id',label:'#',sortBy:'id',sortable:true},
       { key:'created_at', label: 'Fecha',sortable: true },
       { key: 'concepto', label: 'Concepto', sortable: true,sortBy:'concepto' },
-      { key: 'monto', label: 'Monto', sortable: true },
+      { key: 'monto', label: 'Monto', sortable: true,class:'text-nowrap' },
       { key: 'balance', label: 'Balance', sortable: true },
    ]);
 
@@ -36,25 +36,32 @@ export default function useCuentaList({model_type,model_id}) {
 
    const fetchData = (ctx , next) => {
 
-      store.dispatch('movimiento/fetchData', {
-         model_id: model_id,
-         model_type:model_type,
-         sortBy:sortBy.value,
-         isSortDirDesc:isSortDirDesc.value,
-         perPage: perPage.value,
-         currentPage: currentPage.value,
-         q: searchQuery.value
-      }).then(({ movimientos, total: all }) => {
+      if(model_id.value){
+         store.dispatch('movimiento/fetchData', {
+            model_id: model_id.value,
+            model_type: model_type,
+            sortBy: sortBy.value,
+            isSortDirDesc: isSortDirDesc.value,
+            perPage: perPage.value,
+            currentPage: currentPage.value,
+            q: searchQuery.value
+         }).then(({ movimientos, total: all }) => {
 
-         total.value = all
-         items.value = movimientos
-         next(movimientos)
-         
-        
+            total.value = all
+            items.value = movimientos
+            next(movimientos)
 
-      }).catch(e => {
-         toast.error('Error cargado data')
-      })
+
+
+         }).catch(e => {
+            toast.error('Error cargado data')
+         })
+      }else{
+         items.value = [];
+         total.value = 0
+         next([])
+      }
+    
 
 
    }

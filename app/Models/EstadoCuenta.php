@@ -27,10 +27,9 @@ class EstadoCuenta extends Model
     /** 
      * Una cuenta puede tener muchos movimientos...
      */
-    public function movimientos() {
+    public function movimientos(){
         return $this->hasMany(Movimiento::class,'estado_cuenta_id','id');
     }
-
 
     public function model(){
         return $this->morphTo();

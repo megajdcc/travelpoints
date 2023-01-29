@@ -51,9 +51,6 @@ export default function useFilterTable(){
       if (refTable.value) {
          refTable.value.refresh()
       }
-
-      
-     
    }
 
    watch([currentPage, perPage, searchQuery], () => {

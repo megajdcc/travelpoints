@@ -3,7 +3,7 @@
       <b-row>
          <b-col cols="12">
             <b-card>
-               <strong class="font-weight-bolder text-primary">
+               <!-- <strong class="font-weight-bolder text-primary">
                   Última actualización: Julio 2021.
                </strong>
                <p class="text-justify">
@@ -30,11 +30,13 @@
                   empresa Producciones Travel Media, S. de R.L. de C.V., domiciliada en Blvd. Francisco Medina Ascencio
                   Km. 7.5 Condominio Plaza Marina, Oficina 204, Fraccionamiento Marina Vallarta, Puerto Vallarta,
                   Jalisco. México.
-               </p>
+               </p> -->
+
+               <section v-html="sistema.terminos"></section>
 
             </b-card>
          </b-col>
-         <b-col cols="12">
+         <!-- <b-col cols="12">
             <b-card>
                <ol>
                   <li>
@@ -297,7 +299,7 @@
 
                </ol>
             </b-card>
-         </b-col>
+         </b-col> -->
       </b-row>
    </b-container>
 </template>
@@ -332,10 +334,12 @@ export default {
    setup() {
       const { windowWidth } = toRefs(store.state.app)
       const {authGoogle} = useAuth();
-      
+      const {sistema} = toRefs(store.state.sistema)
+
       onMounted(() => authGoogle())
       
       return {
+         sistema,
          windowWidth,
          relation: computed(() => {
             return windowWidth.value < 762 ? '4by3' : '21by9'

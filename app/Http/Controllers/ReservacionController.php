@@ -237,4 +237,25 @@ class ReservacionController extends Controller
         return response()->json($reservaciones);
 
     }
+
+    public function cancelar(Reservacion $reservacion){
+
+        try {
+            DB::beginTransaction();
+
+            $reservacion->status = 3;
+            $reservacion->save();
+
+            // Informar al usuario por Notificacion...
+            DB::commit();
+            $result = true;
+
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            $result = false;
+            //throw $th;
+        }
+
+        return response()->json(['result' => $result]);
+    }
 }

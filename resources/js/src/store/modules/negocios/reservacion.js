@@ -8,7 +8,7 @@ export default{
       id:null,
       fecha:null,
       hora:null,
-      personas:0,
+      personas:1,
       status:1,
       observacion:'',
       negocio_id:null,
@@ -16,7 +16,7 @@ export default{
       operador_id:null,
       negocio:null,
       usuario:null,
-      operador:null
+      operador:null,
     },
 
     reservaciones:[],
@@ -52,7 +52,7 @@ export default{
         id: null,
         fecha: null,
         hora: null,
-        personas: 0,
+        personas: 1,
         observacion: '',
         status: 1,
         negocio_id: null,
@@ -212,6 +212,13 @@ export default{
           resolve(data)
 
         }).catch(e => reject(e))
+      })
+    },
+
+    cancelar({commit},reserva_id){
+      
+      return new Promise((resolve, reject) => {
+        axios.get(`/api/reservacions/${reserva_id}/cancelar`).then(({data}) => resolve(data)).catch(e => reject(e))
       })
     }
       

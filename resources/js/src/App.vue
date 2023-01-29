@@ -95,15 +95,14 @@ export default {
     })
 
 
+    if (localStorage.getItem('token')) {
+      store.commit('usuario/cargarUser', JSON.parse(localStorage.getItem('userData')));
+    }
 
-    onMounted(() => {
+    // Cargar Sistema
+    store.dispatch('sistema/fetch')
 
-      if(localStorage.getItem('token')){      
-        store.commit('usuario/cargarUser', JSON.parse(localStorage.getItem('userData')));
-      }
-
-    })
-
+  
     watch(isOnline,(val) => {
 
         if(!val){

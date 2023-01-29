@@ -60,17 +60,17 @@ class CertificadoController extends Controller
     private function validar(Request $request): array{
 
         return $request->validate([
-            'nombre' => 'required',
-            'descripcion' => 'required',
-            'condiciones' => 'nullable',
+            'nombre'        => 'required',
+            'descripcion'   => 'required',
+            'condiciones'   => 'nullable',
             'restricciones' => 'nullable',
-            'imagen' => 'nullable',
-            'expide' => 'required',
-            'vence' => 'required',
-            'disponibles' => 'required',
-            'precio' => 'required',
-            'divisa_id' => 'required',
-            'negocio_id' => 'required',
+            'imagen'        => 'nullable',
+            'expide'        => 'required',
+            'vence'         => 'required',
+            'disponibles'   => 'required',
+            'precio'        => 'required',
+            'divisa_id'     => 'required',
+            'negocio_id'    => 'required',
         ]);
     }
 

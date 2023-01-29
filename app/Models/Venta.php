@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\Negocio\Empleado;
+use App\Models\Negocio\Reservacion;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -13,7 +14,8 @@ class Venta extends Model
     protected $fillable = [
         'divisa_id',
         'monto',
-        'comision',
+        'comision', // Monto de la comisión para el momento
+        'tipo_comision', // 1 => Porcentaje por venta 2 => Monto por personas
         'tps',
         'tps_referente',
         'certificado',
@@ -21,6 +23,8 @@ class Venta extends Model
         'model_type',
         'empleado_id',
         'cliente_id',
+        'personas',
+        'reservacion_id'
     ];
 
 
@@ -44,5 +48,19 @@ class Venta extends Model
         return $this->belongsTo(Divisa::class,'divisa_id','id');
     }
 
+    public function reservacion(){
+        return $this->belongsTo(Reservacion::class,'reservacion_id','id');
+        
+    }
+
+
+    public function cargar(){
+        $this->reservacion;
+        $this->divisa;
+        $this->empleado;
+        $this->cliente;
+        $this->model;
+        return $this;
+    }
 
 }

@@ -115,6 +115,9 @@ import horarioReservacion from './modules/negocios/horarioReservacion/horario.js
 
 import reservacion from './modules/negocios/reservacion.js'
 
+// sistema 
+import sistema from './modules/sistema.js'
+
 
 Vue.use(Vuex)
 
@@ -252,7 +255,8 @@ export default new Vuex.Store({
     certificado,
     venta,
     horarioReservacion,
-    reservacion
+    reservacion,
+    sistema
   },
 
   strict: process.env.DEV,

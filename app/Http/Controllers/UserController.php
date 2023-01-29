@@ -706,4 +706,27 @@ class UserController extends Controller
     }
 
 
+    public function searchUser(Request $request) {
+
+        $query = $request->get('q');
+        
+        $usuarios = User::where([
+            ['nombre','LIKE',"%{$query}%","OR"],
+            ['apellido', 'LIKE', "%{$query}%", "OR"],
+            ['email', 'LIKE', "%{$query}%", "OR"],
+            ['username', 'LIKE', "%{$query}%", "OR"],
+        ])
+        ->get();
+
+        foreach($usuarios as $usuario){
+            $usuario->cargar();
+
+        }
+
+
+        return response()->json($usuarios);
+
+    }
+
+
 }

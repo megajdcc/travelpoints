@@ -361,9 +361,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::post('ventas/fetch/data', [VentaController::class, 'fetchData']);
     Route::get('ventas/{venta}/fetch/data', [VentaController::class, 'fetch']);
     Route::get('ventas/negocio/{negocio}/get/all', [VentaController::class, 'getAll']);
-
     Route::resource('ventas', VentaController::class);
-
 
 
     /***********************************/
@@ -399,7 +397,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     /*****************************/
 
     Route::put('sistema/{sistema}',[ SistemaController::class, 'update' ]);
-
+    Route::get('sistemas/{sistema}/crear/cuenta',[SistemaController::class,'crearCuenta']);
 });
 
 Route::put('usuario/{usuario}/establecer/contrasena', [UserController::class, 'EstablecerContrasena'])->name('establecercontrasena');

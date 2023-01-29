@@ -32,6 +32,8 @@ trait hasCuenta
       $cuenta->model;
       $cuenta->movimientos;
 
+      $this->refresh();
+
       return $cuenta;
 
    }

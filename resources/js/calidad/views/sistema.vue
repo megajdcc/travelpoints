@@ -5,6 +5,16 @@
 
       <b-card>
         <b-container fluid>
+
+          <b-row v-if="!sistema.cuenta">
+            <b-col cols="12">
+              <b-alert show variant="secondary" class="p-1">
+                El sistema no tiene asociada una cuenta todavía; <b-link variant="primary" @click="crearCuentaSistema">¿ Crear cuenta del sistema?</b-link>
+              </b-alert>
+
+            </b-col>
+          </b-row>
+
           <b-row>
             <b-col cols="12" md="6">
               <b-form-group>
@@ -192,7 +202,9 @@ import {
   BContainer,
   BRow,
   BCol,
-  BFormRadioGroup
+  BFormRadioGroup,
+  BAlert,
+  BLink
 } from 'bootstrap-vue'
 
 import {computed,toRefs,ref,onMounted} from '@vue/composition-api'
@@ -218,9 +230,9 @@ export default {
     BRow,
     BCol,
     Editor,
-    BFormRadioGroup
-
-
+    BFormRadioGroup,
+    BAlert,
+    BLink
 
   },
 
@@ -232,6 +244,8 @@ export default {
     const {sistema:formulario} = toRefs(store.state.sistema)
     const urlLogo1 = ref(null)
     const urlLogo2 = ref(null)
+
+    const {sistema} = toRefs(store.state.sistema)
 
     const logoSeleccionado = ( tipo_logo = 1) => {
 
@@ -252,6 +266,21 @@ export default {
       })
     }
 
+    const crearCuentaSistema = () => {
+
+        
+      store.dispatch('sistema/crearCuenta').then(({result}) => {
+
+        if(result){
+          toast.success('Se ha creado con éxito la cuenta',{position:'bottom-right'})
+        }else{
+          toast.info('La cuenta no pudo ser creada, inténte con de nuevo', { position: 'bottom-right' })
+        }
+      });
+
+
+    }
+
     return {
       loading:computed(() => store.state.loading),
       formulario,
@@ -265,7 +294,9 @@ export default {
 
       regresar,
       required,
-      optionsEditor
+      optionsEditor,
+      crearCuentaSistema,
+      sistema
 
 
     }

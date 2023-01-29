@@ -6,6 +6,8 @@ use App\Models\Sistema;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
+use function PHPUnit\Framework\isNull;
+
 class SistemaController extends Controller
 {
    
@@ -58,5 +60,25 @@ class SistemaController extends Controller
 
         return response()->json(['result' => $result,'sistema' => $sistema]);
 
+    }
+
+    public function crearCuenta(Sistema $sistema){
+
+        try {
+            DB::beginTransaction();
+
+            if(isNull($sistema->cuenta)){
+                $cuentaNueva = $sistema->aperturarCuenta();
+            }
+
+            DB::commit();
+            $result = true;
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            $result = false;
+        }
+        $sistema->load('cuenta');
+
+        return response()->json(['result' => $result,'sistema' => $sistema]);
     }
 }

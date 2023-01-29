@@ -90,6 +90,21 @@ export default {
           
         }).catch(e => reject(e))
       })
+    },
+
+
+    crearCuenta({state,commit}){
+
+      return new Promise((resolve, reject) => {
+        axios.get(`/api/sistemas/${state.sistema.id}/crear/cuenta`).then(({data}) => {
+
+          if(data.result){
+            commit('update',data.sistema)
+          }
+          resolve(data)
+        }).catch(e => reject(e))
+
+      })
     }
 
   }

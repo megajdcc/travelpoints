@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Divisa;
 use App\Models\Movimiento;
+use App\Models\Sistema;
 use App\Models\Venta;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
@@ -156,6 +157,13 @@ class VentaController extends Controller
             // dd($monto);
 
             $venta->model->generarMovimiento($venta->model->divisa->convertir($venta->divisa, $datos['tps']), "Consumo de cliente {$venta->cliente->nombre} {$venta->cliente->apellido} por un monto de:{$monto}.",Movimiento::TIPO_EGRESO);
+            
+            // generar movimiento para el sistema... 
+
+            $sistema = Sistema::first();
+            $sistema->generarMovimiento($sistema->divisa->convertir($venta->divisa,$datos['tps']), "Consumo de cliente {$venta->cliente->nombre} {$venta->cliente->apellido} por un monto de:{$monto}.",Movimiento::TIPO_INGRESO);
+            
+            // $sistema->refresh();
 
             $venta->cargar();
 

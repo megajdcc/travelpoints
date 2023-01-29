@@ -13,12 +13,8 @@ class SistemaController extends Controller
    
     public function fetch(){
 
-
-        $sistema = Sistema::with('cuenta')->first();
-
+        $sistema = Sistema::with(['cuenta','divisa'])->first();
         return response()->json($sistema);
-
-
 
     }
 
@@ -30,7 +26,8 @@ class SistemaController extends Controller
             'paypal_id'         => 'nullable',
             'paypal_secrect'    => 'nullable',
             'production_paypal' => 'nullable',
-            'paypal'            => 'nullable'
+            'paypal'            => 'nullable',
+            'divisa_id' => 'required'
         ]);
         
     }
@@ -49,6 +46,7 @@ class SistemaController extends Controller
 
                 $sistema->update($this->validar($request,$sistema));
                 $sistema->cuenta;
+                $sistema->divisa;
 
             DB::commit();
             $result = true;
@@ -66,7 +64,6 @@ class SistemaController extends Controller
 
         try {
             DB::beginTransaction();
-
             if(isNull($sistema->cuenta)){
                 $cuentaNueva = $sistema->aperturarCuenta();
             }
@@ -77,7 +74,8 @@ class SistemaController extends Controller
             DB::rollBack();
             $result = false;
         }
-        $sistema->load('cuenta');
+        
+        $sistema->load(['cuenta','divisa']);
 
         return response()->json(['result' => $result,'sistema' => $sistema]);
     }

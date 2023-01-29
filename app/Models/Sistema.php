@@ -21,7 +21,8 @@ class Sistema extends Model
         'paypal_id',
         'paypal_secrect',
         'production_paypal',
-        'paypal'
+        'paypal',
+        'divisa_id'
     ];
 
 
@@ -30,6 +31,12 @@ class Sistema extends Model
         'production_paypal' => 'boolean'
     ];
 
+
+    public function divisa(){
+
+        return $this->belongsTo(Divisa::class,'divisa_id','id');
+    
+    }
 
     
 

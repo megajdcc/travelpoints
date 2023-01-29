@@ -9,8 +9,7 @@ use App\Models\EstadoCuenta;
 use App\Models\User;
 use App\Models\Negocio\Negocio;
 use App\Models\Divisa;
-
-
+use App\Models\Sistema;
 
 class MovimientoController extends Controller
 {
@@ -27,9 +26,7 @@ class MovimientoController extends Controller
 
         $datos = $request->all();
 
-
-
-        switch ($datos['model_type']) {
+        switch ($datos['model_type']){
             
             case 'User':
                 $model = User::find($datos['model_id']);
@@ -39,8 +36,10 @@ class MovimientoController extends Controller
             case 'Negocio':
 
                 $model = Negocio::find($datos['model_id']);
-               
+                break;
 
+            case 'Sistema':
+                $model = Sistema::find($datos['model_id']);
                 break;
 
         }
@@ -51,9 +50,6 @@ class MovimientoController extends Controller
         }else{
             $cuenta = $model->cuenta;
         }
-
-     
-
 
 
         $pagination = Movimiento::where('estado_cuenta_id',$cuenta->id)

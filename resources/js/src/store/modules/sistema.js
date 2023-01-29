@@ -14,6 +14,7 @@ export default {
       paypal_secrect:null,
       production_paypal:false,
       paypa:false,
+      divisa_id:null,
       cuenta:null
     },
 

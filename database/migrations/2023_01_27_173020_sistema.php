@@ -24,7 +24,7 @@ return new class extends Migration
             $table->text('paypal_secrect')->nullable();
             $table->boolean('production_paypal')->default(false);
             $table->boolean('paypal')->default(false);
-
+            $table->foreignId('divisa_id')->nullable()->constrained('divisas')->cascadeOnUpdate()->cascadeOnUpdate();
             $table->timestamps();
         });
     }

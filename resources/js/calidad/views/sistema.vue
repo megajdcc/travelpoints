@@ -31,6 +31,23 @@
         
                 </validation-provider>
               </b-form-group>
+
+              <b-form-group description="Divisa con la que va a operar Travelpoints, ¿ en que divisa vamos a reflejar las ganancias del sistema?">
+                <template #label>
+                  Divisa: <span class="text-danger">*</span>
+                </template>
+        
+                <validation-provider name="divisa_id" rules="required" #default="{errors,valid}">
+                  
+                  <v-select v-model="formulario.divisa_id" :options="divisas" label="nombre" :reduce="(option) => option.id"></v-select>
+        
+                  <b-form-invalid-feedback :state="valid">
+                    {{ errors[0] }}
+                  </b-form-invalid-feedback>
+        
+                </validation-provider>
+              </b-form-group>
+
             </b-col>
 
             <b-col cols="12" md="6">
@@ -208,6 +225,7 @@ import {
 } from 'bootstrap-vue'
 
 import {computed,toRefs,ref,onMounted} from '@vue/composition-api'
+import vSelect from 'vue-select'
 
 export default {
   
@@ -232,7 +250,8 @@ export default {
     Editor,
     BFormRadioGroup,
     BAlert,
-    BLink
+    BLink,
+    vSelect
 
   },
 
@@ -246,6 +265,11 @@ export default {
     const urlLogo2 = ref(null)
 
     const {sistema} = toRefs(store.state.sistema)
+    const {divisas} = toRefs(store.state.divisa)
+
+    if(!divisas.value.length){
+      store.dispatch('divisa/getDivisas')
+    }
 
     const logoSeleccionado = ( tipo_logo = 1) => {
 
@@ -296,7 +320,8 @@ export default {
       required,
       optionsEditor,
       crearCuentaSistema,
-      sistema
+      sistema,
+      divisas,
 
 
     }

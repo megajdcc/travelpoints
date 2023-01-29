@@ -59,4 +59,8 @@ class Divisa extends Model
 
 
     }
+
+    public function sistema(){
+        return $this->hasOne(Sistema::class,'divisa_id','id');
+    }
 }

@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Divisa;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -17,9 +18,12 @@ class SistemaSeed extends Seeder
     public function run()
     {
         
-        Sistema::create([
+       $sistema =  Sistema::create([
             'nombre' => 'TravelPoints',
+            'divisa_id' => Divisa::where('iso','USD')->first()->id,
         ]);
+
+        $sistema->aperturarCuenta();
         
     }
 }

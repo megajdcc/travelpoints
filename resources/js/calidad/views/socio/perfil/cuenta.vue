@@ -91,9 +91,13 @@ import {
 
 import useCuentaList from './useCuentaList.js'
 import store from '@/store'
-import {ref,toRefs,computed} from '@vue/composition-api'
+import {ref,toRefs,computed,onMounted} from '@vue/composition-api'
 
 import {regresar} from '@core/utils/utils.js'
+
+import { useRoute } from 'vue2-helpers/vue-router'
+
+
 
 export default {
    
@@ -115,6 +119,9 @@ export default {
    setup(props){
 
       const { usuario } = toRefs(store.state.usuario)
+      const { sistema } = toRefs(store.state.sistema)
+      const route = useRoute();
+
       const {
          perPageOptions,
          currentPage,
@@ -130,9 +137,13 @@ export default {
          items,
          tableColumns
       } = useCuentaList({
-         model_id:computed(() => usuario.value.id),
-         model_type:'User'
+         model_id:computed(() => route.meta.layout == 'travel' ? usuario.value.id : sistema.value.id),
+         model_type:route.meta.layout == 'travel' ? 'User' : 'Sistema'
       });
+
+      onMounted(() => {
+         console.log(route)
+      })
 
 
       return {

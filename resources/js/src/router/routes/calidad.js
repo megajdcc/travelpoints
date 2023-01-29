@@ -349,21 +349,22 @@ export default [
    },
 
    /*****************************************/
-   /* Movimientos de Cuentas
+   /* Movimientos de Cuenta del sistema
    /*************************************** */
    {
       path:'/movimientos',
       component:() => import('views/movimientos/index.vue'),
       children:[
          {
+            
             path:'',
             component:() => import('views/socio/perfil/cuenta.vue'),
             name:'movimientos',
+            
             meta:{
                resources:'movimientos',
                action:'read'
             }
-
          }
       ]
 

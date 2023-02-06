@@ -195,10 +195,14 @@
 
                   <template #cell(usuario_id)="{item}">
 
-                     <b-link :to="{ name:'show.usuario',params:{id:item.usuario_id}}" class="text-nowrap">
+                     <b-link :to="{ name:'show.usuario',params:{id:item.usuario_id}}" class="text-nowrap" v-if="item.usuario">
                         <b-avatar size="sm" :src="item.usuario.avatar" />
                         {{ item.usuario.nombre }}
                      </b-link>
+
+                     <span v-else class="text-nowrap">
+                        Usuario eliminado del sistema
+                     </span>
                   </template>
 
 

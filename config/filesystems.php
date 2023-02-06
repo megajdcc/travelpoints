@@ -97,10 +97,10 @@ return [
             'visibility' => 'public',
         ],
 
-        'negocio_certificados' => [
+        'negocio_cupones' => [
             'driver' => 'local',
-            'root' => storage_path('app/public/negocios/certificados'),
-            'url' => env('APP_URL') . '/storage/negocios/certificados',
+            'root' => storage_path('app/public/negocios/cupones'),
+            'url' => env('APP_URL') . '/storage/negocios/cupones',
             'visibility' => 'public',
         ],
 

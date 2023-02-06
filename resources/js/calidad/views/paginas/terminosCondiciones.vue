@@ -53,7 +53,7 @@
                         Nuestro servicio le brinda al Usuario una lista de negocios del Destino que se han afiliado a la
                         plataforma con el objetivo de presentar de manera directa al turista la información de su
                         negocio, el beneficio en puntos que otorgan a los usuarios por el registro de sus consumos en
-                        los negocios participantes, los eventos y otros beneficios como certificados de regalo
+                        los negocios participantes, los eventos y otros beneficios como Cuponer de regalo
                         adicionales, etc.
                         <br>
                         El propósito de Travel Points es informativo para que el turista directamente conozca la

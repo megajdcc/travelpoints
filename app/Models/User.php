@@ -20,7 +20,7 @@ use Illuminate\Support\Facades\{Hash};
 use App\Trais\{hasCuenta, Has_roles, hasTelefonos};
 
 use App\Models\Divisa;
-
+use App\Models\Negocio\Cupon;
 use App\Models\Negocio\Negocio;
 use App\Models\Negocio\Reservacion;
 use App\Models\Usuario\Permiso;
@@ -240,13 +240,30 @@ class User extends Authenticatable
     public function reservacionesOperadas()
     {
         return $this->hasMany(Reservacion::class, 'operador_id', 'id');
+    }   
+
+
+    public function recomendaciones(){
+        return $this->hasMany(Recomendacion::class,'usuario_id','id');
+
     }
+
+    public function seguidos()
+    {
+        return $this->hasMany(Seguidor::class, 'usuario_id', 'id');
+    }   
+
+
+    public function cupones(){
+        return $this->belongsToMany(Cupon::class,'cupon_usuario','usuario_id','cupon_id')->withPivot(['status']);
+    }
+
 
     public function cargar(): User{
 
         
         $this->tokens;
-        $this->rol->permisos;
+        $this->rol?->permisos;
         $this->habilidades = $this->getHabilidades();
         $this->avatar = $this->getAvatar();
         $this->ciudad?->estado?->pais;
@@ -262,6 +279,9 @@ class User extends Authenticatable
         $this->permisos;
         $this->reservaciones;
         $this->reservacionesOperadas;
+        $this->recomendaciones;
+        $this->seguidos;
+        $this->cupones;
 
         return $this;
     }

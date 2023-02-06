@@ -8,10 +8,13 @@ use Illuminate\Support\Facades\{DB,Storage,File};
 use App\Models\Imagen;
 use App\Models\Negocio\HorarioReservacion;
 use App\Models\Red;
+use App\Models\User;
+use App\Models\Usuario\Permiso;
 use App\Models\Video;
 use Carbon\Carbon;
+use DateTime;
 
-
+use Illuminate\Database\Eloquent\Builder;
 
 class NegocioController extends Controller
 {
@@ -116,23 +119,26 @@ class NegocioController extends Controller
             DB::beginTransaction();
 
             $negocio->update($datos);
-            
 
             foreach($datos['telefonos'] as $telefono){
                 $negocio->actualizarTelefono($telefono);
             }
-            
 
             DB::commit();
             $result = true;
         }catch(\Exception $e){
             DB::rollBack();
             $result = false;
-
             dd($e->getMessage());
         }
 
         $negocio->cargar();
+
+
+        $negocio->asignarEmpleado($negocio->encargado,$negocio->primerCargo());
+        $permisos = Permiso::whereHas('panel', fn (Builder $q) => $q->where('panel', 'Negocio'))->get();
+        $negocio->encargado->asignarPermisos($permisos);
+
 
         return response()->json(['result' => $result,'negocio' => $negocio]);
 
@@ -551,6 +557,55 @@ class NegocioController extends Controller
 
         return response()->json(['result' => $result ,'negocio' => $negocio]);
 
+    }
+
+    public function datosHome(Negocio $negocio){
+
+        $reservaciones_mes = $negocio->reservaciones->filter(
+            fn($value) => (new Carbon(new DateTime($value->fecha)))->month == Carbon::now()->month )->count();
+
+
+        return response()->json([
+            'reservasMes' => $reservaciones_mes,
+
+
+        ]);
+
+        
+    }
+
+
+    public function capturarPorUrl(Request $request){
+
+        $url = $request->get('url');
+
+        $negocio = Negocio::where('url',$url)->first();
+
+        if($negocio){
+            $negocio->cargar();
+            $result = true;
+        }else{
+            $result = false;
+        }
+
+        return response()->json(['result' => $result, 'negocio' => $result ? $negocio : null]);
+
+    }
+
+    public function togleRecomendacion(Negocio $negocio, User $usuario){
+
+         $negocio->toggleRecomendacion($usuario);
+
+        return response()->json(['negocio' => $negocio]);
+
+    }
+
+    public function toggleSeguidor(Negocio $negocio, User $usuario)
+    {
+
+        $negocio->toggleSeguidor($usuario);
+
+        return response()->json(['negocio' => $negocio]);
     }
 
 

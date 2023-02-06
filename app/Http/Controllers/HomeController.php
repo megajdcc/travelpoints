@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\{Atraccion, Destino, User};
+use App\Models\Negocio\Negocio;
 
 class HomeController extends Controller
 {
@@ -75,7 +76,6 @@ class HomeController extends Controller
     }
 
     public function searchPublic(request $request){
-
        
         $q = $request->get('q');
         
@@ -106,9 +106,25 @@ class HomeController extends Controller
             $atraccion->opinions;
             $atraccion->imagen = $atraccion->imagenes[0] ? "/storage/atracciones/imagenes/{$atraccion->imagenes[0]->imagen}" : '';
         }
+
+
+        $negocios = Negocio::where([
+            ['nombre', 'LIKE', "%{$q}%", "OR"],
+            ['descripcion', 'LIKE', "%{$q}%", "OR"],
+            ['breve', 'LIKE', "%{$q}%", "OR"],
+        ])->get();
+
+        foreach ($negocios as $key => $negocio) {
+            $negocio->ruta = "/{$negocio->url}";
+            $negocio->tipo = 'Negocio';
+            $negocio->imagenes;
+            $negocio->opinions;
+            $negocio->imagen = $negocio->imagenes[0] ? "/storage/negocios/fotos/{$negocio->imagenes[0]->imagen}" : '';
+            $negocio->cargar();
+        }
         
 
-        $resultados = collect([...$destinos,...$atracciones]);
+        $resultados = collect([...$destinos,...$atracciones,...$negocios]);
 
         return response()->json($resultados);
     }

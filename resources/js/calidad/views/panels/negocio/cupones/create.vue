@@ -11,7 +11,7 @@ export default {
    
    setup(){
       const {negocio} = toRefs(store.state.negocio)
-      onMounted(() => store.commit('certificado/clear'))
+      onMounted(() => store.commit('cupones/clear'))
 
       return () => h(form,{
 
@@ -19,12 +19,12 @@ export default {
             save:(data,formValidate) => {
                data.negocio_id = negocio.value.id
 
-               store.dispatch('certificado/guardar',data).then(({result,certificado}) => {
+               store.dispatch('cupones/guardar',data).then(({result,cupon}) => {
                   if(result){
-                     toast.success('Se ha creado con éxito el certificado',{position:'bottom-right'})
-                     router.push({name:'negocio.certificado.edit',params:{id:certificado.id}})
+                     toast.success('Se ha creado con éxito el cupón',{position:'bottom-right'})
+                     router.push({name:'negocio.cupon.edit',params:{id:cupon.id}})
                   }else{
-                     toast.info('No se pudo crear el certificado, inténte de nuevo', { position: 'bottom-right' })
+                     toast.info('No se pudo crear el cupón, inténte de nuevo', { position: 'bottom-right' })
 
                   }
                }).catch(e => {

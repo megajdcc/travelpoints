@@ -50,7 +50,7 @@ class PermisoController extends Controller
     private function  validar(Request $request, Permiso $permiso = null): array{
 
         return $request->validate([
-            'nombre' => ['required',$permiso ? Rule::unique('permisos','nombre')->ignore($permiso) : 'unique:permisos,nombre'],
+            'nombre' => ['required',!is_null($permiso) ? Rule::unique('permisos','nombre')->ignore($permiso->id) : 'unique:permisos,nombre'],
             'panel_id' => 'required'
         ],[
             'nombre.unique' => 'El nombre del permiso ya está registrado, inténte con otro'
@@ -118,6 +118,9 @@ class PermisoController extends Controller
                 $message = 'No se pudo actualizar el permiso';
 
                 $result = false;
+
+                dd($e->getMessage());
+
         }
 
         return response()->json(['result' => $result, 'permiso' => ($result) ? $permiso : null, 'message' => $message]);

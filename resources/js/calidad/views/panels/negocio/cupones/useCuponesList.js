@@ -4,7 +4,7 @@ import store from '@/store'
 import { ref, computed, onMounted, watch } from '@vue/composition-api'
 
 
-export default function useCertificadosList(negocio) {
+export default function useCuponesList(negocio) {
 
    const isSortDirDesc = ref(true)
    const sortBy = ref('id')
@@ -62,17 +62,17 @@ export default function useCertificadosList(negocio) {
 
    const fetchData = (next) => {
 
-      store.dispatch('certificado/fetchData', {
+      store.dispatch('cupones/fetchData',{
          perPage: perPage.value,
          currentPage: currentPage.value,
          sortBy: sortBy.value,
          q: searchQuery.value,
          isSortDirDesc: isSortDirDesc.value,
          negocio_id: negocio.value ? negocio.value.id : null,
-      }).then(({ total: all, certificados }) => {
+      }).then(({ total: all, cupones }) => {
 
          total.value = all
-         next(certificados)
+         next(cupones)
       }).catch(e => {
          toast.info('Error trayendo Data', { position: 'bottom-right' })
       })
@@ -81,9 +81,9 @@ export default function useCertificadosList(negocio) {
 
    const eliminar = (evento_id) => {
 
-      store.dispatch('certificado/eliminar', evento_id).then(({ result }) => {
+      store.dispatch('cupones/eliminar', evento_id).then(({ result }) => {
          if (result) {
-            toast.success('Se ha eliminado con éxito el certificado', { position: 'bottom-right' })
+            toast.success('Se ha eliminado con éxito el cupón', { position: 'bottom-right' })
             refetchData();
          }
       })

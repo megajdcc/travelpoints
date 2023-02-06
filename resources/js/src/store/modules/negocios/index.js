@@ -43,7 +43,14 @@ export default{
          precios:[],
          redes: [],
          videos:[],
-         ventas:[]
+         ventas:[], 
+         reservaciones: [],
+         opinions:[],
+         modelType:'App\\Models\\Negocio\\Negocio',
+         recomendaciones:[],
+         seguidores:[],
+
+
 
 
       },
@@ -66,7 +73,41 @@ export default{
             label:dias[val.dia - 1]
          }))
 
-      }
+      },
+
+
+      promedioCalificacion(state) {
+
+         return (negocio) => {
+
+            let result = 0;
+
+            if (negocio.opinions.length) {
+               const sum_calificacion = negocio.opinions.reduce((a, b) => a + Number(b.calificacion), 0);
+
+               result = sum_calificacion / negocio.opinions.length;
+
+            }
+
+
+            return result;
+         }
+
+
+      },
+
+
+      porcentajeOpinions(state) {
+         return (calificacion) => {
+            const cant_cali = state.negocio.opinions.filter(val => val.calificacion == calificacion).length;
+
+            const total_cali = state.negocio.opinions.length;
+
+            return { porcentaje: cant_cali > 0 ? cant_cali * 100 / total_cali : 0, cantidad: cant_cali };
+         }
+
+      } 
+
    },
 
    mutations:{
@@ -110,8 +151,12 @@ export default{
             precios: [],
             redes:[],
             videos: [],
-            ventas: []
-
+            ventas: [],
+            reservaciones:[],
+            opinions: [],
+            modelType: 'App\\Models\\Negocio\\Negocio',
+            recomendaciones: [],
+            seguidores: [],
 
          }
       },
@@ -672,7 +717,61 @@ export default{
             
 
          })
+      },
+
+
+      datosHome({commit,state}){
+
+         return new Promise((resolve, reject) => {
+            
+            axios.get(`/api/negocios/${state.negocio.id}/datos/home`).then(({data}) => resolve(data))
+            .catch(e => reject(e))
+
+         })
+      },
+
+      negocioUrl({commit,state}, urlNegocio) {
+         return new Promise((resolve, reject) => {
+            
+            axios.post(`/api/negocio/obtener-por-url`,{url:urlNegocio}).then(({data}) => {
+
+               if(data.result) {
+                  commit('setNegocio',data.negocio)
+               }
+
+               resolve(data)
+
+            }).catch(e => reject(e))
+
+         })
+      },
+
+      toggleRecomendacions({commit,state},usuario_id){
+
+         return new Promise((resolve, reject) => {
+            axios.get(`/api/negocios/${state.negocio.id}/recomendacions/toggle/user/${usuario_id}`).then(({data}) => {
+
+               commit('update',data.negocio);
+
+               resolve(data)
+            }).catch(e => reject(e))
+
+         })
+      },
+
+      toggleSeguidor({ commit, state }, usuario_id) {
+
+         return new Promise((resolve, reject) => {
+            axios.get(`/api/negocios/${state.negocio.id}/seguidors/toggle/user/${usuario_id}`).then(({ data }) => {
+
+               commit('update', data.negocio);
+
+               resolve(data)
+            }).catch(e => reject(e))
+
+         })
       }
+
 
 
 

@@ -16,35 +16,6 @@
       <!-- Destinos -->
       <destinos :destinos="destinos"/>
 
-      <!-- Certificados -->
-      <!-- <b-row >  
-         <b-col  cols="12" class="d-flex justify-content-center" >
-      
-            <h3>Certificados de Regalos</h3>
-      
-         </b-col>
-      
-         <b-col cols="12" >
-      
-         </b-col>
-      
-      
-      </b-row> -->
-
-      <!-- Actividades y Eventos... -->
-      <!-- <b-row>
-         <b-col cols="12" class="d-flex justify-content-center">
-      
-            <h3>Actividades & Eventos</h3>
-      
-         </b-col>
-      
-         <b-col cols="12">
-
-         </b-col>
-
-      </b-row> -->
-
       <b-row>
          <b-col cols="12">
           

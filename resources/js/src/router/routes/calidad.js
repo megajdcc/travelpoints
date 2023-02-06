@@ -1,3 +1,5 @@
+import store from '@/store';
+
 export default [
    /*****************************************/
    /* SOCIO
@@ -201,7 +203,7 @@ export default [
        },
        // reservaciones
        {
-          path: 'reservaciones',
+          path: '/reservaciones',
           name: 'socio.reservaciones',
           component: () => import('views/socio/reservaciones'),
           meta: {
@@ -217,7 +219,7 @@ export default [
       //  consumos
 
        {
-          path: 'consumos',
+          path: '/consumos',
           name: 'socio.consumos',
           component: () => import('views/socio/consumos'),
           meta: {
@@ -228,11 +230,11 @@ export default [
           }
 
        },
-      //  certificados
+      //  cupones
        {
-          path: 'certificados',
-          name: 'socio.certificados',
-          component: () => import('views/socio/certificados'),
+          path: '/cupones',
+          name: 'socio.cupones',
+          component: () => import('views/socio/cupones'),
           meta: {
              resource: 'perfil',
              action: 'read',
@@ -1956,6 +1958,92 @@ export default [
       }
    },
 
+
+   /*****************************************/
+   /* PAGINA DE perfil de negocios
+   /*************************************** */
+   {
+      path: '/:url',
+      props:true,
+      component: () => import('views/paginas/negocio/index.vue'),
+      meta: {
+         layout: 'travel',
+      },
+
+      children:[
+
+        {
+         path:'',
+         component:() => import('views/paginas/negocio/perfil.vue'),
+         name:'perfil.negocio',
+         meta: {
+            layout: 'travel',
+         },
+
+        },
+
+         {
+            path: 'cupones',
+            component: () => import('views/paginas/negocio/cupones.vue'),
+            name: 'perfil.negocio.cupones',
+            meta: {
+               layout: 'travel',
+            },
+
+         },
+
+         {
+            path: 'publicaciones',
+            component: () => import('views/paginas/negocio/publicaciones.vue'),
+            name: 'perfil.negocio.publicaciones',
+            meta: {
+               layout: 'travel',
+            },
+
+         },
+
+         {
+            path: 'eventos',
+            component: () => import('views/paginas/negocio/eventos.vue'),
+            name: 'perfil.negocio.eventos',
+            meta: {
+               layout: 'travel',
+            },
+
+         },
+
+         {
+            path: 'opiniones',
+            component: () => import('views/paginas/negocio/opiniones.vue'),
+            name: 'perfil.negocio.opiniones',
+            meta: {
+               layout: 'travel',
+            },
+
+         }
+
+      ]
+      // beforeEnter: (to, from, next) => {
+         
+      //    store.dispatch('negocio/negocioUrl',to.params.url).then(({result}) => {
+
+      //       if(result){
+      //          next()
+      //       }else{
+      //          next({name:'inicio'})
+      //       }
+
+      //    }).catch(e => {
+      //       next({ name: 'inicio' })
+      //    })
+
+         
+         
+      // },
+     
+     
+      
+   },
 
 
 

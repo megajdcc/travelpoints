@@ -1,24 +1,27 @@
 <template>
-  <b-card no-body>
-    <b-card-body class="d-flex justify-content-between align-items-center">
+  <b-card no-body :bg-variant="color" >
+    <b-card-body class="d-flex justify-content-between align-items-center" style="position:relative; padding: 1rem;">
       <div class="truncate">
         <h2 class="mb-25 font-weight-bolder">
-          {{ statistic }}
-        </h2>
-        <span v-html="statisticTitle" />
-      </div>
-      <b-avatar
-        :variant="`light-${color}`"
-        size="45"
-      >
-        <feather-icon
-          size="21"
-          :icon="icon"
-          v-if="!fontAwesome"
-        />
 
-        <span v-else :class="`fas ${icon}`" style="font-size:14pt"></span>
+          <slot name="valor" :statistic="statistic">
+            {{ statistic }}
+          </slot>
+
+        </h2>
+        <slot name="titulo">
+          <span v-html="statisticTitle" />
+        </slot>
+       
+      </div>
+      <b-avatar :variant="`light-${colorIcon}`" class="avatar-icon" >
+      
+        <slot name="icon">
+          <font-awesome-icon :icon="['fa-solid',icon]" size="3x" />
+        </slot>
+
       </b-avatar>
+
     </b-card-body>
   </b-card>
 </template>
@@ -52,9 +55,30 @@ export default {
       default: '',
     },
     color: {
+      type: String, 
+    },
+
+    colorIcon: {
       type: String,
-      default: 'primary',
+      default:'dark'
     },
   },
 }
 </script>
+
+<style lang="scss">
+.avatar-icon{
+      cursor:pointer;
+      transition: 60ms ease;
+      width: 60px;
+      height: 60px;
+      position: absolute;
+      left: auto;
+      right: 1rem;
+
+      &:hover{
+        height:70px !important;
+        width: 70px !important;
+      }
+  }
+</style>

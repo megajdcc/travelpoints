@@ -8,11 +8,11 @@
                      <b-col cols="12" md="8">
                         <b-form-group description="Nombre Corto y Objetivo">
                            <template #label>
-                              Nombre del Certificado : <span class="text-danger">*</span>
+                              Nombre del Cupón : <span class="text-danger">*</span>
                            </template>
 
                            <validation-provider name="nombre" rules="required" #default="{valid,errors}">
-                              <b-form-input v-model="formulario.nombre" :state="valid" placeholder="Nombre del certificado" />
+                              <b-form-input v-model="formulario.nombre" :state="valid" placeholder="Nombre del cupón" />
                               
                               <b-form-invalid-feedback :state="valid">
                                  {{  errors[0]  }}
@@ -22,11 +22,11 @@
 
                            <b-form-group>
                               <template #label>
-                                 Descripción del Certificado : <span class="text-danger">*</span>
+                                 Descripción del Cupón : <span class="text-danger">*</span>
                               </template>
                            
                               <validation-provider name="descripcion" rules="required" #default="{valid,errors}">
-                                 <b-form-textarea v-model="formulario.descripcion" :rows="2" :state="valid" placeholder="Descripción del certificado"></b-form-textarea>
+                                 <b-form-textarea v-model="formulario.descripcion" :rows="2" :state="valid" placeholder="Descripción del cupón"></b-form-textarea>
                            
                                  <b-form-invalid-feedback :state="valid">
                                     {{ errors[0] }}
@@ -34,9 +34,9 @@
                               </validation-provider>
                            </b-form-group>
 
-                           <b-form-group description="Para redimir el certificado">
+                           <b-form-group description="Para redimir el cupón">
                               <template #label>
-                                 Condiciones del Certificado : 
+                                 Condiciones del Cupón : 
                               </template>
                            
                               <validation-provider name="condiciones" #default="{valid,errors}">
@@ -52,7 +52,7 @@
 
                            <b-form-group >
                               <template #label>
-                                 Restricciones del Certificado : 
+                                 Restricciones del Cupón : 
                               </template>
                            
                               <validation-provider name="restricciones" #default="{valid,errors}">
@@ -167,7 +167,7 @@
                   <b-row >
                      
                      <b-col cols="12">
-                        <p>Cargue una imagen para el certificado</p>
+                        <p>Cargue una imagen para el cupón</p>
                      </b-col>
                      <b-col cols="12" class="imagen_content" @click="formFile.$el.click()">
                            <b-img :src="urlImagen" class="imagen" ></b-img>
@@ -273,7 +273,7 @@ export default {
 
    setup(_,{emit}){
       const formValidate  = ref(null)
-      const {certificado:formulario} = toRefs(store.state.certificado)
+      const {cupon:formulario} = toRefs(store.state.cupones)
       const {divisas} = toRefs(store.state.divisa)
       const formFile = ref(null)
       const urlImagen = ref(null)
@@ -285,7 +285,7 @@ export default {
          }
 
          if(formulario.value.id){
-            urlImagen.value = `/storage/negocios/certificados/${formulario.value.imagen}`
+            urlImagen.value = `/storage/negocios/cupones/${formulario.value.imagen}`
             formulario.value.imagen = null
          }
 

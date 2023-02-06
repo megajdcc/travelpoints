@@ -37,14 +37,16 @@ class EventoController extends Controller
             ])
                 ->where('model_id', $datos['model_id'])
                 ->where('model_type', $datos['model_type'])
+                ->where('status',isset($datos['perfil']) && $datos['perfil'] == true ? 1 :  '>', 0)
                 ->with(['imagenes', 'model'])
-                ->orderBy($datos['sortBy'] ?: 'id', $datos['isSortDirDesc'] ? 'desc' : 'asc')
+                ->orderBy($datos['sortBy']  ?: 'id', $datos['isSortDirDesc'] ? 'desc' : 'asc')
                 ->paginate($datos['perPage'] ?: 10000);
         }else{
             $paginator = Evento::where([
                 ['titulo', 'LIKE', "%{$datos['q']}%", 'OR'],
                 ['contenido', 'LIKE', "%{$datos['q']}%", 'OR'],
             ])
+            ->where('status', isset($datos['perfil']) && $datos['perfil'] == true ? 1 :  '>', 0)
             ->with(['imagenes', 'model'])
             ->orderBy($datos['sortBy'] ?: 'id', $datos['isSortDirDesc'] ? 'desc' : 'asc')
             ->paginate($datos['perPage'] ?: 10000);

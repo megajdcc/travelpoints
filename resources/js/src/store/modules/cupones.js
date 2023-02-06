@@ -3,7 +3,7 @@ export default{
 
    state:() => ({
 
-      certificado:{
+      cupon:{
          id:null,
          nombre:'',
          descripcion:'',
@@ -20,18 +20,18 @@ export default{
          divisa:null,
       },
 
-      certificados:[]
+      cupones:[]
    }),
 
    getters:{
       draft(state){
-         return clone(state.certificado)
+         return clone(state.cupon)
       }
    },
 
    mutations:{
       clear(state) {
-         state.certificado = {
+         state.cupon = {
             id: null,
             nombre: '',
             descripcion: '',
@@ -50,53 +50,53 @@ export default{
       },
 
 
-      setCertificado(state, certificado) {
-         state.certificado = certificado
+      setCupon(state, cupon) {
+         state.cupon = cupon
       },
 
-      update(state, certificado) {
-         const i = state.certificados.findIndex(val => val.id === certificado.id)
+      update(state, cupon) {
+         const i = state.cupones.findIndex(val => val.id === cupon.id)
 
          if (i != -1) {
-            state.certificados[i] = certificado
+            state.cupones[i] = cupon
          }
 
-         if (state.certificado.id === certificado.id) {
-            state.certificado = certificado
+         if (state.cupon.id === cupon.id) {
+            state.cupon = cupon
          }
       },
 
-      push(state, certificado) {
-         state.certificados.push(certificado)
+      push(state, cupon) {
+         state.cupones.push(cupon)
 
       },
 
-      put(state, certificado_id) {
-         state.certificados.splice(
-            state.certificados.findIndex(val => val.id === certificado_id),
+      put(state, cupon_id) {
+         state.cupones.splice(
+            state.cupones.findIndex(val => val.id === cupon_id),
             1
          )
       },
 
-      capturar(state, certificado_id) {
-         const certificado = state.certificados.find(val => val.id === certificado_id)
+      capturar(state, cupon_id) {
+         const cupon = state.cupones.find(val => val.id === cupon_id)
 
-         if (certificado != undefined) {
-            state.certificado = certificado
+         if (cupon != undefined) {
+            state.cupon = cupon
          }
       },
 
-      setCertificados(state, certificados) {
-         state.certificados = certificados
+      setCupones(state, cupones) {
+         state.cupones = cupones
       }
    },
 
 
    actions:{
-      getCertificados({ commit }) {
+      getCupons({ commit }) {
          return new Promise((resolve, reject) => {
-            axios.get('/api/certificados/get/all').then(({ data }) => {
-               commit('setCertificados', data)
+            axios.get('/api/cupons/get/all').then(({ data }) => {
+               commit('setCupones', data)
                resolve(data)
             }).catch(e => reject(e))
 
@@ -106,9 +106,9 @@ export default{
       fetchData({ state, commit }, datos) {
 
          return new Promise((resolve, reject) => {
-            axios.post(`/api/certificados/fetch/data`, datos).then(({ data }) => {
+            axios.post(`/api/cupons/fetch/data`, datos).then(({ data }) => {
 
-               commit('setCertificados', data.certificados)
+               commit('setCupones', data.cupones)
 
                resolve(data)
             }).catch(e => reject(e))
@@ -117,11 +117,11 @@ export default{
 
       },
 
-      fetch({ state, commit }, certificado_id) {
+      fetch({ state, commit }, cupon_id) {
 
          return new Promise((resolve, reject) => {
-            axios.get(`/api/certificados/${certificado_id}/fetch/data`).then(({ data }) => {
-               commit('setCertificado', data)
+            axios.get(`/api/cupons/${cupon_id}/fetch/data`).then(({ data }) => {
+               commit('setCupon', data)
                resolve(data)
             }).catch(e => reject(e))
 
@@ -141,13 +141,13 @@ export default{
 
                formData.append('_method','put')
 
-               axios.post(`/api/certificados/${datos.id}`, formData,{
+               axios.post(`/api/cupons/${datos.id}`, formData,{
                   headers:{
                      ContentType:'multipart/form-data'
                   }
                }).then(({ data }) => {
                   if (data.result) {
-                     commit('update', data.certificado)
+                     commit('update', data.cupon)
 
                   }
                   resolve(data)
@@ -155,13 +155,13 @@ export default{
 
             } else {
 
-               axios.post(`/api/certificados`, formData,{
+               axios.post(`/api/cupons`, formData,{
                   headers:{
                      ContentType:'multipart/form-data'
                   }
                }).then(({ data }) => {
                   if (data.result) {
-                     commit('push', data.certificado)
+                     commit('push', data.cupon)
                   }
 
                   resolve(data)
@@ -173,9 +173,9 @@ export default{
 
       },
 
-      eliminar({ commit }, certificado_id) {
+      eliminar({ commit }, cupon_id) {
          return new Promise((resolve, reject) => {
-            axios.delete(`/api/certificados/${certificado_id}`).then(({ data }) => {
+            axios.delete(`/api/cupons/${cupon_id}`).then(({ data }) => {
 
                resolve(data)
 

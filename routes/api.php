@@ -1,7 +1,7 @@
 <?php
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\{AuthController};
-use App\Http\Controllers\{AmenidadController, CargoController, CategoriaFaqController, CertificadoController, DestinoController, DivisaController, EmpleadoController, EventoController, FaqController, FormaPagoController, HomeController, HorarioController, HorarioReservacionController, IataController, MovimientoController, NegocioCategoriaController, NegocioController, UserController,NotificacionController,RolController,PermisoController, SolicitudController, TelefonoController,OpinionController, PanelController, PublicacionController, ReservacionController, SistemaController, VentaController};
+use App\Http\Controllers\{AmenidadController, CargoController, CategoriaFaqController, CuponController, DestinoController, DivisaController, EmpleadoController, EventoController, FaqController, FormaPagoController, HomeController, HorarioController, HorarioReservacionController, IataController, MovimientoController, NegocioCategoriaController, NegocioController, UserController,NotificacionController,RolController,PermisoController, SolicitudController, TelefonoController,OpinionController, PanelController, PublicacionController, ReservacionController, SistemaController, VentaController};
 use App\Http\Middleware\convertirNull;
 use Laravel\Socialite\Facades\Socialite;
 use App\Models\{CategoriaFaq, Pais,Estado,Ciudad,};
@@ -62,7 +62,6 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::post('upload/avatar', [UserController::class, 'uploadAvatar'])->name('upload_avatar');
     Route::put('perfil/update/usuario/{usuario}',[UserController::class, 'updatePerfil']);
     Route::put('cambiar/contrasena/usuario/{usuario}',[UserController::class, 'changePassword']);
-
 
     /*****************************/
     /* NOTIFICACIONES
@@ -160,7 +159,6 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     /* Eventos
     /*****************************/
     Route::get('eventos/{evento}/fetch/data', [EventoController::class, 'fetch']);
-    Route::post('eventos/fetch/data', [EventoController::class, 'fetchData']);
     Route::resource('eventos', EventoController::class);
     Route::put('eventos/{evento}/cargar/imagen', [EventoController::class, 'cargarImagen']);
     Route::delete('eventos/{evento}/eliminar/imagen/{imagen}', [EventoController::class, 'eliminarImagen']);
@@ -228,7 +226,13 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
 
     Route::put('negocios/{negocio}/cargar/saldo',[NegocioController::class,'agregarSaldo']);
 
-    
+    Route::get('negocios/{negocio}/datos/home',[NegocioController::class,'datosHome']); 
+
+Route::get('negocios/{negocio}/recomendacions/toggle/user/{usuario}',[NegocioController::class, 'togleRecomendacion']);
+    Route::get('negocios/{negocio}/seguidors/toggle/user/{usuario}', [NegocioController::class, 'toggleSeguidor']);
+
+
+
     /*****************************/
     /* Divisas
     /*****************************/
@@ -333,7 +337,6 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     /* Publicacions
     /*****************************/
 
-    Route::post('publicacions/fetch/data', [PublicacionController::class, 'fetchData']);
     Route::get('publicacions/{publicacion}/fetch/data', [PublicacionController::class, 'fetch']);
     Route::post('publicacions/get/all', [PublicacionController::class, 'getAll']);
     Route::resource('publicacions', PublicacionController::class);
@@ -344,14 +347,14 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
 
 
     /*****************************/
-    /* Certificados Negocio
+    /* Cupones Negocio
     /*****************************/
 
-    Route::post('certificados/fetch/data', [CertificadoController::class, 'fetchData']);
-    Route::get('certificados/{certificado}/fetch/data', [CertificadoController::class, 'fetch']);
-    Route::get('certificados/negocio/{negocio}/get/all', [CertificadoController::class, 'getAll']);
+    Route::post('cupons/fetch/data', [CuponController::class, 'fetchData']);
+    Route::get('cupons/{certificado}/fetch/data', [CuponController::class, 'fetch']);
+    Route::get('cupons/negocio/{negocio}/get/all', [CuponController::class, 'getAll']);
 
-    Route::resource('certificados', CertificadoController::class);
+    Route::resource('cupons', CuponController::class);
 
 
     /*****************************/
@@ -442,3 +445,19 @@ Route::post('opinions/fetch/data/model',[OpinionController::class,'fetchDataMode
 // Sistema
 
 Route::get('sistema/fetch',[SistemaController::class,'fetch']);
+
+// Capturar negocio por Url 
+Route::post('negocio/obtener-por-url',[NegocioController::class,'capturarPorUrl']);
+
+// Perfil Negocio Publicaciones
+
+Route::post('publicacions/fetch/data', [PublicacionController::class, 'fetchData']);
+
+// perfil Negocio Eventos
+
+Route::post('eventos/fetch/data', [EventoController::class, 'fetchData']);
+
+
+
+
+

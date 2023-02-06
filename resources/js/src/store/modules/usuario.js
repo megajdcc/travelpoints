@@ -39,7 +39,8 @@ export default {
 				referidos:[],
 				referidor:[],
 				likes:[],
-				negocios:[]
+				negocios:[],
+				cupones:[]
 
 
 			},
@@ -76,7 +77,9 @@ export default {
 				codigo_referidor: null,
 				referidos: [],
 				referidor: [],
-				negocios: []
+				negocios: [],
+				cupones: []
+
 
 
 			},
@@ -150,8 +153,8 @@ export default {
 				codigo_referidor: null,
 				referidos: [],
 				referidor: [],
-				negocios: []
-
+				negocios: [],
+				cupones: []
 
 			}
 		},

@@ -751,21 +751,21 @@ export default [
 
 
       /***************************************
-       *    Certificados  de Negocio
+       *    Cupones  de Negocio
        * *************************************/
       {
-            path:'/negocios/certificados',
-            component:() => import('views/panels/negocio/certificados/index.vue'),
+            path:'/negocios/cupones',
+            component:() => import('views/panels/negocio/cupones/index.vue'),
 
             children:[
                   {
                         path:'',
-                        component:() => import('views/panels/negocio/certificados/list.vue'),
-                        name:'negocio.certificados',
+                        component:() => import('views/panels/negocio/cupones/list.vue'),
+                        name:'negocio.cupones',
                         meta:{
-                              resource:'negocio certificados',
+                              resource:'negocio cupones',
                               action:'read',
-                              pageTitle:'Certificados',
+                              pageTitle:'Cupones',
                               layout:'negocio',
 
                               breadcrumb:[
@@ -776,7 +776,7 @@ export default [
                                     },
 
                                     {
-                                          text: 'Certificados ',
+                                          text: 'Cupones ',
                                           active: true
                                     } 
                               ]
@@ -785,14 +785,14 @@ export default [
 
                   {
                         path: 'create',
-                        component: () => import('views/panels/negocio/certificados/create.vue'),
-                        name: 'negocio.certificado.create',
+                        component: () => import('views/panels/negocio/cupones/create.vue'),
+                        name: 'negocio.cupones.create',
                         meta: {
-                              resource: 'negocio certificados',
+                              resource: 'negocio cupones',
                               action: 'write',
-                              pageTitle: 'Crear Certificado',
+                              pageTitle: 'Crear Cupón',
                               layout: 'negocio',
-                              navActiveLink:'negocio.certificados',
+                              navActiveLink:'negocio.cupones',
                               breadcrumb: [
                                     {
                                           text: 'Home',
@@ -801,9 +801,9 @@ export default [
                                     },
 
                                     {
-                                          text: 'Certificados ',
+                                          text: 'Cupones ',
                                           active: false,
-                                          to:{name:'negocio.certificados'}
+                                          to:{name:'negocio.cupones'}
                                     },
                                     {
                                           text: 'Crear ',
@@ -817,14 +817,14 @@ export default [
                   {
                         path: ':id/edit',
                         props:true,
-                        component: () => import('views/panels/negocio/certificados/edit.vue'),
-                        name: 'negocio.certificado.edit',
+                        component: () => import('views/panels/negocio/cupones/edit.vue'),
+                        name: 'negocio.cupon.edit',
                         meta: {
-                              resource: 'negocio certificados',
+                              resource: 'negocio cupones',
                               action: 'update',
-                              pageTitle: 'Edit Certificado',
+                              pageTitle: 'Edit Cupón',
                               layout: 'negocio',
-                              navActiveLink: 'negocio.certificados',
+                              navActiveLink: 'negocio.cupones',
                               breadcrumb: [
                                     {
                                           text: 'Home',
@@ -833,9 +833,9 @@ export default [
                                     },
 
                                     {
-                                          text: 'Certificados ',
+                                          text: 'Cupones ',
                                           active: false,
-                                          to: { name: 'negocio.certificados' }
+                                          to: { name: 'negocio.cupones' }
                                     },
                                     {
                                           text: 'Editar ',
@@ -843,7 +843,70 @@ export default [
                                     }
                               ]
                         }
+                  },
+
+                  {
+                        path: ':id/edit',
+                        props: true,
+                        component: () => import('views/panels/negocio/cupones/edit.vue'),
+                        name: 'negocio.cupon.edit',
+                        meta: {
+                              resource: 'negocio cupones',
+                              action: 'update',
+                              pageTitle: 'Edit Cupón',
+                              layout: 'negocio',
+                              navActiveLink: 'negocio.cupones',
+                              breadcrumb: [
+                                    {
+                                          text: 'Home',
+                                          to: { name: 'home' },
+                                          active: false
+                                    },
+
+                                    {
+                                          text: 'Cupones ',
+                                          active: false,
+                                          to: { name: 'negocio.cupones' }
+                                    },
+                                    {
+                                          text: 'Editar ',
+                                          active: true,
+                                    }
+                              ]
+                        }
+                  },
+
+                  {
+                        path: ':id/reservar/cupon',
+                        props: true,
+                        component: () => import('views/panels/negocio/cupones/reservar.vue'),
+                        name: 'negocio.reservar.cupon',
+                        meta: {
+                              resource: 'negocio cupones',
+                              action: 'read',
+                              pageTitle: 'Reservar Cupón',
+                              layout: 'negocio',
+                              navActiveLink: 'negocio.cupones',
+                              breadcrumb: [
+                                    {
+                                          text: 'Home',
+                                          to: { name: 'home' },
+                                          active: false
+                                    },
+
+                                    {
+                                          text: 'Cupones ',
+                                          active: false,
+                                          to: { name: 'negocio.cupones' }
+                                    },
+                                    {
+                                          text: 'Reservar ',
+                                          active: true,
+                                    }
+                              ]
+                        }
                   }
+                  
             ]
       },
 

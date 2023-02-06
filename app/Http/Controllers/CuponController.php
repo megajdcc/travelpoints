@@ -3,13 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Models\Negocio\Negocio;
-use App\Models\Negocio\Certificado;
+use App\Models\Negocio\Cupon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
 
-class CertificadoController extends Controller
+class CuponController extends Controller
 {
     
 
@@ -17,7 +17,7 @@ class CertificadoController extends Controller
 
         $datos = $request->all();
 
-        $paginator = Certificado::where([
+        $paginator = Cupon::where([
             ['nombre','like',"%{$datos['q']}%","OR"],
             ['descripcion', 'like', "%{$datos['q']}%", "OR"],
             ['condiciones', 'like', "%{$datos['q']}%", "OR"],
@@ -35,25 +35,25 @@ class CertificadoController extends Controller
 
         return response()->json([
             'total' => $paginator->total(),
-            'certificados' => $paginator->items()
+            'cupones' => $paginator->items()
         ]);
 
     }
 
 
-    public function fetch(Certificado $certificado){
-        $certificado->load(['negocio','divisa']);
+    public function fetch(Cupon $cupon){
+        $cupon->load(['negocio','divisa']);
 
-        return response()->json($certificado);
+        return response()->json($cupon);
 
     }
 
 
     public function getAll(Negocio $negocio){
 
-        $certificados = $negocio->certificados->load(['negocio','divisa']);
+        $cupones = $negocio->cupones->load(['negocio','divisa']);
 
-        return response()->json($certificados);
+        return response()->json($cupones);
 
     }
 
@@ -88,13 +88,13 @@ class CertificadoController extends Controller
             $imagen = $request->file('imagen');
 
             $imagen_name = \sha1($imagen->getClientOriginalName()).'.'.$imagen->getClientOriginalExtension();
-            Storage::disk('negocio_certificados')->put($imagen_name,File::get($imagen));
+            Storage::disk('negocio_cupones')->put($imagen_name,File::get($imagen));
 
-            $certificado = Certificado::create([...$this->validar($request),...['imagen' => $imagen_name,'activo' => true]]);
+            $cupon = Cupon::create([...$this->validar($request),...['imagen' => $imagen_name,'activo' => true]]);
 
             DB::commit();
             $result = true;
-            $certificado->load(['negocio','divisa']);
+            $cupon->load(['negocio','divisa']);
 
         }catch(\Exception $e){
             DB::rollBack();
@@ -104,7 +104,7 @@ class CertificadoController extends Controller
         }
     
 
-        return response()->json(['result' => $result, 'certificado' => $result ? $certificado :null]);
+        return response()->json(['result' => $result, 'cupon' => $result ? $cupon :null]);
 
 
     }
@@ -115,10 +115,10 @@ class CertificadoController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Negocio\Certificado  $certificado
+     * @param  \App\Negocio\Cupon  $cupon
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Certificado $certificado)
+    public function update(Request $request, Cupon $cupon)
     {
         try {
             DB::beginTransaction();
@@ -127,17 +127,17 @@ class CertificadoController extends Controller
 
             if($imagen){
 
-                Storage::disk('negocio_certificados')->delete($certificado->imagen);
+                Storage::disk('negocio_cupones')->delete($cupon->imagen);
 
                 $imagen = $request->file('imagen');
                 $imagen_name = \sha1($imagen->getClientOriginalName()) . '.' . $imagen->getClientOriginalExtension();
-                Storage::disk('negocio_certificados')->put($imagen_name, File::get($imagen));
+                Storage::disk('negocio_cupones')->put($imagen_name, File::get($imagen));
 
             }
 
-            $certificado->update([
+            $cupon->update([
                 ...[$this->validar($request)],
-                ...['imagen' => isset($imagen_name) ? $imagen_name : $certificado->imagen]
+                ...['imagen' => isset($imagen_name) ? $imagen_name : $cupon->imagen]
             ]);
 
 
@@ -145,30 +145,30 @@ class CertificadoController extends Controller
 
             DB::commit();
             $result = true;
-            $certificado->load(['negocio', 'divisa']);
+            $cupon->load(['negocio', 'divisa']);
         } catch (\Exception $e) {
             DB::rollBack();
             $result = false;
         }
 
-        return response()->json(['result' => $result, 'certificado' => $result ? $certificado : null]);
+        return response()->json(['result' => $result, 'cupon' => $result ? $cupon : null]);
 
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Negocio\Certificado  $certificado
+     * @param  \App\Negocio\Cupon  $cupon
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Certificado $certificado)
+    public function destroy(Cupon $cupon)
     {
         try{
             DB::beginTransaction();
 
-                Storage::disk('negocio_certificados')->delete($certificado->imagen);
+                Storage::disk('negocio_cupones')->delete($cupon->imagen);
             
-                $certificado->delete();
+                $cupon->delete();
 
             DB::commit();
             $result = true;

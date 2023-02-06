@@ -10,30 +10,30 @@ export default {
    props:['id'],
 
    setup(props){
-      const {certificados} = toRefs(store.state.certificado)
+      const {cupones} = toRefs(store.state.cupones)
       const {id} = toRefs(props)
 
       const cargarForm = () => {
-         if(!certificados.value.length){
-            store.dispatch('certificado/fetch',id.value)
+         if(!cupones.value.length){
+            store.dispatch('cupones/fetch',id.value)
          }else{
-            store.commit('certificado/capturar',id.value)
+            store.commit('cupones/capturar',id.value)
          }
       }
 
       onMounted(() => cargarForm())
-      watch([id,certificados],() => cargarForm())
+      watch([id,cupones],() => cargarForm())
 
       return () => h(form,{
 
          on:{
             save:(data,formValidate) => {
 
-               store.dispatch('certificado/guardar',data).then(({result}) => {
+               store.dispatch('cupones/guardar',data).then(({result}) => {
                   if(result){
-                     toast.success('Se ha guardado con éxito el certificado',{position:'bottom-right'})
+                     toast.success('Se ha guardado con éxito el cupón',{position:'bottom-right'})
                   }else{
-                     toast.info('No se pudo actualizar el certificado, inténte de nuevo', { position: 'bottom-right' })
+                     toast.info('No se pudo actualizar el Cupón, inténte de nuevo', { position: 'bottom-right' })
 
                   }
                }).catch(e => {

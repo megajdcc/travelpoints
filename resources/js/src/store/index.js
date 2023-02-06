@@ -100,9 +100,9 @@ import formasPago from './modules/formasPago.js'
 import publicacion from './modules/publicacion.js'
 
 
-// Certificado
+// cupones
 
-import certificado from './modules/certificado.js'
+import cupones from './modules/cupones.js'
 
 // venta 
 import venta from './modules/venta.js'
@@ -252,7 +252,7 @@ export default new Vuex.Store({
     amenidad,
     formasPago,
     publicacion,
-    certificado,
+    cupones,
     venta,
     horarioReservacion,
     reservacion,

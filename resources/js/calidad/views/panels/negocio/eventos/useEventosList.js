@@ -4,7 +4,7 @@ import store from '@/store'
 import { ref, computed, onMounted, watch } from '@vue/composition-api'
 
 
-export default function useEventosList(negocio) {
+export default function useEventosList(negocio,perfil = false) {
 
    const isSortDirDesc = ref(true)
    const sortBy = ref('id')
@@ -69,7 +69,8 @@ export default function useEventosList(negocio) {
          q: searchQuery.value,
          isSortDirDesc: isSortDirDesc.value,
          model_id: negocio.value ? negocio.value.id : null,
-         model_type: "App\\Models\\Negocio\\Negocio"
+         model_type: "App\\Models\\Negocio\\Negocio",
+         perfil:perfil
       }).then(({ total: all, eventos }) => {
 
          total.value = all

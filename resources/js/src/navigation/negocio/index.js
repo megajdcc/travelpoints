@@ -78,15 +78,14 @@ export default [
       ]
    },
 
-   // Certificados de regalos
+   // Cupones
    {
-      title: 'Certificados',
-      icon: 'fas fa-certificate',
-      route: 'negocio.certificados',
-      resource: 'certificados negocio',
-      action: 'read'
+      title   : 'Cupones',
+      icon    : 'fas fa-ticket',
+      route   : 'negocio.cupones',
+      resource: 'negocio cupones',
+      action  : 'read'
    },
-
 
    // Publicaciones y Contenidos
    {
@@ -111,7 +110,7 @@ export default [
          {
             title: 'Eventos',
             route: 'negocio.eventos',
-            resource: 'eventos negocio',
+            resource: 'negocio eventos',
             action: 'read',
          }
 
@@ -235,7 +234,7 @@ export default [
          },
 
          {
-            title: 'Certificados',
+            title: 'Cupones',
             action: 'read',
             resource: 'reportes negocio' ,
          },

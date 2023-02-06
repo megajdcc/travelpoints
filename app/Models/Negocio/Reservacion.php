@@ -7,6 +7,10 @@ use App\Models\Venta;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
+use Illuminate\Database\Eloquent\Casts\Attribute;
+
+use Carbon\Carbon;
+
 class Reservacion extends Model
 {
     use HasFactory;
@@ -24,6 +28,12 @@ class Reservacion extends Model
         
 
     ];
+
+    // public function fecha() : Attribute{
+    //     return Attribute::make(
+    //         get:fn($val) => new Carbon(new \DateTime($val))
+    //     );
+    // }
 
     public function usuario(){
         return $this->belongsTo(User::class,'usuario_id','id');

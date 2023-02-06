@@ -65,6 +65,13 @@ Vue.filter('fecha',(val,format = 'LL', time= false) => {
 
 })
 
+Vue.filter('dia',(val) => {
+  const dias = ['Lunes','Martes','Miercoles','Jueves','Viernes','Sabado','Domingo'];
+
+  return dias[val - 1]
+
+})
+
 Vue.use(VueCurrencyFilter, {
   symbol: '$',
   thousandsSeparator: ',',

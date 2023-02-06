@@ -505,14 +505,6 @@ class UserController extends Controller
         foreach($usuarios as $key => $usuario){
 
             $usuario->cargar();
-
-
-            if($usuario->avatar){
-               $usuarios[$key]->avatar =asset('storage/img-perfil/' . $usuario->avatar); 
-            } else{
-                $usuarios[$key]->avatar = asset('storage/img-perfil/default.jpg'); 
-            }
-
     
             // $usuario->referidor;
             // $usuario->referidos;

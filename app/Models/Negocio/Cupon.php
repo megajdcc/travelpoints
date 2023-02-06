@@ -5,8 +5,9 @@ namespace App\Models\Negocio;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Divisa;
+use App\Models\User;
 
-class Certificado extends Model
+class Cupon extends Model
 {
     use HasFactory;
 
@@ -38,6 +39,11 @@ class Certificado extends Model
 
     public function negocio(){
         return $this->belongsTo(Negocio::class,'negocio_id','id');
+    }
+
+    public function usuarios()
+    {
+        return $this->belongsToMany(User::class, 'cupon_usuario', 'cupon_id', 'usuario_id')->withPivot(['status']);
     }
 
     

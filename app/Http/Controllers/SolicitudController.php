@@ -81,8 +81,11 @@ class SolicitudController extends Controller
 
         foreach ($solicitudes as $solicitud) {
             $solicitud->categoria;
-            $solicitud->usuario;
-            $solicitud->usuario->avatar = $solicitud->usuario->getUrlAvatar();
+            
+            if($solicitud->usuario){
+                $solicitud->usuario->avatar = $solicitud->usuario->getAvatar();
+            }
+            
             $solicitud->ciudad;
             $solicitud->estado->pais;
             $solicitud->divisa;

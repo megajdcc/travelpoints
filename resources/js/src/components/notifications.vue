@@ -254,13 +254,14 @@ export default {
    
 
     let modalNotificacion = ref(null);
-     const cargarNotificaciones = (usuario_id) => {
-       
-        if(usuario_id){
-          store.dispatch('notificacion/cargarNotificaciones',usuario_id)
-        }
-       
-     }
+    
+    const cargarNotificaciones = (usuario_id) => {
+      
+      if(usuario_id){
+        store.dispatch('notificacion/cargarNotificaciones',usuario_id)
+      }
+      
+    }
     
     onMounted(() => {
        

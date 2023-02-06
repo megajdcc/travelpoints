@@ -1,16 +1,16 @@
 <template>
-      <b-container fluid>
+      <b-container fluid class="px-0 mx-0">
          <b-row>
       
             <!-- Analytics Calificaciones -->
-            <b-col cols="12" md="3">
+            <b-col cols="12" sm="4" md="3" class="mr-0 mx-0" >
                <section class="d-flex align-items-center sticky-top" style="top:5rem">
       
                   <h2 class="font-weight-bolder my-0 mr-1">
                      {{ promedioCalificacion }}
                   </h2>
       
-                  <el-rate v-model="promedioCalificacion" disabled disabled-void-color="#4f4f4f" void-color="#000000"/>
+                  <el-rate v-model="promedioCalificacion" disabled disabled-void-color="#4f4f4f" void-color="#000000" class="d-flex flex-nowrap" />
       
                   <p class="my-0 font-weight-bolder">
                      {{ cantidad }} <small>Opiniones</small>
@@ -78,7 +78,7 @@
             </b-col>
       
             <!-- Reviews Calificaciones -->
-            <b-col cols="12" md="9">
+            <b-col cols="12" sm="8" md="9">
                <b-card>
                   <template #header>
                      <b-form-input v-model="searchQuery" type="search" placeholder="Buscar Opinión" />
@@ -243,4 +243,50 @@ export default {
       overflow-x: hidden;
    }
 
+</style>
+
+<style lang="scss">
+.titulo {
+   font-size: 24pt;
+}
+
+.swiper-slide {
+   display: flex;
+   justify-content: center;
+
+   .imagen-gallerie {
+      height: 350px;
+      width: 100%;
+      object-fit: cover;
+      margin: auto 0px;
+   }
+}
+
+.imagen-thumb {
+   width: 70px;
+   height: 50px;
+   cursor: pointer;
+}
+
+.gallerie {
+   //   flex: 1 1 60%;
+   position: relative;
+
+   // .swiper-slide-active{
+   .btn-gallerie {
+      position: absolute;
+      left: 2rem;
+      top: 3rem;
+      bottom: auto;
+      right: auto;
+      z-index: 10;
+   }
+
+   // }
+
+}
+
+.table-calificacion tr td {
+   padding-left: 0px !important;
+}
 </style>

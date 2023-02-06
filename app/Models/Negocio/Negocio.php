@@ -4,7 +4,7 @@ namespace App\Models\Negocio;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Trais\{HasDireccion,hasCuenta,hasImages,hasTelefonos,hasEvento, hasHorario, hasLike, hasOpinion,hasPermisos,hasRedes, hasVenta, hasVideos};
+use App\Trais\{HasDireccion,hasCuenta,hasImages,hasTelefonos,hasEvento, hasHorario, hasLike, hasOpinion,hasPermisos,hasRedes, hasVenta, hasVideos,hasRecomendacion, hasSeguidores};
 use App\Models\{Divisa, FormaPago, User,Iata};
 use Illuminate\Database\Eloquent\Casts\Attribute;
 
@@ -16,7 +16,7 @@ class Negocio extends Model
     use HasFactory;
 
     use HasDireccion,hasCuenta, hasImages, hasTelefonos, hasEvento,hasHorario,hasLike,hasOpinion, hasPermisos, hasRedes;
-    use hasVideos,hasVenta;
+    use hasVideos,hasVenta,hasRecomendacion,hasSeguidores;
 
     public readonly string $model_type;
 
@@ -25,7 +25,6 @@ class Negocio extends Model
     public function __construct()
     {
         $this->model_type = 'App\Models\Negocio\Negocio';
-
     }
 
 
@@ -56,9 +55,7 @@ class Negocio extends Model
         'iata_id',
         'divisa_id',
         'precios', // [precio_minimo => 0,precio_maximo => 0]
-
     ];
-
 
     public $casts = [
         'emails'          => 'array',
@@ -151,8 +148,12 @@ class Negocio extends Model
         $this->redes;
         $this->videos;
         $this->modelType = $this->model_type;
-        $this->certificados;
+        $this->cupones;
         $this->ventas;
+        $this->opinions;
+        $this->modelType = $this->model_type;
+        $this->recomendaciones;
+        $this->seguidores;
         // $this->precios = $this->precios ?: ['precio_minimo' => 0, 'precio_maximo' => 0];
         return $this;
     }
@@ -173,8 +174,8 @@ class Negocio extends Model
         return $this->belongsToMany(Amenidad::class, 'amenidad_negocio', 'negocio_id', 'amenidad_id');
     }
 
-    public function certificados(){
-        return $this->hasMany(Certificado::class,'negocio_id','id');
+    public function cupones(){
+        return $this->hasMany(Cupon::class,'negocio_id','id');
     }
 
     public function formasPago()

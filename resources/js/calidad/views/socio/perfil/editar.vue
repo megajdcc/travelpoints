@@ -10,7 +10,7 @@
 
                   <b-row>
                      <b-col cols="12">
-                        <b-tabs justified pills small>
+                        <b-tabs justified small >
                         
                            <b-tab>
                               <template #title>

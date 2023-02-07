@@ -66,8 +66,8 @@
             </b-col>
             <b-col sm="6">
                <b-card class="shadow-none py-1 faq-contact-card">
-                  <b-avatar size="42" rounded variant="light-primary" class="mb-2">
-                     <feather-icon icon="PhoneCallIcon" size="18" />
+                  <b-avatar size="70" rounded variant="light-primary" class="mb-2" >
+                     <font-awesome-icon icon="fas fa-phone" size="4x" />
                   </b-avatar>
                   <h4>01 800 400 INFO (4636), (322) 225 9635.</h4>
                   <span class="text-body">¡Siempre estamos felices de ayudar!</span>
@@ -75,9 +75,9 @@
             </b-col>
             <b-col sm="6">
                <b-card class="shadow-none py-1 faq-contact-card">
-                  <b-avatar size="42" rounded variant="light-primary" class="mb-2">
+                  <b-avatar size="70" rounded variant="light-primary" class="mb-2">
                      <b-link href="mailto:soporte@infochannel.si" target="_blank">
-                        <feather-icon icon="MailIcon" size="18" />
+                        <font-awesome-icon icon="fas fa-envelope" size="4x" />
                      </b-link>
                   </b-avatar>
                   <h4>soporte@infochannel.si</h4>

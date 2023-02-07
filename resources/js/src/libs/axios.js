@@ -40,7 +40,8 @@ axiosIns.interceptors.request.use((config) => {
 // Intercetamos las respuesta para cambiar el estado de carga (Loading ) de la app en false
 
 axiosIns.interceptors.response.use((response) => {
-  
+
+
   store.commit('toggleLoading')
   return Promise.resolve(response)
 
@@ -115,6 +116,7 @@ axiosIns.interceptors.response.use((response) => {
     }
 
     return Promise.reject(error);
+    
 })
 
 

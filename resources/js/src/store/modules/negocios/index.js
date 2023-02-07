@@ -746,10 +746,10 @@ export default{
          })
       },
 
-      toggleRecomendacions({commit,state},usuario_id){
+      toggleRecomendacions({commit,state},{negocio,usuario}){
 
          return new Promise((resolve, reject) => {
-            axios.get(`/api/negocios/${state.negocio.id}/recomendacions/toggle/user/${usuario_id}`).then(({data}) => {
+            axios.get(`/api/negocios/${negocio}/recomendacions/toggle/user/${usuario}`).then(({data}) => {
 
                commit('update',data.negocio);
 
@@ -759,16 +759,44 @@ export default{
          })
       },
 
-      toggleSeguidor({ commit, state }, usuario_id) {
+      toggleSeguidor({ commit, state }, {usuario,negocio}) {
 
          return new Promise((resolve, reject) => {
-            axios.get(`/api/negocios/${state.negocio.id}/seguidors/toggle/user/${usuario_id}`).then(({ data }) => {
+            axios.get(`/api/negocios/${negocio}/seguidors/toggle/user/${usuario}`).then(({ data }) => {
 
                commit('update', data.negocio);
 
                resolve(data)
             }).catch(e => reject(e))
 
+         })
+      },
+
+
+
+      fetchDataPublic({commit},datos) {
+         return new Promise((resolve, reject) => {
+            axios.post(`/api/negocios/fetch/data/public`,datos).then(({data}) => {
+
+               commit('setNegocios',data.negocios)
+
+               resolve(data)
+            }).catch(e => reject(e))
+
+
+         })
+      },
+
+      negociosAsociados({state,commit},datos){
+
+         return new Promise((resolve, reject) => {
+            axios.post(`/api/negocios/users/asociado`,datos).then(({data}) => {
+
+               commit('setNegocios',data.negocios)
+               resolve(data)
+            }).catch(e => reject(e))
+
+            
          })
       }
 

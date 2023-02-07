@@ -95,17 +95,16 @@ export default {
     setup(){
         const {negocio} = toRefs(store.state.negocio)
 
-
         const actions = usePublicacionesList(negocio);
 
         watch(negocio, () => actions.refetchData())
-
 
         return {
             loading:computed(() => store.state.loading),
             negocio,
             actions
         }
+
     }
 
 

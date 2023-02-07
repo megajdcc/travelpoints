@@ -1,8 +1,11 @@
 <template>
    <b-container fluid class="px-0 mx-0">
 
+      <slot name="titulo">
+         
+      </slot>
       <!-- Table Container Card -->
-      <b-card no-body class="mb-0">
+      <b-card no-body class="mb-0" v-if="!hideHeader">
 
          <div class="m-2">
             <!-- Table Top -->
@@ -41,7 +44,7 @@
       <paginate-table :dataMeta="dataMeta" :currentPage.sync="currentPage" :perPage="perPage" :total="total"
          class="mt-1" />
 
-      <b-card class="mt-1">
+      <b-card class="mt-1" v-if="!hideFooter">
 
 
          <b-container class="mb-1">
@@ -123,7 +126,9 @@ export default {
 
    props:{
       actions:Object|Function,
-      isTable:Boolean
+      isTable:Boolean,
+      hideFooter:Boolean,
+      hideHeader:Boolean
    },
 
 

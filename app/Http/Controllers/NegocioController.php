@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Atraccion;
 use App\Models\Negocio\Negocio;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\{DB,Storage,File};
@@ -606,6 +607,78 @@ class NegocioController extends Controller
         $negocio->toggleSeguidor($usuario);
 
         return response()->json(['negocio' => $negocio]);
+    }
+
+    public function fetchDataPublic(Request $request){
+
+        $datos = $request->all();
+
+        $paginator = Negocio::where([
+            ['nombre', 'LIKE', "%{$datos['q']}%", "OR"],
+            ['breve', 'LIKE', "%{$datos['q']}%", "OR"],
+            ['direccion', 'LIKE', "%{$datos['q']}%", "OR"],
+            ['descripcion', 'LIKE', "%{$datos['q']}%", "OR"],
+            ['emails', 'LIKE', "%{$datos['q']}%", "OR"],
+            ['codigo_postal', 'LIKE', "%{$datos['q']}%", "OR"],
+
+        ])
+            ->when($datos['destino'], function($query) use($datos){
+                $query->whereHas('iata', function (Builder $q) use ($datos) {
+                    $q->whereHas('destinos', function (Builder $query) use ($datos) {
+                        $query->where('id', $datos['destino']);
+                    });
+                });
+            })
+          
+            ->orderBy($datos['sortBy'] ?: 'id', $datos['isSortDirDesc'] ? 'desc' : 'desc')
+            ->paginate($datos['perPage']);
+
+
+        $negocios = collect($paginator->items());
+
+        if($datos['atraccion'] && !is_null($datos['atraccion'])){
+            $atraccion = Atraccion::find($datos['atraccion']);
+
+            $negocios = $negocios->filter(function($negocio) use($atraccion){
+                return $negocio->cercanos(['lat' => $atraccion->lat,'lng' => $atraccion->lng],300);
+            });
+            
+        }   
+
+        $negocios->each(fn($negocio) =>  $negocio->cargar());
+
+        return response()->json([
+            'total' => $paginator->total(),
+            'negocios' => $negocios
+        ]);
+      
+    }
+
+    public function negociosAsociados(Request $request){
+        
+        $datos = $request->all();
+
+        $paginator = Negocio::where([
+            ['nombre', 'LIKE', "%{$datos['q']}%", "OR"],
+            ['breve', 'LIKE', "%{$datos['q']}%", "OR"],
+            ['direccion', 'LIKE', "%{$datos['q']}%", "OR"],
+            ['descripcion', 'LIKE', "%{$datos['q']}%", "OR"],
+            ['emails', 'LIKE', "%{$datos['q']}%", "OR"],
+            ['codigo_postal', 'LIKE', "%{$datos['q']}%", "OR"],
+
+        ])
+            ->whereHas('empleados',function(Builder $q) use($datos){
+                    $q->where('usuario_id', $datos['usuario']);
+            })
+
+            ->orderBy($datos['sortBy'] ?: 'id', $datos['isSortDirDesc'] ? 'desc' : 'desc')
+            ->paginate($datos['perPage']);
+
+        $negocios = collect($paginator->items());
+
+        $negocios->each(fn($neg) => $neg->cargar());
+
+        return response()->json(['total' => $paginator->total(),'negocios' => $negocios]);
     }
 
 

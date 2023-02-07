@@ -1,24 +1,24 @@
+
 import useFilterTable from "@core/utils/useFilterTable";
 
 import store from '@/store'
 
 import { ref } from '@vue/composition-api'
 
-export default function useReservacionesList(negocio){
+export default function useReservacionsList(usuario){
 
   const tableColumns = ref([
-    { key:'id',label:'#' },
-    { key:'usuario_id',label:'Usuario',sortable:true},
-    { key: 'operador_id', label: 'Operador', sortable: true },
+    { key: 'id', label: '#' },
+    { key: 'usuario_id', label: 'Usuario', sortable: true },
     { key: 'negocio_id', label: 'Negocio', sortable: true },
     { key: 'fecha', label: 'Fecha', sortable: true },
     { key: 'personas', label: 'Personas', sortable: true },
     { key: 'status', label: 'Status', sortable: true },
-    { key: 'actions', label: 'Actions', sortable: false,sortKey:'id', sortBy:'id' },
+    { key: 'actions', label: 'Actions', sortable: false, sortKey: 'id', sortBy: 'id' },
   ]);
 
-  const {
 
+  const {
     perPageOptions,
     currentPage,
     perPage,
@@ -31,43 +31,38 @@ export default function useReservacionesList(negocio){
     refetchData,
   } = useFilterTable();
 
-
   const fetchData = (ctx,next) => {
 
-    store.dispatch('reservacion/fetchData',{
+    store.dispatch('reservacion/reservacionesUser', {
       perPage: perPage.value,
       currentPage: currentPage.value,
       sortBy: sortBy.value,
       q: searchQuery.value,
       isSortDirDesc: isSortDirDesc.value,
-      negocio_id: negocio.value ? negocio.value.id : null,
-    }).then(({total:all,reservaciones}) => {
+      usuario: usuario.value ? usuario.value.id : null
+    }).then(({ total: all, reservaciones }) => {
+
       total.value = all
       next(reservaciones)
     }).catch(e => {
-
-      toast.info('Error trayendo Data')
+      toast.info('Error trayendo Data', { position: 'bottom-right' })
     })
-  } 
+  }
 
-  
-
-  const eliminar = (reservacion_id) => {
-
-    store.dispatch('reservacion/eliminar',reservacion_id).then(({result}) => {
+  const cancelarReserva = (reserva_id) => {
+    store.dispatch('reservacion/cancelar',reserva_id).then(({result}) => {
 
       if(result){
-        toast.success('Se ha eliminado con éxito la reservación',{position:'bottom-right'})
+        toast.info('Se ha cancelado con éxito la reservación',{position:'bottom-right'})
         refetchData();
       }else{
-        toast.info('No se pudo eliminar la Reservación , inténte de nuevo mas tarde', { position: 'bottom-right' })
+        toast.info('No se pudo cancelar la Reserva', { position: 'bottom-right' })
 
       }
     })
   }
 
   return {
-    tableColumns,
     perPageOptions,
     currentPage,
     perPage,
@@ -79,8 +74,7 @@ export default function useReservacionesList(negocio){
     dataMeta,
     refetchData,
     fetchData,
-    eliminar
-
-
+    cancelarReserva,
+    tableColumns
   }
 }

@@ -264,7 +264,7 @@ class DestinoController extends Controller
 
         foreach($destino->atracciones as $atraccion){
             $atraccion->ruta = "/Atraccions?q={$atraccion->nombre}";
-
+            $atraccion->opinions;
             $atraccion->telefono;
             $atraccion->imagenes;
             $atraccion->destino;

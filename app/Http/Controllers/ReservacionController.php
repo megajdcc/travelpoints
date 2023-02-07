@@ -93,6 +93,57 @@ class ReservacionController extends Controller
     
     }
 
+    public function fetchDataUser(Request $request){
+
+         $datos = $request->all();
+
+            $paginator = Reservacion::where([
+                ['fecha','like',"%{$datos['q']}%",'OR'],
+                ['personas', 'like', "%{$datos['q']}%", 'OR'],
+                ['status', 'like', "%{$datos['q']}%", 'OR'],
+            ])
+            ->whereHas('usuario',function(Builder $q) use($datos){
+                $q->orWhere([
+                     ['nombre', 'like', "%{$datos['q']}%", 'OR'],
+                     ['apellido', 'like', "%{$datos['q']}%", 'OR'],
+                     ['nombre', 'like', "%{$datos['q']}%", 'OR'],
+                    ['username', 'like', "%{$datos['q']}%", 'OR'],
+                ]);
+            })
+            ->whereHas('negocio',function(Builder $q) use($datos){
+                $q->orWhere([
+                     ['nombre', 'like', "%{$datos['q']}%", 'OR'],
+                     ['breve', 'like', "%{$datos['q']}%", 'OR'],
+                    ['descripcion', 'like', "%{$datos['q']}%", 'OR'],
+                    
+                ]);
+            })
+            ->where('usuario_id',$datos['usuario'])
+            ->with(['usuario','operador','negocio'])
+            ->orderBy($datos['sortBy'] ?: 'id', $datos['isSortDirDesc'] ? 'desc' : 'asc')
+            ->paginate($datos['perPage'] ?: 10000);
+
+
+        $reservaciones  = $paginator->items();
+
+
+        foreach($reservaciones as $reserva){
+            $reserva->usuario->avatar = $reserva->usuario->getAvatar();
+
+            if($reserva->operador){
+                $reserva->operador->avatar = $reserva->operador->getAvatar();
+            }
+           
+        }
+
+        return response()->json([
+            'total' => $paginator->total(),
+            'reservaciones' => $reservaciones,
+        ]);
+
+
+    }
+
 
     public function fetch(Reservacion $reservacion){
 
@@ -258,4 +309,5 @@ class ReservacionController extends Controller
 
         return response()->json(['result' => $result]);
     }
+
 }

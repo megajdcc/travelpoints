@@ -127,7 +127,7 @@ import {required} from '@validations';
 
 import store from '@/store'
 import { toRefs, ref, computed, onMounted,onActivated,watch,inject } from '@vue/composition-api'
-
+import useAuth from '@core/utils/useAuth';
 export default {
   
   components:{
@@ -260,10 +260,27 @@ export default {
 
     }
 
+    const {
+      is_loggin
+    } = useAuth();
 
-    onActivated(() => cargarForm())
-    onMounted(() => cargarForm())
-    watch([negocio], () => cargarForm())
+    onActivated(() => {
+        if(is_loggin){
+          cargarForm();
+        }
+    })
+    onMounted(
+      () => {
+        if (is_loggin) {
+          cargarForm();
+        }
+      }
+    )
+    watch([negocio], () => {
+      if (is_loggin) {
+        cargarForm();
+      }
+    })
 
     const formatoHora = (hora) => moment(`2020-01-01 ${hora}`).format('hh:mm A') 
 

@@ -27,7 +27,7 @@
     
             <section class="mt-2">
     
-              <h2 class="display-4">{{ negocio.nombre }}</h2>
+              <h2 class="display-4 text-white">{{ negocio.nombre }}</h2>
     
               <strong class="font-weight-bolder mb-1 text-white"> {{ negocio.breve }}</strong>
     
@@ -42,17 +42,8 @@
             </section>
     
             <section class="d-flex flex-column btn-options-banner">
-              <b-button-group>
-                <b-button variant="primary" @click="toggleSeguidor" :disabled="!usuario.id" class="font-weight-bolder flex-grow-1">
-                  <font-awesome-icon :icon="['fas', getIconSeguidor]" class="mr-1" :color="getColorSeguidor"  />
-                  {{ legendSeguidor }}
-                </b-button>
-    
-                <b-button variant="warning" :disabled="!usuario.id" @click="toggleRecomendacion" class="font-weight-bolder flex-grow-1">
-                  <font-awesome-icon icon="fa fa-heart" class="mr-1" :color="getColorRecomendacion" />
-                  {{ legendRecomendacion }}
-                </b-button>
-              </b-button-group>
+
+              <actions-negocio :negocio="negocio" />  
 
               <b-button variant="success" title="reservar" class="mt-1 font-weight-bolder" @click="isShowReservar = !isShowReservar" v-if="usuario.id" >
 
@@ -60,11 +51,7 @@
                 Reservar
 
               </b-button>
-
-              
             </section>
-    
-    
     
           </b-col>
     
@@ -76,7 +63,7 @@
 
       </b-container>
 
-      <NegocioReservar v-model="isShowReservar" />
+      <NegocioReservar v-model="isShowReservar" v-if="is_loggin" />
 
   </section>
 </template>
@@ -96,7 +83,7 @@ import {
 import {computed,toRef,ref,toRefs} from '@vue/composition-api'
 import store from '@/store'
 
-
+import useAuth from '@core/utils/useAuth'
 export default {
   
   props:{
@@ -110,7 +97,8 @@ export default {
     BContainer,
     BRow,
     BCol,
-    NegocioReservar:() => import('components/NegocioReservar.vue')
+    NegocioReservar:() => import('components/NegocioReservar.vue'),
+    ActionsNegocio:() => import('components/ActionsNegocio.vue')
   },
 
   directives:{
@@ -125,6 +113,10 @@ export default {
     const { usuario } = toRefs(store.state.usuario)
     const isShowReservar = ref(false)
 
+    const {
+      is_loggin
+    } = useAuth();
+
     const portada = computed(() => {
 
       const imagen = negocio.value.imagenes.filter(val => val.portada)[0];
@@ -137,75 +129,13 @@ export default {
 
     });
 
-    const toggleRecomendacion = () => {
-
-      store.dispatch('negocio/toggleRecomendacions',usuario.value.id)
-
-    }
-
-
-    const toggleSeguidor = () => {
-
-      store.dispatch('negocio/toggleSeguidor', usuario.value.id)
-
-    }
-
-
     return {
       portada,
       usuario,
-      toggleRecomendacion,
       isShowReservar,
-
-      getIconSeguidor:computed(() => {
-
-        if (negocio.value.seguidores.find(val => val.usuario_id === usuario.value.id)) {
-          return 'fa-handshake';
-        }
-
-        return 'fa-handshake-slash';
-
-      }),
-
-      getColorRecomendacion:computed(() => {
-
-        if (negocio.value.recomendaciones.find(val => val.usuario_id === usuario.value.id)) {
-          return '#f60022';
-        }
-
-        return '#ffffff';
-
-      }),
-
-      getColorSeguidor: computed(() => {
-
-        if (negocio.value.seguidores.find(val => val.usuario_id === usuario.value.id)) {
-          return '#fff';
-        }
-
-        return '#ffffff';
-
-      }),
-
-      legendRecomendacion:computed(() => {
-
-        if(negocio.value.recomendaciones.find(val => val.usuario_id === usuario.value.id)){
-          return 'Lo recomiendas'
-        }
-
-        return '¿ Lo Recomiendas ?'
-      }),
-      toggleSeguidor,
-
-      legendSeguidor:computed(() => {
-        if (negocio.value.seguidores.find(val => val.usuario_id === usuario.value.id)) {
-          return 'Lo sigo'
-        }
-
-        return '¿ Seguir ?'
-      })
+      is_loggin
+     
     }
-
 
   }
 }

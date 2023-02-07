@@ -4,7 +4,7 @@ namespace App\Models\Negocio;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Trais\{HasDireccion,hasCuenta,hasImages,hasTelefonos,hasEvento, hasHorario, hasLike, hasOpinion,hasPermisos,hasRedes, hasVenta, hasVideos,hasRecomendacion, hasSeguidores};
+use App\Trais\{HasDireccion,hasCuenta,hasImages,hasTelefonos,hasEvento, hasHorario, hasLike, hasLocation, hasOpinion,hasPermisos,hasRedes, hasVenta, hasVideos,hasRecomendacion, hasSeguidores};
 use App\Models\{Divisa, FormaPago, User,Iata};
 use Illuminate\Database\Eloquent\Casts\Attribute;
 
@@ -16,7 +16,7 @@ class Negocio extends Model
     use HasFactory;
 
     use HasDireccion,hasCuenta, hasImages, hasTelefonos, hasEvento,hasHorario,hasLike,hasOpinion, hasPermisos, hasRedes;
-    use hasVideos,hasVenta,hasRecomendacion,hasSeguidores;
+    use hasVideos,hasVenta,hasRecomendacion,hasSeguidores,hasLocation;
 
     public readonly string $model_type;
 

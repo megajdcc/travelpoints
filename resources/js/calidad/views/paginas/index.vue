@@ -16,12 +16,8 @@
       <!-- Destinos -->
       <destinos :destinos="destinos"/>
 
-      <b-row>
-         <b-col cols="12">
-          
-
-         </b-col>
-      </b-row>
+      <!-- Negocios -->
+      <negocios />
 
    </b-container>
 </template>
@@ -53,8 +49,6 @@ import 'swiper/css/swiper.css'
 import Ripple from 'vue-ripple-directive'
 
 
-
-
 export default {
 
    components:{
@@ -78,7 +72,8 @@ export default {
       FormWizard:() => import('@/views/forms/form-wizard/FormWizard.vue'),
       Search:() => import('components/Search.vue'),
       Atracciones: () => import('components/Atracciones.vue'),
-      Destinos : () => import('components/Destinos.vue')
+      Destinos : () => import('components/Destinos.vue'),
+      Negocios:() => import('components/Negocios.vue')
    },
 
    directives: {

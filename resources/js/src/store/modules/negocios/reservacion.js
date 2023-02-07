@@ -220,7 +220,20 @@ export default{
       return new Promise((resolve, reject) => {
         axios.get(`/api/reservacions/${reserva_id}/cancelar`).then(({data}) => resolve(data)).catch(e => reject(e))
       })
-    }
+    },
+
+    reservacionesUser({commit},datos){
+      return new Promise((resolve, reject) => {
+        axios.post(`/api/reservacions/fetch/data/user`, datos).then(({ data }) => {
+
+          commit('setReservacions', data.reservacions)
+
+          resolve(data)
+        }).catch(e => reject(e))
+      })
+    },
+
+
       
 
   }

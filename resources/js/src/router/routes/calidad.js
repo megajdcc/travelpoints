@@ -1966,8 +1966,11 @@ export default [
       path: '/:url',
       props:true,
       component: () => import('views/paginas/negocio/index.vue'),
+
       meta: {
          layout: 'travel',
+         resource: 'Auth',
+         action:'read'
       },
 
       children:[

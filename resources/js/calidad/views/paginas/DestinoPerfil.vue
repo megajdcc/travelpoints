@@ -51,8 +51,10 @@
       <el-divider></el-divider>
 
       <!-- Atracciones -->
+      <atracciones v-if="destino" :atracciones="destino.atracciones" :titulo="`Las atracciones más populares en ${destino.nombre}`"  />
 
-      <atracciones :atracciones="destino.atracciones" :titulo="`Las atracciones más populares en ${destino.nombre}`"  />
+      <!-- Negocios -->
+      <negocios :destino="destino"/>
       <gallerie :galleries="destino.imagenes" :showGallerie.sync="showGallerie" path="/storage/destinos/imagenes" />
 
    </b-container>
@@ -88,7 +90,9 @@ export default {
       BButton,
       BImg,
       atracciones:() => import('components/Atracciones.vue'),
-      Gallerie:() => import('components/Gallerie.vue')
+      negocios:() => import('components/Negocios.vue'),
+      Gallerie:() => import('components/Gallerie.vue'),
+      Negocios:() => import('components/Negocios.vue')
    }, 
 
    setup(props){

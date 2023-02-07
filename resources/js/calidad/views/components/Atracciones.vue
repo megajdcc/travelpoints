@@ -15,11 +15,11 @@
          
                         <template #header>
          
-                           <b-img v-if="atraccion.imagenes.length"
+                           <b-img v-if="atraccion.imagenes && atraccion.imagenes.length"
                               :src="`/storage/atracciones/imagenes/${atraccion.imagenes[0].imagen}`" thumbnail class="card-img"
                              />
          
-                           <has-like v-if="is_loggin && atraccion.imagenes.length"
+                           <has-like v-if="is_loggin && atraccion.imagenes && atraccion.imagenes.length"
                               :model="{ model_id: atraccion.id, model_type: atraccion.modelType }" />
          
                         </template>
@@ -47,7 +47,7 @@
                            
                               <el-rate :value="promedioCalificacion(atraccion)" disabled disabled-void-color="#4f4f4f" void-color="#000000" />
                            
-                              <p class="my-0 font-weight-bolder">
+                              <p class="my-0 font-weight-bolder" v-if="atraccion.opinions">
                                  {{ atraccion.opinions.length }} <small>Opiniones</small>
                               </p>
                            

@@ -231,7 +231,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
 Route::get('negocios/{negocio}/recomendacions/toggle/user/{usuario}',[NegocioController::class, 'togleRecomendacion']);
     Route::get('negocios/{negocio}/seguidors/toggle/user/{usuario}', [NegocioController::class, 'toggleSeguidor']);
 
-
+    Route::post('negocios/users/asociado',[NegocioController::class,'negociosAsociados']);
 
     /*****************************/
     /* Divisas
@@ -388,11 +388,14 @@ Route::get('negocios/{negocio}/recomendacions/toggle/user/{usuario}',[NegocioCon
 
 
     Route::post('reservacions/fetch/data', [ReservacionController::class, 'fetchData']);
+    Route::post('reservacions/fetch/data/user', [ReservacionController::class, 'fetchDataUser']);
+
     Route::get('reservacions/{reservacion}/fetch/data', [ReservacionController::class, 'fetch']);
     Route::get('reservacions/get/all', [ReservacionController::class, 'getAll']);
     Route::get('reservacions/negocio/{negocio}/get/all',[ReservacionController::class,'getAll']);
     Route::resource('reservacions', ReservacionController::class);
     Route::get('reservacions/{reservacion}/cancelar',[ReservacionController::class,'cancelar']);
+
 
 
     /*****************************/
@@ -457,7 +460,9 @@ Route::post('publicacions/fetch/data', [PublicacionController::class, 'fetchData
 
 Route::post('eventos/fetch/data', [EventoController::class, 'fetchData']);
 
+// Negocios
 
+Route::post('negocios/fetch/data/public',[NegocioController::class,'fetchDataPublic']);
 
 
 

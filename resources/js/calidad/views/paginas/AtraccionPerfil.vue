@@ -143,6 +143,14 @@
          </b-col>
       </b-row>
 
+
+      <!-- Negocios cercanos a la atraccion -->
+      <b-row>
+         <b-col cols="12">
+            <negocios :atraccion="atraccion" subTitulo="Con negocios cercanos a tí..."></negocios>
+         </b-col>
+      </b-row>
+
       <!-- Opinions reviews -->
 
       <b-row id="opinions">
@@ -228,7 +236,8 @@ export default {
       BProgress,
       OpinionForm:() => import('views/opinions/form.vue'),
       ReviewsOpinion:() => import('components/ReviewsOpinion.vue'),
-      Atracciones:() => import('components/Atracciones.vue')
+      Atracciones:() => import('components/Atracciones.vue'),
+      Negocios:() => import('components/Negocios.vue')
 
    }, 
 

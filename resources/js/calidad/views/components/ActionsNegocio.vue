@@ -52,7 +52,7 @@ export default{
     BButton,
   },
 
-  setup(props){
+  setup(props,{emit}){
 
     const {negocio} = toRefs(props)
     const {usuario} = toRefs(store.state.usuario)
@@ -61,13 +61,15 @@ export default{
     const toggleRecomendacion = () => {
 
       store.dispatch('negocio/toggleRecomendacions', { negocio: negocio.value.id, usuario:usuario.value.id })
-
+      emit('reload',true)
     }
 
 
     const toggleSeguidor = () => {
 
       store.dispatch('negocio/toggleSeguidor', { negocio: negocio.value.id, usuario: usuario.value.id })
+      emit('reload',true)
+
 
     }
 

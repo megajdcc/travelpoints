@@ -657,22 +657,49 @@ class NegocioController extends Controller
     public function negociosAsociados(Request $request){
         
         $datos = $request->all();
+        
+        if($datos['sigo'] || $datos['recomendado']){
+            $paginator = Negocio::where([
+                ['nombre', 'LIKE', "%{$datos['q']}%", "OR"],
+                ['breve', 'LIKE', "%{$datos['q']}%", "OR"],
+                ['direccion', 'LIKE', "%{$datos['q']}%", "OR"],
+                ['descripcion', 'LIKE', "%{$datos['q']}%", "OR"],
+                ['emails', 'LIKE', "%{$datos['q']}%", "OR"],
+                ['codigo_postal', 'LIKE', "%{$datos['q']}%", "OR"],
 
-        $paginator = Negocio::where([
-            ['nombre', 'LIKE', "%{$datos['q']}%", "OR"],
-            ['breve', 'LIKE', "%{$datos['q']}%", "OR"],
-            ['direccion', 'LIKE', "%{$datos['q']}%", "OR"],
-            ['descripcion', 'LIKE', "%{$datos['q']}%", "OR"],
-            ['emails', 'LIKE', "%{$datos['q']}%", "OR"],
-            ['codigo_postal', 'LIKE', "%{$datos['q']}%", "OR"],
+            ])
+               
+                ->when($datos['sigo'], function ($query) use($request){
+                   
+                    $query->whereHas('seguidores',fn(Builder $q) => $q->where('usuario_id', $request->user()->id));
+                })
 
-        ])
-            ->whereHas('empleados',function(Builder $q) use($datos){
+                ->when($datos['recomendado'], function ($query) use($request) {
+                    $query->whereHas('recomendaciones', fn (Builder $q) => $q->where('usuario_id', $request->user()->id));
+                })
+
+                ->orderBy($datos['sortBy'] ?: 'id', $datos['isSortDirDesc'] ? 'desc' : 'desc')
+                ->paginate($datos['perPage']);
+
+          
+        }else{
+            $paginator = Negocio::where([
+                ['nombre', 'LIKE', "%{$datos['q']}%", "OR"],
+                ['breve', 'LIKE', "%{$datos['q']}%", "OR"],
+                ['direccion', 'LIKE', "%{$datos['q']}%", "OR"],
+                ['descripcion', 'LIKE', "%{$datos['q']}%", "OR"],
+                ['emails', 'LIKE', "%{$datos['q']}%", "OR"],
+                ['codigo_postal', 'LIKE', "%{$datos['q']}%", "OR"],
+
+            ])
+                ->whereHas('empleados', function (Builder $q) use ($datos) {
                     $q->where('usuario_id', $datos['usuario']);
-            })
+                })
+                ->orderBy($datos['sortBy'] ?: 'id', $datos['isSortDirDesc'] ? 'desc' : 'desc')
+                ->paginate($datos['perPage']);
+        }
 
-            ->orderBy($datos['sortBy'] ?: 'id', $datos['isSortDirDesc'] ? 'desc' : 'desc')
-            ->paginate($datos['perPage']);
+        
 
         $negocios = collect($paginator->items());
 

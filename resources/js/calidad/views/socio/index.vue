@@ -37,10 +37,10 @@
                      Consumos
                   </b-nav-item>
 
-                  <b-nav-item :to="{ name: 'socio.cupones' }" active-class="active">
+                  <!-- <b-nav-item :to="{ name: 'socio.cupones' }" active-class="active">
                      <span class="fas fa-ticke"></span>
                      Cupones
-                  </b-nav-item>
+                  </b-nav-item> -->
 
                   <b-nav-item :to="{ name: 'socio.compras' }" active-class="active">
                      <span class="fas fa-weight-hanging"></span>

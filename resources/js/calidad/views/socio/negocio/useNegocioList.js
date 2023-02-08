@@ -4,7 +4,7 @@ import store from '@/store'
 import { ref, computed, onMounted, watch } from '@vue/composition-api'
 
 
-export default function useNegocioList(usuario) {
+export default function useNegocioList(usuario,sigo = false, recomendados = false) {
 
   const isSortDirDesc = ref(true)
   const sortBy = ref('id')
@@ -68,7 +68,9 @@ export default function useNegocioList(usuario) {
       sortBy: sortBy.value,
       q: searchQuery.value,
       isSortDirDesc: isSortDirDesc.value,
-      usuario:usuario.value ? usuario.value.id : null
+      usuario:usuario.value ? usuario.value.id : null,
+      sigo:sigo,
+      recomendado:recomendados
     }).then(({ total: all, negocios }) => {
 
       total.value = all

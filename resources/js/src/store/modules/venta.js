@@ -183,6 +183,20 @@ export default{
 
          })
 
+      },
+
+      fetchDataConsumo({commit},datos){
+         return new Promise((resolve, reject) => {
+            axios.post(`/api/ventas/fetch/data/consumo`,datos).then(({data}) => {
+
+               commit('setVentas',data.ventas);
+               
+               resolve(data)
+
+            }).catch(e => reject(e))
+
+
+         })
       }
    }
 }

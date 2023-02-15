@@ -1,7 +1,7 @@
 <template>
    <b-container fluid class="px-0 mx-0">
 
-      <slot name="titulo">
+      <slot name="titulo" :total="total">
          
       </slot>
       <!-- Table Container Card -->

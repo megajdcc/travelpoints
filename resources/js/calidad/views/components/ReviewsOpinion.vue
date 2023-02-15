@@ -131,8 +131,6 @@
                   </template>
 
                </b-card>
-
-
              
             </b-col>
       

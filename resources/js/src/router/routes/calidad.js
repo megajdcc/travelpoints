@@ -221,13 +221,34 @@ export default [
        {
           path: '/consumos',
           name: 'socio.consumos',
-          component: () => import('views/socio/consumos'),
-          meta: {
-             resource: 'perfil',
-             action: 'read',
-             layout: 'travel'
-            //  navActiveLink: 'socio'
-          }
+          component: () => import('views/socio/consumos/index.vue'),
+          children:[
+            {
+               path:'',
+               name:'socio.consumos',
+               component:() => import('views/socio/consumos/list.vue'),
+               meta:{
+                  resource:'perfil',
+                  action:'read',
+                  layout:'travel',
+                  name:'consumos',
+                 
+               }
+            },
+             {
+                path: '/opinions',
+                name: 'socio.consumos.opinions',
+                component: () => import('views/socio/consumos/opinions.vue'),
+                meta: {
+                   resource: 'perfil',
+                   action: 'read',
+                   layout: 'travel',
+                   name: 'consumos',
+
+                }
+             }
+
+          ]
 
        },
       //  cupones
@@ -238,7 +259,7 @@ export default [
           meta: {
              resource: 'perfil',
              action: 'read',
-             layout: 'travel'
+             layout: 'travel',
             //  navActiveLink: 'socio'
           }
 
@@ -1958,6 +1979,133 @@ export default [
       }
    },
 
+
+   /*****************************************/
+   /* Tiendas
+   /*************************************** */
+   {
+      path:'/tiendas',
+      component:() => import('views/tienda/index.vue'),
+      children:[
+         {
+            path:'',
+            component:() => import('views/tienda/list.vue'),
+            name:'tienda.list',
+            meta:{
+               resource:'tiendas',
+               action:'read',
+               pageTitle:'Tiendas',
+               breadcrumb:[
+                  {text:'Home',to:{name:'home'},active:false},
+                  { text: 'Tiendas', active: true },
+               ]
+            }
+         },
+
+         {
+            path: 'create',
+            component: () => import('views/tienda/create.vue'),
+            name: 'tienda.create',
+            meta: {
+               resource: 'tiendas',
+               action: 'write',
+               pageTitle: 'Agregar Tienda',
+               navActiveLink:'tienda.list',
+               breadcrumb: [
+                  { text: 'Home', to: { name: 'home' }, active: false },
+                  { text: 'Tiendas', active: false,to:{name:'tienda.list'} },
+                  { text: 'Crear tienda', active: true },
+
+               ]
+            }
+         },
+
+         {
+            path: ':id/edit',
+            props:true,
+            component: () => import('views/tienda/edit.vue'),
+            name: 'tienda.edit',
+            meta: {
+               resource: 'tiendas',
+               action: 'update',
+               pageTitle: 'Actualizar Tienda',
+               navActiveLink: 'tienda.list',
+               breadcrumb: [
+                  { text: 'Home', to: { name: 'home' }, active: false },
+                  { text: 'Tiendas', active: false, to: { name: 'tienda.list' } },
+                  { text: 'Actualizar', active: true },
+
+               ]
+            }
+         }
+      ]
+   },
+
+   /*****************************************/
+   /* Categoria de Productos
+   /*************************************** */
+   {
+      path:'/categoria-productos',
+      component:() => import('views/tienda/categorias-producto/index.vue'),
+
+      children:[
+         {
+            path:'',
+            name:'categorias',
+            component:() => import('views/tienda/categorias-producto/list.vue'),
+            meta:{
+               resource:'categoria productos',
+               action:'read',
+               pageTitle:'Categoría de Productos',
+               breadcrumb:[
+                  {text:'Home',to:{name:'home'},active:false},
+                  { text: 'Categorias', active: true },
+
+               ]
+            }
+         },
+
+         {
+            path: 'create',
+            name: 'categoriaProducto.create',
+            component: () => import('views/tienda/categorias-producto/create.vue'),
+            meta: {
+               resource: 'categoria productos',
+               action: 'write',
+               pageTitle: 'Crear Categoría',
+               navActiveLink:'categorias',
+               breadcrumb: [
+                  { text: 'Home', to: { name: 'home' }, active: false },
+                  { text: 'Categorias', active: false,to:{name:'categorias'} },
+                  { text: 'Crear', active: true },
+
+
+               ]
+            }
+         },
+
+
+         {
+            path: ':id/edit',
+            name: 'categoriaProducto.edit',
+            props:true,
+            component: () => import('views/tienda/categorias-producto/edit.vue'),
+            meta: {
+               resource: 'categoria productos',
+               action: 'update',
+               pageTitle: 'Editar Categoría',
+               navActiveLink: 'categorias',
+               breadcrumb: [
+                  { text: 'Home', to: { name: 'home' }, active: false },
+                  { text: 'Categorias', active: false, to: { name: 'categorias' } },
+                  { text: 'Editar', active: true },
+
+
+               ]
+            }
+         }
+      ]
+   },
 
    /*****************************************/
    /* PAGINA DE perfil de negocios

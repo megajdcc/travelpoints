@@ -13,7 +13,6 @@ class Seguidor extends Model
         'usuario_id',
         'model_type',
         'model_id',
-
     ];
 
     public function model(){

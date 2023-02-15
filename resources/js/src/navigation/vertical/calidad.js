@@ -61,6 +61,23 @@ export default [
       ]
    },
 
+   {
+      title:'Tiendas Y Productos',
+      icon:'fa-store',
+      fontAwesome:true,
+      children:[
+         { title:'Tiendas',route:'tienda.list',icon:'fa-store',resource:'tiendas',action:'read',fontAwesome:true},
+         { title: 'Productos', route: 'productos.list', icon: 'fa-gifts', resource: 'productos', action: 'read', fontAwesome: true, iconFa:'fas'},
+         {
+            title: 'Categorías',
+            route: 'categorias',
+            icon: 'ListIcon',
+            action: 'read',
+            resource: 'categoria productos'
+         },
+      ]
+
+   },
 
    {
       title:'Configuraciones',
@@ -116,8 +133,11 @@ export default [
             route: 'negocio.categorias.list',
             icon: 'ListIcon',
             action: 'read',
-            resource: 'Negocio categorías'
+            resource: 'negocio categorías'
          },
+
+
+        
          {
             title: 'Divisas',
             route: 'divisas.list',

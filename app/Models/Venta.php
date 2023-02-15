@@ -4,12 +4,15 @@ namespace App\Models;
 
 use App\Models\Negocio\Empleado;
 use App\Models\Negocio\Reservacion;
+use App\Trais\hasOpinion;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Venta extends Model
 {
-    use HasFactory;
+    use HasFactory,hasOpinion;
+
+    // public string $model_type = 'App\Models\Venta';
 
     protected $fillable = [
         'divisa_id',
@@ -60,6 +63,9 @@ class Venta extends Model
         $this->empleado;
         $this->cliente;
         $this->model;
+        $this->opinions->load(['usuario','model'])->each(function($opinion) {
+            $opinion->usuario->avatar = $opinion->usuario->getAvatar();
+        });
         return $this;
     }
 

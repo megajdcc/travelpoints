@@ -52,7 +52,7 @@
                <el-divider></el-divider>
 
                <section class="d-flex justify-content-between">
-                  <p>Registrado por <strong> {{ `${venta.cliente.nombre} ${venta.cliente.apellido}` }}</strong> - {{ venta.cliente.username }} el día {{ venta.created_at | fecha('LLL') }}</p>
+                  <p>Registrado por <strong> {{ venta.empleado ? `${venta.empleado.usuario.nombre} ${venta.empleado.usuario.apellido}` : 'Sin definir' }}</strong> - {{ venta.empleado ? venta.empleado.usuario.username : '' }} el día {{ venta.created_at | fecha('LLL') }}</p>
 
                   <strong># {{ venta.id }}</strong>
                </section>

@@ -117,7 +117,9 @@ class Negocio extends Model
 
     public function primerCargo(String $cargo = 'Gerente')  : Cargo{
         
-        $cargo = Cargo::create([
+        $cargo = Cargo::updateOrCreate(
+            ['negocio_id' => $this->id,'cargo' => $cargo],
+            [
             'negocio_id' => $this->id,
             'cargo' => $cargo
         ]);
@@ -149,7 +151,7 @@ class Negocio extends Model
         $this->videos;
         $this->modelType = $this->model_type;
         $this->cupones;
-        $this->ventas;
+        $this->ventas->load(['opinions']);
         $this->opinions;
         $this->modelType = $this->model_type;
         $this->recomendaciones;
@@ -166,7 +168,9 @@ class Negocio extends Model
      * @return void;
      */
     public function asignarEmpleado(User $empleado,Cargo $cargo){
-        $this->empleados()->attach($empleado->id,['cargo_id' => $cargo->id]);
+        if(!$this->empleados->contains($empleado)){
+            $this->empleados()->attach($empleado->id, ['cargo_id' => $cargo->id]);
+        }
     }
 
     public function amenidades()

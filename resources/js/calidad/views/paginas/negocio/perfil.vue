@@ -189,7 +189,7 @@ export default {
       video:computed(() => negocio.value.videos.length ? negocio.value.videos[0].url : ''),
       promedioCalificacion: computed(() => store.getters['negocio/promedioCalificacion'](negocio.value)),
       porcentajeOpinions: (cal) => store.getters['negocio/porcentajeOpinions'](cal),
-      optionsPlace: computed(() => ({ content:`<strong>${negocio.value.nombre}</strong>`}))
+      optionsPlace: computed(() => ({ content:`<strong>${negocio.value.nombre}</strong>`})),
 
     }
   }

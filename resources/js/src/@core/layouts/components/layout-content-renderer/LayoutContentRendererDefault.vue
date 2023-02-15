@@ -8,7 +8,7 @@
     
     <div class="header-navbar-shadow" />
 
-    <div class="content-wrapper" :class="contentWidth === 'boxed' ? 'container p-0' : null" >
+    <div class="content-wrapper " :class="contentWidth === 'boxed' ? 'container p-0' : null" >
       <slot name="breadcrumb">
         <app-breadcrumb />
       </slot>

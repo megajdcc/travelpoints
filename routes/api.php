@@ -1,10 +1,10 @@
 <?php
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\{AuthController};
-use App\Http\Controllers\{AmenidadController, CargoController, CategoriaFaqController, CuponController, DestinoController, DivisaController, EmpleadoController, EventoController, FaqController, FormaPagoController, HomeController, HorarioController, HorarioReservacionController, IataController, MovimientoController, NegocioCategoriaController, NegocioController, UserController,NotificacionController,RolController,PermisoController, SolicitudController, TelefonoController,OpinionController, PanelController, PublicacionController, ReservacionController, SistemaController, VentaController};
+use App\Http\Controllers\{AmenidadController, CargoController, CategoriaFaqController, CategoriaProductoController, CuponController, DestinoController, DivisaController, EmpleadoController, EventoController, FaqController, FormaPagoController, HomeController, HorarioController, HorarioReservacionController, IataController, MovimientoController, NegocioCategoriaController, NegocioController, UserController,NotificacionController,RolController,PermisoController, SolicitudController, TelefonoController,OpinionController, PanelController, PublicacionController, ReservacionController, SistemaController, TiendaController, VentaController};
 use App\Http\Middleware\convertirNull;
 use Laravel\Socialite\Facades\Socialite;
-use App\Models\{CategoriaFaq, Pais,Estado,Ciudad,};
+use App\Models\{CategoriaFaq, CategoriaProducto, Pais,Estado,Ciudad,};
 use App\Http\Controllers\AtraccionController;
 use App\Models\Divisa;
 use App\Http\Controllers\ImagenController;
@@ -365,7 +365,7 @@ Route::get('negocios/{negocio}/recomendacions/toggle/user/{usuario}',[NegocioCon
     Route::get('ventas/{venta}/fetch/data', [VentaController::class, 'fetch']);
     Route::get('ventas/negocio/{negocio}/get/all', [VentaController::class, 'getAll']);
     Route::resource('ventas', VentaController::class);
-
+    Route::post('ventas/fetch/data/consumo',[VentaController::class,'fetchConsumos']);
 
     /***********************************/
     /* Horario Reservacion Negocio
@@ -404,6 +404,28 @@ Route::get('negocios/{negocio}/recomendacions/toggle/user/{usuario}',[NegocioCon
 
     Route::put('sistema/{sistema}',[ SistemaController::class, 'update' ]);
     Route::get('sistemas/{sistema}/crear/cuenta',[SistemaController::class,'crearCuenta']);
+
+
+    /*****************************/
+    /* Categoria de Productos
+    /*****************************/
+
+    Route::post('categoria-productos/fetch/data',[CategoriaProductoController::class,'fetchData']);
+    Route::get('categoria-productos/{categoria}/fetch/data',[CategoriaProductoController::class,'fetch']);
+    Route::resource('categoria-productos', CategoriaProductoController::class);
+
+
+    /*****************************/
+    /* Tienda
+    /*****************************/
+
+    Route::post('tiendas/fetch/data',[TiendaController::class,'fetchData']);
+    Route::get('tiendas/{tienda}/fetch/data',[TiendaController::class,'fetch']);
+    Route::resource('tiendas', TiendaController::class);
+
+
+
+
 });
 
 Route::put('usuario/{usuario}/establecer/contrasena', [UserController::class, 'EstablecerContrasena'])->name('establecercontrasena');

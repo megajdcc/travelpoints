@@ -136,10 +136,11 @@ class NegocioController extends Controller
         $negocio->cargar();
 
 
-        $negocio->asignarEmpleado($negocio->encargado,$negocio->primerCargo());
-        $permisos = Permiso::whereHas('panel', fn (Builder $q) => $q->where('panel', 'Negocio'))->get();
-        $negocio->encargado->asignarPermisos($permisos);
-
+        if(!$negocio->empleados->contains($negocio->encargado)){
+            $negocio->asignarEmpleado($negocio->encargado, $negocio->primerCargo());
+            $permisos = Permiso::whereHas('panel', fn (Builder $q) => $q->where('panel', 'Negocio'))->get();
+            $negocio->encargado->asignarPermisos($permisos);
+        }
 
         return response()->json(['result' => $result,'negocio' => $negocio]);
 

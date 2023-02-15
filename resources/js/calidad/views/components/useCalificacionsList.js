@@ -8,7 +8,7 @@ export default function useCalificacionList(model) {
    const isSortDirDesc = ref(true)
    const sortBy = ref('id')
    const searchQuery = ref('')
-   const perPage = ref(100)
+   const perPage = ref(4)
    const currentPage = ref(1)
    const total = ref(0);
    const items = ref([])

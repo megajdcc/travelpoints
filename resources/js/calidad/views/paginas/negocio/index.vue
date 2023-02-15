@@ -5,7 +5,7 @@
       <b-col cols="12 mx-0 px-0">
 
         <!-- Banner Header Perfil Negocio - terminar actions de los botones y las calificaciones -->
-        <banner-negocio :negocio="negocio"></banner-negocio>
+        <banner-negocio :negocio="negocio" :promedioCalificacion="promedioCalificacion"></banner-negocio>
       </b-col>
     </b-row>
 

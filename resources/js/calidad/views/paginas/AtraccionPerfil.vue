@@ -87,9 +87,10 @@
                <p class="font-weight-bold">{{ atraccion.duracion_sugerida }}</p>
 
                <!-- <br> -->
-               <p>
+               <p class="contenido-parrafo"  :class="{'show-text' : isShowText}" >
                   {{  atraccion.descripcion  }}
                </p>
+               <b-button v-if="atraccion.descripcion.length > 384" @click="toggleShowDescription" variant="link" size="sm">{{ isShowText ? "Menos" : 'Seguir Leyendo' }}</b-button>
                
                <el-divider></el-divider>
                <ul class="list-unstyled">
@@ -206,13 +207,18 @@ import {
    BListGroupItem,
    BTabs,
    BTab,
-   BProgress
+   BProgress,
+   VBPopover
 } from 'bootstrap-vue'
 
 
 export default {
    
    props:['query'],
+
+   directives:{
+      'b-popover':VBPopover
+   }, 
 
    components:{
 
@@ -248,7 +254,7 @@ export default {
       const showGallerie = ref(false)
       const showHorario = ref(false)
       const atraccionesCercanas = ref([])
-
+      const isShowText  = ref(false)
       const {query} = toRefs(props)
 
       watch(query,() => {
@@ -312,6 +318,10 @@ export default {
          store.commit('atraccion/pushOpinion',opinion)
       } 
 
+      const toggleShowDescription = () => {
+
+         isShowText.value = !isShowText.value;
+      }
 
       return {
          swiperTop,
@@ -329,7 +339,9 @@ export default {
          legendHorario:computed(() => store.getters['atraccion/legendHorario']),
          horarioHoy:computed(() => store.getters['atraccion/horarioHoy']),
          promedioCalificacion:computed(() => store.getters['atraccion/promedioCalificacion'](atraccion.value)),
-         atraccionesCercanas
+         atraccionesCercanas,
+         isShowText,
+         toggleShowDescription
       }
       
    }
@@ -379,6 +391,23 @@ export default {
 
    .table-calificacion tr td{
       padding-left:0px !important;
+   }
+
+   .contenido-parrafo{
+      text-overflow: ellipsis;
+      overflow: hidden;
+      -webkit-line-clamp: 7;
+      display: -webkit-box;
+      -webkit-box-orient: vertical;
+      text-align: justify;
+      /* white-space: nowrap; */
+      width: 100%;
+      height: 145px;
+   }
+
+   .show-text{
+      height:250px !important;
+      overflow-y: scroll !important;
    }
 
 </style>

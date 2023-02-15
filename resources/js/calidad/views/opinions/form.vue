@@ -2,7 +2,9 @@
       <section >
          
          <b-button @click=" () => showOpinion = true" variant="outline-info" size="sm" v-if="is_loggin" >
-            Escribe una opinión
+            <slot name="labelButton">
+               Escribe una opinión
+            </slot>
          </b-button>
 
          <b-modal :visible="showOpinion" @hide="cerrar" hide-footer centered lazy no-close-on-backdrop title="Agregar Opinión">
@@ -75,7 +77,7 @@
 
                            </b-form-group>
 
-                           <b-form-group>
+                           <b-form-group v-if="!isConsumo">
                               <template #label>
                                 ¿ Cuando fuiste ?: <small>(Obligatorio)</small>
                               </template>
@@ -187,7 +189,8 @@ export default {
 
    props:{
       modelType:String,
-      modelId:Number
+      modelId:Number,
+      isConsumo:Boolean
    },
 
    setup(props,{emit}){
@@ -204,6 +207,8 @@ export default {
       } = useAuth()
       
       const guardar = () => {
+
+         console.log('guardando')
          formulario.value.model_id = modelId.value
          formulario.value.model_type = modelType.value
 

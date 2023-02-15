@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Divisa;
 use App\Models\Movimiento;
+use App\Models\Negocio\Empleado;
 use App\Models\Sistema;
 use App\Models\Venta;
 use Illuminate\Database\Eloquent\Builder;
@@ -90,6 +91,7 @@ class VentaController extends Controller
         $ventas = $paginator->items();
 
         foreach($ventas as $venta){
+            $venta->empleado?->usuario;
 
             $venta->cliente->avatar = $venta->cliente->getAvatar();
 
@@ -144,10 +146,11 @@ class VentaController extends Controller
             $datos = $this->validar($request);
 
             DB::beginTransaction();
-            $venta = Venta::create([...$datos,...[
-                'empleado_id' => $request->user()->id
-                ]]);
+            $venta = Venta::create([...$datos]);
 
+            if($venta->empleado_id = Empleado::where('negocio_id',$venta->model_id)->where('usuario_id', $request->user()->id)->first()?->id){
+                $venta->save();
+            }
         
             $monto = number_format((float) $venta->monto,2,'.',',') .' '.$venta->divisa->iso;
 
@@ -180,7 +183,7 @@ class VentaController extends Controller
             DB::rollBack();
             $result = false;
 
-            // dd($th->getMessage());
+            dd($th->getMessage());
 
         }
 
@@ -210,5 +213,44 @@ class VentaController extends Controller
     public function destroy(Venta $venta)
     {
         //
+    }
+
+
+    public function fetchConsumos(Request $request){
+
+        $datos  = $request->all();
+
+
+        $paginator = Venta::where([
+            ['monto', 'like', "%{$datos['q']}%", 'or'],
+            ['comision', 'like', "%{$datos['q']}%", 'or'],
+            ['tps', 'like', "%{$datos['q']}%", 'or'],
+            ['tps_referente', 'like', "%{$datos['q']}%", 'or'],
+            ['certificado', 'like', "%{$datos['q']}%", 'or'],
+        ])
+            ->whereHas('cliente', function (Builder $q) use ($datos) {
+                $q->orWhere([
+                    ['nombre', 'like', "%{$datos['q']}%", 'or'],
+                    ['apellido', 'like', "%{$datos['q']}%", 'or'],
+                    ['email', 'like', "%{$datos['q']}%", 'or'],
+                    ['username', 'like', "%{$datos['q']}%", 'or'],
+                ]);
+            })
+
+            ->where('cliente_id',$datos['usuario'])
+            ->with(['model', 'empleado', 'cliente', 'divisa','opinions'])
+            ->orderBy($datos['sortBy'] ?: 'id', $datos['isSortDirDesc'] ? 'desc' : 'asc')
+            ->paginate($datos['perPage'] ?: 10000);
+
+
+        $ventas = collect($paginator->items());
+
+        $ventas = $ventas->each(fn($venta) => $venta->cargar());
+
+        return response()->json([
+            'total' => $paginator->total(),
+            'ventas' => $ventas
+        ]);
+
     }
 }

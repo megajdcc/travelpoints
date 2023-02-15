@@ -11,7 +11,7 @@
                   <!-- slides -->
                   <swiper-slide v-for="(atraccion, i) in atracciones" :key="i" class="rounded ">
          
-                     <b-card class="cursor-pointer" header-class="p-0 header-card" body-class="mt-1 px-1" @click="$router.push(atraccion.ruta)">
+                     <b-card class="cursor-pointer" header-class="p-0 header-card" body-class="mt-1 px-1 contenido-card" @click="$router.push(atraccion.ruta)" style="height:370px !important; "> 
          
                         <template #header>
          
@@ -55,7 +55,7 @@
 
                         </section>
          
-                        <p class="text-justify">{{ atraccion.descripcion.substring(0, 80) }}</p>
+                        <p class="text-justify parrafo-card" >{{ atraccion.descripcion }}</p>
          
                      </b-card>
          
@@ -251,4 +251,17 @@ export default {
    }
 }
 
+.contenido-card{
+   overflow-y: hidden;
+}
+
+.parrafo-card{
+   overflow-y: hidden;
+   height: 60px;
+   text-overflow: ellipsis;
+   display: -webkit-box;
+   -webkit-line-clamp: 3;
+   -webkit-box-orient: vertical;
+
+}
 </style>

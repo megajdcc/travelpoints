@@ -1,7 +1,7 @@
 <template>
   <b-button-group>
     <b-button variant="primary" @click.stop="toggleSeguidor" :disabled="!usuario.id" class="font-weight-bolder flex-grow-1" v-b-tooltip.hover="legendSeguidor">
-      <font-awesome-icon :icon="['fas', getIconSeguidor]" :class="{'mr-1' : !hideLegend}"  :color="getColorSeguidor"  />
+      <font-awesome-icon :icon="getIconSeguidor" :class="{'mr-1' : !hideLegend}"  :color="getColorSeguidor"  />
         <template v-if="!hideLegend">
           {{ legendSeguidor }}
         </template>
@@ -82,10 +82,10 @@ export default{
       getIconSeguidor: computed(() => {
 
         if (negocio.value.seguidores.find(val => val.usuario_id === usuario.value.id)) {
-          return 'fa-handshake';
+          return ['fas', 'fa-bell'];
         }
 
-        return 'fa-handshake-slash';
+        return ['far','fa-bell'];
 
       }),
 

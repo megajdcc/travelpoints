@@ -1,5 +1,5 @@
 <template>
-   <div class="horizontal-layout layout-travel" :class="[layoutClasses]"  data-col="1-column" style="height:inherit">
+   <div class="horizontal-layout layout-travel" :class="[layoutClasses]"  data-col="1-column" style="min-height:100vh">
 
       <!-- NAVBAR -->
       <b-navbar :style="{

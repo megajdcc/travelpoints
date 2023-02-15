@@ -122,6 +122,20 @@
                </b-nav>
             </b-card>
 
+
+            <b-card v-if="route.meta.name == 'consumos'">
+
+               <b-nav vertical card-header class="menu-socio">
+
+                  <b-nav-item :to="{ name: 'socio.consumos' }"  exact active-class="active">
+                     <font-awesome-icon icon="fas fa-concierge-bell" />
+                     Mis consumos
+                  </b-nav-item>
+
+               </b-nav>
+            </b-card>
+
+
          </b-col>
 
          <b-col cols="12" md="9">

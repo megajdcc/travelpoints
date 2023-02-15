@@ -187,6 +187,8 @@ import {
 
 			}
 
+			store.dispatch('permiso/cargarPermisos')
+
 			onMounted(() => {
 				cargarForm();
 			})

@@ -54,7 +54,8 @@ class OpinionController extends Controller
 
         $datos = $request->all();
 
-        $paginator = Opinion::where('model_id', $datos['model_id'])
+        if($datos['model_type'] == "App\Models\Negocio\Negocio"){
+            $paginator = Opinion::where('model_id', $datos['model_id'])
             ->where('model_type', $datos['model_type'])
             ->where([
                 ['titulo', 'LIKE', "%{$datos['q']}%", 'OR'],
@@ -62,15 +63,36 @@ class OpinionController extends Controller
             ])
             ->whereHas('usuario', function (Builder $q) use ($datos) {
 
-            $q->orWhere([
-                ['nombre', 'LIKE', "%{$datos['q']}%", 'OR'],
-                ['apellido', 'LIKE', "%{$datos['q']}%", 'OR'],
-                ['email', 'LIKE', "%{$datos['q']}%", 'OR']
-            ]);
-        })
+                $q->orWhere([
+                    ['nombre', 'LIKE', "%{$datos['q']}%", 'OR'],
+                    ['apellido', 'LIKE', "%{$datos['q']}%", 'OR'],
+                    ['email', 'LIKE', "%{$datos['q']}%", 'OR']
+                ]);
+            })
+                ->orderBy('id', 'desc')
+                ->paginate($datos['perPage'] ?: 10000);
+        }else{
+            $paginator = Opinion::where('model_id', $datos['model_id'])
+            ->where('model_type', $datos['model_type'])
+            ->where([
+                ['titulo', 'LIKE', "%{$datos['q']}%", 'OR'],
+                ['opinion', 'LIKE', "%{$datos['q']}%", 'OR'],
+            ])
+            ->whereHas('usuario', function (Builder $q) use ($datos) {
+
+                $q->orWhere([
+                    ['nombre', 'LIKE', "%{$datos['q']}%", 'OR'],
+                    ['apellido', 'LIKE', "%{$datos['q']}%", 'OR'],
+                    ['email', 'LIKE', "%{$datos['q']}%", 'OR']
+                ]);
+            })
+                ->orderBy('id', 'desc')
+                ->paginate($datos['perPage'] ?: 10000);
+        }
+
+        
       
-        ->orderBy('id', 'desc')
-        ->paginate($datos['perPage'] ?: 10000);
+      
 
         $opinions = $paginator->items();
 
@@ -96,7 +118,7 @@ class OpinionController extends Controller
             'calificacion'  => 'required',
             'opinion'       => 'required',
             'titulo'        => 'required',
-            'asistencia'    => 'required',
+            'asistencia'    => 'nullable',
             'acompanante'   => 'required',
             'certificacion' => 'required',
             'model_id' => 'required',
@@ -120,7 +142,19 @@ class OpinionController extends Controller
         try{
             DB::beginTransaction();
             $opinion = Opinion::create([...$datos,...['usuario_id' => $request->user()->id,'preguntas' => null ]]);
+            
+            if($datos['model_type'] === 'App\Models\Venta'){
+                if($opinion->model->model_type == "App\Models\Negocio\Negocio"){
+                    Opinion::create([...$datos,...[
+                        'usuario_id' => $request->user()->id, 
+                        'preguntas' => null ,
+                        'model_id' => $opinion->model->model_id,
+                        'model_type' => $opinion->model->model_type
+                    ]]);
+                }
 
+            }
+          
             $opinion->imagenes;
             $opinion->usuario;
             $opinion->model;

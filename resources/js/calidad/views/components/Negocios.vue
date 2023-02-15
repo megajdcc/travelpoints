@@ -29,7 +29,7 @@
                             <template #btns>
         
                               <b-button :to="{ name: 'perfil.negocio', params: { url: item.url } }" variant="dark">
-                                <font-awesome-icon icon="fas fa-right-to-bracket" />
+                                <font-awesome-icon icon="fas fa-eye" />
                               </b-button>
         
                             </template>
@@ -163,7 +163,6 @@ export default{
 </script>
 
 <style lang="scss">
-
 .cards-simple-wrapper {
   margin-bottom: -30px;
 }
@@ -190,11 +189,10 @@ export default{
   margin-top: -25px;
 }
 
-.card-simple:hover .card-simple-content {
+.card-simple:hover .card-simple-content,
+.card-simple:active .card-simple-content {
   padding-top: 0px;
-  -ms-transform: translateX(-50%) translateY(-50%);
   transform: translateX(-50%) translateY(-50%);
-  -webkit-transform: translateX(-50%) translateY(-50%);
   -webkit-backface-visiblity: hidden;
 }
 
@@ -228,7 +226,7 @@ export default{
   background: -webkit-linear-gradient(top, rgba(54, 54, 54, 0) 0%, rgba(54, 54, 54, 0.7) 75%);
   background: linear-gradient(to bottom, rgba(54, 54, 54, 0) 0%, rgba(54, 54, 54, 0.7) 75%);
   content: '';
-  opacity: 0;
+  opacity: 1;
   -webkit-transform: translateY(50%);
   -ms-transform: translateY(50%);
   transform: translateY(50%);
@@ -329,7 +327,9 @@ export default{
   transition: all ease .35s;
 }
 
-.card-simple-actions .fa {
+.card-simple-actions .fa,
+.card-simple-actions .far,
+.card-simple-actions .fas {
   border: 1px solid #fff;
   border-radius: 50%;
   color: #fff;
@@ -366,5 +366,4 @@ export default{
   white-space: nowrap;
   z-index: 2;
 }
-
 </style>

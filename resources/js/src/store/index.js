@@ -118,6 +118,15 @@ import reservacion from './modules/negocios/reservacion.js'
 // sistema 
 import sistema from './modules/sistema.js'
 
+// categoria
+
+import categoriaProducto from './modules/tienda/categoriaProducto.js'
+
+// Tiena
+import tienda from './modules/tienda/tienda.js';
+
+
+
 
 Vue.use(Vuex)
 
@@ -166,11 +175,11 @@ export default new Vuex.Store({
 			}
 
 		},
+    
     setAuthMessage(state,data){
       state.auth.message = data;
 
     },
-
 
     setToken(state,token){
       state.token = token
@@ -256,7 +265,9 @@ export default new Vuex.Store({
     venta,
     horarioReservacion,
     reservacion,
-    sistema
+    sistema,
+    categoriaProducto,
+    tienda
   },
 
   strict: process.env.DEV,

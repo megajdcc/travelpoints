@@ -16,8 +16,8 @@
          
                   <swiper-slide v-for="(destino, i) in destinos" :key="i" class="rounded ">
          
-                     <b-card class="cursor-pointer" header-class="p-0 header-card" body-class="mt-1 px-1 "
-                        @click="$router.push(destino.ruta)">
+                     <b-card class="cursor-pointer" header-class="p-0 header-card" body-class="mt-1 px-1 contenido-card"
+                        @click="$router.push(destino.ruta)" style="height:370px !important; ">
          
                         <template #header>
                            <b-img  v-if="destino.imagenes.length" :src="`/storage/destinos/imagenes/${destino.imagenes[0].imagen}`" thumbnail class="card-img"/>
@@ -42,7 +42,7 @@
                               }}</span>
                         </section> -->
          
-                        <p class="text-justify">{{ destino.titulo.substring(0, 80) }}</p>
+                        <p class="text-justify parrafo-card">{{ destino.titulo }}</p>
          
                      </b-card>
          
@@ -227,5 +227,20 @@ export default {
    color: white;
    font-weight: 900;
 }
+
+.contenido-card {
+   overflow-y: hidden;
+}
+
+.parrafo-card {
+   overflow-y: hidden;
+   height: 60px;
+   text-overflow: ellipsis;
+   display: -webkit-box;
+   -webkit-line-clamp: 3;
+   -webkit-box-orient: vertical;
+
+}
+
 </style>
 

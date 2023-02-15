@@ -35,7 +35,6 @@ export default {
 
 	setup(){
 		// store.dispatch('rol/cargarRoles')
-		store.dispatch('permiso/cargarPermisos')
 
 		let {
 			routerTransition

@@ -27,7 +27,10 @@
     
             <section class="mt-2">
     
-              <h2 class="display-4 text-white">{{ negocio.nombre }}</h2>
+              <h2 class="display-4 text-white mb-0">{{ negocio.nombre }}</h2>
+
+              <el-rate :value="promedioCalificacion" disabled disabled-void-color="#4f4f4f" void-color="#000000"
+                  class="d-flex flex-nowrap rate-banner" size="large" style="font-size:30px" />
     
               <strong class="font-weight-bolder mb-1 text-white"> {{ negocio.breve }}</strong>
     
@@ -87,7 +90,8 @@ import useAuth from '@core/utils/useAuth'
 export default {
   
   props:{
-    negocio:Object
+    negocio:Object,
+    promedioCalificacion:Number
   },  
 
   components:{
@@ -164,6 +168,15 @@ export default {
 .btn-options-banner{
   width:100%;
 
+}
+
+.rate-banner{
+  
+  height:30px;
+
+  .el-rate__item .el-rate__icon{
+    font-size:30px;
+  }
 }
 
 

@@ -28,6 +28,21 @@ export default{
   getters:{
     draft(state){
       return clone(state.tienda)
+    },
+
+
+    getCurrency(state) {
+      return (tienda_id) => {
+          const tienda = state.tiendas.find(val => val.id === tienda_id)
+
+          if(tienda != undefined){
+            return tienda.divisa.iso
+          }
+
+          return 'MXN';
+          
+      }
+
     }
   },
 

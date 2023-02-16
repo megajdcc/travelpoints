@@ -4,15 +4,22 @@ namespace App\Models;
 
 use App\Trais\hasImages;
 use App\Trais\hasOpinion;
+use App\Trais\hasVenta;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Producto extends Model
 {
-    use HasFactory,hasOpinion,hasImages;
+    use HasFactory,hasOpinion,hasImages,hasVenta;
+    
+
+    public readonly string $model_type;
+
+
 
     protected $fillable = [
         'nombre',
+        'breve',
         'categoria_id',
         'tienda_id',
         'precio',
@@ -28,6 +35,10 @@ class Producto extends Model
         'envio' => 'array',
     ];
 
+
+    public function __construct(){
+        $this->model_type = 'App\Models\Producto';
+    }
 
     public function categoria(){
         return $this->belongsTo(CategoriaProducto::class,'categoria_id','id');

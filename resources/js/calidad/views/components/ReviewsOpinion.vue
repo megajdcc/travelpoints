@@ -178,7 +178,7 @@ export default {
       BListGroupItem,
       BMedia,
       BAvatar,
-      BLink
+      BLink,
    },
 
    props:{
@@ -189,7 +189,6 @@ export default {
          type:Object,
          required:true,
       }
-
    },
 
    setup(props){

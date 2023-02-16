@@ -2041,6 +2041,133 @@ export default [
       ]
    },
 
+
+   /*****************************************/
+   /* Productos
+   /*************************************** */
+   {
+      path: '/productos',
+      component: () => import('views/tienda/productos/index.vue'),
+      children: [
+         {
+            path: '',
+            component: () => import('views/tienda/productos/list.vue'),
+            name: 'producto.list',
+            meta: {
+               resource: 'productos',
+               action: 'read',
+               pageTitle: 'Productos',
+               breadcrumb: [
+                  { text: 'Home', to: { name: 'home' }, active: false },
+                  { text: 'Productos', active: true },
+               ]
+            }
+         },
+
+         {
+            path: 'create',
+            component: () => import('views/tienda/productos/create.vue'),
+            name: 'producto.create',
+            meta: {
+               resource: 'productos',
+               action: 'write',
+               pageTitle: 'Agregar Producto',
+               navActiveLink: 'producto.list',
+               breadcrumb: [
+                  { text: 'Home', to: { name: 'home' }, active: false },
+                  { text: 'Productos', active: false, to: { name: 'producto.list' } },
+                  { text: 'Crear Producto', active: true },
+
+               ]
+            }
+         },
+
+         {
+            path: ':id/edit',
+            props: true,
+            component: () => import('views/tienda/productos/edit.vue'),
+            name: 'producto.edit',
+            meta: {
+               resource: 'productos',
+               action: 'update',
+               pageTitle: 'Actualizar Producto',
+               navActiveLink: 'producto.list',
+               breadcrumb: [
+                  { text: 'Home', to: { name: 'home' }, active: false },
+                  { text: 'Productos', active: false, to: { name: 'producto.list' } },
+                  { text: 'Actualizar', active: true },
+
+               ]
+            }
+         },
+
+         {
+            path: ':id/imagenes',
+            props: true,
+            component: () => import('views/tienda/productos/imagenes.vue'),
+            name: 'producto.imagenes',
+            meta: {
+               resource: 'productos',
+               action: 'update',
+               pageTitle: 'Imagenes del Producto',
+               navActiveLink: 'producto.list',
+               breadcrumb: [
+                  { text: 'Home', to: { name: 'home' }, active: false },
+                  { text: 'Productos', active: false, to: { name: 'producto.list' } },
+                  { text: 'Imagenes', active: true },
+
+               ]
+            }
+         },
+
+
+         {
+            path: ':id/show',
+            props: true,
+            component: () => import('views/tienda/productos/perfil.vue'),
+            name: 'producto.show',
+            meta: {
+               resource: 'productos',
+               action: 'read',
+               pageTitle: 'Producto',
+               navActiveLink: 'producto.list',
+               breadcrumb: [
+                  { text: 'Home', to: { name: 'home' }, active: false },
+                  { text: 'Productos', active: false, to: { name: 'producto.list' } },
+                  { text: 'Perfil', active: true },
+
+               ]
+            }
+         }
+      ]
+   },
+
+   /*****************************************/
+   /* Ventas de Productos
+   /*************************************** */
+   {
+      path:'/productos/ventas',
+      component:() => import('views/tienda/productos/ventas/index.vue'),
+
+      children:[
+         {
+            path:'',
+            component:() => import('views/tienda/productos/ventas/list.vue'),
+            name:'ventas.productos.list',
+            meta:{
+               resources:'ventas productos',
+               action:'read',
+               pageTitle:'Ventas de Productos',
+               breadcrumb:[
+                  {text:'Home',to:{name:'home'},active:false},
+                  { text: 'Ventas', active: true },
+
+               ]
+            }
+         }
+      ]
+   },
+
    /*****************************************/
    /* Categoria de Productos
    /*************************************** */

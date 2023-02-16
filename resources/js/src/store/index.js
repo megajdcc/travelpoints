@@ -122,10 +122,11 @@ import sistema from './modules/sistema.js'
 
 import categoriaProducto from './modules/tienda/categoriaProducto.js'
 
-// Tiena
+// Tienda
 import tienda from './modules/tienda/tienda.js';
 
-
+// Producto
+import producto from './modules/tienda/producto.js';
 
 
 Vue.use(Vuex)
@@ -267,7 +268,8 @@ export default new Vuex.Store({
     reservacion,
     sistema,
     categoriaProducto,
-    tienda
+    tienda,
+    producto
   },
 
   strict: process.env.DEV,

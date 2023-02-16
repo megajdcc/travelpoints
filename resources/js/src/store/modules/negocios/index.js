@@ -76,7 +76,7 @@ export default{
       },
 
 
-      promedioCalificacion(state) {
+   promedioCalificacion(state) {
 
          return (negocio) => {
 

@@ -15,6 +15,14 @@ class CategoriaProductoController extends Controller
     }
 
 
+    public function getAll(){
+        $categorias = CategoriaProducto::all();
+
+        $categorias->load(['productos']);
+        
+        return response()->json($categorias);
+    }
+
 
     public function fetchData(Request $request){
             $datos = $request->all();

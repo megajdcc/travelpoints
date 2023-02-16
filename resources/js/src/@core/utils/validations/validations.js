@@ -34,7 +34,10 @@ export const email = extend('email', {
   message:'El campo de correo electrónico debe ser un correo electrónico válido'
 })
 
-export const min = extend('min', rule_min)
+export const min = extend('min', { ...rule_min, 
+  message:'Sú {_field_} no debe ser menor a {length}'
+  }
+)
 
 export const max = extend('max', {
   ...rule_max,

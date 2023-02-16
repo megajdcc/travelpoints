@@ -2,7 +2,7 @@ import useFilterTable from "@core/utils/useFilterTable"
 import { ref, computed } from '@vue/composition-api'
 import store from '@/store'
 
-export default function iseTiendasList() {
+export default function useTiendasList() {
 
   const tableColumns = ref([
     { key: "id", label: '#', sortable: true, },

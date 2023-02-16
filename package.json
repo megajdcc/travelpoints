@@ -84,6 +84,7 @@
     "vue-form-wizard": "0.8.4",
     "vue-gallery-slideshow": "^1.5.2",
     "vue-good-table": "2.21.0",
+    "vue-hover-zoom": "^1.0.1",
     "vue-i18n": "8.22.2",
     "vue-paypal-checkout": "^3.2.0",
     "vue-pdf": "^4.3.0",

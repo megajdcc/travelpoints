@@ -42,6 +42,19 @@ class TiendaController extends Controller
         return response()->json($tienda);
     }
 
+
+    public function getAll(){
+
+        $tiendas = Tienda::all();
+
+        $tiendas->load(['divisa','ciudad','estado.pais','iata']);
+        
+        return response()->json($tiendas);
+
+
+
+    }
+
     private function validar(Request $request,Tienda $tienda = null){
 
         return $request->validate([

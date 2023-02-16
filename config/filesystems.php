@@ -104,6 +104,13 @@ return [
             'visibility' => 'public',
         ],
 
+        'imagenes_productos' => [
+            'driver' => 'local',
+            'root' => storage_path('app/public/productos'),
+            'url' => env('APP_URL') . '/storage/productos',
+            'visibility' => 'public',
+        ],
+
 
 
 

@@ -82,6 +82,9 @@ class VentaController extends Controller
                     ]);
                 });
             })
+            ->when($datos['model_type'],function($query) use($datos) {
+                $query->where('model_type',$datos['model_type']);
+            })
             ->with(['model', 'empleado', 'cliente', 'divisa'])
             ->orderBy($datos['sortBy'] ?: 'id', $datos['isSortDirDesc'] ? 'desc' : 'asc')
             ->paginate($datos['perPage'] ?: 10000);
@@ -91,9 +94,18 @@ class VentaController extends Controller
         $ventas = $paginator->items();
 
         foreach($ventas as $venta){
-            $venta->empleado?->usuario;
+
+            if($venta->empleado){
+                $venta->empleado->usuario;
+                $venta->empleado->usuario->avatar = $venta->empleado->usuario->getAvatar();
+            }
+            
 
             $venta->cliente->avatar = $venta->cliente->getAvatar();
+
+            if($venta->model->model_type == 'App\Models\Producto'){
+                $venta->model?->tienda?->divisa;
+            }
 
         }
 

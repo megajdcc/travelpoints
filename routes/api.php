@@ -1,7 +1,7 @@
 <?php
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\{AuthController};
-use App\Http\Controllers\{AmenidadController, CargoController, CategoriaFaqController, CategoriaProductoController, CuponController, DestinoController, DivisaController, EmpleadoController, EventoController, FaqController, FormaPagoController, HomeController, HorarioController, HorarioReservacionController, IataController, MovimientoController, NegocioCategoriaController, NegocioController, UserController,NotificacionController,RolController,PermisoController, SolicitudController, TelefonoController,OpinionController, PanelController, PublicacionController, ReservacionController, SistemaController, TiendaController, VentaController};
+use App\Http\Controllers\{AmenidadController, CargoController, CategoriaFaqController, CategoriaProductoController, CuponController, DestinoController, DivisaController, EmpleadoController, EventoController, FaqController, FormaPagoController, HomeController, HorarioController, HorarioReservacionController, IataController, MovimientoController, NegocioCategoriaController, NegocioController, UserController,NotificacionController,RolController,PermisoController, SolicitudController, TelefonoController,OpinionController, PanelController, ProductoController, PublicacionController, ReservacionController, SistemaController, TiendaController, VentaController};
 use App\Http\Middleware\convertirNull;
 use Laravel\Socialite\Facades\Socialite;
 use App\Models\{CategoriaFaq, CategoriaProducto, Pais,Estado,Ciudad,};
@@ -424,6 +424,17 @@ Route::get('negocios/{negocio}/recomendacions/toggle/user/{usuario}',[NegocioCon
     Route::resource('tiendas', TiendaController::class);
 
 
+    /*****************************/
+    /* Producto
+    /*****************************/
+
+    Route::post('productos/fetch/data', [ProductoController::class, 'fetchData']);
+    Route::get('productos/{producto}/fetch/data', [ProductoController::class, 'fetch']);
+    Route::resource('productos', ProductoController::class);
+     Route::put('productos/{producto}/cargar/imagen', [ProductoController::class, 'cargarImagen']);
+    Route::delete('productos/{producto}/eliminar/imagen/{imagen}', [ProductoController::class, 'eliminarImagen']);
+
+
 
 
 });
@@ -486,5 +497,14 @@ Route::post('eventos/fetch/data', [EventoController::class, 'fetchData']);
 
 Route::post('negocios/fetch/data/public',[NegocioController::class,'fetchDataPublic']);
 
+// Rango de precios Productos
 
+Route::get('productos/rango/precios',[ProductoController::class,'rangoPrecios']);
+
+// Categorias de Productos
+
+Route::get('categoria-productos/get/all',[CategoriaProductoController::class,'getAll']);
+// Todas las tiendas
+
+Route::get('tiendas/get/all',[TiendaController::class,'getAll']);
 

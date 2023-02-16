@@ -67,13 +67,21 @@ export default [
       fontAwesome:true,
       children:[
          { title:'Tiendas',route:'tienda.list',icon:'fa-store',resource:'tiendas',action:'read',fontAwesome:true},
-         { title: 'Productos', route: 'productos.list', icon: 'fa-gifts', resource: 'productos', action: 'read', fontAwesome: true, iconFa:'fas'},
+         { title: 'Productos', route: 'producto.list', icon: 'fa-gifts', resource: 'productos', action: 'read', fontAwesome: true, iconFa:'fas'},
          {
             title: 'Categorías',
             route: 'categorias',
             icon: 'ListIcon',
             action: 'read',
             resource: 'categoria productos'
+         },
+
+         {
+            title: 'Ventas',
+            route: 'ventas.productos.list',
+            icon: 'ListIcon',
+            action: 'read',
+            resource: 'ventas productos'
          },
       ]
 

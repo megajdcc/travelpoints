@@ -45,8 +45,8 @@ class NuevoConsumo extends Notification implements ShouldQueue
      */
     public function toMail($notifiable)
     {
-        return (new newConsumo($this->consumo))
-            ->to($notifiable->email);
+        // return (new newConsumo($this->consumo))
+        //     ->to($notifiable->email);
     }
 
     /**
@@ -69,7 +69,7 @@ class NuevoConsumo extends Notification implements ShouldQueue
             'type' => 'light-success', // light-info , light-success, light-danger, light-warning
             'btn' => true,
             'btnTitle' => 'Ir a mis Consumos',
-            'url' => ['name' => 'socio.consumos',]
+            'url' => ['name' => 'socio.compras',]
         ];
     }
 }

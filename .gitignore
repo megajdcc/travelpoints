@@ -2,6 +2,7 @@ node_modules
 vendor
 .env
 .nvmrc
+.idea/
 public/storage
 storage
 public/js

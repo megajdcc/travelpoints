@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <template>
    <div class="container-fluid px-0">
 
@@ -33,3 +34,19 @@ export default {
 
 }
 </script>
+=======
+
+<script>
+
+   import {h} from '@vue/composition-api'
+
+   import Views from 'components/Views.vue'
+
+   export default{
+
+      setup(){
+         return () => h(Views)
+      }
+   }
+</script>
+>>>>>>> vite

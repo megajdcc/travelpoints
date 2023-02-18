@@ -6,7 +6,11 @@ use Illuminate\Http\Request;
 
 
 use App\Models\Usuario\Permiso;
+<<<<<<< HEAD
 
+=======
+use Illuminate\Database\Eloquent\Builder;
+>>>>>>> vite
 use Illuminate\Validation\Rule;
 
 use Illuminate\Support\Facades\DB;
@@ -31,10 +35,18 @@ class PermisoController extends Controller
         $paginator = Permiso::where([
             ['nombre','LIKE','%'.$datos['q'].'%','OR'],
         ])
+<<<<<<< HEAD
+=======
+        ->whereHas('panel',function(Builder $q) use($datos){
+            $q->orWhere('panel','LIKE',"%{$datos['q']}%");
+        })
+        ->with(['roles','usuarios','panel'])
+>>>>>>> vite
         ->orderBy($datos['sortBy'], $datos['isSortDirDesc'] ? 'desc' : 'asc')
         ->paginate($datos['perPage']  == 0 ? 10000 : $datos['perPage']);
 
         
+<<<<<<< HEAD
         $permisos = $paginator->items();
 
         foreach($permisos as $permiso){
@@ -44,13 +56,30 @@ class PermisoController extends Controller
 
         return response()->json([
             'permisos' => $permisos,
+=======
+        return response()->json([
+            'permisos' => $paginator->items(),
+>>>>>>> vite
             'total' => $paginator->total()
         ]);
 
     }
 
 
+<<<<<<< HEAD
 
+=======
+    private function  validar(Request $request, Permiso $permiso = null): array{
+
+        return $request->validate([
+            'nombre' => ['required',!is_null($permiso) ? Rule::unique('permisos','nombre')->ignore($permiso->id) : 'unique:permisos,nombre'],
+            'panel_id' => 'required'
+        ],[
+            'nombre.unique' => 'El nombre del permiso ya está registrado, inténte con otro'
+        ]);
+
+    } 
+>>>>>>> vite
     /**
      * Store a newly created resource in storage.
      *
@@ -59,6 +88,7 @@ class PermisoController extends Controller
      */
     public function store(Request $request)
     {
+<<<<<<< HEAD
         $datos = $request->validate([
             'nombre' => 'required|unique:permisos,nombre',
         ],[
@@ -73,6 +103,12 @@ class PermisoController extends Controller
                 $permiso  = Permiso::create([
                 'nombre' => $datos['nombre'],
                 ]);
+=======
+
+        try{
+            DB::beginTransaction();
+                $permiso  = Permiso::create($this->validar($request));
+>>>>>>> vite
                 
             DB::commit();
             $result = true;
@@ -109,6 +145,7 @@ class PermisoController extends Controller
      */
     public function update(Request $request, Permiso $permiso)
     {
+<<<<<<< HEAD
         $datos = $request->validate([
             'nombre' => ['required',Rule::unique('permisos','nombre')->ignore($permiso)],
         ],[
@@ -121,6 +158,13 @@ class PermisoController extends Controller
                 $permiso->nombre = $datos['nombre'];
                 $permiso->save();
                     
+=======
+
+        try{
+                DB::beginTransaction();
+                $permiso->update($this->validar($request,$permiso));
+
+>>>>>>> vite
                 DB::commit();
                 $message = 'Se ha actualizado con éxito el permiso';
                 $result = true;
@@ -129,6 +173,12 @@ class PermisoController extends Controller
                 $message = 'No se pudo actualizar el permiso';
 
                 $result = false;
+<<<<<<< HEAD
+=======
+
+                dd($e->getMessage());
+
+>>>>>>> vite
         }
 
         return response()->json(['result' => $result, 'permiso' => ($result) ? $permiso : null, 'message' => $message]);
@@ -160,6 +210,7 @@ class PermisoController extends Controller
 
 
 
+<<<<<<< HEAD
     public function listarPermisos(Request $request){
 
             $datos = Permiso::get();
@@ -178,6 +229,8 @@ class PermisoController extends Controller
                     ->rawColumns(['action'])
                     ->make(true);
     }
+=======
+>>>>>>> vite
 
 
     public function getPermissions(){

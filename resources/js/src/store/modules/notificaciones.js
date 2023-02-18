@@ -1,6 +1,10 @@
+<<<<<<< HEAD
 import axios from "axios";
 import router from '@/router';
 
+=======
+import router from '@/router';
+>>>>>>> vite
 export default{
 
 
@@ -73,12 +77,15 @@ export default{
 			axios.get(`/api/notificaciones/${usuario}`).then(respon => {
 				commit('setNotificaciones', {leidas:respon.data.leidas,sinleer:respon.data.sinleer,todas:respon.data.notificaciones});
 			}).catch(e => {
+<<<<<<< HEAD
 
 				if(e.response.status == 401){
 					localStorage.removeItem('token');
 					router.push({ name: 'login' })
 				}
 				// console.log(e.response.status);
+=======
+>>>>>>> vite
 				console.log(e);
 			})
 

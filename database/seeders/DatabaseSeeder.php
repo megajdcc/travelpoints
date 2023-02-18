@@ -15,6 +15,7 @@ class DatabaseSeeder extends Seeder
     {
 
         $this->call([
+<<<<<<< HEAD
         	UserSeeder::class,
             PaisSeed::class,
             EstadoSeed::class,
@@ -22,3 +23,15 @@ class DatabaseSeeder extends Seeder
         ]);
     }
 }
+=======
+            DivisaSeed::class,
+        	UserSeeder::class,
+            PaisSeed::class,
+            EstadoSeed::class,
+            CiudadSeed::class,
+            SistemaSeed::class
+        ]);
+    }
+}
+ 
+>>>>>>> vite

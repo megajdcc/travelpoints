@@ -50,6 +50,10 @@ class UserSeeder extends Seeder
                      $rol->permisos()->attach($v->id, ['actions' => json_encode($actions)]);
                     }
                 }
+<<<<<<< HEAD
+=======
+                
+>>>>>>> vite
                 if($rol->nombre == 'Usuario'){
 
                     $permisos_filtrados = $permisos_registrados->filter(function($v,$i){
@@ -68,10 +72,17 @@ class UserSeeder extends Seeder
                 'username' => '@megajdcc',
 				'nombre'   => 'Jhonatan Deivyth',
 				'apellido' => 'Crespo Colmenarez',
+<<<<<<< HEAD
 				'telefono' => '+584128505504',
 				'email' => 'megajdcc2009@gmail.com',
 				'password' => Hash::make('20464273jd'),
                 'is_password' => true,
+=======
+				'email' => 'megajdcc2009@gmail.com',
+				'password' => '20464273jd',
+                'is_password' => true,
+                'activo' => true,
+>>>>>>> vite
                 'rol_id' => Rol::where('nombre','Desarrollador')->first()->id
     		]);
 

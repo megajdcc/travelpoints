@@ -13,6 +13,10 @@ class CreateJobsTable extends Migration
      */
     public function up()
     {
+<<<<<<< HEAD
+=======
+        
+>>>>>>> vite
         Schema::create('jobs', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('queue')->index();
@@ -22,6 +26,10 @@ class CreateJobsTable extends Migration
             $table->unsignedInteger('available_at');
             $table->unsignedInteger('created_at');
         });
+<<<<<<< HEAD
+=======
+
+>>>>>>> vite
     }
 
     /**

@@ -32,6 +32,10 @@ tagVariant
 */
 import dashboard from './dashboard'
 import calidad from './calidad'
+<<<<<<< HEAD
+=======
+import negocio from '../negocio'
+>>>>>>> vite
 // import others from './others'
 // import chartsAndMaps from './charts-and-maps'
 // import uiElements from './ui-elements'

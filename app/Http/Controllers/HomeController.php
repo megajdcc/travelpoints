@@ -2,7 +2,12 @@
 
 namespace App\Http\Controllers;
 use Illuminate\Http\Request;
+<<<<<<< HEAD
 use App\Models\{User};
+=======
+use App\Models\{Atraccion, Destino, User};
+use App\Models\Negocio\Negocio;
+>>>>>>> vite
 
 class HomeController extends Controller
 {
@@ -13,7 +18,11 @@ class HomeController extends Controller
      */
     public function __construct()
     {
+<<<<<<< HEAD
         $this->middleware('auth');
+=======
+        $this->middleware('auth')->except(['searchPublic','searchLocation']);
+>>>>>>> vite
     }
 
     /**
@@ -74,4 +83,72 @@ class HomeController extends Controller
         return response()->json($result);
     }
 
+<<<<<<< HEAD
+=======
+    public function searchPublic(request $request){
+       
+        $q = $request->get('q');
+        
+        $destinos = Destino::where([
+            ['nombre','LIKE',"%{$q}%","OR"],
+            ['descripcion', 'LIKE', "%{$q}%", "OR"],
+            ['titulo', 'LIKE', "%{$q}%", "OR"],
+        ])->get();
+
+        foreach ($destinos as $key => $destino) {
+            $destino->ruta ="/Destinos?q={$destino->nombre}";
+            $destino->tipo = 'Destino';
+            $destino->imagenes;
+            $destino->imagen = $destino->imagenes[0] ? "/storage/destinos/imagenes/{$destino->imagenes[0]->imagen}" : '';
+
+        }
+
+        $atracciones = Atraccion::where([
+            ['nombre', 'LIKE', "%{$q}%", "OR"],
+            ['descripcion', 'LIKE', "%{$q}%", "OR"],
+            ['incluye', 'LIKE', "%{$q}%", "OR"],
+        ])->get();
+
+        foreach ($atracciones as $key => $atraccion) {
+            $atraccion->ruta = "/Atraccions?q={$atraccion->nombre}";
+            $atraccion->tipo = 'Atracción';
+            $atraccion->imagenes;
+            $atraccion->opinions;
+            $atraccion->imagen = $atraccion->imagenes[0] ? "/storage/atracciones/imagenes/{$atraccion->imagenes[0]->imagen}" : '';
+        }
+
+
+        $negocios = Negocio::where([
+            ['nombre', 'LIKE', "%{$q}%", "OR"],
+            ['descripcion', 'LIKE', "%{$q}%", "OR"],
+            ['breve', 'LIKE', "%{$q}%", "OR"],
+        ])->get();
+
+        foreach ($negocios as $key => $negocio) {
+            $negocio->ruta = "/{$negocio->url}";
+            $negocio->tipo = 'Negocio';
+            $negocio->imagenes;
+            $negocio->opinions;
+            $negocio->imagen = $negocio->imagenes[0] ? "/storage/negocios/fotos/{$negocio->imagenes[0]->imagen}" : '';
+            $negocio->cargar();
+        }
+        
+
+        $resultados = collect([...$destinos,...$atracciones,...$negocios]);
+
+        return response()->json($resultados);
+    }
+
+
+    public function searchLocation(Request $request){
+
+        $datos = $request->all();
+        return response()->json(collect([...Destino::getLocation($datos),...Atraccion::getLocation($datos)]));
+
+    }
+
+
+
+
+>>>>>>> vite
 }

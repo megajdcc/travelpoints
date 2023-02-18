@@ -1,5 +1,9 @@
 <template>
+<<<<<<< HEAD
    <div class="horizontal-layout" :class="[layoutClasses]" data-col="1-column" style="height:inherit">
+=======
+   <div class="horizontal-layout layout-travel" :class="[layoutClasses]"  data-col="1-column" style="min-height:100vh">
+>>>>>>> vite
 
       <!-- NAVBAR -->
       <b-navbar :style="{
@@ -53,7 +57,11 @@
 
       <!-- Footer -->
 
+<<<<<<< HEAD
       <footer class="footer footer-light" :class="[footerTypeClass]" style="box-shadow: 0 -1rem 3rem rgb(34 41 47 / 8%) !important;">
+=======
+      <footer class="footer footer-light footer-static bg-transparent"  style="box-shadow: 0 -1rem 3rem rgb(34 41 47 / 8%) !important;">
+>>>>>>> vite
          <slot name="footer">
             <app-travel-footer />
          </slot>

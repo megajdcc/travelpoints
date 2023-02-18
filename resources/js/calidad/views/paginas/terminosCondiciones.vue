@@ -3,7 +3,11 @@
       <b-row>
          <b-col cols="12">
             <b-card>
+<<<<<<< HEAD
                <strong class="font-weight-bolder text-primary">
+=======
+               <!-- <strong class="font-weight-bolder text-primary">
+>>>>>>> vite
                   Última actualización: Julio 2021.
                </strong>
                <p class="text-justify">
@@ -30,11 +34,21 @@
                   empresa Producciones Travel Media, S. de R.L. de C.V., domiciliada en Blvd. Francisco Medina Ascencio
                   Km. 7.5 Condominio Plaza Marina, Oficina 204, Fraccionamiento Marina Vallarta, Puerto Vallarta,
                   Jalisco. México.
+<<<<<<< HEAD
                </p>
 
             </b-card>
          </b-col>
          <b-col cols="12">
+=======
+               </p> -->
+
+               <section v-html="sistema.terminos"></section>
+
+            </b-card>
+         </b-col>
+         <!-- <b-col cols="12">
+>>>>>>> vite
             <b-card>
                <ol>
                   <li>
@@ -51,7 +65,11 @@
                         Nuestro servicio le brinda al Usuario una lista de negocios del Destino que se han afiliado a la
                         plataforma con el objetivo de presentar de manera directa al turista la información de su
                         negocio, el beneficio en puntos que otorgan a los usuarios por el registro de sus consumos en
+<<<<<<< HEAD
                         los negocios participantes, los eventos y otros beneficios como certificados de regalo
+=======
+                        los negocios participantes, los eventos y otros beneficios como Cuponer de regalo
+>>>>>>> vite
                         adicionales, etc.
                         <br>
                         El propósito de Travel Points es informativo para que el turista directamente conozca la
@@ -297,7 +315,11 @@
 
                </ol>
             </b-card>
+<<<<<<< HEAD
          </b-col>
+=======
+         </b-col> -->
+>>>>>>> vite
       </b-row>
    </b-container>
 </template>
@@ -312,8 +334,16 @@ import {
    BEmbed
 } from 'bootstrap-vue'
 
+<<<<<<< HEAD
 import { toRefs, computed } from '@vue/composition-api'
 import store from '@/store'
+=======
+import { toRefs, computed,onActivated,onMounted } from '@vue/composition-api'
+import store from '@/store'
+import useAuth from '@core/utils/useAuth';
+
+
+>>>>>>> vite
 export default {
 
    components: {
@@ -328,7 +358,17 @@ export default {
 
    setup() {
       const { windowWidth } = toRefs(store.state.app)
+<<<<<<< HEAD
       return {
+=======
+      const {authGoogle} = useAuth();
+      const {sistema} = toRefs(store.state.sistema)
+
+      onMounted(() => authGoogle())
+      
+      return {
+         sistema,
+>>>>>>> vite
          windowWidth,
          relation: computed(() => {
             return windowWidth.value < 762 ? '4by3' : '21by9'

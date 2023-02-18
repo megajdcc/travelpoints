@@ -32,9 +32,13 @@ export default {
   
   setup(props){  
     
+<<<<<<< HEAD
       const siteTraffic = ref({});
 
 
+=======
+    const siteTraffic = ref({});
+>>>>>>> vite
     return {
       siteTraffic,
     };

@@ -1,8 +1,15 @@
+<<<<<<< HEAD
 import axios from "axios"
 import { data } from "jquery"
 
 export default{
    namespaced:true,
+=======
+export default{
+   
+   namespaced:true,
+
+>>>>>>> vite
    state(){
       return {
          categoria:{
@@ -105,6 +112,10 @@ export default{
             })
 
             if(data.id){
+<<<<<<< HEAD
+=======
+               
+>>>>>>> vite
                formData.append("_method",'put')
 
                axios.post(`/api/negocio/categorias/${data.id}`,formData,{
@@ -186,6 +197,7 @@ export default{
             commit('toggleLoading',null,{root:true})
 
             axios.get(`/api/negocio/categorias/get/all`).then(({data}) => {
+<<<<<<< HEAD
                commit('setCategorias',data)
                resolve(data)
             }).catch(e => {
@@ -203,4 +215,22 @@ export default{
 
 
 
+=======
+
+               commit('setCategorias',data)
+               resolve(data)
+
+            }).catch(e => {
+
+               console.log(e)
+
+            }).then(() => {
+               commit('toggleLoading', null, { root: true })
+            })
+
+         })
+      }
+   }
+
+>>>>>>> vite
 }

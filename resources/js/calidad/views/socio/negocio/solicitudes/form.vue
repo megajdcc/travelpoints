@@ -3,6 +3,10 @@
    <validation-observer ref="formValidate" #default="{handleSubmit}">
       <h1>{{ titulo }}</h1>
       <p>{{ subTitulo }}</p>
+<<<<<<< HEAD
+=======
+      <p v-if="formulario.id"> La situación actual de la solicitud es la siguiente: <b-badge :variant="status.variant">{{ status.text }}</b-badge>   </p>
+>>>>>>> vite
       <b-form @submit.prevent="handleSubmit(guardar)" ref="formSolicitud">
          <b-card>
             <h2>Información de negocio</h2>
@@ -133,6 +137,23 @@
 
                      </b-form-group>
 
+<<<<<<< HEAD
+=======
+                     <b-form-group>
+                        <template #label>
+                           Divisa: <span class="text-danger">*</span>
+
+                           <validation-provider name="divisa_id" rules="required" #default="{valid,errors}">
+                              <v-select v-model="formulario.divisa_id" :reduce="(option) => option.id" :options="divisas" label="nombre" class="w-100" />
+
+                                 <b-form-invalid-feedback :state="valid">
+                                    {{ errors[0] }}
+                                 </b-form-invalid-feedback>
+                           </validation-provider>
+                        </template>
+                     </b-form-group>
+
+>>>>>>> vite
 
 
                   </b-col>
@@ -236,7 +257,11 @@
                                  <feather-icon icon="PhoneIcon" />
                               </b-input-group-prepend>
                               <b-form-input type="tel" v-model="formulario.telefono"
+<<<<<<< HEAD
                                  :state="errors.length ? false : null" placeholder="Número telefónico" />
+=======
+                                 :state="errors.length ? false : null" placeholder="Número telefónico" v-mask="'+#############'" />
+>>>>>>> vite
                            </b-input-group>
 
 
@@ -284,18 +309,32 @@
             <hr>
             <b-container fluid>
                <b-row>
+<<<<<<< HEAD
                   <b-col cols="12" md="8">
+=======
+                  <b-col cols="12" md="7">
+>>>>>>> vite
                      <b-form-group>
                         <template #label>
                            Dirección del negocio: <span class="text-danger">*</span>
                         </template>
+<<<<<<< HEAD
                         <validation-provider name="direccion" rules="required" #default="{errors}">
+=======
+                        <validation-provider name="direccion" rules="required" #default="{errors,valid}">
+>>>>>>> vite
                            <b-input-group>
                               <b-input-group-prepend is-text>
                                  <feather-icon icon="MapIcon" />
                               </b-input-group-prepend>
+<<<<<<< HEAD
                               <b-form-input v-model="formulario.direccion" :state="errors.length ? false : null"
                                  placeholder="Dirección del negocio" />
+=======
+
+                              <b-form-textarea v-model="formulario.direccion" :state="valid"
+                                 placeholder="Dirección del negocio" :rows="4" />
+>>>>>>> vite
 
                            </b-input-group>
                            <b-form-invalid-feedback>
@@ -304,7 +343,47 @@
                         </validation-provider>
                      </b-form-group>
                   </b-col>
+<<<<<<< HEAD
                   <b-col cols="12" md="4">
+=======
+                  <b-col cols="12" md="5">
+
+                     <b-form-group description="Seleccione el Aeropuerto mas cercano a este negocio, esto no es importante">
+                        <template #label>
+                           Iata | Aeropuerto mas cercano:
+                        </template>
+                        <validation-provider name="iata_id"  #default="{errors,valid}">
+                           <b-input-group>
+                           
+                              <v-select v-model="formulario.iata_id" :reduce="(option) => option.id" :options="iatas" label="aeropuerto" class=" w-100">
+                                 
+                                 <template #no-options>
+                                       NO Hay Código Iata para esta busqueda
+                                 </template>
+
+                                  <template #option="{ aeropuerto, codigo }">
+                                    <strong style="margin: 0">{{ aeropuerto }}</strong>
+                                    <em>{{ codigo }}</em>
+                                 </template>
+
+                                  <template #selected-option="{ aeropuerto, codigo }">
+                                       <div style="display: flex; align-items: baseline">
+                                          <strong>{{ aeropuerto }}</strong>
+                                          <em style="margin-left: 0.5rem">{{  codigo  }}</em>
+                                       </div>
+                                 </template>
+
+                              </v-select>
+                             
+
+                           </b-input-group>
+                           <b-form-invalid-feedback :state="valid">
+                              {{ errors[0] }}
+                           </b-form-invalid-feedback>
+                        </validation-provider>
+                     </b-form-group>
+
+>>>>>>> vite
 
                      <b-form-group>
                         <template #label>
@@ -410,6 +489,10 @@
 
                   </b-col>
                </b-row>
+<<<<<<< HEAD
+=======
+
+>>>>>>> vite
                <!-- google map -->
                <b-row>
                   <b-col>
@@ -519,7 +602,11 @@
                         </section>
 
                         <validation-provider name="logo" #default="{errors}">
+<<<<<<< HEAD
                            <b-form-file v-model="logo" ref="refLogo" plain accept=".jpb, .png" class="d-none"
+=======
+                           <b-form-file v-model="logo" ref="refLogo" plain accept="image/*" class="d-none"
+>>>>>>> vite
                               @input="logoSeleccionado" :state="errors.length ? false : null" />
 
                            <b-form-invalid-feedback :state="errors.length ? false : null">
@@ -549,7 +636,11 @@
 
                         <validation-provider name="foto" #default="{errors}">
 
+<<<<<<< HEAD
                            <b-form-file v-model="foto" ref="refFoto" plain accept=".jpb, .png" class="d-none"
+=======
+                           <b-form-file v-model="foto" ref="refFoto" plain accept="image/*" class="d-none"
+>>>>>>> vite
                               @input="fotoSeleccionada" :state="errors.length ? false : null" />
 
                            <b-form-invalid-feedback :state="errors.length ? false : null">
@@ -595,17 +686,29 @@
                            solicitud </span>
                         <span v-else>Enviar Solicitud</span>
                      </b-button>
+<<<<<<< HEAD
                      <b-button type="button" variant="success" v-loading="loading" title="Aceptar solicitud" @click="aceptar" v-if="admin">
+=======
+                     <b-button type="button" variant="success" v-loading="loading" title="Aceptar solicitud" @click="aceptar" v-if="admin && formulario.situacion == 1">
+>>>>>>> vite
                         <feather-icon icon="CheckIcon" />
                         Aceptar Solicitud
                      </b-button>
 
+<<<<<<< HEAD
                       <b-button type="button" variant="danger" v-loading="loading" title="Rechazar solicitud" @click="rechazar" v-if="admin">
+=======
+                      <b-button type="button" variant="danger" v-loading="loading" title="Rechazar solicitud" @click="rechazar" v-if="admin && formulario.situacion == 1">
+>>>>>>> vite
                         <feather-icon icon="XCircleIcon" />
                         Rechazar Solicitud
                      </b-button>
 
+<<<<<<< HEAD
                       <b-button type="button" variant="info" v-loading="loading" title="Regresar solicitud para su modificación" @click="regresar" v-if="admin">
+=======
+                      <b-button type="button" variant="info" v-loading="loading" title="Regresar solicitud para su modificación" @click="regresar" v-if="admin && formulario.situacion == 1">
+>>>>>>> vite
                         <feather-icon icon="ArrowLeftIcon" />
                         Regresar Solicitud
                      </b-button>
@@ -646,15 +749,30 @@ import {
    BInputGroupPrepend,
    BFormCheckboxGroup,
    BFormTextarea,
+<<<<<<< HEAD
    BFormFile
 } from 'bootstrap-vue'
 
 import useDireccion from '@core/utils/useDireccion'
+=======
+   BFormFile,
+   BBadge
+} from 'bootstrap-vue'
+
+import useDireccion from '@core/utils/useDireccion'
+import vSelect from 'vue-select'
+>>>>>>> vite
 
 import {toRefs,ref,onMounted,watch,computed} from '@vue/composition-api'
 import store from '@/store'
 import {required,min,max,comision,email} from '@validations'
+<<<<<<< HEAD
 import { optionsCurrency } from '@core/utils/utils'
+=======
+import { optionsCurrency,getSituacionSolicitud } from '@core/utils/utils'
+
+
+>>>>>>> vite
 
 export default {
 
@@ -678,6 +796,11 @@ export default {
       BFormCheckboxGroup,
       BFormTextarea,
       BFormFile,
+<<<<<<< HEAD
+=======
+      BBadge,
+      vSelect,
+>>>>>>> vite
       CurrencyInput:() => import('components/CurrencyInput')
    },
 
@@ -726,7 +849,13 @@ export default {
       const foto = ref(null)
       const formSolicitud = ref(null)
 
+<<<<<<< HEAD
 
+=======
+      const iatas = computed(() => store.state.iata.iatas);
+
+      const divisas = computed(() => store.state.divisa.divisas)
+>>>>>>> vite
       const optionsPlace = ref({
          content: '<strong>Méxio City</strong>',
       })
@@ -767,9 +896,24 @@ export default {
             })
          }
 
+<<<<<<< HEAD
          if(formulario.value.id){
             urlLogo.value = formulario.value.logo
             urlFoto.value = formulario.value.foto
+=======
+         if(!divisas.value.length){
+            store.dispatch('divisa/getDivisas')
+         }
+
+         if(!iatas.value.length){
+            store.dispatch('iata/getIatas')
+         }
+
+         if(formulario.value.id){
+            urlLogo.value = `/storage/negocios/logos/${formulario.value.logo}`
+            urlFoto.value =  `/storage/negocios/fotos/${formulario.value.foto}`
+
+>>>>>>> vite
             formulario.value.logo = null
             formulario.value.foto = null
             pais_id.value = formulario.value.estado.pais_id
@@ -785,7 +929,11 @@ export default {
 
          cargarForm()
          
+<<<<<<< HEAD
             input.value.$mapPromise.then((map) => {
+=======
+         input.value.$mapPromise.then((map) => {
+>>>>>>> vite
             var myControl = document.getElementById('myAutocomplete');
             myControl.index = 1;
             map.controls[google.maps.ControlPosition.TOP_CENTER].push(myControl);
@@ -931,7 +1079,14 @@ export default {
          formSolicitud,
          aceptar,
          regresar,
+<<<<<<< HEAD
          rechazar
+=======
+         rechazar,
+         divisas,
+         iatas,
+         status:computed(() => getSituacionSolicitud(formulario.value.situacion))
+>>>>>>> vite
       }
 
    },

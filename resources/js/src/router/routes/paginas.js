@@ -1,8 +1,18 @@
+<<<<<<< HEAD
+=======
+
+import store from '@/store'
+
+>>>>>>> vite
 export default [
    {
       path: '/',
       name: 'inicio',
+<<<<<<< HEAD
       component: () => import('views/paginas'),
+=======
+      component: () => import('views/paginas/index.vue'),
+>>>>>>> vite
       meta: {
         layout:'travel',
          resource: 'Auth',
@@ -114,4 +124,118 @@ export default [
    },
 
 
+<<<<<<< HEAD
+=======
+   {
+      path:'/search',
+      component:() => import('views/paginas/Search.vue'),
+      props:(route) => ({query:route.query.q}),
+      name:'searchResult',
+      meta:{
+         resource:'Auth',
+         layout:'travel'
+      }
+   },
+
+   {
+      path: '/Destinos',
+      component: () => import('views/paginas/DestinoPerfil.vue'),
+      props: (route) => ({ query: route.query.q }),
+      name: 'destino.perfil',
+
+      beforeEnter:(to,from,next) => {
+         store.dispatch('destino/fetchName',to.query.q).then(({result}) => {
+            if(result){
+               next()
+            }else{
+              next({name:'inicio'})
+            }
+
+
+         }).catch(e => {
+            console.log(e)
+            next({ name: 'inicio' })
+         })
+
+      },
+
+      meta: {
+         resource: 'Auth',
+         layout: 'travel'
+      }
+   },
+
+   // Atraccions
+   {
+      path: '/Atraccions',
+      component: () => import('views/paginas/AtraccionPerfil.vue'),
+      props: (route) => ({ query: route.query.q }),
+      name: 'atraccion.perfil',
+
+      beforeEnter: (to, from, next) => {
+         store.dispatch('atraccion/fetchName', to.query.q).then(({ result }) => {
+          
+            console.log(to,from)
+            if (result) {
+               
+               if(to.name !== from.name){
+                  next()
+               }
+               
+            } else {
+               next({ name: 'inicio' })
+            }
+
+
+         }).catch(e => {
+            console.log(e)
+            next({ name: 'inicio' })
+         })
+
+      },
+
+      meta: {
+         resource: 'Auth',
+         layout: 'travel'
+      }
+   },
+
+
+   // Tienda de Regalos
+
+   {
+      path:"/tienda-travel",
+      component: () => import('views/paginas/TiendaTravel.vue'),
+      name:'tienda.travel',
+      meta: {
+         resource: 'Auth',
+         layout: 'travel',
+         pageTitle:'Tienda de Regalos',
+         breadcrumb:[
+            {text:'Listado',active:true}
+         ]
+      }
+
+   },
+   {
+      path:'/tienda-travel/producto/:id/show',
+      component:() => import('views/paginas/PerfilProducto.vue'),
+      props:true,
+      name:'tienda.travel.show.producto',
+      meta: {
+         resource: 'Auth',
+         layout: 'travel',
+         pageTitle: 'Producto',
+         breadcrumb: [
+            { text: 'Listado', active: false,to:{name:'tienda.travel'} },
+            { text: 'Perfil', active: true },
+
+         ]
+      }
+   }
+
+
+
+
+>>>>>>> vite
 ]

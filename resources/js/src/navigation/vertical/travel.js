@@ -11,7 +11,11 @@ export default [
 
    {
       title: 'Tienda de Regalos',
+<<<<<<< HEAD
       route: 'store',
+=======
+      route: 'tienda.travel',
+>>>>>>> vite
       action: 'read',
       resource: 'Auth',
       icon: 'ShoppingBagIcon',

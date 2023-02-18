@@ -95,7 +95,11 @@
       <div class="customizer-section">
 
         <!-- Layout Type -->
+<<<<<<< HEAD
         <b-form-group
+=======
+        <!-- <b-form-group
+>>>>>>> vite
           label="Menu Layout"
         >
           <b-form-radio-group
@@ -103,7 +107,11 @@
             name="layout-type"
             :options="layoutTypeOptions"
           />
+<<<<<<< HEAD
         </b-form-group>
+=======
+        </b-form-group> -->
+>>>>>>> vite
 
         <!-- Collapsible -->
         <div

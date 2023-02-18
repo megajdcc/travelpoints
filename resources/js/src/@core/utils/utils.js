@@ -72,6 +72,10 @@ export const cantidadNoches = (fecha_inicial, fecha_final) => {
   return noches;
 } 
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> vite
 export const optionsCurrency = ref({
             currency:'MXN',
             locale:'es-ES',
@@ -79,10 +83,35 @@ export const optionsCurrency = ref({
          })
 
 
+<<<<<<< HEAD
 export const getSituacionSolicitud = (situacion) => {
   const situaciones = [{
     id:1,
     text:'Solicitud enviada',
+=======
+
+
+export const dateOption = { dateFormat: 'Y-m-d H:i', enableTime: true }
+export const optionsEditor = {
+    selector: 'textarea#premiumskinsandicons-snow',
+    skin: 'snow',
+    icons: 'thin',
+
+    plugins: 'quickbars image lists code table codesample advlist autolink lists link image charmap print preview anchor searchreplace visualblocks code fullscreen insertdatetime media table paste code wordcount ',
+
+    toolbar: 'formatselect | forecolor backcolor | bold italic underline strikethrough | link image blockquote codesample | align bullist numlist | code | table',
+    height: 400,
+    content_style: 'body { margin: 2rem 10%; }',
+    branding: false,
+    language: 'es'
+  } 
+  
+export const getSituacionSolicitud = (situacion) => {
+
+  const situaciones = [{
+    id:1,
+    text:'Solicitud enviada (Sin respuesta)',
+>>>>>>> vite
     variant:'primary'
   },{
     id:2,
@@ -154,6 +183,22 @@ export const getFecha = (fecha) => {
   return moment(fecha).format('LLL');
 } 
 
+<<<<<<< HEAD
+=======
+export const getDay = (dia) => {
+
+  const dias = ['Lunes','Martes','Miércoles','Jueves','Viernes','Sabado','Domingo'];
+
+
+  return dias[dia -1];
+
+} 
+
+export const getHora = (hora) => {
+  return moment(moment().format(`Y-M-D ${hora}`)).format('h:mm A');
+}
+
+>>>>>>> vite
 
 export const getImage = (archivo) => {
 

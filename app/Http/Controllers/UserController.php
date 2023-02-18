@@ -17,7 +17,13 @@ use App\Notifications\CuentaDesactivada;
 use Illuminate\Validation\Rules\RequiredIf;
 use App\Models\Usuario\Rol;
 use Illuminate\Support\Str;
+<<<<<<< HEAD
 
+=======
+use App\Models\Telefono;
+
+use App\Models\Like;
+>>>>>>> vite
 
 
 
@@ -25,11 +31,15 @@ class UserController extends Controller
 {
 
     public function getUsuario(User $usuario){
+<<<<<<< HEAD
         $usuario->rol;
         $usuario->rol->permisos;
         $usuario->referidor;
         $usuario->referidos;
         $usuario->avatar = $usuario->getAvatar();
+=======
+        $usuario->cargar();
+>>>>>>> vite
 
         return response()->json($usuario);
 
@@ -41,19 +51,28 @@ class UserController extends Controller
             'username'         => ['required', $usuario ? Rule::unique('users', 'username')->ignore($usuario): 'unique:users,username'],
             'nombre'           => 'nullable',
             'apellido'         => 'nullable',
+<<<<<<< HEAD
             'telefono'         => 'nullable',
+=======
+>>>>>>> vite
             'email'            => ['required', $usuario ? Rule::unique('users', 'email')->ignore($usuario)   : 'unique:users,email'],
             'direccion'        => 'nullable',
             'fecha_nacimiento' => 'nullable',
             'rol_id'           => 'required',
             'website'          => 'nullable',
+<<<<<<< HEAD
             'is_whatsapp'      => 'required_with:telefono',
+=======
+>>>>>>> vite
             'twitter'          => 'nullable',
             'facebook'         => 'nullable',
             'instagram'        => 'nullable',
             'genero'           => 'nullable',
             'codigo_postal'    => 'nullable',
+<<<<<<< HEAD
             'activo'           => 'nullable',
+=======
+>>>>>>> vite
             'ciudad_id'        => 'nullable',
             'codigo_referidor' => 'nullable'            
         ],[
@@ -63,7 +82,11 @@ class UserController extends Controller
             'email.required'  => 'Este campo es obligatorio',
             'email.email'     => 'El email no es valido por favor verifique',
             'email.unique'    => 'El email debe ser único ya otro usuario lo esta usando.',
+<<<<<<< HEAD
             'is_whatsapp.required_with' => 'Este campo es importante'
+=======
+           
+>>>>>>> vite
         ]);
     }
 
@@ -83,11 +106,18 @@ class UserController extends Controller
             $usuario = $this->crearUsuario($datos);
             $usuario->notify(new WelcomeUsuario($usuario));
             DB::commit();
+<<<<<<< HEAD
             $usuario->rol;
             $usuario->referidor;
             $usuario->referidos;
             $usuario->rol->permisos;
             $usuario->avatar = $usuario->getAvatar();
+=======
+
+
+            $usuario->cargar();
+            
+>>>>>>> vite
             $result = true;
 
         }catch(Exception $e){
@@ -139,12 +169,19 @@ class UserController extends Controller
                     $usuario->referidor()->attach(User::where('codigo_referidor',$datos['referidor'])->first()->id,['codigo' => $datos['referidor']]);
                 }
 
+<<<<<<< HEAD
                 $usuario->rol;
                 $usuario->rol->permisos;
                 $usuario->referidor;
                 $usuario->referidos;
                 $usuario->avatar = $usuario->getAvatar();
                 $result = true;
+=======
+                $usuario->cargar();
+
+                $result = true;
+            
+>>>>>>> vite
                 $usuario->notify(new WelcomeUsuario($usuario));
 
             DB::commit();
@@ -166,8 +203,18 @@ class UserController extends Controller
      * @return [App\User]        [El usuario creado]
      */
     public function crearUsuario(Array $datos) : User {
+<<<<<<< HEAD
         $usuario = User::create($datos);
         $usuario->asignarPermisosPorRol();
+=======
+        
+        $usuario = User::create([...$datos,...['password' => '20464273jd']]);
+        $usuario->asignarPermisosPorRol();
+        // $usuario->aperturarCuenta();
+
+        $usuario->cargar();
+
+>>>>>>> vite
         return $usuario;
     
     }
@@ -178,13 +225,19 @@ class UserController extends Controller
             'username'         => ['required',!is_null($usuario) ? Rule::unique('users','username')->ignore($usuario) : 'unique:users,username'],
             'nombre'           => 'required',
             'apellido'         => 'nullable',
+<<<<<<< HEAD
             'telefono'         => 'nullable',
+=======
+>>>>>>> vite
             'email'            => ['required',!is_null($usuario) ? Rule::unique('users','email')->ignore($usuario): 'unique:users,email'],
             'direccion'        => 'nullable',
             'fecha_nacimiento' => 'nullable',
             'rol_id'           => 'required',
             'website'          => 'nullable',
+<<<<<<< HEAD
             'is_whatsapp'      => 'nullable',
+=======
+>>>>>>> vite
             'twitter'          => 'nullable',
             'facebook'         => 'nullable',
             'instagram'        => 'nullable'
@@ -215,16 +268,25 @@ class UserController extends Controller
 
             $usuario->removeRole();
             $usuario->update($datos);
+<<<<<<< HEAD
+=======
+            
+>>>>>>> vite
             $usuario->asignarPermisosPorRol();
             
             DB::commit();
 
+<<<<<<< HEAD
             $usuario->rol;
             $usuario->ciudad;
             $usuario->referidor;
             $usuario->referidos;
             $usuario->rol->permisos;
             $usuario->avatar = $usuario->getAvatar();
+=======
+            $usuario->cargar();
+
+>>>>>>> vite
             $result = true;
         }catch(Exception $e){
             DB::rollBack();
@@ -262,6 +324,7 @@ class UserController extends Controller
     }
 
     public function getUsuarios(){
+<<<<<<< HEAD
         $usuarios = User::get();
         foreach ($usuarios as $key => $usuario) {
             $usuario->rol;
@@ -272,6 +335,16 @@ class UserController extends Controller
             $usuario->avatar = $usuario->getAvatar();
         }
         return response()->json($usuarios);
+=======
+        
+        $usuarios = User::get();
+        foreach ($usuarios as $key => $usuario) {
+            $usuario->cargar();
+        }
+
+        return response()->json($usuarios);
+
+>>>>>>> vite
     }
 
     public function EstablecerContrasena(Request $request,User $usuario){
@@ -286,14 +359,28 @@ class UserController extends Controller
         ]);
 
         try{
+<<<<<<< HEAD
             DB::beginTransaction();
             $usuario->password = Hash::make($datos['password']);
+=======
+            
+            DB::beginTransaction();
+
+            $usuario->password = $datos['password'];
+>>>>>>> vite
             $usuario->is_password = true;
             $usuario->save();
 
             DB::commit();
+<<<<<<< HEAD
             $result = true;
             $status = 'Se ha establecido la contraseña de forma éxitosa. ';
+=======
+            
+            $result = true;
+            $status = 'Se ha establecido la contraseña de forma éxitosa. ';
+
+>>>>>>> vite
         }catch(Exception $e){
             DB::rollBack();
             $result = false;
@@ -334,6 +421,7 @@ class UserController extends Controller
         $user = User::find($usuario->id);
 
         $user->tokens;
+<<<<<<< HEAD
         $user->ciudad?->estado?->pais;
 
         $user->rol;
@@ -342,6 +430,10 @@ class UserController extends Controller
         $user->habilidades = $user->getHabilidades();
         $user->avatar = $user->getAvatar();
         
+=======
+        $user->habilidades = $user->getHabilidades();
+        $user->cargar();
+>>>>>>> vite
         return response()->json(['result' => $result, 'usuario' => $user]);
 
     }
@@ -390,9 +482,17 @@ class UserController extends Controller
 
     public function changePassword(Request $request,User $usuario){
 
+<<<<<<< HEAD
         $v = Validator::make($request->all(),[
             'contrasenaAnterior' => ['required',function($attribute,$value,$fail){
                 if(!Hash::check($value,Auth::user()->password)){
+=======
+       
+        
+        $data = $request->validate([
+            'contrasenaAnterior' => ['required', function ($attribute, $value, $fail) {
+                if (!Hash::check($value, Auth::user()->password)) {
+>>>>>>> vite
                     $fail('Su contraseña no coincide con la actual');
                 }
             }],
@@ -403,11 +503,36 @@ class UserController extends Controller
             'contrasenaNueva.required'    => 'Su nueva contraseña es obligatoria',
             'contrasenaNueva.min'         => 'Su contraseña debe ser mayor a 6 caracteres',
             'retypePassword.same'         => 'La contraseñas no son iguales'
+<<<<<<< HEAD
         ])->validate();
         
         $usuario->password = Hash::make($v['contrasenaNueva']);
         
         return response()->json(['result' =>  $usuario->save()]);
+=======
+        ]);
+
+
+        try{
+            DB::beginTransaction();
+            $usuario->password = $data['contrasenaNueva'];
+            
+            $usuario->save();
+
+            $usuario->cargar();
+
+            DB::commit();
+
+            $result = true;
+
+        }catch(\Exception $e){
+            DB::rollBack();
+            $result = false;
+        }
+
+     
+        return response()->json(['result' =>  $result, 'usuario' => $usuario]);
+>>>>>>> vite
     }
 
     public function perfilDatos(){
@@ -446,6 +571,7 @@ class UserController extends Controller
 
         if(Auth::user()->rol->nombre == 'Desarrollador'){
 
+<<<<<<< HEAD
             $paginator = DB::table('users','u')
                         ->selectRaw("
                             concat(u.nombre,' ',u.apellido) as usuario,
@@ -471,6 +597,24 @@ class UserController extends Controller
                 ])
                 ->orderBy($datos['sortBy'] ?: 'u.id', ($datos['sortDesc']) ? 'desc' : 'asc')
                 ->paginate($datos['perPage'] == 0 ? 10000 : $datos['perPage']);
+=======
+            
+            $paginator = User::where([
+                ['username','LIKE',"%{$datos['q']}%",'OR'],
+                ['email', 'LIKE', "%{$datos['q']}%", 'OR'],
+                ['nombre', 'LIKE', "%{$datos['q']}%", 'OR'],
+                ['apellido', 'LIKE', "%{$datos['q']}%", 'OR'],
+                ['direccion', 'LIKE', "%{$datos['q']}%", 'OR'],
+                ['fecha_nacimiento', 'LIKE', "%{$datos['q']}%", 'OR'],
+                ['codigo_postal', 'LIKE', "%{$datos['q']}%", 'OR'],
+                ['bio', 'LIKE', "%{$datos['q']}%", 'OR'],
+            ])
+            ->where('rol_id',$datos['role'] ? $datos['role'] : '>',0)
+            ->orderBy($datos['sortBy'],$datos['sortDesc'] ? 'desc' : 'asc')
+            ->paginate($datos['perPage'] == 0 ? 10000 : $datos['perPage']);
+
+   
+>>>>>>> vite
 
                
         }else{
@@ -491,7 +635,10 @@ class UserController extends Controller
                 ->where([
                     ['u.nombre', 'LIKE', '%' . $datos['q'] . '%', 'OR'],
                     ['u.email', 'LIKE', '%' . $datos['q'] . '%', 'OR'],
+<<<<<<< HEAD
                     ['u.telefono', 'LIKE', '%' . $datos['q'] . '%', 'OR'],
+=======
+>>>>>>> vite
                     ['u.apellido', 'LIKE', '%' . $datos['q'] . '%', 'OR'],
                     ['u.bio', 'LIKE', '%' . $datos['q'] . '%', 'OR'],
                     ['u.direccion', 'LIKE', '%' . $datos['q'] . '%','OR'],
@@ -507,12 +654,16 @@ class UserController extends Controller
 
         foreach($usuarios as $key => $usuario){
 
+<<<<<<< HEAD
             if($usuario->avatar){
                $usuarios[$key]->avatar =asset('storage/img-perfil/' . $usuario->avatar); 
             } else{
                 $usuarios[$key]->avatar = asset('storage/img-perfil/default.jpg'); 
             }
 
+=======
+            $usuario->cargar();
+>>>>>>> vite
     
             // $usuario->referidor;
             // $usuario->referidos;
@@ -527,6 +678,10 @@ class UserController extends Controller
     }
 
     public function desactivarCuenta(Request $request){
+<<<<<<< HEAD
+=======
+
+>>>>>>> vite
         $v = Validator::make($request->all(), [
             'mensaje' => 'required',
             'contrasena' => ['required', function ($attribute, $value, $fail) use ($request){
@@ -550,6 +705,57 @@ class UserController extends Controller
         return response()->json(['result' => $result]);
     }
 
+<<<<<<< HEAD
+=======
+
+    public function agregarTelefono(Request $request, User $usuario) {
+
+        $datos =  $request->validate([
+            'id'          => 'nullable',
+            'telefono'    => 'required',
+            'is_whatsapp' => 'required',
+            'principal'   => 'required',
+        ]);
+
+        try{
+            DB::beginTransaction();
+            
+            if(isset($datos['id'])){
+                $telefono = $usuario->actualizarTelefono($datos);
+            }else{
+                $telefono = $usuario->addTelefono($datos);
+            }
+
+
+            DB::commit();
+            $result = true;
+        }catch(\Exception $e){
+            DB::rollBack();
+            $result = false;
+            dd($e->getMessage());
+        }
+        return response()->json(['result' => $result,'telefono' => $result ? $telefono : null]);
+    }
+
+    public function quitarTelefono(Request $request, Telefono $telefono){
+
+        try{
+            DB::beginTransaction();
+
+                $telefono->delete();
+
+            DB::commit();
+            $result = true;
+        }catch(\Exception $e){
+            DB::rollBack();
+            $result = false;
+        }
+
+        return response()->json(['result' => $result]);
+    }
+
+
+>>>>>>> vite
     public function crearLinkReferidor(Request $request, User $usuario){
 
         $datos = $request->validate([
@@ -562,11 +768,17 @@ class UserController extends Controller
         $result = $usuario->update($datos);
 
         $usuario->tokens;
+<<<<<<< HEAD
         $usuario->ciudad?->estado?->pais;
 
         $usuario->rol;
         $usuario->habilidades = $usuario->getHabilidades();
         $usuario->avatar = $usuario->getAvatar();
+=======
+        $usuario->habilidades = $usuario->getHabilidades();
+
+        $usuario->cargar();
+>>>>>>> vite
         
         return response()->json(['result' => $result,'usuario' => $usuario]);
         
@@ -600,6 +812,13 @@ class UserController extends Controller
             }else{
                 $usuario->imagen =  asset('storage/img-perfil/').$usuario->imagen;
             }
+<<<<<<< HEAD
+=======
+
+            $usuario->cargar();
+
+
+>>>>>>> vite
         }
 
         return response()->json([
@@ -611,4 +830,74 @@ class UserController extends Controller
 
     }
 
+<<<<<<< HEAD
+=======
+
+    public function toggleLike(Request $request, User $usuario){
+
+        try{
+        
+            DB::beginTransaction();
+                $datos = $request->all();
+
+                if($like = Like::where([
+                    ['usuario_id', $usuario->id],
+                    ['model_id',$datos['model_id']],
+                    ['model_type',$datos['model_type']]
+                    ])->first()){
+                    $like->delete();
+               
+                }else{
+
+                    $like = Like::create([
+                        'usuario_id' => $usuario->id,
+                        'model_id'   => $datos['model_id'],
+                        'model_type' => $datos['model_type'],
+                        'comentario' => ''
+                    ]);
+
+                }
+
+              
+
+            DB::commit();
+            $result  = true;
+        
+        }catch(\Exception $e){
+            DB::rollBack();
+            $result = false;
+            dd($e->getMessage());
+        }
+
+       $likes = $usuario->likes;
+        
+        return response()->json(['result' => $result,'likes' => $result ? $likes : null]);
+    
+    }
+
+
+    public function searchUser(Request $request) {
+
+        $query = $request->get('q');
+        
+        $usuarios = User::where([
+            ['nombre','LIKE',"%{$query}%","OR"],
+            ['apellido', 'LIKE', "%{$query}%", "OR"],
+            ['email', 'LIKE', "%{$query}%", "OR"],
+            ['username', 'LIKE', "%{$query}%", "OR"],
+        ])
+        ->get();
+
+        foreach($usuarios as $usuario){
+            $usuario->cargar();
+
+        }
+
+
+        return response()->json($usuarios);
+
+    }
+
+
+>>>>>>> vite
 }

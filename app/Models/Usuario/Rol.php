@@ -4,13 +4,21 @@ namespace App\Models\Usuario;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+<<<<<<< HEAD
+=======
+use Illuminate\Database\Eloquent\Casts\Attibute;
+>>>>>>> vite
 
 class Rol extends Model
 {
     use HasFactory;
 
     protected $fillable = [
+<<<<<<< HEAD
         'nombre'
+=======
+        'nombre',
+>>>>>>> vite
     ];
 
     public function permisos(){
@@ -24,5 +32,8 @@ class Rol extends Model
 
 
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> vite
 }

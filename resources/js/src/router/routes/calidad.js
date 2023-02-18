@@ -1,3 +1,8 @@
+<<<<<<< HEAD
+=======
+import store from '@/store';
+
+>>>>>>> vite
 export default [
    /*****************************************/
    /* SOCIO
@@ -27,6 +32,10 @@ export default [
                 name: 'miperfil',
                 component: () => import('views/socio/perfil/datos'),
                 meta: {
+<<<<<<< HEAD
+=======
+
+>>>>>>> vite
                    name: 'perfil',
                    layout: 'travel'
 
@@ -35,6 +44,21 @@ export default [
              },
 
              {
+<<<<<<< HEAD
+=======
+               path:'mi-cuenta',
+               name:'micuenta',
+               component:() => import('views/socio/perfil/cuenta.vue'),
+               meta:{
+                  name:'perfil',
+                  resource:'micuenta',
+                  action:'read',
+                  layout:'travel',
+               }
+             },
+
+             {
+>>>>>>> vite
                 path: 'invitados',
                 name: 'misreferidos',
                 component: () => import('views/socio/perfil/invitados'),
@@ -188,7 +212,11 @@ export default [
        },
        // reservaciones
        {
+<<<<<<< HEAD
           path: 'reservaciones',
+=======
+          path: '/reservaciones',
+>>>>>>> vite
           name: 'socio.reservaciones',
           component: () => import('views/socio/reservaciones'),
           meta: {
@@ -204,6 +232,7 @@ export default [
       //  consumos
 
        {
+<<<<<<< HEAD
           path: 'consumos',
           name: 'socio.consumos',
           component: () => import('views/socio/consumos'),
@@ -224,6 +253,49 @@ export default [
              resource: 'perfil',
              action: 'read',
              layout: 'travel'
+=======
+          path: '/consumos',
+          name: 'socio.consumos',
+          component: () => import('views/socio/consumos/index.vue'),
+          children:[
+            {
+               path:'',
+               name:'socio.consumos',
+               component:() => import('views/socio/consumos/list.vue'),
+               meta:{
+                  resource:'perfil',
+                  action:'read',
+                  layout:'travel',
+                  name:'consumos',
+                 
+               }
+            },
+             {
+                path: '/opinions',
+                name: 'socio.consumos.opinions',
+                component: () => import('views/socio/consumos/opinions.vue'),
+                meta: {
+                   resource: 'perfil',
+                   action: 'read',
+                   layout: 'travel',
+                   name: 'consumos',
+
+                }
+             }
+
+          ]
+
+       },
+      //  cupones
+       {
+          path: '/cupones',
+          name: 'socio.cupones',
+          component: () => import('views/socio/cupones'),
+          meta: {
+             resource: 'perfil',
+             action: 'read',
+             layout: 'travel',
+>>>>>>> vite
             //  navActiveLink: 'socio'
           }
 
@@ -335,6 +407,557 @@ export default [
       ]
    },
 
+<<<<<<< HEAD
+=======
+   /*****************************************/
+   /* Movimientos de Cuenta del sistema
+   /*************************************** */
+   {
+      path:'/movimientos',
+      component:() => import('views/movimientos/index.vue'),
+      children:[
+         {
+            
+            path:'',
+            component:() => import('views/socio/perfil/cuenta.vue'),
+            name:'movimientos',
+            
+            meta:{
+               resources:'movimientos',
+               action:'read'
+            }
+         }
+      ]
+
+      
+   },
+
+   /*****************************************/
+   /* Iatas
+   /*************************************** */
+
+   {
+      path:'/iatas',
+      component:() => import('views/iatas/index.vue'),
+      name:'iata',
+      children:[
+         {
+            path:'',
+            component:() => import('views/iatas/lists.vue'),
+            name:'iata.lists',
+            meta:{
+               resource:'iatas',
+               action:'read',
+               pageTitle:'Códigos IATA',
+               breadcrumb:[
+                  {
+                     text:'Home',
+                     to:{name:'home'},
+                     active:false,
+                  },
+                  {
+                     text:'Listado de Iatas',
+                     active:true
+                  }
+               ]
+            }
+         },
+
+         {
+            path: 'create',
+            component: () => import('views/iatas/create.vue'),
+            name: 'iata.create',
+
+            meta: {
+               resource: 'iatas',
+               action: 'write',
+               pageTitle: 'Registrar Código Iata',
+               navActiveLink:'iata.lists',
+
+               breadcrumb: [
+                  {
+                     text: 'Home',
+                     to: { name: 'home' },
+                     active: false,
+                  },
+
+                  {
+                     text: 'Listado de Código IATA',
+                     active: false,
+                     to:{name:'iata.lists'}
+
+                  },
+                  {
+                     text: 'Registrar nuevo Iata',
+                     active: true,
+
+                  }
+               ]
+            }
+         },
+         {
+            path: ':id/edit',
+            component: () => import('views/iatas/edit.vue'),
+            name: 'iata.edit',
+            props:true,
+            meta: {
+               resource: 'iatas',
+               action: 'update',
+               pageTitle: 'Actualizar Código Iata',
+               navActiveLink: 'iata.lists',
+
+               breadcrumb: [
+                  {
+                     text: 'Home',
+                     to: { name: 'home' },
+                     active: false,
+                  },
+
+                  {
+                     text: 'Listado de Códigos IATA',
+                     active: false,
+                     to: { name: 'iata.lists' }
+
+                  },
+                  {
+                     text: 'Actualizar nuevo Iata',
+                     active: true,
+
+                  }
+               ]
+            }
+         }
+
+      ]
+   },
+
+
+   /*****************************************/
+   /* Destinos
+   /*************************************** */
+   {
+      path:'/destinos',
+      component:() => import('views/destinos/index.vue'),
+
+      children:[
+
+         {
+            path:'',
+            component:() => import('views/destinos/lists.vue'),
+            name:'destino.lists',
+            meta:{
+               resource:'destinos',
+               action:'read',
+
+               pageTitle:'Destinos',
+
+               breadcrumb:[
+                  {
+                     text:'Home',
+                     to:{name:'home'},
+                     active:false
+                  },
+                  {
+                     text:'Destinos',
+                     active:true
+                  }
+               ]
+            }
+
+         },
+         {
+            path:'create',
+            name:'create.destino',
+            component:() => import('views/destinos/create.vue'),
+
+            meta:{
+               pageTitle:'Registrar Destino',
+               navActiveLink:'destino.lists',
+               resource:'destinos',
+               action:'write',
+               breadcrumb: [
+                  {
+                     text: 'Home',
+                     to: { name: 'home' },
+                     active: false
+                  },
+                  {
+                     text: 'Destinos',
+                     active: false,
+                     to:{name:'destino.lists'},
+
+                  },
+                  {
+                     text:'Crear Registro',
+                     active:true
+                  }
+               ]
+            }
+         },
+
+         {
+            path: ':id/edit',
+            name: 'edit.destino',
+            props:true,
+            component: () => import('views/destinos/edit.vue'),
+            meta: {
+               pageTitle: 'Registrar Destino',
+               navActiveLink: 'destino.lists',
+               resource: 'destinos',
+               action: 'write',
+               breadcrumb: [
+                  {
+                     text: 'Home',
+                     to: { name: 'home' },
+                     active: false
+                  },
+                  {
+                     text: 'Destinos',
+                     active: false,
+                     to: { name: 'destino.lists' },
+
+                  },
+                  {
+                     text: 'Crear Registro',
+                     active: true
+                  }
+               ]
+            }
+         },
+
+         {
+            path: ':id/imagenes',
+            name: 'imagenes.destino',
+            props: true,
+            component: () => import('views/destinos/FormImagen.vue'),
+            meta: {
+               pageTitle: 'Imagenes de Destino',
+               navActiveLink: 'destino.lists',
+               resource: 'destinos',
+               action: 'write',
+               breadcrumb: [
+                  {
+                     text: 'Home',
+                     to: { name: 'home' },
+                     active: false
+                  },
+                  {
+                     text: 'Destinos',
+                     active: false,
+                     to: { name: 'destino.lists' },
+
+                  },
+                  {
+                     text: 'Imagenes',
+                     active: true
+                  }
+               ]
+            }
+         },
+
+         
+      ]
+   },
+
+   /*****************************************/
+   /* Atracciones
+   /*************************************** */
+   {
+      path: '/atracciones',
+      component: () => import('views/destinos/atracciones/index.vue'),
+      props: true,
+      children: [
+         {
+            path: ':destino',
+            props:true,
+            name: 'atracciones.lists',
+            component: () => import('views/destinos/atracciones/lists.vue'),
+            meta: {
+               resource: 'atracciones',
+               action: 'read',
+               pageTitle: 'Atracciones de Destinos',
+               navActiveLink: 'destino.lists',
+               breadcrumb: [
+                  {
+                     text: 'Home',
+                     to: { name: 'home' },
+                     active: false,
+                  },
+
+                  {
+                     text: 'Atracciones',
+                     active: true
+                  }
+               ]
+            }
+         },
+
+         {
+            path: ':destino/create',
+            props: true,
+            name: 'create.atraccion',
+            component: () => import('views/destinos/atracciones/create.vue'),
+            meta: {
+               resource: 'atracciones',
+               action: 'write',
+               pageTitle: 'Crear Atracción',
+               navActiveLink: 'destino.lists',
+               breadcrumb: [
+                  {
+                     text: 'Home',
+                     to: { name: 'home' },
+                     active: false,
+                  },
+                  {
+                     text: 'Atracciones',
+                     to: { name: 'atracciones.lists' },
+                     active: false,
+                  },
+                  {
+                     text: 'Crear',
+                     active: true
+                  }
+               ]
+            }
+         },
+
+          {
+            path: ':id/edit',
+            props: true,
+            name: 'edit.atraccion',
+            component: () => import('views/destinos/atracciones/edit.vue'),
+            meta: {
+               resource: 'atracciones',
+               action: 'write',
+               pageTitle: 'Actualizar Atracción',
+               navActiveLink: 'destino.lists',
+               breadcrumb: [
+
+                  {
+                     text: 'Home',
+                     to: { name: 'home' },
+                     active: false,
+                  },
+
+                  {
+                     text: 'Atracciones',
+                     active: false,
+                  },
+
+                  {
+                     text: 'Actualizar',
+                     active: true
+                  }
+
+               ]
+            }
+         },
+
+         {
+            path: ':id/imagenes',
+            name: 'imagenes.atraccion',
+            props: true,
+            component: () => import('views/destinos/atracciones/FormImagen.vue'),
+            meta: {
+               pageTitle: 'Imagenes de Atracción',
+               navActiveLink: 'destino.lists',
+               resource: 'atracciones',
+               action: 'write',
+               breadcrumb: [
+                  {
+                     text: 'Home',
+                     to: { name: 'home' },
+                     active: false
+                  },
+                  {
+                     text: 'Destinos',
+                     active: false,
+                     to: { name: 'destino.lists' },
+
+                  },
+
+                  {
+                     text: 'Atracciones',
+                     active: false,
+                  },
+
+                  {
+                     text: 'Imagenes',
+                     active: true
+                  }
+               ]
+            }
+         },
+         // Horarios de Atracciones
+         {
+            path:':id/horarios',
+            component:() => import('views/destinos/atracciones/horarios.vue'),
+            name:'atraccion.horarios',
+            props:true,
+            meta:{
+               resource:'horarios',
+               action:'read',
+               pageTitle:'Horarios de Atracción',
+               navActiveLink:'destino.lists',
+
+               breadcrumb:[
+                  {
+                     text: 'Home',
+                     to: { name: 'home' },
+                     active: false
+                  },
+                  {
+                     text: 'Destinos',
+                     active: false,
+                     to: { name: 'destino.lists' },
+
+                  },
+
+                  {
+                     text: 'Atracciones',
+                     active: false,
+                  },
+
+                  {
+                     text: 'Horarios',
+                     active: true
+                  }
+               ]
+            }
+         }
+
+
+      ]
+   },
+
+
+   /*****************************************/
+   /* Eventos
+   /*************************************** */
+   {
+      path:'/eventos',
+      component:() => import('views/eventos/index.vue'),
+      children:[
+         {
+            path:'',
+            name:'eventos.list',
+            component:() => import('views/eventos/lists.vue'),
+            meta:{
+               
+               pageTitle:'Eventos',
+               resource:'eventos',
+               action:'read',
+               breadcrumb:[
+                  {
+                     text:'Home',
+                     to:{name:'home'},
+                     active:false
+                  },
+                  {
+                     text:'Eventos',
+                     active:true
+                  }
+               ]
+            }
+         },
+
+         {
+            path: 'create',
+            name: 'create.evento',
+            component: () => import('views/eventos/create.vue'),
+            meta: {
+
+               pageTitle: 'Eventos',
+               resource: 'eventos',
+               action: 'write',
+               navActiveLink:'eventos.list',
+               breadcrumb: [
+                  {
+                     text: 'Home',
+                     to: { name: 'home' },
+                     active: false
+                  },
+                  {
+                     text: 'Eventos',
+                     to:{name:'eventos.list'},
+                     active: false,
+                  },
+
+                  {
+                     text:'Crear',
+                     active:true
+                  }
+               ]
+            }
+         },
+
+         {
+            path: ':id/edit',
+            name: 'edit.evento',
+            props:true,
+            component: () => import('views/eventos/edit.vue'),
+            meta: {
+
+               pageTitle: 'Eventos',
+               resource: 'eventos',
+               action: 'update',
+               navActiveLink: 'eventos.list',
+               breadcrumb: [
+                  {
+                     text: 'Home',
+                     to: { name: 'home' },
+                     active: false
+                  },
+                  {
+                     text: 'Eventos',
+                     to: { name: 'eventos.list' },
+                     active: false,
+                  },
+
+                  {
+                     text: 'Actualizar',
+                     active: true
+                  }
+               ]
+            }
+         },
+
+         {
+            path: ':id/imagenes',
+            name: 'evento.imagenes',
+            props: true,
+            component: () => import('views/eventos/imagenes.vue'),
+            meta: {
+
+               pageTitle: 'Eventos',
+               resource: 'eventos',
+               action: 'update',
+               navActiveLink: 'eventos.list',
+               breadcrumb: [
+                  {
+                     text: 'Home',
+                     to: { name: 'home' },
+                     active: false
+                  },
+                  {
+                     text: 'Eventos',
+                     to: { name: 'eventos.list' },
+                     active: false,
+                  },
+
+                  {
+                     text: 'Imagenes',
+                     active: true
+                  }
+               ]
+            }
+         }
+
+
+      ]
+   },
+
+>>>>>>> vite
 
    /*****************************************/
    /* ROL DE USUARIO
@@ -825,6 +1448,73 @@ export default [
       ]
    },
 
+<<<<<<< HEAD
+=======
+
+   /*****************************************/
+   /* Negocios
+   /*************************************** */
+
+   {
+      path:'/negocios',
+      component:() => import('views/negocios/index.vue'),
+
+      children:[
+
+         {
+            path:'',
+            name:'negocio.lists',
+            component:() => import('views/negocios/lists.vue'),
+            meta:{
+               resource:'negocios',
+               action:'read',
+               pageTitle:'Negocios asociados',
+
+               breadcrumb:[
+                  {text:'Home',to:{name:'home'},active:false},
+                  { text: 'Listado', active: false },
+
+               ]
+            }
+         },
+         {
+            path:':id/edit',
+            props:true,
+            component:() => import('views/negocios/edit.vue'),
+            name: 'negocio.edit',
+            meta:{
+               resource:'negocios',
+               action:'update',
+               pageTitle:'Editar negocios',
+               navActiveLink:'negocio.lists',
+               breadcrumb:[
+                  {
+                     text:'Home',
+                     to:{name:'home'},
+                     active:false
+                  },
+
+                  {
+                     text: 'Negocios',
+                     to: { name: 'negocio.lists' },
+                     active: false
+                  },
+
+                  {
+                     text: 'Actualizar',
+                     active: true
+                  }
+
+               ]
+               
+            }
+         }
+
+      ]
+
+   },
+
+>>>>>>> vite
    /*****************************************/
    /* Solicitudes de negocios
    /*************************************** */
@@ -891,6 +1581,793 @@ export default [
    },
 
 
+<<<<<<< HEAD
+=======
+   /*****************************************/
+   /* Divisas
+   /*************************************** */
+   {
+      path:'/divisas',
+      name:'divisas',
+      component:() => import('views/divisas/index.vue'),
+
+      children:[
+         {
+            path:'',
+            name:'divisas.list',
+            component:() => import('views/divisas/list.vue'),
+            meta:{
+               pageTitle:'Divisas',
+               resource:'divisas',
+               action:'read',
+
+               breadcrumb:[
+                  {
+                     text:'Home',
+                     to:'home',
+                     active:false,
+                  },
+                  {
+                     text:'Listado',
+                     active:true
+                  }
+               ]
+            }
+         },
+
+         {
+            path: 'create',
+            name: 'create.divisa',
+            component: () => import('views/divisas/create.vue'),
+            meta: {
+               pageTitle: 'Divisas',
+               resource: 'divisas',
+               action: 'write',
+               navActiveLink:'divisas.list',
+               breadcrumb: [
+                  {
+                     text: 'Home',
+                     to: 'home',
+                     active: false,
+                  },
+                  {
+                     text: 'Listado',
+                     active: false,
+                     to: {name:'divisas.list'},
+
+                  },
+                  {
+                     text: 'Crear',
+                     active: true,
+
+                  }
+               ]
+            }
+         },
+
+         {
+            
+            path:':id/edit',
+            name:'divisa.edit',
+            props:true,
+            component: () => import('views/divisas/edit.vue'),
+
+            meta: {
+               pageTitle: 'Divisas',
+               resource: 'divisas',
+               action: 'update',
+               navActiveLink: 'divisas.list',
+               breadcrumb: [
+                  {
+                     text: 'Home',
+                     to: 'home',
+                     active: false,
+                  },
+                  {
+                     text: 'Listado',
+                     active: false,
+                     to: { name: 'divisas.list' },
+                  },
+
+                  {
+                     text: 'Editar',
+                     active: true,
+
+                  }
+               ]
+            }
+         }
+
+
+      ]
+
+      
+   },
+
+
+
+   /*****************************************/
+   /* PAnels
+   /*************************************** */
+
+   {
+      path:'/panels',
+      component:() => import('views/panels/index.vue'),
+
+      children:[
+         {
+            path:'',
+            component:() => import('views/panels/list.vue'),
+            name:'panel.list',
+            meta:{
+               resource:'panels',
+               action:'read',
+               pageTitle:'Paneles',
+               breadcrumb:[
+                  {
+                     text:'Home',
+                     to:{name:'home'},
+                     active:false,
+                  },
+
+                  {
+                     text: 'Listado',
+                     active:true
+                  }
+
+               ]
+            }
+         },
+         {
+            path:'create',
+            name:'panel.create',
+            component:() => import('views/panels/create.vue'),
+            meta: {
+               resource: 'panels',
+               action: 'write',
+               pageTitle: 'Paneles',
+               navActiveLink: 'panel.list',
+               breadcrumb: [
+                  {
+                     text: 'Home',
+                     to: { name: 'home' },
+                     active: false,
+                  },
+
+                  {
+                     text: 'Listado',
+                     active: false,
+                     to:{name:"panel.list"}
+                  },
+                  {
+                     text: 'Crear',
+                     active: true
+                  }
+
+               ]
+            }
+            
+         },
+
+         {
+            path: ':id/edit',
+            name: 'panel.edit',
+            props:true,
+            component: () => import('views/panels/edit.vue'),
+            meta: {
+               resource: 'panels',
+               action: 'update',
+               pageTitle: 'Paneles',
+               navActiveLink:'panel.list',
+               breadcrumb: [
+                  {
+                     text: 'Home',
+                     to: { name: 'home' },
+                     active: false,
+                  },
+
+                  {
+                     text: 'Listado',
+                     active: false,
+                     to: { name: "panel.list" }
+                  },
+                  {
+                     text: 'Editar',
+                     active: true
+                  }
+
+               ]
+            }
+
+         }
+
+      ]
+   },
+
+
+   /*****************************************/
+   /* Amenidades
+   /*************************************** */
+
+   {
+      path:'/amenidads',
+      component:() => import('views/amenidades/index.vue'),
+
+      children:[
+         {
+            path:'',
+            name:'amenidad.list',
+            component:() => import('views/amenidades/list.vue'),
+
+            meta:{
+               resource:'amenidades',
+               action:'read',
+               pageTitle:'Amenidades',
+               breadcrumb:[
+                  {
+                     text: 'Home',
+                     to: 'home',
+                     active: false,
+                  },
+                  {
+                     text: 'Listado',
+                     active: false,
+                  },
+
+                 
+               ]
+            }
+         },
+
+
+         {
+            path: 'create',
+            name: 'create.amenidad',
+            component: () => import('views/amenidades/create.vue'),
+
+            meta: {
+               resource: 'amenidades',
+               action: 'read',
+               pageTitle: 'Crear Amenidad',
+               navActiveLink:'amenidad.list',
+               breadcrumb: [
+                  {
+                     text: 'Home',
+                     to: 'home',
+                     active: false,
+                  },
+                  {
+                     text: 'Listado',
+                     active:false,
+                     to:{name:'amenidad.list'}
+                  },
+
+                  {
+                     text: 'Crear',
+                     active: true,
+                    
+                  },
+
+
+
+               ]
+            }
+         },
+
+         {
+            path: ':id/edit',
+            name: 'edit.amenidad',
+            props:true,
+            component: () => import('views/amenidades/edit.vue'),
+
+            meta: {
+               resource: 'amenidades',
+               action: 'read',
+               pageTitle: 'Editar Amenidad',
+               navActiveLink: 'amenidad.list',
+               breadcrumb: [
+                  {
+                     text: 'Home',
+                     to: 'home',
+                     active: false,
+                  },
+                  {
+                     text: 'Listado',
+                     active: false,
+                     to: { name: 'amenidad.list' }
+                  },
+
+                  {
+                     text: 'Editar',
+                     active: true,
+
+                  },
+
+
+
+               ]
+            }
+         }
+
+
+      ]
+   },
+
+   /*****************************************/
+   /* formas de pago
+   /*************************************** */
+
+   {
+      path: '/formas-pago',
+      component: () => import('views/formas-pago/index.vue'),
+
+      children: [
+         {
+            path: '',
+            name: 'formasPago.list',
+            component: () => import('views/formas-pago/list.vue'),
+
+            meta: {
+               resource: 'formas de pago',
+               action: 'read',
+               pageTitle: 'Formas de pago',
+               breadcrumb: [
+                  {
+                     text: 'Home',
+                     to: 'home',
+                     active: false,
+                  },
+                  {
+                     text: 'Listado',
+                     active: false,
+                  },
+
+
+               ]
+            }
+         },
+
+
+         {
+            path: 'create',
+            name: 'create.formasPago',
+            component: () => import('views/formas-pago/create.vue'),
+
+            meta: {
+               resource: 'formas de pago',
+               action: 'read',
+               pageTitle: 'Crear Forma de pago',
+               navActiveLink: 'formasPago.list',
+               breadcrumb: [
+                  {
+                     text: 'Home',
+                     to: 'home',
+                     active: false,
+                  },
+                  {
+                     text: 'Listado',
+                     active: false,
+                     to: { name: 'formasPago.list' }
+                  },
+
+                  {
+                     text: 'Crear',
+                     active: true,
+
+                  },
+
+
+
+               ]
+            }
+         },
+
+         {
+            path: ':id/edit',
+            name: 'edit.formasPago',
+            props: true,
+            component: () => import('views/formas-pago/edit.vue'),
+
+            meta: {
+               resource: 'formas de pago',
+               action: 'read',
+               pageTitle: 'Editar Forma',
+               navActiveLink: 'formasPago.list',
+               breadcrumb: [
+                  {
+                     text: 'Home',
+                     to: 'home',
+                     active: false,
+                  },
+                  {
+                     text: 'Listado',
+                     active: false,
+                     to: { name: 'formasPago.list' }
+                  },
+
+                  {
+                     text: 'Editar',
+                     active: true,
+
+                  },
+
+
+
+               ]
+            }
+         }
+
+
+      ]
+   },
+
+   {  
+      path:'/admin/sistema',
+      name:'sistema',
+      component:() => import('views/sistema.vue'),
+      meta:{
+         resource:'sistema',
+         action:'read',
+         pageTitle:'Datos del sistema',
+         breadcrumb:[
+            {
+               text: 'Home',
+               to: 'home',
+               active: false,
+            },
+            {
+               text: 'Configuración de sistema',
+               active: true,
+            },
+         ]
+      }
+   },
+
+
+   /*****************************************/
+   /* Tiendas
+   /*************************************** */
+   {
+      path:'/tiendas',
+      component:() => import('views/tienda/index.vue'),
+      children:[
+         {
+            path:'',
+            component:() => import('views/tienda/list.vue'),
+            name:'tienda.list',
+            meta:{
+               resource:'tiendas',
+               action:'read',
+               pageTitle:'Tiendas',
+               breadcrumb:[
+                  {text:'Home',to:{name:'home'},active:false},
+                  { text: 'Tiendas', active: true },
+               ]
+            }
+         },
+
+         {
+            path: 'create',
+            component: () => import('views/tienda/create.vue'),
+            name: 'tienda.create',
+            meta: {
+               resource: 'tiendas',
+               action: 'write',
+               pageTitle: 'Agregar Tienda',
+               navActiveLink:'tienda.list',
+               breadcrumb: [
+                  { text: 'Home', to: { name: 'home' }, active: false },
+                  { text: 'Tiendas', active: false,to:{name:'tienda.list'} },
+                  { text: 'Crear tienda', active: true },
+
+               ]
+            }
+         },
+
+         {
+            path: ':id/edit',
+            props:true,
+            component: () => import('views/tienda/edit.vue'),
+            name: 'tienda.edit',
+            meta: {
+               resource: 'tiendas',
+               action: 'update',
+               pageTitle: 'Actualizar Tienda',
+               navActiveLink: 'tienda.list',
+               breadcrumb: [
+                  { text: 'Home', to: { name: 'home' }, active: false },
+                  { text: 'Tiendas', active: false, to: { name: 'tienda.list' } },
+                  { text: 'Actualizar', active: true },
+
+               ]
+            }
+         }
+      ]
+   },
+
+
+   /*****************************************/
+   /* Productos
+   /*************************************** */
+   {
+      path: '/productos',
+      component: () => import('views/tienda/productos/index.vue'),
+      children: [
+         {
+            path: '',
+            component: () => import('views/tienda/productos/list.vue'),
+            name: 'producto.list',
+            meta: {
+               resource: 'productos',
+               action: 'read',
+               pageTitle: 'Productos',
+               breadcrumb: [
+                  { text: 'Home', to: { name: 'home' }, active: false },
+                  { text: 'Productos', active: true },
+               ]
+            }
+         },
+
+         {
+            path: 'create',
+            component: () => import('views/tienda/productos/create.vue'),
+            name: 'producto.create',
+            meta: {
+               resource: 'productos',
+               action: 'write',
+               pageTitle: 'Agregar Producto',
+               navActiveLink: 'producto.list',
+               breadcrumb: [
+                  { text: 'Home', to: { name: 'home' }, active: false },
+                  { text: 'Productos', active: false, to: { name: 'producto.list' } },
+                  { text: 'Crear Producto', active: true },
+
+               ]
+            }
+         },
+
+         {
+            path: ':id/edit',
+            props: true,
+            component: () => import('views/tienda/productos/edit.vue'),
+            name: 'producto.edit',
+            meta: {
+               resource: 'productos',
+               action: 'update',
+               pageTitle: 'Actualizar Producto',
+               navActiveLink: 'producto.list',
+               breadcrumb: [
+                  { text: 'Home', to: { name: 'home' }, active: false },
+                  { text: 'Productos', active: false, to: { name: 'producto.list' } },
+                  { text: 'Actualizar', active: true },
+
+               ]
+            }
+         },
+
+         {
+            path: ':id/imagenes',
+            props: true,
+            component: () => import('views/tienda/productos/imagenes.vue'),
+            name: 'producto.imagenes',
+            meta: {
+               resource: 'productos',
+               action: 'update',
+               pageTitle: 'Imagenes del Producto',
+               navActiveLink: 'producto.list',
+               breadcrumb: [
+                  { text: 'Home', to: { name: 'home' }, active: false },
+                  { text: 'Productos', active: false, to: { name: 'producto.list' } },
+                  { text: 'Imagenes', active: true },
+
+               ]
+            }
+         },
+
+
+         {
+            path: ':id/show',
+            props: true,
+            component: () => import('views/tienda/productos/perfil.vue'),
+            name: 'producto.show',
+            meta: {
+               resource: 'productos',
+               action: 'read',
+               pageTitle: 'Producto',
+               navActiveLink: 'producto.list',
+               breadcrumb: [
+                  { text: 'Home', to: { name: 'home' }, active: false },
+                  { text: 'Productos', active: false, to: { name: 'producto.list' } },
+                  { text: 'Perfil', active: true },
+
+               ]
+            }
+         }
+      ]
+   },
+
+   /*****************************************/
+   /* Ventas de Productos
+   /*************************************** */
+   {
+      path:'/productos/ventas',
+      component:() => import('views/tienda/productos/ventas/index.vue'),
+
+      children:[
+         {
+            path:'',
+            component:() => import('views/tienda/productos/ventas/list.vue'),
+            name:'ventas.productos.list',
+            meta:{
+               resources:'ventas productos',
+               action:'read',
+               pageTitle:'Ventas de Productos',
+               breadcrumb:[
+                  {text:'Home',to:{name:'home'},active:false},
+                  { text: 'Ventas', active: true },
+
+               ]
+            }
+         }
+      ]
+   },
+
+   /*****************************************/
+   /* Categoria de Productos
+   /*************************************** */
+   {
+      path:'/categoria-productos',
+      component:() => import('views/tienda/categorias-producto/index.vue'),
+
+      children:[
+         {
+            path:'',
+            name:'categorias',
+            component:() => import('views/tienda/categorias-producto/list.vue'),
+            meta:{
+               resource:'categoria productos',
+               action:'read',
+               pageTitle:'Categoría de Productos',
+               breadcrumb:[
+                  {text:'Home',to:{name:'home'},active:false},
+                  { text: 'Categorias', active: true },
+
+               ]
+            }
+         },
+
+         {
+            path: 'create',
+            name: 'categoriaProducto.create',
+            component: () => import('views/tienda/categorias-producto/create.vue'),
+            meta: {
+               resource: 'categoria productos',
+               action: 'write',
+               pageTitle: 'Crear Categoría',
+               navActiveLink:'categorias',
+               breadcrumb: [
+                  { text: 'Home', to: { name: 'home' }, active: false },
+                  { text: 'Categorias', active: false,to:{name:'categorias'} },
+                  { text: 'Crear', active: true },
+
+
+               ]
+            }
+         },
+
+
+         {
+            path: ':id/edit',
+            name: 'categoriaProducto.edit',
+            props:true,
+            component: () => import('views/tienda/categorias-producto/edit.vue'),
+            meta: {
+               resource: 'categoria productos',
+               action: 'update',
+               pageTitle: 'Editar Categoría',
+               navActiveLink: 'categorias',
+               breadcrumb: [
+                  { text: 'Home', to: { name: 'home' }, active: false },
+                  { text: 'Categorias', active: false, to: { name: 'categorias' } },
+                  { text: 'Editar', active: true },
+
+
+               ]
+            }
+         }
+      ]
+   },
+
+   /*****************************************/
+   /* PAGINA DE perfil de negocios
+   /*************************************** */
+   {
+      path: '/:url',
+      props:true,
+      component: () => import('views/paginas/negocio/index.vue'),
+
+      meta: {
+         layout: 'travel',
+         resource: 'Auth',
+         action:'read'
+      },
+
+      children:[
+
+        {
+         path:'',
+         component:() => import('views/paginas/negocio/perfil.vue'),
+         name:'perfil.negocio',
+         meta: {
+            layout: 'travel',
+         },
+
+        },
+
+         {
+            path: 'cupones',
+            component: () => import('views/paginas/negocio/cupones.vue'),
+            name: 'perfil.negocio.cupones',
+            meta: {
+               layout: 'travel',
+            },
+
+         },
+
+         {
+            path: 'publicaciones',
+            component: () => import('views/paginas/negocio/publicaciones.vue'),
+            name: 'perfil.negocio.publicaciones',
+            meta: {
+               layout: 'travel',
+            },
+
+         },
+
+         {
+            path: 'eventos',
+            component: () => import('views/paginas/negocio/eventos.vue'),
+            name: 'perfil.negocio.eventos',
+            meta: {
+               layout: 'travel',
+            },
+
+         },
+
+         {
+            path: 'opiniones',
+            component: () => import('views/paginas/negocio/opiniones.vue'),
+            name: 'perfil.negocio.opiniones',
+            meta: {
+               layout: 'travel',
+            },
+
+         }
+
+      ]
+      // beforeEnter: (to, from, next) => {
+         
+      //    store.dispatch('negocio/negocioUrl',to.params.url).then(({result}) => {
+
+      //       if(result){
+      //          next()
+      //       }else{
+      //          next({name:'inicio'})
+      //       }
+
+      //    }).catch(e => {
+      //       next({ name: 'inicio' })
+      //    })
+
+         
+         
+      // },
+     
+     
+      
+   },
+
+>>>>>>> vite
 
 
    /*****************************************/

@@ -36,9 +36,13 @@ export default{
          return clone(state.faq)
       },
 
+<<<<<<< HEAD
       draft(state){
          return clone(state.categoria)
       }
+=======
+   
+>>>>>>> vite
 
    },
 
@@ -214,7 +218,11 @@ export default{
             commit('toggleLoading', null, { root: true })
             if (data.id) {
 
+<<<<<<< HEAD
                axios.put(`/api/faqs/categorias/${data.id}`, data).then(({ data: datos }) => {
+=======
+               axios.put(`/api/faqs/faqs-categorias/${data.id}`, data).then(({ data: datos }) => {
+>>>>>>> vite
                   commit('updateCategoria', datos.categoria)
                   resolve(datos)
                }).catch(e => reject(e))
@@ -223,7 +231,11 @@ export default{
                   })
 
             } else {
+<<<<<<< HEAD
                axios.post(`/api/faqs/categorias`, data).then(({ data: datos }) => {
+=======
+               axios.post(`/api/faqs/faqs-categorias`, data).then(({ data: datos }) => {
+>>>>>>> vite
                   commit('pushCategoria', datos.categoria)
                   resolve(datos)
                }).catch(e => reject(e))
@@ -256,7 +268,11 @@ export default{
 
          return new Promise((resolve, reject) => {
             commit('toggleLoading', null, { root: true })
+<<<<<<< HEAD
             axios.delete(`/api/faqs/categorias/${data_id}`).then(({ data: datos }) => {
+=======
+            axios.delete(`/api/faqs/faqs-categorias/${data_id}`).then(({ data: datos }) => {
+>>>>>>> vite
                if (datos.result) {
                   commit('putCategoria', data_id)
                   resolve(datos)

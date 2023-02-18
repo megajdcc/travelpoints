@@ -36,6 +36,10 @@ class CreatePermisosTable extends Migration
             $table->foreign('rol_id')->references('id')->on('rols')->onUpdate('cascade')->onDelete('cascade');
             $table->foreign('permiso_id')->references('id')->on('permisos')->onUpdate('cascade')->onDelete('cascade');
         });
+<<<<<<< HEAD
+=======
+        
+>>>>>>> vite
     }
 
     /**

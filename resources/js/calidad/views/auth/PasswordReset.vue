@@ -192,6 +192,12 @@ export default {
       return this.password2FieldType === 'password' ? 'EyeIcon' : 'EyeOffIcon'
     },
   },
+<<<<<<< HEAD
+=======
+
+
+
+>>>>>>> vite
   methods: {
     togglePassword1Visibility() {
       this.password1FieldType = this.password1FieldType === 'password' ? 'text' : 'password'
@@ -200,6 +206,7 @@ export default {
       this.password2FieldType = this.password2FieldType === 'password' ? 'text' : 'password'
     },
     validationForm() {
+<<<<<<< HEAD
       this.$refs.simpleRules.validate().then(success => {
         if (success) {
          
@@ -237,6 +244,49 @@ export default {
               console.log(e)
            })
 
+=======
+
+
+      this.$refs.simpleRules.validate().then(success => {
+        
+        if(success) {
+
+          axios.get('/sanctum/csrf-cookie').then(res => {
+
+            axios.post('/api/auth/reset-password',{
+              token: this.token,
+              email: this.email,
+              password: this.password,
+              password_confirmation: this.cPassword
+            }).then(respon => {
+              if (respon.data.result) {
+
+                this.$router.push('/login')
+                this.$notify.success('La contraseña se ha reestablecido exitosamente.')
+              } else {
+                this.$notify.info({
+                  title: 'No se pudo reestablecer la contraseña',
+                  message: (respon.data.status == 'passwords.token') ? 'EL token ya no es valido, vuelve a enviar el link de reestablecimiento' : respon.data.status
+                })
+
+                if (respon.data.status == 'passwords.token') {
+
+                  this.$router.push({
+                    name: 'auth-forgot-password'
+                  });
+
+                }
+
+
+              }
+
+
+            }).catch(e => {
+              console.log(e)
+            })
+
+          })
+>>>>>>> vite
         }
       })
     },

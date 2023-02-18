@@ -51,7 +51,10 @@ export default function useFilterTable(){
       if (refTable.value) {
          refTable.value.refresh()
       }
+<<<<<<< HEAD
      
+=======
+>>>>>>> vite
    }
 
    watch([currentPage, perPage, searchQuery], () => {

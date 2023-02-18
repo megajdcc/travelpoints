@@ -115,8 +115,11 @@ export default {
       form.value.validate().then(success => {
 
         if (success) {
+<<<<<<< HEAD
         
         store.commit('toggleLoading');
+=======
+>>>>>>> vite
 
           // fetch('/api/auth/recuperar/contrasena',{
           //   method:'POST',
@@ -139,20 +142,30 @@ export default {
           // }).then(() => store.commit('toggleLoading'));
           
           axios.post('/api/auth/recuperar/contrasena',formulario.value).then(respon => {
+<<<<<<< HEAD
             console.log(respon)
+=======
+>>>>>>> vite
             Notification.success({
               title:'¡Hemos enviado su enlace de restablecimiento de contraseña por correo electrónico!'
             })
           }).catch(e => {
+<<<<<<< HEAD
             // console.log(e);
+=======
+           
+>>>>>>> vite
             if(e.response && e.response.status === 422){
               // console.log(e.response.data.errors);
               form.value.setErrors(e.response.data.errors);
             }else{
              console.log(e)
             }
+<<<<<<< HEAD
           }).then(() => {
             store.commit('toggleLoading');
+=======
+>>>>>>> vite
           })
 
         }

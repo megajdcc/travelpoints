@@ -9,9 +9,17 @@
 
                      <b-container fluid>
                         <b-row class="px-0">
+<<<<<<< HEAD
                            <b-col cols="2" class="px-0">
                               <b-avatar :src="usuario.avatar" />
                            </b-col>
+=======
+                           
+                           <b-col cols="2" class="px-0">
+                              <b-avatar :src="usuario.avatar" />
+                           </b-col>
+
+>>>>>>> vite
                            <b-col cols="10" class="px-0">
                               {{ ` ${usuario.nombre ? usuario.nombre +' ' +usuario.apellido : usuario.username}` }}
                            </b-col>
@@ -27,7 +35,10 @@
 
                   <b-nav-item :to="{ name: 'socio.reservaciones' }" active-class="active">
                      <span class="fas fa-credit-card"></span>
+<<<<<<< HEAD
 
+=======
+>>>>>>> vite
                      Reservaciones
                   </b-nav-item>
 
@@ -36,10 +47,17 @@
                      Consumos
                   </b-nav-item>
 
+<<<<<<< HEAD
                   <b-nav-item :to="{ name: 'socio.certificados' }" active-class="active">
                      <span class="fas fa-gifts"></span>
                      Certificados
                   </b-nav-item>
+=======
+                  <!-- <b-nav-item :to="{ name: 'socio.cupones' }" active-class="active">
+                     <span class="fas fa-ticke"></span>
+                     Cupones
+                  </b-nav-item> -->
+>>>>>>> vite
 
                   <b-nav-item :to="{ name: 'socio.compras' }" active-class="active">
                      <span class="fas fa-weight-hanging"></span>
@@ -78,18 +96,37 @@
                   <b-nav-item :to="{ name: 'socio.negocio.solicitudes' }"  active-class="active">
                      <span class="fas fa-file"></span>
                      Solicitudes enviadas
+<<<<<<< HEAD
+=======
+
+                     <b-badge variant="danger" pill>{{ solicitudesSinAceptar  }}</b-badge>
+>>>>>>> vite
                   </b-nav-item>
                </b-nav>
             </b-card>
 
             <b-card v-if="route.meta.name == 'perfil'">
+<<<<<<< HEAD
                <b-nav vertical card-header class="menu-socio">
 
+=======
+
+               <b-nav vertical card-header class="menu-socio">
+>>>>>>> vite
                   <b-nav-item :to="{ name: 'miperfil' }" exact active-class="active">
                      <span class="fas fa-user"></span>
                      Perfil de socio
                   </b-nav-item>
 
+<<<<<<< HEAD
+=======
+                  <b-nav-item :to="{ name: 'micuenta' }" exact active-class="active">
+                     <span class="fas fa-money-check"></span>
+                     Cuenta y Movimientos
+                  </b-nav-item>
+
+
+>>>>>>> vite
                   <b-nav-item :to="{ name: 'misreferidos' }" exact active-class="active">
                      <span class="fas fa-user-plus"></span>
                      Mis Referidos
@@ -113,6 +150,23 @@
                </b-nav>
             </b-card>
 
+<<<<<<< HEAD
+=======
+
+            <b-card v-if="route.meta.name == 'consumos'">
+
+               <b-nav vertical card-header class="menu-socio">
+
+                  <b-nav-item :to="{ name: 'socio.consumos' }"  exact active-class="active">
+                     <font-awesome-icon icon="fas fa-concierge-bell" />
+                     Mis consumos
+                  </b-nav-item>
+
+               </b-nav>
+            </b-card>
+
+
+>>>>>>> vite
          </b-col>
 
          <b-col cols="12" md="9">
@@ -133,7 +187,12 @@ import {
    BButton,
    BNav,
    BNavItem,
+<<<<<<< HEAD
    BAvatar
+=======
+   BAvatar,
+   BBadge
+>>>>>>> vite
 
 } from 'bootstrap-vue'
 import store from '@/store'
@@ -150,18 +209,41 @@ export default {
       BButton,
       BNav,
       BNavItem,
+<<<<<<< HEAD
       BAvatar
+=======
+      BAvatar,
+      BBadge
+>>>>>>> vite
 
    },
 
    setup() {
       const route = useRoute();
+<<<<<<< HEAD
 
       const { usuario } = toRefs(store.state.usuario)
 
       return {
          usuario,
          route
+=======
+      const {solicitudes} = toRefs(store.state.solicitud)
+      const { usuario } = toRefs(store.state.usuario)
+
+      onMounted(() => {
+
+         if(!solicitudes.value.length){
+               store.dispatch('solicitud/getSolicitudes');
+         }
+      })
+
+
+      return {
+         usuario,
+         route,
+         solicitudesSinAceptar:computed(() => `${solicitudes.value.filter(val => val.situacion != 3 ).length}` )
+>>>>>>> vite
       }
    },
 }

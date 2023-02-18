@@ -1,4 +1,7 @@
+<<<<<<< HEAD
 import axios from "axios";
+=======
+>>>>>>> vite
 import store from "..";
 
 export default {
@@ -12,7 +15,11 @@ export default {
 				id: null,
 				nombre:null,
 				apellido:null,
+<<<<<<< HEAD
 				telefono: '',
+=======
+				telefonos:[],
+>>>>>>> vite
 				bio: '',
 				website: '',
 				fecha_nacimiento: '',
@@ -39,7 +46,13 @@ export default {
 				codigo_referidor:null,
 				referidos:[],
 				referidor:[],
+<<<<<<< HEAD
 				tps:null,
+=======
+				likes:[],
+				negocios:[],
+				cupones:[]
+>>>>>>> vite
 
 
 			},
@@ -49,7 +62,11 @@ export default {
 				id: null,
 				nombre: null,
 				apellido: null,
+<<<<<<< HEAD
 				telefono: '',
+=======
+				telefonos:[],
+>>>>>>> vite
 				bio: '',
 				website: '',
 				fecha_nacimiento: '',
@@ -76,7 +93,14 @@ export default {
 				codigo_referidor: null,
 				referidos: [],
 				referidor: [],
+<<<<<<< HEAD
 				tps:null,
+=======
+				negocios: [],
+				cupones: []
+
+
+>>>>>>> vite
 
 			},
 
@@ -122,7 +146,11 @@ export default {
 				id: null,
 				nombre: null,
 				apellido: null,
+<<<<<<< HEAD
 				telefono: '',
+=======
+				telefonos:[],
+>>>>>>> vite
 				bio: '',
 				website: '',
 				fecha_nacimiento: '',
@@ -149,7 +177,12 @@ export default {
 				codigo_referidor: null,
 				referidos: [],
 				referidor: [],
+<<<<<<< HEAD
 				tps:null,
+=======
+				negocios: [],
+				cupones: []
+>>>>>>> vite
 
 			}
 		},
@@ -161,6 +194,10 @@ export default {
 
 			if(i != -1){
 				state.usuarios[i] = data;
+<<<<<<< HEAD
+=======
+			
+>>>>>>> vite
 				state.user = data;
 			}
 
@@ -219,7 +256,11 @@ export default {
 				username: null,
 				nombre: null,
 				apellido: null,
+<<<<<<< HEAD
 				telefono: '',
+=======
+				telefonos:[],
+>>>>>>> vite
 				bio: '',
 				website: '',
 				fecha_nacimiento: '',
@@ -246,12 +287,77 @@ export default {
 				codigo_referidor: null,
 				referidos: [],
 				referidor: [],
+<<<<<<< HEAD
 				tps: null,
 			}
 			
 		}
 
 
+=======
+				likes:[],
+			}
+			
+		},
+
+		agregarTelefono(state,user = 'user'){
+			
+			if(user == 'user'){
+				state.user.telefonos.push({
+					telefono: '',
+					is_whatsapp: false,
+					principal: false
+				})
+			}else{
+				state.usuario.telefonos.push({
+					telefono: '',
+					is_whatsapp: false,
+					principal: false
+				})
+			}
+
+				
+		},
+
+		
+
+		quitarTelefono(state,i){
+				state.user.telefonos.splice(
+					i,
+					1
+				) 
+			
+		},
+
+		updateTelefono(state, telefono) {
+
+			const i = state.user.telefonos.findIndex(val => val.telefono === telefono.telefono)
+			if (i != -1) {
+				state.user.telefonos[i] = telefono
+			}
+
+		},
+
+		actualizarTelefono(state,telefono){
+			const i = state.usuario.telefonos.findIndex(val => val.telefono === telefono.telefono)
+			if (i != -1) {
+				state.usuario.telefonos[i] = telefono
+			}
+		},
+
+		removerTelefono(state,i = 0 ){
+
+				state.usuario.telefonos.splice(
+					i,
+					1
+				) 
+		},
+
+
+		setLikesUser(state,likes){
+			state.usuario.likes = likes
+		}
+>>>>>>> vite
 	},
 
 	getters:{
@@ -264,8 +370,21 @@ export default {
 			return clone(state.usuario)
 		},
 
+<<<<<<< HEAD
 
 		conPermiso:(state) => {
+=======
+		isLikeModel:(state) => {
+
+			return ({model_id,model_type}) => {
+				return state.usuario.likes.filter(val => val.model_id === model_id && val.model_type == model_type).length ? true : false
+			}
+		},
+
+		conPermiso:(state) => {
+
+
+>>>>>>> vite
 			return (permiso) => {
 
 				if(state.usuario){
@@ -275,6 +394,10 @@ export default {
 				return false;
 				
 			}
+<<<<<<< HEAD
+=======
+
+>>>>>>> vite
 		},
 
 
@@ -371,6 +494,12 @@ export default {
 			}
 		},
 
+<<<<<<< HEAD
+=======
+		
+
+
+>>>>>>> vite
 
 		
 
@@ -463,7 +592,11 @@ export default {
 		async cambiarContrasena({commit,state},data){
 			return await new Promise((resolve, reject) => {
 				commit('toggleLoading', null, { root: true })
+<<<<<<< HEAD
 				axios.post(`/api/cambiar/contrasena/usuario/${state.usuario.id}`,data).then(({data}) => {
+=======
+				axios.put(`/api/cambiar/contrasena/usuario/${state.usuario.id}`,data).then(({data}) => {
+>>>>>>> vite
 					resolve(data)
 				}).catch(e => reject(e))
 				.then(() => {
@@ -600,7 +733,80 @@ export default {
 					.then(() => commit('toggleLoading',null,{root:true}))
 
 			})
+<<<<<<< HEAD
 		}	
+=======
+		},
+
+
+		guardarTelefono({state,commit},{telefono,usuario}){
+			
+			return new Promise((resolve, reject) => {
+
+				axios.put(`/api/usuarios/${usuario}/add/telefono`,telefono).then(({data}) => {
+					
+					if(data.result){
+
+						if(state.usuario.id === usuario){
+						
+							commit('actualizarTelefono',data.telefono)
+							commit('updatePerfil', state.usuario)
+						}
+
+						if(state.user.id){
+							commit('updateTelefono', data.telefono)
+						}
+
+						
+					}
+
+					resolve(data)
+
+				}).catch(e => {
+					reject(e)
+				})
+
+			})
+		},
+
+		quitarTelefono({commit},telefono){
+			return new Promise((resolve, reject) => {
+				
+				axios.delete(`/api/telefonos/${telefono.id}`).then(({data}) => {
+					resolve(data)
+				
+				}).catch(e => reject(e))
+
+			})
+		},
+
+
+		toggleLike({state,commit},model){
+
+			return new Promise((resolve, reject) => {
+				
+				axios.put(`/api/usuarios/${state.usuario.id}/toggle-like`,model).then(({data}) => {
+
+					if(data.result){
+						commit('setLikesUser',data.likes)
+						commit('updatePerfil',state.usuario)
+					} 
+					resolve(data)
+				}).catch(e => reject(e))
+
+			})
+		},
+
+
+		searchUser({commit},query){
+			return new Promise((resolve, reject) => {
+				
+				axios.post(`/api/users/search`,{q:query}).then(({data}) => resolve(data)).catch(e => reject(e))
+			})
+		}
+
+
+>>>>>>> vite
 
 
 

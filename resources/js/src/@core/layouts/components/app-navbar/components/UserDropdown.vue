@@ -5,7 +5,11 @@
         <p class="user-name font-weight-bolder mb-0">
           {{ usuario.nombre || usuario.username }}
         </p>
+<<<<<<< HEAD
         <span class="user-status">{{ usuario.rol.nombre }}</span>
+=======
+        <span class="user-status">{{ getRolPanel }}</span>
+>>>>>>> vite
       </div>
 
       <b-avatar size="40" :src=" is_loggin ? usuario.avatar : '/storage/img-perfil/default.jpg'" variant="light-primary"
@@ -18,10 +22,20 @@
 
     <b-dropdown-item :to="{ name: 'home' }" link-class="d-flex align-items-center" v-if="is_loggin && $can('read','home')">
       <feather-icon size="16" icon="HomeIcon" class="mr-50" />
+<<<<<<< HEAD
       <span>Home</span>
     </b-dropdown-item>
 
 
+=======
+      <span>Panel Travel</span>
+    </b-dropdown-item>
+
+    <b-dropdown-item :to="{ name: 'negocio.home' }" link-class="d-flex align-items-center" v-if="is_loggin && isNegocios">
+      <font-awesome-icon icon="fas fa-store" class="mr-50 fa-2xl" />
+      <span>Panel Negocio</span>
+    </b-dropdown-item>
+>>>>>>> vite
 
     <b-dropdown-item :to="{ name: 'miperfil' }" link-class="d-flex align-items-center" v-if="is_loggin">
       <feather-icon size="16" icon="SettingsIcon" class="mr-50" />
@@ -51,7 +65,11 @@ import {
 } from 'bootstrap-vue'
 
 import { avatarText } from '@core/utils/filter'
+<<<<<<< HEAD
 import { computed } from '@vue/composition-api';
+=======
+import { computed,toRefs } from '@vue/composition-api';
+>>>>>>> vite
 import store from '@/store';
 
 import useAuth from '@core/utils/useAuth'
@@ -62,6 +80,7 @@ export default {
     BDropdownItem,
     BDropdownDivider,
     BAvatar,
+<<<<<<< HEAD
   },
 
   setup(props){
@@ -72,12 +91,83 @@ export default {
       is_loggin
     } = useAuth();
 
+=======
+  }, 
+
+  props:{
+    
+    panel:{
+      type:String,
+      default:'travel',
+    },
+
+    negocioId:{
+      type:Number,
+      required:false
+    }
+
+  },
+
+
+  setup(props){
+    const usuario = computed(() => store.state.usuario.usuario)
+    const { panel,negocioId } = toRefs(props)
+
+    const {negocio} = toRefs(store.state.negocio)
+
+    const {
+      logout,
+      is_loggin,
+      isNegocios
+    } = useAuth();
+
+    const getRolPanel = computed(() => {
+
+      if(panel.value === 'negocio'){
+        
+        const neg = usuario.value.negocios.find(val => val.id === negocioId.value);
+
+        if(neg){
+            const cargo_id = neg.pivot.cargo_id;
+
+            if (cargo_id) {
+
+              const cargo = negocio.value.cargos.find(val => val.id === cargo_id)
+
+              if (cargo) {
+                return cargo.cargo;
+              }
+
+              return 'Sin definir';
+
+            }
+
+        }
+        
+        
+      
+       
+
+        return 'Sin definir';
+
+      }
+
+      return usuario.value.rol.nombre ;
+    })
+
+>>>>>>> vite
     return {
       usuario,
       loading:computed(() => store.state.loading),
       avatarText,
       logout,
+<<<<<<< HEAD
       is_loggin
+=======
+      isNegocios,
+      is_loggin,
+      getRolPanel
+>>>>>>> vite
 
     };
   },

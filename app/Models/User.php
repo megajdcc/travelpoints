@@ -8,7 +8,10 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+<<<<<<< HEAD
 use App\Trais\Has_roles;
+=======
+>>>>>>> vite
 
 use App\Trais\HasDireccion;
 
@@ -18,11 +21,40 @@ use Illuminate\Broadcasting\Channel;
 
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Support\Facades\{Hash};
+<<<<<<< HEAD
+=======
+use App\Trais\{hasCuenta, Has_roles, hasTelefonos};
+
+use App\Models\Divisa;
+use App\Models\Negocio\Cupon;
+use App\Models\Negocio\Negocio;
+use App\Models\Negocio\Reservacion;
+use App\Models\Usuario\Permiso;
+>>>>>>> vite
 
 class User extends Authenticatable
 {
     use HasApiTokens,HasFactory, Notifiable;
     use Has_roles;
+<<<<<<< HEAD
+=======
+    use hasCuenta,hasTelefonos;
+
+
+    public readonly string $model_type;
+
+    public readonly int $divisa_id;
+
+
+
+    public function __construct(
+        string $model_type = 'App\Models\User')
+    {
+        $this->model_type = $model_type;
+        $this->divisa_id = Divisa::where('principal',true)->first()->id;
+        
+    }
+>>>>>>> vite
 
     /**
      * The attributes that are mass assignable.
@@ -33,7 +65,10 @@ class User extends Authenticatable
         'username',
         'nombre',
         'apellido',
+<<<<<<< HEAD
         'telefono',
+=======
+>>>>>>> vite
         'bio',
         'website',
         'fecha_nacimiento',
@@ -48,14 +83,20 @@ class User extends Authenticatable
         'rol_id',
         'token',
         'lenguaje', // 1 => es
+<<<<<<< HEAD
         'is_whatsapp',
+=======
+>>>>>>> vite
         'twitter',
         'facebook',
         'instagram',
         'ultimo_login',
         'ciudad_id' ,
         'codigo_referidor',
+<<<<<<< HEAD
         'tps'
+=======
+>>>>>>> vite
     ];
 
     /**
@@ -77,12 +118,16 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
         'is_password'       => 'boolean',
+<<<<<<< HEAD
         'is_whatsapp'       => 'boolean',
+=======
+>>>>>>> vite
         'activo'            => 'boolean',
         'tps'               => 'float'
     ];
 
 
+<<<<<<< HEAD
     protected $attributes = [
         'is_whatsapp' => false,
         'activo' => true
@@ -97,6 +142,21 @@ class User extends Authenticatable
         );
 
     }
+=======
+    // protected $attributes = [
+    //     'activo' => true,
+    // ];
+
+
+    // public function genero():Attribute{
+
+    //     return Attribute::make(
+    //         get:fn($val) => $val,
+    //         set:fn($val) => $val == 'Masculino' ? 1 : 2,
+    //     );
+
+    // }
+>>>>>>> vite
 
     public function password(): Attribute
     {
@@ -149,7 +209,11 @@ class User extends Authenticatable
     }
 
     public function permisos(){
+<<<<<<< HEAD
         return $this->belongsToMany('App\Models\Usuario\Permiso','usuario_permisos','usuario_id','permiso_id')->withPivot(['action']);
+=======
+        return $this->belongsToMany(Permiso::class,'usuario_permisos','usuario_id','permiso_id')->withPivot(['action']);
+>>>>>>> vite
     }
 
     public function getTokenText(){
@@ -205,7 +269,74 @@ class User extends Authenticatable
         return $this->hasMany(Solicitud::class, 'usuario_id', 'id');
     }
 
+<<<<<<< HEAD
 
     
+=======
+    public function likes(){
+        return $this->hasMany(Like::class,'usuario_id','id');
+    }
+
+    public function negocios(){
+        return $this->belongsToMany(Negocio::class,'empleados','usuario_id','negocio_id')->withPivot(['cargo_id']);
+    }
+
+
+    public function reservaciones()
+    {
+        return $this->hasMany(Reservacion::class, 'usuario_id', 'id');
+    }
+
+
+    public function reservacionesOperadas()
+    {
+        return $this->hasMany(Reservacion::class, 'operador_id', 'id');
+    }   
+
+
+    public function recomendaciones(){
+        return $this->hasMany(Recomendacion::class,'usuario_id','id');
+
+    }
+
+    public function seguidos()
+    {
+        return $this->hasMany(Seguidor::class, 'usuario_id', 'id');
+    }   
+
+
+    public function cupones(){
+        return $this->belongsToMany(Cupon::class,'cupon_usuario','usuario_id','cupon_id')->withPivot(['status']);
+    }
+
+
+    public function cargar(): User{
+
+        
+        $this->tokens;
+        $this->rol?->permisos;
+        $this->habilidades = $this->getHabilidades();
+        $this->avatar = $this->getAvatar();
+        $this->ciudad?->estado?->pais;
+        $this->cuenta?->divisa;
+        $this->cuenta?->movimientos;
+        $this->telefonos;
+        $this->likes;
+        $this->negocios;
+        $this->solicitudes;
+        $this->faqs;
+        $this->referidor;
+        $this->referidos;
+        $this->permisos;
+        $this->reservaciones;
+        $this->reservacionesOperadas;
+        $this->recomendaciones;
+        $this->seguidos;
+        $this->cupones;
+
+        return $this;
+    }
+
+>>>>>>> vite
 
 }

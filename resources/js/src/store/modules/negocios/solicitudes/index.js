@@ -1,5 +1,8 @@
+<<<<<<< HEAD
 import axios from "axios"
 
+=======
+>>>>>>> vite
 export default {
    namespaced: true,
    state() {
@@ -31,7 +34,16 @@ export default {
             solicitud:null,
             ciudad:null,
             estado:null,
+<<<<<<< HEAD
             usuario:null
+=======
+            usuario:null,
+
+            divisa_id:null,
+            divisa:null,
+            iata_id:null,
+            iata:null
+>>>>>>> vite
 
          },
          solicitudes: [],
@@ -83,7 +95,20 @@ export default {
             solicitud: null,
             ciudad: null,
             estado: null,
+<<<<<<< HEAD
             usuario: null
+=======
+            usuario: null,
+
+
+            divisa_id: null,
+            divisa: null,
+
+            iata_id: null,
+            iata: null
+            
+            
+>>>>>>> vite
          }
       },
 
@@ -226,6 +251,24 @@ export default {
                   commit('toggleLoading', null, { root: true })
                })
          })
+<<<<<<< HEAD
+=======
+      },
+
+
+      getSolicitudes({commit}){
+         return new Promise((resolve,reject) => {
+
+            axios.get('/api/negocio/solicituds/get/all').then(({data}) => {
+
+               commit('setSolicitudes',data)
+               resolve(data)
+
+            }).catch(e => reject(e))
+
+         })
+
+>>>>>>> vite
       }
 
 

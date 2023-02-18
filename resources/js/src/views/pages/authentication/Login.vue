@@ -78,10 +78,17 @@
               <b-button type="submit" variant="primary" block :disabled="invalid" v-loading="loading">
                 Iniciar
               </b-button>
+<<<<<<< HEAD
 <!-- 
               <b-button @click="authGoogle" variant="primary" block :disabled="invalid" v-loading="loading">
                 Google Auth
               </b-button> -->
+=======
+
+              <b-button @click="authenticarGoogle(optionsAuth)"  variant="primary" block  v-loading="loading">
+                Google Auth
+              </b-button>
+>>>>>>> vite
               
             </b-form>
           </validation-observer>
@@ -97,6 +104,13 @@
       </b-col>
       <!-- /Login-->
     </b-row>
+<<<<<<< HEAD
+=======
+
+   
+
+
+>>>>>>> vite
   </div>
 </template>
 
@@ -126,7 +140,11 @@ import {
 import { required, email } from '@validations'
 import { togglePasswordVisibility } from '@core/mixins/ui/forms'
 import store from '@/store/index'
+<<<<<<< HEAD
 import {computed,toRefs} from '@vue/composition-api';
+=======
+import {computed,toRefs,onMounted} from '@vue/composition-api';
+>>>>>>> vite
 import useAuth from '@core/utils/useAuth'
 
 import '@core/scss/vue/libs/toastification.scss'
@@ -181,16 +199,37 @@ export default {
   },
 
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> vite
   setup(props){
     
     const usuario = computed(() => store.state.usuario.usuario)
     const { appName, appLogoImage, applogoImageWhite } = $themeConfig.app
+<<<<<<< HEAD
     const {
       login,
       formValidate,
       formulario
     } = useAuth();
 
+=======
+
+
+
+
+    const {
+      login,
+      formValidate,
+      formulario,
+      authGoogle,
+      authenticarGoogle,
+      optionsAuth
+    } = useAuth();
+
+    // onMounted(() => authGoogle())
+>>>>>>> vite
 
     const iniciar  = ()  => {
 
@@ -233,12 +272,21 @@ export default {
         }
 
 
+<<<<<<< HEAD
       }).catch(e => console.log(e))
+=======
+      }).catch(e => {
+        console.log(e)
+
+      })
+
+>>>>>>> vite
       .then(() => store.commit('toggleLoading'))
 
 
     }
 
+<<<<<<< HEAD
     const authGoogle = () => {
 
       axios.get(`/api/auth/google/redirect`).then(response => {
@@ -250,6 +298,8 @@ export default {
     }
 
 
+=======
+>>>>>>> vite
     return{
       login,
       required,
@@ -260,6 +310,11 @@ export default {
       iniciar,
       authGoogle,
       appName,
+<<<<<<< HEAD
+=======
+      authenticarGoogle,
+      optionsAuth
+>>>>>>> vite
      
 
     }

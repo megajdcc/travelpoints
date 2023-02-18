@@ -98,7 +98,11 @@ class FaqController extends Controller
     public function update(Request $request, Faq $faq)
     {
         
+<<<<<<< HEAD
         $result = $faq->update($this->validar($request,$faq));
+=======
+        $result = $faq->update([...$this->validar($request,$faq), ...['usuario_id' => $request->user()->id]]);
+>>>>>>> vite
 
         $faq->categoria;
         $faq->usuario;

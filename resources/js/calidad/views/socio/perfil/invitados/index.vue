@@ -152,10 +152,17 @@ export default {
          store.dispatch('usuario/crearLinkReferido',formulario.value).then(({result}) => {
 
             if(result){
+<<<<<<< HEAD
                toast.success('Su código de referido ha sido creado con éxito...')
 
             }else{
                toast.error('Su código de referido no se pudo crear, inténtelo de nuevo mas tarde...')
+=======
+               toast.success('Su código de referido ha sido creado con éxito...',{position:'bottom-right'})
+
+            }else{
+               toast.error('Su código de referido no se pudo crear, inténtelo de nuevo mas tarde...',{position:'bottom-right'})
+>>>>>>> vite
             }
 
 

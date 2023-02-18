@@ -54,14 +54,34 @@ import moment from 'moment';
 window.moment = require('moment');
 moment.locale('es')
 
+<<<<<<< HEAD
 Vue.filter('fecha',(val,format = 'LL') => {
   if(val) {
     return moment(new Date(val)).format(format);
   }
+=======
+Vue.filter('fecha',(val,format = 'LL', time= false) => {
+  if(val && !time) {
+    return moment(new Date(val)).format(format);
+  }else if(val && time){
+    return moment(`2020-01-01 ${val}`).format(format);
+  }
+  
+>>>>>>> vite
   return 'error en la fecha';
 
 })
 
+<<<<<<< HEAD
+=======
+Vue.filter('dia',(val) => {
+  const dias = ['Lunes','Martes','Miercoles','Jueves','Viernes','Sabado','Domingo'];
+
+  return dias[val - 1]
+
+})
+
+>>>>>>> vite
 Vue.use(VueCurrencyFilter, {
   symbol: '$',
   thousandsSeparator: ',',
@@ -159,6 +179,12 @@ require('datatables.net-buttons/js/buttons.print.js');
 require('datatables.net-buttons/js/dataTables.buttons.min.js');
 require('datatables.net-responsive-bs4');
 
+<<<<<<< HEAD
+=======
+import VueMask from 'v-mask'
+
+Vue.use(VueMask);
+>>>>>>> vite
 
 // Laravel Echo
 
@@ -189,11 +215,41 @@ require('datatables.net-responsive-bs4');
 // window.conekta = require('conekta');
 // conekta.api_key = 'key_OsW8LuyVL6ESxfQWduVKzEw';
 // conekta.locale = 'es';
+<<<<<<< HEAD
+=======
+
+/* import the fontawesome core */
+import { library } from '@fortawesome/fontawesome-svg-core'
+
+/* import font awesome icon component */
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+
+/* import specific icons */
+import { fas } from '@fortawesome/free-solid-svg-icons'
+import { fab } from '@fortawesome/free-brands-svg-icons'
+import { far } from '@fortawesome/free-regular-svg-icons'
+
+
+/* add icons to the library */
+library.add(fas,fab,far)
+/* add font awesome icon component */
+Vue.component('font-awesome-icon', FontAwesomeIcon)
+Vue.config.productionTip = false
+
+window._ = require('lodash');
+
+
+>>>>>>> vite
 let app = new Vue({
   router,
   store,
   i18n,
   render: h => h(App),
+<<<<<<< HEAD
+=======
+  provide:() =>  ({swal : Vue.swal})
+
+>>>>>>> vite
 }).$mount('#app')
 
 // app.provide();

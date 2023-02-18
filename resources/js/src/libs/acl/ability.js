@@ -1,5 +1,8 @@
 import { Ability } from '@casl/ability'
+<<<<<<< HEAD
 import store from '@/store'
+=======
+>>>>>>> vite
 import { initialAbility } from './config'
 
 //  Capacidad de lectura de localStorage

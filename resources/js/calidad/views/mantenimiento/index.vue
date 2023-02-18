@@ -5,9 +5,13 @@
       <b-link class="brand-logo" :to="{name:'home'}">
         
          <img src="/storage/logotipo.png" alt="Logo" />
+<<<<<<< HEAD
         <!-- <h2 class="brand-text text-primary ml-1">
           Boda y Playa
         </h2> -->
+=======
+     
+>>>>>>> vite
       </b-link>
       <!-- /Brand logo-->
 

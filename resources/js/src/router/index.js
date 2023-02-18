@@ -7,15 +7,28 @@ import dashboard from './routes/dashboard'
 import pages from './routes/pages'
 import calidad from './routes/calidad'
 import paginas from './routes/paginas';
+<<<<<<< HEAD
 
 Vue.use(VueRouter)
 const router = new VueRouter({
+=======
+import negocio from './routes/negocio';
+
+Vue.use(VueRouter)
+
+const router = new VueRouter({
+  
+>>>>>>> vite
   mode: 'history',
   base: process.env.BASE_URL,
   // base:'/',
   scrollBehavior() {
     return { x: 0, y: 0 }
   },
+<<<<<<< HEAD
+=======
+
+>>>>>>> vite
   routes: [
     // {
     //   path: '/',
@@ -24,6 +37,10 @@ const router = new VueRouter({
     ...paginas,
     ...dashboard,
     ...pages,
+<<<<<<< HEAD
+=======
+    ...negocio,
+>>>>>>> vite
     ...calidad,
     
     {

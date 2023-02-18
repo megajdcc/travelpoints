@@ -2,20 +2,44 @@
   <b-card no-body>
     <b-card-body class="d-flex justify-content-between align-items-center pb-0">
       <div class="truncate">
+<<<<<<< HEAD
         <h2 class="font-weight-bolder">
           {{ statistic }}
         </h2>
         <span>{{ statisticTitle }}</span>
+=======
+
+        <h2 class="font-weight-bolder">
+
+            <slot name="valor" :statistic="statistic">
+                {{ statistic }}
+            </slot>
+
+        
+        </h2>
+
+        <span>{{ statisticTitle }}</span>
+      
+       
+>>>>>>> vite
       </div>
       
       <b-avatar
         :variant="`light-${color}`"
         size="45"
       >
+<<<<<<< HEAD
         <feather-icon
           size="21"
           :icon="icon"
         />
+=======
+
+        <slot name="icon">
+          <font-awesome-icon :icon="['fas',icon]" size="2x" />
+        </slot>
+    
+>>>>>>> vite
       </b-avatar>
 
     </b-card-body>

@@ -254,6 +254,7 @@ export default {
    
 
     let modalNotificacion = ref(null);
+<<<<<<< HEAD
      const cargarNotificaciones = (usuario_id) => {
        
         if(usuario_id){
@@ -261,6 +262,16 @@ export default {
         }
        
      }
+=======
+    
+    const cargarNotificaciones = (usuario_id) => {
+      
+      if(usuario_id){
+        store.dispatch('notificacion/cargarNotificaciones',usuario_id)
+      }
+      
+    }
+>>>>>>> vite
     
     onMounted(() => {
        

@@ -20,6 +20,25 @@
 								</validation-provider>
 							</b-form-group>
 						</b-col>
+<<<<<<< HEAD
+=======
+
+						<b-col cols="12" md="6">
+							<b-form-group >
+								<template #label>
+									Panel | <span class="text-danger">*</span>
+								</template>
+						
+								<validation-provider name="panel_id" rules="required" #default="{errors,valid}">
+									<v-select v-model="formulario.panel_id" :reduce="(option) => option.id" :options="panels" label="panel" />
+									<b-form-invalid-feedback :state="valid">
+										{{ errors[0] }}
+									</b-form-invalid-feedback>
+								</validation-provider>
+							</b-form-group>
+						</b-col>
+
+>>>>>>> vite
 					</b-row>
 
 					<b-row>
@@ -72,9 +91,17 @@ import {
 	import {required } from '@validations'
 	import { regresar } from '@core/utils/utils';
 
+<<<<<<< HEAD
 	import { ref,computed,toRefs} from '@vue/composition-api'
 	import store from '@/store'
 
+=======
+	import { ref,computed,toRefs,onMounted} from '@vue/composition-api'
+	import store from '@/store'
+
+	import vSelect from 'vue-select'
+
+>>>>>>> vite
 	export default{  
 
 		components: {
@@ -95,7 +122,12 @@ import {
 			BFormInvalidFeedback,
 			BContainer,
 			ValidationObserver,
+<<<<<<< HEAD
 			ValidationProvider
+=======
+			ValidationProvider,
+			vSelect
+>>>>>>> vite
 		},
 
 		setup(props,{emit}){
@@ -109,19 +141,43 @@ import {
 
 				const { permiso:formulario } = toRefs(store.state.permiso)
 
+<<<<<<< HEAD
+=======
+				const {panels} = toRefs(store.state.panel)
+
+>>>>>>> vite
 
 				const guardar = () => {
 
 					emit('save',formulario.value,formValidate.value)
 
 				}
+<<<<<<< HEAD
+=======
+
+				const cargarForm = () => {
+
+					if(!panels.value.length){
+						store.dispatch('panel/getPanels')
+					}
+
+				}
+
+				onMounted(() => cargarForm())
+
+>>>>>>> vite
 				return{
 					required,
 					regresar,
 					guardar,
 					formulario,
 					loading:computed(() => store.state.loading),
+<<<<<<< HEAD
 					PickerOptions
+=======
+					PickerOptions,
+					panels
+>>>>>>> vite
 				}
 			}
 

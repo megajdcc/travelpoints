@@ -34,6 +34,10 @@ class CategoriaFaqController extends Controller
             $datos->push(['nombre' => $key,'icono' => $value[0]->icono ?: 'ListIcon','faqs' => $value]);
 
         }
+<<<<<<< HEAD
+=======
+
+>>>>>>> vite
         // $categorias = CategoriaFaq::where([
         //     ['nombre','LIKE','%'.$q.'%','or']
         // ])
@@ -50,6 +54,10 @@ class CategoriaFaqController extends Controller
         // foreach ($categorias as $key => $categoria) {
         //     $categoria->faqs;
         // }
+<<<<<<< HEAD
+=======
+        
+>>>>>>> vite
         return response()->json($datos);
 
     }
@@ -142,8 +150,15 @@ class CategoriaFaqController extends Controller
      * @param  \App\Models\CategoriaFaq  $categoriaFaq
      * @return \Illuminate\Http\Response
      */
+<<<<<<< HEAD
     public function update(Request $request, CategoriaFaq $categoria)
     {
+=======
+    public function update(Request $request, CategoriaFaq $faqs_categoria)
+    {
+        $categoria = $faqs_categoria;
+
+>>>>>>> vite
         try {
             DB::beginTransaction();
             $categoria->update($this->validar($request, $categoria));
@@ -163,11 +178,22 @@ class CategoriaFaqController extends Controller
     /**
      * Remove the specified resource from storage.
      *
+<<<<<<< HEAD
      * @param  \App\Models\CategoriaFaq  $categoriaFaq
      * @return \Illuminate\Http\Response
      */
     public function destroy(CategoriaFaq $categoria)
     {
+=======
+     * @param  \App\Models\CategoriaFaq  $faqs_categoria
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy(CategoriaFaq $faqs_categoria)
+    {
+        $categoria = $faqs_categoria;
+
+
+>>>>>>> vite
         try{
             DB::beginTransaction();
                 $categoria->delete();

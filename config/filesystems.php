@@ -55,6 +55,74 @@ return [
             'url' => env('APP_URL') . '/storage/negocios/categorias',
             'visibility' => 'public',
         ],
+<<<<<<< HEAD
+=======
+        
+        'destino_imagenes' => [
+            'driver' => 'local',
+            'root' => storage_path('app/public/destinos/imagenes'),
+            'url' => env('APP_URL') . '/storage/destinos/imagenes',
+            'visibility' => 'public',
+        ],
+
+        'atracciones_imagenes' => [
+            'driver' => 'local',
+            'root' => storage_path('app/public/atracciones/imagenes'),
+            'url' => env('APP_URL') . '/storage/atracciones/imagenes',
+            'visibility' => 'public',
+        ],
+
+        'eventos_imagenes' => [
+            'driver' => 'local',
+            'root' => storage_path('app/public/eventos/imagenes'),
+            'url' => env('APP_URL') . '/storage/eventos/imagenes',
+            'visibility' => 'public',
+        ],
+
+        'logo_negocios' => [
+            'driver' => 'local',
+            'root' => storage_path('app/public/negocios/logos'),
+            'url' => env('APP_URL') . '/storage/negocios/logos',
+            'visibility' => 'public',
+        ],
+        'videos_negocios' => [
+            'driver' => 'local',
+            'root' => storage_path('app/public/negocios/videos'),
+            'url' => env('APP_URL') . '/storage/negocios/videos',
+            'visibility' => 'public',
+        ],
+
+        'imagenes_publicaciones' => [
+            'driver' => 'local',
+            'root' => storage_path('app/public/publicaciones'),
+            'url' => env('APP_URL') . '/storage/publicaciones',
+            'visibility' => 'public',
+        ],
+
+        'negocio_cupones' => [
+            'driver' => 'local',
+            'root' => storage_path('app/public/negocios/cupones'),
+            'url' => env('APP_URL') . '/storage/negocios/cupones',
+            'visibility' => 'public',
+        ],
+
+        'imagenes_productos' => [
+            'driver' => 'local',
+            'root' => storage_path('app/public/productos'),
+            'url' => env('APP_URL') . '/storage/productos',
+            'visibility' => 'public',
+        ],
+
+        'archivo_productos' => [
+            'driver' => 'local',
+            'root' => storage_path('app/public/productos/archivos'),
+            'url' => env('APP_URL') . '/storage/productos/archivos',
+            'visibility' => 'public',
+        ],
+
+
+
+>>>>>>> vite
 
         's3' => [
             'driver' => 's3',

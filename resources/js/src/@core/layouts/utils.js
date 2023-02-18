@@ -11,7 +11,10 @@ export const resolveVerticalNavMenuItemComponent = item => {
   if (item.children) return 'vertical-nav-menu-group'
   return 'vertical-nav-menu-link'
 }
+<<<<<<< HEAD
 
+=======
+>>>>>>> vite
 /**
  * Return which component to render based on it's data/context
  * @param {Object} item nav menu item

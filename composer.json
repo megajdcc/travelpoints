@@ -12,10 +12,7 @@
         "beyondcode/laravel-websockets": "^1.13",
         "doctrine/dbal": "^3.1",
         "fruitcake/laravel-cors": "^2.0",
-<<<<<<< HEAD
-=======
         "google/apiclient": "^2.13",
->>>>>>> vite
         "guzzlehttp/guzzle": "^7.0.1",
         "laravel/framework": "^9.0",
         "laravel/sanctum": "^2.11",
@@ -24,12 +21,8 @@
         "league/flysystem": "^3.0",
         "nesbot/carbon": "^2.53.1",
         "pusher/pusher-php-server": "^7.0",
-<<<<<<< HEAD
-        "symfony/mailgun-mailer": "^6.0",
-=======
         "symfony/http-client": "^6.2",
         "symfony/mailgun-mailer": "^6.2",
->>>>>>> vite
         "symfony/postmark-mailer": "^6.0"
     },
     "require-dev": {

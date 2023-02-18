@@ -2,10 +2,7 @@
 
 namespace App\Trais;
 use App\Models\Usuario\{Rol,Permiso};
-<<<<<<< HEAD
-=======
 use Illuminate\Support\Collection;
->>>>>>> vite
 
 trait Has_roles 
 {
@@ -25,22 +22,15 @@ trait Has_roles
       
       foreach ($permisos as $key => $permiso) {
             
-<<<<<<< HEAD
-            $this->permisos()->attach($permiso->id,['action' => json_encode($actions)]);
-=======
          $this->permisos()->detach($permiso->id);
 
          $this->permisos()->attach($permiso->id,['action' => json_encode($actions)]);
->>>>>>> vite
       }
 
       return $this;
 
    }
 
-<<<<<<< HEAD
-
-=======
    public function addPermiso(Permiso $permiso,$actions = ['read','write','update','delete']){
 
       // dd($permiso,$actions);
@@ -57,7 +47,6 @@ trait Has_roles
       }
       
    }
->>>>>>> vite
 
    public function getHabilidades(){
       

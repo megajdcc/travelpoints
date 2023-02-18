@@ -6,13 +6,9 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Support\Facades\{Storage};
-<<<<<<< HEAD
-use App\Models\{User,Ciudad,Estado};
-=======
 use App\Models\{User,Ciudad,Estado,Iata};
 use App\Models\Divisa;
 
->>>>>>> vite
 
 class Solicitud extends Model
 {
@@ -20,10 +16,6 @@ class Solicitud extends Model
 
     public $estatus = [1 => "Enviada", 2 => "Desaprobada", 3  => "Aceptada", 4 => "Rechazada"];
     
-<<<<<<< HEAD
-    
-=======
->>>>>>> vite
     protected $fillable = [
         'nombre',
         'descripcion',
@@ -45,13 +37,9 @@ class Solicitud extends Model
         'foto',
         'situacion',// 1 => solicitud enviada, 2 => solicitud regresada para mejorar 3 => solicitd aceptada 4 => solicitud rechazada
         'comentario',
-<<<<<<< HEAD
-        'usuario_id'
-=======
         'usuario_id',
         'divisa_id',
         'iata_id'
->>>>>>> vite
 
     ];
 
@@ -65,11 +53,7 @@ class Solicitud extends Model
     public function getMensage(int $situacion = 1){
         $mensajes = [
             1 => 'Tu Solicitud ha sido enviada con éxito',
-<<<<<<< HEAD
-            2 => "Tu Solicitud para que afiliemos al negocio {$this->nombre} ha sido desaprobada, debes cambiar alguna información importante y enviarnosla de nuevo para proceder a aceptar la misma",
-=======
             2 => "Tu Solicitud para que afiliemos al negocio {$this->nombre} ha sido desaprobada, debes cambiar alguna información importante y enviárnosla de nuevo para proceder a aceptar la misma",
->>>>>>> vite
             3 => "Tu solicitud para que afiliemos al negocio {$this->nombre} ha sido aceptada, puedes verificar tu panel de negocio y proceder a llenar la información importante",
             4 => "Lamentablemente tu solicitud para que afiliemos al negocio {$this->nombre} ha sido rechazada, pero no te desanimes puedes comunicarte con nostros y explicarnos porque quieres afiliar el negocio a nuestro sistema."
         ];
@@ -77,20 +61,6 @@ class Solicitud extends Model
         return $mensajes[$situacion];
     }
 
-<<<<<<< HEAD
-    public function logo(): Attribute{
-        return Attribute::make(
-            get:fn($val) => Storage::url("negocios/logos/{$val}")
-        );
-    }
-
-    public function foto(): Attribute
-    {
-        return Attribute::make(
-            get: fn ($val) => Storage::url("negocios/fotos/{$val}")
-        );
-    }
-=======
     // public function logo(): Attribute{ 
     //     return Attribute::make(
     //         get:fn($val) => Storage::url("negocios/logos/{$val}")
@@ -103,7 +73,6 @@ class Solicitud extends Model
     //         get: fn ($val) => Storage::url("negocios/fotos/{$val}")
     //     );
     // }
->>>>>>> vite
 
 
 
@@ -142,8 +111,6 @@ class Solicitud extends Model
         return $this->belongsTo(User::class,'usuario_id','id');
     }
 
-<<<<<<< HEAD
-=======
 
     /**
      * Una solicitud tiene que tener una divisa con la que va a operar el Negocio
@@ -155,7 +122,6 @@ class Solicitud extends Model
     public function iata(){
         return $this->belongsTo(Iata::class,'iata_id','id');
     }
->>>>>>> vite
     
 
 }

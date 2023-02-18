@@ -55,8 +55,6 @@ return [
             'url' => env('APP_URL') . '/storage/negocios/categorias',
             'visibility' => 'public',
         ],
-<<<<<<< HEAD
-=======
         
         'destino_imagenes' => [
             'driver' => 'local',
@@ -122,7 +120,6 @@ return [
 
 
 
->>>>>>> vite
 
         's3' => [
             'driver' => 's3',

@@ -1,11 +1,4 @@
 <template>
-<<<<<<< HEAD
-  <div id="app" class="h-100" :class="[skinClasses]">
-      <component :is="layout">
-        <router-view />
-      </component>
-    <scroll-to-top v-if="enableScrollToTop" />
-=======
   
   <div id="app" :class="{ 'h-100' : route.meta.layout !=  'travel', ...skinClasses }" style="min-height:100%" >
 
@@ -15,7 +8,6 @@
     
       <scroll-to-top v-if="enableScrollToTop" />
   
->>>>>>> vite
   </div>
 </template>
 
@@ -25,25 +17,10 @@ import ScrollToTop from '@core/components/scroll-to-top/ScrollToTop.vue'
 
 import { $themeColors, $themeBreakpoints, $themeConfig } from '@themeConfig'
 import { watch,onMounted,toRefs,onActivated,computed } from '@vue/composition-api'
-<<<<<<< HEAD
-import useAppConfig from '@core/app-config/useAppConfig'
-import { useWindowSize, useCssVar, useNetwork } from '@vueuse/core'
-import store from '@/store'
-import {Notification} from 'element-ui'
-import { useRoute } from 'vue2-helpers/vue-router';
-=======
 
-import useAppConfig from '@core/app-config/useAppConfig'
-
-import { useWindowSize, useCssVar, useNetwork } from '@vueuse/core'
-
-import store from '@/store'
-
-import {Notification} from 'element-ui'
 
 import { useRoute } from 'vue2-helpers/vue-router';
 
->>>>>>> vite
 export default {
 
   components: {
@@ -51,10 +28,7 @@ export default {
     LayoutVertical: () => import('@/layouts/vertical/LayoutVertical.vue'),
     LayoutFull: () => import('@/layouts/full/LayoutFull.vue'),
     LayoutTravel: () => import('@/layouts/travel/LayoutTravel.vue'),
-<<<<<<< HEAD
-=======
     LayoutNegocio: () => import('@/layouts/negocio/LayoutNegocio.vue'),
->>>>>>> vite
     ScrollToTop,
   },
 
@@ -80,11 +54,6 @@ export default {
     const { isRTL } = $themeConfig.layout
     document.documentElement.setAttribute('dir', isRTL ? 'rtl' : 'ltr')
 
-<<<<<<< HEAD
-   
-
-=======
->>>>>>> vite
   },
  
 
@@ -97,18 +66,11 @@ export default {
       
       if (route.meta.layout === 'full') return 'layout-full'
       if (route.meta.layout === 'travel') return 'layout-travel'
-<<<<<<< HEAD
-=======
       if (route.meta.layout === 'negocio') return 'layout-negocio'
->>>>>>> vite
 
       return `layout-${contentLayoutType.value}`
 
     })
-<<<<<<< HEAD
-=======
-
->>>>>>> vite
     const { skin, skinClasses } = useAppConfig()
     const { enableScrollToTop } = $themeConfig.layout
     const { isOnline } = useNetwork();
@@ -123,19 +85,6 @@ export default {
     watch(windowWidth, (val) => {
       store.commit('app/UPDATE_WINDOW_WIDTH', val)
     })
-<<<<<<< HEAD
-    onMounted(() => {
-
-      if(localStorage.getItem('token')){      
-        store.commit('usuario/cargarUser', JSON.parse(localStorage.getItem('userData')));
-      }
-
-    })
-    watch(isOnline,(val) => {
-
-        if(!val){
-          
-=======
 
 
     if (localStorage.getItem('token')) {
@@ -149,7 +98,6 @@ export default {
     watch(isOnline,(val) => {
 
         if(!val){
->>>>>>> vite
           Notification.info({
             title:'Sin Internet',
             message:"La conexíón ha caido, informalo a tú operadora",
@@ -157,22 +105,14 @@ export default {
           })
 
         }
-<<<<<<< HEAD
-=======
-
->>>>>>> vite
     })
     
     return {
       skinClasses,
       enableScrollToTop,
       layout,
-<<<<<<< HEAD
-      contentLayoutType
-=======
       contentLayoutType,
       route
->>>>>>> vite
     }
   },
 

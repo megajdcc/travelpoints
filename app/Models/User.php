@@ -8,10 +8,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
-<<<<<<< HEAD
-use App\Trais\Has_roles;
-=======
->>>>>>> vite
 
 use App\Trais\HasDireccion;
 
@@ -21,8 +17,6 @@ use Illuminate\Broadcasting\Channel;
 
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Support\Facades\{Hash};
-<<<<<<< HEAD
-=======
 use App\Trais\{hasCuenta, Has_roles, hasTelefonos};
 
 use App\Models\Divisa;
@@ -30,14 +24,11 @@ use App\Models\Negocio\Cupon;
 use App\Models\Negocio\Negocio;
 use App\Models\Negocio\Reservacion;
 use App\Models\Usuario\Permiso;
->>>>>>> vite
 
 class User extends Authenticatable
 {
     use HasApiTokens,HasFactory, Notifiable;
     use Has_roles;
-<<<<<<< HEAD
-=======
     use hasCuenta,hasTelefonos;
 
 
@@ -54,7 +45,6 @@ class User extends Authenticatable
         $this->divisa_id = Divisa::where('principal',true)->first()->id;
         
     }
->>>>>>> vite
 
     /**
      * The attributes that are mass assignable.
@@ -65,10 +55,6 @@ class User extends Authenticatable
         'username',
         'nombre',
         'apellido',
-<<<<<<< HEAD
-        'telefono',
-=======
->>>>>>> vite
         'bio',
         'website',
         'fecha_nacimiento',
@@ -83,20 +69,12 @@ class User extends Authenticatable
         'rol_id',
         'token',
         'lenguaje', // 1 => es
-<<<<<<< HEAD
-        'is_whatsapp',
-=======
->>>>>>> vite
         'twitter',
         'facebook',
         'instagram',
         'ultimo_login',
         'ciudad_id' ,
         'codigo_referidor',
-<<<<<<< HEAD
-        'tps'
-=======
->>>>>>> vite
     ];
 
     /**
@@ -118,31 +96,11 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
         'is_password'       => 'boolean',
-<<<<<<< HEAD
-        'is_whatsapp'       => 'boolean',
-=======
->>>>>>> vite
         'activo'            => 'boolean',
         'tps'               => 'float'
     ];
 
 
-<<<<<<< HEAD
-    protected $attributes = [
-        'is_whatsapp' => false,
-        'activo' => true
-    ];
-
-
-    public function genero():Attribute{
-
-        return Attribute::make(
-            get:fn($val) => $val == 1 ? 'Masculino' : 'Femenino',
-            set:fn($val) => $val == 'Masculino' ? 1 : 2,
-        );
-
-    }
-=======
     // protected $attributes = [
     //     'activo' => true,
     // ];
@@ -156,7 +114,6 @@ class User extends Authenticatable
     //     );
 
     // }
->>>>>>> vite
 
     public function password(): Attribute
     {
@@ -209,11 +166,7 @@ class User extends Authenticatable
     }
 
     public function permisos(){
-<<<<<<< HEAD
-        return $this->belongsToMany('App\Models\Usuario\Permiso','usuario_permisos','usuario_id','permiso_id')->withPivot(['action']);
-=======
         return $this->belongsToMany(Permiso::class,'usuario_permisos','usuario_id','permiso_id')->withPivot(['action']);
->>>>>>> vite
     }
 
     public function getTokenText(){
@@ -269,10 +222,6 @@ class User extends Authenticatable
         return $this->hasMany(Solicitud::class, 'usuario_id', 'id');
     }
 
-<<<<<<< HEAD
-
-    
-=======
     public function likes(){
         return $this->hasMany(Like::class,'usuario_id','id');
     }
@@ -337,6 +286,5 @@ class User extends Authenticatable
         return $this;
     }
 
->>>>>>> vite
 
 }

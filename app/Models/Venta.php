@@ -27,7 +27,8 @@ class Venta extends Model
         'empleado_id',
         'cliente_id',
         'personas',
-        'reservacion_id'
+        'reservacion_id',
+        'cantidad',
     ];
 
 

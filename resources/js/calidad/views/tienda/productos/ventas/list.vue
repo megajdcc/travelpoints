@@ -18,13 +18,33 @@
 
 
               <template #row-details="{ item }">
-              
+                <h4>Productos</h4>
+                <table class="w-100 table table-hover table-sm">
+                  <thead>
+                    <th>Producto</th>
+                    <th>Cantidad</th>
+                    <th>Monto</th>
+                  </thead>
+                  <tbody>
+                    <tr v-for="(producto,i) in item.productos" :key="i">
+                      <td>
+                        {{ producto.nombre }}
+                      </td>
+                      <td>
+                        {{ producto.pivot.cantidad }}
+                      </td>
+                      <td>
+                        {{ producto.pivot.monto | currency(item.divisa ? item.divisa.iso : 'MXN') }}
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
               </template>
 
-              <template #cell(monto)="{ item }">
+              <template #cell(total)="{ item }">
         
                 <div class="text-wrap text-justify">
-                  {{ item.monto | currency }}
+                  {{ item.total | currency(item.divisa ? item.divisa.iso : 'MXN') }}
                 </div>
         
               </template>
@@ -51,15 +71,15 @@
         
                   <b-media vertical-align="center" v-if="item.empleado_id">
                     <template #aside>
-                      <b-avatar size="32" :src="item.empleado.usuario.avatar" :text="avatarText(`${item.empleado.usuario.nombre} ${item.empleado.usuario.apellido}`)"
+                      <b-avatar size="32" :src="item.empleado.avatar" :text="avatarText(`${item.empleado.nombre} ${item.empleado.apellido}`)"
                         :variant="`light-primary`"
-                        :to="{ name: 'mostrar.usuario', params: { id: item.empleado.usuario.id } }" disabled />
+                        :to="{ name: 'mostrar', params: { id: item.empleado.id } }" disabled />
                     </template>
-                    <b-link :to="{ name: 'mostrar.usuario', params: { id: item.empleado.usuario.id } }" disabled
+                    <b-link :to="{ name: 'mostrar', params: { id: item.empleado.id } }" disabled
                       class="font-weight-bold d-block text-nowrap"> 
-                      {{ `${item.empleado.usuario.nombre} ${item.empleado.usuario.apellido}` }}
+                      {{ `${item.empleado.nombre} ${item.empleado.apellido}` }}
                     </b-link>
-                    <small class="text-muted" v-if="item.empleado.usuario.username">{{ item.empleado.usuario.username }}</small>
+                    <small class="text-muted" v-if="item.empleado.username">{{ item.empleado.username }}</small>
                   </b-media>
 
                 <span class="text-nowrap" v-else>
@@ -68,12 +88,7 @@
         
               </template>
 
-              <template #cell(model_id)="{ item }">
-                  <span class="text-nowrap">
-                    {{ item.model.nombre }} 
-                    <!-- Nombre del producto -->
-                  </span>
-                </template>
+          
             </b-table>
           </b-card>
         </template>

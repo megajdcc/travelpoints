@@ -19,7 +19,7 @@
             <feather-icon size="21" icon="InfoIcon" />
          </b-nav-item>
 
-         <b-nav-item :to="{name:'store'}" v-b-tooltip.hover.bottom title="Tienda de Regalos" class="d-none d-md-flex">
+         <b-nav-item :to="{name:'tienda.travel'}" v-b-tooltip.hover.bottom title="Tienda de Regalos" class="d-none d-md-flex">
             <feather-icon size="21" icon="ShoppingBagIcon" />
          </b-nav-item>
 

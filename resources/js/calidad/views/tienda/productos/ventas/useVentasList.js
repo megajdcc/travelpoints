@@ -8,11 +8,9 @@ export default function useVentasList(){
 
   const tableColumns = ref([
     { key:'id',  label:'#',sortable:true,},
-    { key: 'monto', label: 'Monto', sortable: true, },
+    { key: 'total', label: 'Monto', sortable: true, },
     { key: 'cliente_id', label: 'Cliente', sortable: true, },
     { key: 'empleado_id', label: 'Empleado', sortable: true, },
-    { key: 'model_id', label: 'Producto', sortable: true, },
-
   ])
 
   const {
@@ -33,18 +31,17 @@ export default function useVentasList(){
 
   const fetchData = (ctx,next) => {
 
-      store.dispatch('venta/fetchData',{
+      store.dispatch('consumo/fetchData',{
         perPage: perPage.value,
         currentPage: currentPage.value,
         sortBy: sortBy.value,
         q: searchQuery.value,
         isSortDirDesc: isSortDirDesc.value,
-        model_type:'App\\Models\\Producto',
-      }).then(({total:all,ventas}) => {
+      }).then(({total:all,consumos}) => {
 
         total.value = all
-
-        next(ventas)
+        next(consumos)
+        
       }).catch(e => {
         toast.info('Error trayendo data')
       })

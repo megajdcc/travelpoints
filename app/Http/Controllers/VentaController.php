@@ -142,7 +142,8 @@ class VentaController extends Controller
             'personas'       => 'required',
             'reservacion_id' => 'nullable',
             'model_id' => 'required',
-            'model_type' => 'required'
+            'model_type' => 'required',
+            'cantidad' => 'nullable'
         ]);
     }
 
@@ -154,9 +155,10 @@ class VentaController extends Controller
      */
     public function store(Request $request)
     {
-        try {
-            $datos = $this->validar($request);
 
+        $datos = $this->validar($request);
+
+        try {
             DB::beginTransaction();
             $venta = Venta::create([...$datos]);
 

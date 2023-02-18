@@ -1,14 +1,17 @@
 <?php 
 namespace App\Trais;
 
+use App\Models\Ciudad;
+use App\Models\Estado;
+
 trait HasDireccion{
 
    public function ciudad(){
-      return $this->belongsTo('App\Models\Ciudad','ciudad_id','id');
+      return $this->belongsTo(Ciudad::class,'ciudad_id','id');
    }
 
    public function estado(){
-      return $this->belongsTo('App\Models\Estado','estado_id','id');
+      return $this->belongsTo(Estado::class,'estado_id','id');
    }
 
    public function pais(){

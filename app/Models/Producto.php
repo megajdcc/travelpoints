@@ -4,13 +4,12 @@ namespace App\Models;
 
 use App\Trais\hasImages;
 use App\Trais\hasOpinion;
-use App\Trais\hasVenta;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Producto extends Model
 {
-    use HasFactory,hasOpinion,hasImages,hasVenta;
+    use HasFactory,hasOpinion,hasImages;
     
 
     public readonly string $model_type;
@@ -26,7 +25,9 @@ class Producto extends Model
         'descripcion',
         'disponibles',
         'caracteristicas',
-        'envio'
+        'envio',
+        'tipo_producto',
+        'archivo'
     ];
 
 
@@ -50,5 +51,12 @@ class Producto extends Model
     }
 
 
+    public function consumos()
+    {
+        return $this->belongsToMany(Consumo::class, 'consumo_productos', 'producto_id', 'consumo_id')->withPivot([
+            'cantidad',
+            'monto'
+        ]);
+    }
     
 }

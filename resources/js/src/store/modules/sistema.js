@@ -24,7 +24,14 @@ export default {
 
 
   getters:{
-    draft:(state) => clone(state.sistema)
+    draft:(state) => clone(state.sistema),
+
+    credentialPaypal(state){
+      return { 
+        sandbox: state.sistema.paypal_id || 'ARMAQ0_8KFm9nIJKGSOJUNWBfVWngxhsuu1Vj7N6yL2LVnXBAa_JXIDUeuqkMYU2yONIvpWZZQl-DLiw',
+        production: "<production client id>"
+      }
+    }
   },
 
   mutations:{

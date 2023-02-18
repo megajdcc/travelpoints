@@ -45,6 +45,7 @@ export default {
 
             if (result) {
               toast.success('Se ha actualizado con éxito el producto', { position: 'bottom-right' })
+              data.archivo = null
             } else {
               toast.info('No se pudo actualizar el producto, inténte de nuevo', { position: 'bottom-right' })
 

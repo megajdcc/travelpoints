@@ -111,6 +111,13 @@ return [
             'visibility' => 'public',
         ],
 
+        'archivo_productos' => [
+            'driver' => 'local',
+            'root' => storage_path('app/public/productos/archivos'),
+            'url' => env('APP_URL') . '/storage/productos/archivos',
+            'visibility' => 'public',
+        ],
+
 
 
 

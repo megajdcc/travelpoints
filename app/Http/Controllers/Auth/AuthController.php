@@ -196,10 +196,7 @@ class AuthController extends Controller
             return response()->json(['result' => false,'message' => 'El usuario o contraseña, son incorrectos'],401);
          }
 
-     
-
          $user = $request->user();
-
          $user->ultimo_login = now();
          $user->save();
 
@@ -217,7 +214,7 @@ class AuthController extends Controller
          
          $user->update(['activo' => true]);
        
-
+         
          $user->cargar();
 
 

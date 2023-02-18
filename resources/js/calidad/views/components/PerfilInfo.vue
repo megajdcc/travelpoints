@@ -23,7 +23,7 @@
          <hr>
          <h2><strong> {{ usuario.cuenta.divisa.iso }}{{  usuario.cuenta.saldo | currency({symbol:usuario.cuenta.divisa.simbolo}) }}</strong></h2>
          
-         <b-button :to="{ name: 'tienda' }" variant="primary" size="sm">
+         <b-button :to="{ name: 'tienda.travel' }" variant="primary" size="sm">
             <feather-icon icon="ShoppingCartIcon" />
             Ir a tienda
          </b-button>

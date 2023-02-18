@@ -1,5 +1,4 @@
 import { Ability } from '@casl/ability'
-import store from '@/store'
 import { initialAbility } from './config'
 
 //  Capacidad de lectura de localStorage

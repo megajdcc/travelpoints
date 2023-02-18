@@ -65,7 +65,8 @@ class TiendaController extends Controller
             'ciudad_id' => 'nullable',
             'estado_id' => 'nullable',
             'lat'       => 'nullable',
-            'lng'       => 'nullable'
+            'lng'       => 'nullable',
+            'direccion' => 'nullable'
         ]);
         
     }

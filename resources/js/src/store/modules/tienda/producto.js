@@ -14,13 +14,13 @@ export default {
       disponibles: 1,
       caracteristicas:[],
       envio: null,
-
+      tipo_producto:1, // 1 => fisico, 2 => digital
+      archivo:null,
       categoria:null,
       producto:null,
       opinions:[],
       imagenes:[],
-      ventas:[]
-
+      consumos:[]
 
     },
 
@@ -82,13 +82,13 @@ export default {
         disponibles: 1,
         caracteristicas: [],
         envio: null,
-
+        tipo_producto: 1, // 1 => fisico, 2 => digital
+        archivo: null,
         categoria: null,
         producto: null,
         opinions: [],
         imagenes: [],
-        ventas: []
-
+        consumos: []
 
       }
     },
@@ -221,14 +221,19 @@ export default {
       })
     },
 
-    guardar({ commit }, datos) {
+    guardar({ commit,dispatch }, datos) {
 
       return new Promise((resolve, reject) => {
+
         if (datos.id) {
-          axios.put(`/api/productos/${datos.id}`, datos).then(({ data }) => {
+
+          axios.put(`/api/productos/${datos.id}`,datos).then(({ data }) => {
             if (data.result) {
               commit('update', data.producto)
 
+              if(datos.archivo && datos.archivo != null && datos.tipo_producto == 2){
+                dispatch('cargarArchivo',{producto_id:data.producto.id,archivo:datos.archivo})
+              }
             }
             resolve(data)
           }).catch(e => reject(e))
@@ -238,6 +243,11 @@ export default {
           axios.post(`/api/productos`, datos).then(({ data }) => {
             if (data.result) {
               commit('push', data.producto)
+
+              if (datos.archivo && datos.archivo != null && datos.tipo_producto == 2){
+                dispatch('cargarArchivo',{producto_id:data.producto.id,archivo:datos.archivo})
+              }
+
             }
 
             resolve(data)
@@ -248,6 +258,33 @@ export default {
       })
 
     },
+
+
+    cargarArchivo({commit},{archivo,producto_id}){
+      
+      let formData = new FormData();
+
+      formData.append('archivo',archivo);
+      formData.append('_method','PUT');
+
+      return new Promise((resolve, reject) => {
+        axios.post(`/api/productos/${producto_id}/cargar/archivo`,formData,{
+          headers:{
+            ContentType:'multipart/form-data'
+          }
+        }).then(({data}) => {
+          if(data.result){
+            commit('update',data.producto)
+          }
+
+          resolve(data)
+        }).catch(e => reject(e))
+
+
+      })
+      
+    },
+
 
     eliminar({ commit }, producto_id) {
       return new Promise((resolve, reject) => {

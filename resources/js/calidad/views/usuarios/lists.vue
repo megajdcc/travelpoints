@@ -23,7 +23,7 @@
             <b-input-group size="sm">
               <b-form-input v-model="searchQuery" placeholder="Buscar..." />
               <template #append is-text>
-                <b-button variant="primary" @click="$router.push({name:'create.usuario'})">
+                <b-button variant="primary" @click="$router.push({name:'create.usuario'})" v-if="$can('write','usuarios')">
                   <span class="text-nowrap">Agregar usuario</span>
                 </b-button>
               </template>

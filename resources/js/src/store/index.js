@@ -128,6 +128,11 @@ import tienda from './modules/tienda/tienda.js';
 // Producto
 import producto from './modules/tienda/producto.js';
 
+// Consumo
+
+import consumo from './modules/tienda/consumo.js';
+
+
 
 Vue.use(Vuex)
 
@@ -269,7 +274,8 @@ export default new Vuex.Store({
     sistema,
     categoriaProducto,
     tienda,
-    producto
+    producto,
+    consumo
   },
 
   strict: process.env.DEV,

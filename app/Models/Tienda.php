@@ -18,7 +18,8 @@ class Tienda extends Model
         'ciudad_id',
         'estado_id',
         'lat',
-        'lng'
+        'lng',
+        'direccion'
     ];
 
     protected $casts = [

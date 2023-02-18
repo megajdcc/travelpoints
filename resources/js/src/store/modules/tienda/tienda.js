@@ -13,7 +13,7 @@ export default{
       estado_id: null,
       lat      : null,
       lng      : null,
-
+      direccion:'',
       ciudad:null,
       estado:null,
       iata:null,
@@ -60,7 +60,7 @@ export default{
         estado_id: null,
         lat: null,
         lng: null,
-
+        direccion: '',
         ciudad: null,
         estado: null,
         iata: null,

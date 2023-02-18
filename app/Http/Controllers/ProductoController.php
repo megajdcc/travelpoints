@@ -12,7 +12,13 @@ use Illuminate\Support\Facades\Storage;
 
 class ProductoController extends Controller
 {
-    
+
+
+    public function __construct()
+    {
+        $this->middleware('convertir.null')->only(['store','update']);
+
+    }
 
     public function fetchData(Request $request){
         
@@ -45,18 +51,29 @@ class ProductoController extends Controller
             $q->whereIn('categoria_id',$datos['categoria_id']);
         })
         ->whereBetween('precio',$datos['precios'])
-        ->with(['categoria','imagenes','opinions','tienda.divisa'])
+        ->with(['categoria','imagenes','opinions','tienda.divisa','consumos'])
         ->orderBy('precio', $datos['sortBy'] == 'price-asc' ? 'asc' : 'desc')
         ->paginate($datos['perPage'] ?: 10000);
 
-        return response()->json(['total' => $paginator->total(), 'productos' => $paginator->items()]);
+
+        $productos = collect($paginator->items());
+
+        foreach($productos as $producto){
+            $producto->tienda?->ciudad;
+            $producto->tienda?->estado?->pais;
+        }
+
+        return response()->json(['total' => $paginator->total(), 'productos' => $productos]);
 
 
     }
 
     public function fetch(Producto $producto){
 
-        $producto->load(['categoria', 'imagenes', 'opinions', 'tienda.divisa']);
+        $producto->load(['categoria', 'imagenes', 'opinions', 'tienda.divisa','consumos']);
+        $producto->tienda?->ciudad;
+        $producto->tienda?->estado?->pais;
+
 
         return response()->json($producto);
         
@@ -65,8 +82,9 @@ class ProductoController extends Controller
 
     private function validar(Request $request){
         return $request->validate([
+            'id'              => 'nullable',
             'nombre'          => 'required',
-            'breve' => 'nullable',
+            'breve'           => 'nullable',
             'categoria_id'    => 'required',
             'tienda_id'       => 'required',
             'precio'          => 'required',
@@ -74,7 +92,10 @@ class ProductoController extends Controller
             'descripcion'     => 'nullable',
             'caracteristicas' => 'nullable',
             'envio'           => 'nullable',
+            'tipo_producto'   => 'required',
 
+        ],[
+            'archivo.required_without' => 'El archivo es importante, no debe faltar'
         ]);
     }
     /**
@@ -89,10 +110,12 @@ class ProductoController extends Controller
 
         try {
             DB::beginTransaction();
-
+            
             $producto = Producto::create($datos);
 
-            $producto->load(['categoria','tienda']);
+
+            $producto->load(['categoria', 'imagenes', 'tienda.divisa', 'consumos']);
+
             $producto->envio;
             $producto->caracteristicas;
 
@@ -122,10 +145,14 @@ class ProductoController extends Controller
         try {
             DB::beginTransaction();
 
+
             $producto->update($datos);
 
 
-            $producto->load(['categoria', 'tienda']);
+            $producto->load(['categoria', 'imagenes', 'tienda.divisa', 'consumos']);
+            $producto->tienda?->ciudad;
+            $producto->tienda?->estado?->pais;
+
             $producto->envio;
             $producto->caracteristicas;
 
@@ -134,9 +161,28 @@ class ProductoController extends Controller
         } catch (\Throwable $th) {
             DB::rollBack();
             $result = false;
+
         }
 
         return response()->json(['result' => $result, 'producto' => $result ? $producto : null]);
+    }
+
+
+    public function cargarArchivo(Request $request, Producto $producto){
+        $archivo = $request->file('archivo');
+        $archivo_name = sha1($archivo->getClientOriginalName()) . '.' . $archivo->getClientOriginalExtension();
+        Storage::disk('archivo_productos')->put($archivo_name, File::get($archivo));
+
+        $producto->archivo = $archivo_name; 
+
+        $result = $producto->save();
+        
+        $producto->tienda?->ciudad;
+        $producto->tienda?->estado?->pais;
+        
+        $producto->load(['categoria', 'imagenes', 'tienda.divisa', 'consumos']);
+
+        return response()->json(['result' => $result,'producto' => $producto]);
     }
 
     /**
@@ -147,6 +193,11 @@ class ProductoController extends Controller
      */
     public function destroy(Producto $producto)
     {
+        
+        if($producto->tipo_producto == 2){
+            Storage::disk('archivo_productos')->delete($producto->archivo);
+        }
+
         $result = $producto->delete();
 
         return response()->json(['result' => $result]);
@@ -183,6 +234,7 @@ class ProductoController extends Controller
             }
 
             $producto->refresh();
+            $producto->load(['categoria','imagenes', 'tienda.divisa', 'consumos']);
 
             $producto->imagenes;
 

@@ -49,6 +49,11 @@
               </tr>
 
               <tr>
+                <td>Dirección:</td>
+                <td> {{ item.direccion }}</td>
+              </tr>
+
+              <tr>
                 <td>Iata:</td>
                 <td> {{ item.iata ? `${item.iata.codigo} - ${item.iata.aeropuerto}` : 'Sin definir' }}</td>
               </tr>

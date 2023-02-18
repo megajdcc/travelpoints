@@ -72,6 +72,7 @@ export const cantidadNoches = (fecha_inicial, fecha_final) => {
   return noches;
 } 
 
+
 export const optionsCurrency = ref({
             currency:'MXN',
             locale:'es-ES',

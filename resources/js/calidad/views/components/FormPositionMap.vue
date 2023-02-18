@@ -1,5 +1,60 @@
 <template>
     <b-container fluid>
+
+      <b-row>
+        <b-col cols="12" md="6">
+            <b-form-group description="Escribe la dirección de la tienda">
+              <template #label>
+                Dirección: <span class="text-danger">*</span>
+              </template>
+            
+              <validation-provider name="direccion" rules="required" #default="{ errors, valid }">
+                <b-form-input v-model="formulario.direccion" :state="valid" />
+
+                <b-form-invalid-feedback :state="valid">
+                  {{ errors[0] }}
+                </b-form-invalid-feedback>
+
+              </validation-provider>
+              </b-form-group>
+        </b-col>
+
+        <b-col  cols="12" md="6">
+      
+          <b-form-group description="Cual es el Aeropuerto mas cercano a este destino, selecciona el IATA Correspondiente">
+            <template #label>
+              IATA: <span class="text-danger">*</span>
+            </template>
+          
+            <validation-provider name="iata_id" rules="required" #default="{ errors, valid }">
+          
+              <v-select v-model="formulario.iata_id" :reduce="(option) => option.id" :options="iatas" :filter="filterIata">
+                <template #option="{ codigo, aeropuerto }">
+                  <h6 style="margin: 0">{{ aeropuerto }}</h6>
+                  <em> {{ codigo }}</em>
+                </template>
+          
+                <template #no-options>
+                  <span> No hay Códigos IATA registrados</span>
+                </template>
+          
+                <template #selected-option="{ codigo, aeropuerto }">
+                  <strong style="margin: 0">{{ aeropuerto }} - {{ codigo }}</strong>
+                </template>
+          
+          
+              </v-select>
+          
+              <b-form-invalid-feedback :state="valid">
+                {{ errors[0] }}
+              </b-form-invalid-feedback>
+          
+            </validation-provider>
+          </b-form-group>
+      
+        </b-col>
+
+      </b-row>
       <b-row>
       
         <b-col cols="12">
@@ -7,7 +62,7 @@
       
         </b-col>
       
-        <b-col cols="12" md="6">
+        <b-col cols="12" md="4">
           <b-form-group>
             <template #label>
               Pais
@@ -24,7 +79,7 @@
           </b-form-group>
         </b-col>
       
-        <b-col cols="12" md="6">
+        <b-col cols="12" md="4">
       
           <b-form-group>
             <template #label>
@@ -45,7 +100,7 @@
       
         </b-col>
       
-        <b-col cols="12" md="6">
+        <b-col cols="12" md="4">
           <b-form-group>
             <template #label>
               Ciudad:
@@ -61,40 +116,7 @@
           </b-form-group>
         </b-col>
 
-         <b-col md="6">
-      
-          <b-form-group description="Cual es el Aeropuerto mas cercano a este destino, selecciona el IATA Correspondiente">
-            <template #label>
-              IATA: <span class="text-danger">*</span>
-            </template>
-          
-            <validation-provider name="iata_id" rules="required" #default="{errors,valid}">
-          
-              <v-select v-model="formulario.iata_id" :reduce="(option) => option.id" :options="iatas" :filter="filterIata">
-                <template #option="{codigo,aeropuerto}">
-                  <h6 style="margin: 0">{{ aeropuerto }}</h6>
-                  <em> {{ codigo }}</em>
-                </template>
-          
-                <template #no-options>
-                  <span> No hay Códigos IATA registrados</span>
-                </template>
-          
-                <template #selected-option="{codigo,aeropuerto}">
-                  <strong style="margin: 0">{{ aeropuerto }} - {{ codigo }}</strong>
-                </template>
-          
-          
-              </v-select>
-          
-              <b-form-invalid-feedback :state="valid">
-                {{ errors[0] }}
-              </b-form-invalid-feedback>
-          
-            </validation-provider>
-          </b-form-group>
-      
-        </b-col>
+         
 
       </b-row>
       

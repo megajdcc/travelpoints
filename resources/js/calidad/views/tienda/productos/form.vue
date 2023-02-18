@@ -58,6 +58,25 @@
                 </b-form-group>
               </b-col>
 
+
+               <b-col cols="12" md="6">
+                  <b-form-group > 
+                    <template #label>
+                      Tipo de Producto : <span class="text-danger">*</span>
+                    </template>
+
+                    <validation-provider name="tipo_producto" rules="required" #default="{ errors, valid }">
+                      
+                      <b-form-radio-group buttons v-model="formulario.tipo_producto" :options="[{text:'Físico',value:1,},{text:'Digital',value:2}]" :state="valid"></b-form-radio-group>
+
+                      <b-form-invalid-feedback :state="valid">
+                        {{ errors[0] }}
+                      </b-form-invalid-feedback>
+                    </validation-provider>
+
+                  </b-form-group>
+                </b-col>
+
               <b-col cols="12" md="6">
                 <b-form-group description="La tienda a la que estará asociado el producto"> 
                   <template #label>
@@ -109,6 +128,24 @@
 
                 </b-form-group>
               </b-col>
+
+
+              <b-col cols="12" md="6" v-if="formulario.tipo_producto == 2">
+                <b-form-group > 
+                  <template #label>
+                    Archivo : 
+                  </template>
+
+                  <validation-provider name="archivo" #default="{errors,valid}">
+                    <b-form-file v-model="formulario.archivo" :state="valid" browse-text="Cargue el archivo a entregar" />
+                    <b-form-invalid-feedback :state="valid">
+                      {{ errors[0]  }}
+                    </b-form-invalid-feedback>
+                  </validation-provider>
+
+                </b-form-group>
+              </b-col>
+
 
 
 
@@ -210,6 +247,7 @@
                           Precio: <span class="text-danger">*</span>
                         </template>
                         <validation-provider name="precio" rules="required" #default="{errors,valid}">
+
                           <currency-input v-model="formulario.envio.precio" :options="{ ...optionsCurrency ,...{currency:getCurrencyTienda}}"
                             class="form-control"></currency-input>
 
@@ -296,7 +334,8 @@ import {
   BFormInput,
   BFormSpinbutton,
   BFormRadioGroup,
-  BFormTextarea
+  BFormTextarea,
+  BFormFile
 } from 'bootstrap-vue';
 
 import { toRefs, computed, ref,watch } from '@vue/composition-api';
@@ -319,7 +358,7 @@ export default {
     BFormSpinbutton,
     BFormRadioGroup,
     BFormTextarea,
-
+    BFormFile,
     ValidationObserver,
     ValidationProvider,
     vSelect,
@@ -336,18 +375,23 @@ export default {
     const enviable = ref(false)
 
     const cargarForm = () => {
-        if(!categorias.value.length){
-          store.dispatch('categoriaProducto/getCategorias')
-        }
+
+      if(!categorias.value.length){
+        store.dispatch('categoriaProducto/getCategorias')
+      }
 
       if (!tiendas.value.length) {
         store.dispatch('tienda/getTiendas')
       }
 
+      if(formulario.value.id){
+        formulario.value.archivo = null
+      }
+
     }
 
     cargarForm();
-
+    watch([formulario],() => cargarForm())
 
     const guardar = () => {
         emit('save',formulario.value, formValidate.value)

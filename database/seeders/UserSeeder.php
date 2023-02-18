@@ -50,6 +50,7 @@ class UserSeeder extends Seeder
                      $rol->permisos()->attach($v->id, ['actions' => json_encode($actions)]);
                     }
                 }
+                
                 if($rol->nombre == 'Usuario'){
 
                     $permisos_filtrados = $permisos_registrados->filter(function($v,$i){

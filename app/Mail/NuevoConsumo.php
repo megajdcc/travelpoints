@@ -49,6 +49,7 @@ class NuevoConsumo extends Mailable implements ShouldQueue
     public function build()
     {
         return $this->markdown('emails.newconsumo')
+        ->attachFromStorageDisk('archivo_productos',$this->consumo->productos->first()->archivo ?: null)
         ->subject("Gracias por tu compra" . $this->consumo->cliente->getNombreCompleto())
         
             ->with([

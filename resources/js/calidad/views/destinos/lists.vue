@@ -43,14 +43,14 @@
                         </b-carousel>
                      </template>
 
-                     <h4 v-b-popover.hover="destino.descripcion" :title="destino.titulo">
+                     <h4 v-b-popover.hover="destino.descripcion.substring(0,150)" :title="destino.titulo">
                         {{ destino.nombre }}
                      </h4>
                      <em class="line-height-1 font-weight-bolder" v-b-popover.hover="destino.descripcion" :title="destino.titulo">
                         {{ destino.titulo }}
                      </em>
 
-                     <p class="text-justify" v-b-popover.hover="destino.descripcion" :title="destino.titulo">
+                     <p class="text-justify" v-b-popover.hover="destino.descripcion.substring(0, 150)" :title="destino.titulo">
                         {{ destino.descripcion.substring(0, 80) }} ...
                      </p>
 
@@ -192,3 +192,11 @@ export default {
 
 }
 </script>
+
+<style lang="scss">
+   .carousel-item img{
+      height: 100%;
+      object-fit: cover;
+      object-position: center center;
+   }
+</style>

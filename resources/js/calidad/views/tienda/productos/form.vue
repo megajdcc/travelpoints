@@ -315,6 +315,20 @@
             </b-col>
            </b-row>
 
+
+           <template v-if="!formulario.id">
+              <el-divider content-position="left">Asociar imagenes al producto</el-divider>
+             <b-row>
+              <b-col cols="12">
+                <multimedia hideVideos seleccionable />
+
+              </b-col>
+             </b-row>
+          </template>
+         
+
+
+
           </b-container>
           
           <template #footer>
@@ -368,7 +382,7 @@ import {
   BFormFile
 } from 'bootstrap-vue';
 
-import { toRefs, computed, ref,watch } from '@vue/composition-api';
+import { toRefs, computed, ref,watch, provide } from '@vue/composition-api';
 import vSelect from 'vue-select'
 
 import store from '@/store'
@@ -393,7 +407,8 @@ export default {
     ValidationProvider,
     vSelect,
     Editor,
-    CurrencyInput:() => import('components/CurrencyInput.vue')
+    CurrencyInput:() => import('components/CurrencyInput.vue'),
+    multimedia:() => import('views/multimedias/multimedia.vue')
   },
 
 
@@ -403,8 +418,10 @@ export default {
     const {categorias} = toRefs(store.state.categoriaProducto)
     const { tiendas } = toRefs(store.state.tienda)
     const {divisas} = toRefs(store.state.divisa)
-
+    const seleccionados = ref([])
     const enviable = ref(false)
+    
+    provide('seleccionados',seleccionados)
 
     const cargarForm = () => {
 
@@ -431,7 +448,11 @@ export default {
     watch([formulario],() => cargarForm())
 
     const guardar = () => {
-        emit('save',formulario.value, formValidate.value)
+       if( seleccionados.value.length){
+        formulario.value.imagenes = seleccionados.value
+       }
+
+       emit('save',formulario.value, formValidate.value)
     } 
 
     const quitarCaracteristica = (car_i) => {
@@ -456,6 +477,7 @@ export default {
       quitarCaracteristica,
       enviable,
       divisas,
+      seleccionados,
       getCurrency:computed(() => {
 
         if(formulario.value.divisa_id){

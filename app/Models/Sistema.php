@@ -5,10 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Trais\hasCuenta;
+use App\Trais\{hasImages,hasVideos};
 
 class Sistema extends Model
 {
-    use HasFactory, hasCuenta;
+    use HasFactory, hasCuenta, hasImages, hasVideos;
     protected $table = 'sistema';
 
     public string $model_type = 'App\Models\Sistema';

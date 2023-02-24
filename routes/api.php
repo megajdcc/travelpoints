@@ -453,6 +453,13 @@ Route::get('negocios/{negocio}/recomendacions/toggle/user/{usuario}',[NegocioCon
 
     Route::post('carrito/fetch/data',[UserController::class,'fetchDataCarrito']);
 
+    /*****************************/
+    /* Sistema
+    /*****************************/
+
+    Route::post('sistema/upload/archivos',[SistemaController::class,'uploadArchivos']);
+    Route::put('sistemas/{sistema}/eliminar/archivo',[SistemaController::class,'eliminarArchivo']);
+
 });
 
 Route::put('usuario/{usuario}/establecer/contrasena', [UserController::class, 'EstablecerContrasena'])->name('establecercontrasena');

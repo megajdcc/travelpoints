@@ -63,8 +63,8 @@ class NuevoConsumo extends Notification implements ShouldQueue
             'usuario' => null,
             'mensaje' => [
                 "¡Hola {$notifiable->getNombreCompleto()}!",
-                "Gracias por tu compra de {$this->consumo->productos->first()->nombre}.",
-                $this->consumo->productos->first()->tipo_producto == 2 ? "Te hemos enviado al correo el archivo asociado a tu compra, Dirigete a la Bandeja de correo en archivos Adjunto y descarga." : "Puedes Retirar el producto en nuestras tiendas Travel, la que te quede mas cercana."
+                "Gracias por tu compra",
+                "Si ha comprado productos Digitales, revise en su correo electrónico, la bandeja de entrada y verifique el comprabante de compra, descargue el archivo adjunto asociado; de lo contrario también le hemos enviado la dirección de la tienda para que retires sus productos comprados..."
             ],
             'type' => 'light-success', // light-info , light-success, light-danger, light-warning
             'btn' => true,

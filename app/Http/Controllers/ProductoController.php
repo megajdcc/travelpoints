@@ -72,13 +72,14 @@ class ProductoController extends Controller
             'nombre'          => 'required',
             'breve'           => 'nullable',
             'categoria_id'    => 'required',
-            'tiendas'       => 'nullable',
+            'tiendas'         => 'nullable',
             'precio'          => 'required',
             'descripcion'     => 'nullable',
             'caracteristicas' => 'nullable',
             'envio'           => 'nullable',
             'tipo_producto'   => 'required',
-            'divisa_id' => 'required'
+            'divisa_id'       => 'required',
+            'imagenes'        => 'nullable'
 
         ],[
             'archivo.required_without' => 'El archivo es importante, no debe faltar'
@@ -97,7 +98,7 @@ class ProductoController extends Controller
         try {
             DB::beginTransaction();
 
-            $producto = Producto::create($datos->except(['tiendas','id'])->toArray());
+            $producto = Producto::create($datos->except(['tiendas','id','imagenes'])->toArray());
 
             if(isset($datos['tiendas'])){
 
@@ -106,10 +107,26 @@ class ProductoController extends Controller
                 }
 
             }
+
+            if (isset($datos['imagenes']) && count($datos['imagenes']) > 0) {
+                foreach($datos['imagenes'] as $imagen){
+
+                    $img = Imagen::find($imagen);
+
+                    Storage::copy("/public/multimedias/{$img->imagen}", "/public/productos/{$img->imagen}");
+
+                    $producto->addImagen([
+                        'imagen' => $img->imagen,
+                    ]);
+
+                }
+                
+            }
            
 
             $producto->envio;
-        $producto->caracteristicas;
+            $producto->caracteristicas;
+            $producto->load(['categoria', 'imagenes', 'tiendas', 'consumos', 'divisa', 'opinions']);
 
             DB::commit();
             $result = true;
@@ -120,7 +137,7 @@ class ProductoController extends Controller
 
             dd($th);
         }
-
+        
         return response()->json(['result' => $result, 'producto' => $result ? $producto : null]);
     }
 
@@ -138,7 +155,6 @@ class ProductoController extends Controller
 
         try {
             DB::beginTransaction();
-
 
             $producto->update($datos->except(['tiendas'])->toArray());
 

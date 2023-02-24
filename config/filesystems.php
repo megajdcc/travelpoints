@@ -118,6 +118,13 @@ return [
             'visibility' => 'public',
         ],
 
+        'archivos_multimedias' => [
+            'driver' => 'local',
+            'root' => storage_path('app/public/multimedias'),
+            'url' => env('APP_URL') . '/storage/multimedias',
+            'visibility' => 'public',
+        ],
+
 
 
 

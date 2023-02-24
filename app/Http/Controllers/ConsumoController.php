@@ -91,8 +91,9 @@ class ConsumoController extends Controller
             'tps'         => 'nullable',
             'comentado'   => 'nullable',
             'divisa_id'   => 'nullable',
-            'productos' => 'required',
-            'paypal' => 'nullable',
+            'productos'   => 'required',
+            'paypal'      => 'nullable',
+            'tienda_id'   => 'nullable',
         ]);
     }
 
@@ -122,9 +123,10 @@ class ConsumoController extends Controller
 
 
             foreach($datos['productos'] as $producto){
+                
                 $consumo->productos()->attach($producto['producto_id'],['cantidad' => $producto['cantidad'],'monto' => $producto['monto']]); 
             }
-            
+            $consumo->tienda_id = $datos['productos'][0]['tienda_id'];
             $consumo->tps = $this->getTpsConsumidos($consumo);
             $consumo->save();
 
@@ -155,8 +157,8 @@ class ConsumoController extends Controller
 
             // Notificar al Cliente y TravelPoints de la Nueva Compra
 
-            // $consumo->cliente->notify(new NuevoConsumo($consumo));
-            // Mail::to($consumo->cliente)->send(new newConsumo($consumo));
+            $consumo->cliente->notify(new NuevoConsumo($consumo));
+            Mail::to($consumo->cliente)->send(new newConsumo($consumo));
 
         } catch (\Throwable $th) {
             DB::rollBack();

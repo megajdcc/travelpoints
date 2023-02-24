@@ -1,3 +1,5 @@
+import axios from "axios";
+
 export default {
 
   namespaced:true,
@@ -15,7 +17,9 @@ export default {
       production_paypal:false,
       paypa:false,
       divisa_id:null,
-      cuenta:null
+      cuenta:null,
+      imagenes:[],
+      videos: [],
     },
 
 
@@ -42,6 +46,35 @@ export default {
   },
 
   actions:{
+
+    cargarArchivo({commit,state},file){
+
+      let formData = new FormData();
+
+      file.forEach(val => {
+        formData.append('archivos[]',val);
+      })
+
+      formData.append('model_id',state.sistema.id)
+
+      return new Promise((resolve, reject) => {
+        axios.post(`/api/sistema/upload/archivos`,formData,{
+          headers:{
+            ContentType:'multipart/form-data',
+          }
+        }).then(({data}) => {
+
+          if(data.result){
+            commit('update',data.sistema)
+          }
+
+          resolve(data)
+
+        }).catch( e => reject(e))
+      })
+
+    },
+
 
     fetch({commit}){
 
@@ -113,7 +146,23 @@ export default {
         }).catch(e => reject(e))
 
       })
+    },
+
+    eliminarArchivo({state,commit},datos){
+
+      return new Promise((resolve, reject) => {
+        axios.put(`/api/sistemas/${state.sistema.id}/eliminar/archivo`,datos).then(({data}) => {
+
+          if(data.result){
+            commit('update',data.sistema)
+          }
+
+          resolve(data)
+
+        }).catch(e => reject(e))
+      })
     }
+
 
   }
 }

@@ -246,6 +246,16 @@
                         </b-col>
                      </b-row>
 
+                        <template v-if="!formulario.id">
+                              <el-divider content-position="left">Asociar imagenes al destino</el-divider>
+                              <b-row>
+                              <b-col cols="12">
+                                 <multimedia hideVideos seleccionable />
+
+                              </b-col>
+                              </b-row>
+                           </template>
+
                      <b-row>
                         <b-button-group size="sm">
                            <b-button type="submit" v-loading="loading" variant="primary">
@@ -293,7 +303,7 @@ import {
 
 import store from '@/store'
 
-import {computed,toRefs,ref,onMounted,watch} from '@vue/composition-api'
+import {computed,toRefs,ref,onMounted,watch,provide} from '@vue/composition-api'
 
 import vSelect  from 'vue-select'
 
@@ -317,7 +327,9 @@ export default {
       ValidationProvider,
       ValidationObserver,
       BInputGroup,
-      vSelect
+      vSelect,
+      multimedia: () => import('views/multimedias/multimedia.vue')
+
 
 
    },
@@ -328,8 +340,14 @@ export default {
       const formValidate = ref(null)
 
       const formulario = computed(() => store.getters['destino/draft'])
+      const seleccionados = ref([])
+
+      provide('seleccionados', seleccionados)
 
       const guardar = () => {
+          if (seleccionados.value.length) {
+            formulario.value.imagenes = seleccionados.value
+         }
          emit('save',formulario.value,formValidate.value)
       }
 

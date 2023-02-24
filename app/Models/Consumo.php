@@ -17,7 +17,8 @@ class Consumo extends Model
         'tps',
         'comentado', 
         'divisa_id',
-        'paypal'
+        'paypal',
+        'tienda_id',
     ];
 
 
@@ -40,6 +41,10 @@ class Consumo extends Model
         return $this->belongsTo(Divisa::class,'divisa_id','id');
     }
 
+    public function tienda(){
+        return $this->belongsTo(Tienda::class,'tienda_id','id');
+    }
+    
     public function productos(){
 
         return $this->belongsToMany(Producto::class,'consumo_productos','consumo_id','producto_id')->withPivot([

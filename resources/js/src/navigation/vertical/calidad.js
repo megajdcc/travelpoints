@@ -86,6 +86,12 @@ export default [
       ]
 
    },
+   {
+      title:'Multimedias',
+      icon:'fa-upload',
+      fontAwesome:true,
+      route:'multimedias'
+   },
 
    {
       title:'Configuraciones',

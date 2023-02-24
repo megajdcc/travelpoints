@@ -2251,6 +2251,25 @@ export default [
 
    },
 
+   /*****************************************/
+   /* Multimedias
+   /*************************************** */
+   {
+      path: '/multimedias',
+      name: 'multimedias',
+      component: () => import('views/multimedias/multimedia.vue'),
+      meta: {
+         resource: 'multimedia',
+         action: 'read',
+         pageTitle: 'Multimedias',
+         breadcrumb: [
+            { text: 'Archivos', active: true }
+         ]
+      }
+   },
+
+
+
 
    /*****************************************/
    /* PAGINA DE perfil de negocios
@@ -2341,6 +2360,8 @@ export default [
       
    },
 
+
+   
 
 
    /*****************************************/

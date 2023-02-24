@@ -16,6 +16,8 @@ export default {
       cliente:null,
       empleado:null,
       divisa:null,
+      tienda_id:null,
+      tienda:null,
       productos: [],
     },
 
@@ -43,6 +45,9 @@ export default {
         empleado: null,
         divisa: null,
         productos: [],
+        tienda_id: null,
+        tienda: null,
+
       }
     },
 

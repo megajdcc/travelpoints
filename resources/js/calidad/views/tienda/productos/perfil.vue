@@ -235,7 +235,7 @@
                     <h3>Elija la cantidad</h3>
                   </template>
 
-                  <b-container fluid >
+                  <b-container fluid class="px-0" >
                     <b-row>
                       <b-col>
                           <b-card class="ecommerce-card" no-body>
@@ -251,7 +251,7 @@
                               </div>
                     
                               <b-card-body>
-                                <div class="item-wrapper">
+                                <div class="item-wrapper mb-1">
                     
                                   <div>
                                     <h2 class="item-price">
@@ -278,7 +278,7 @@
 
                           <b-form-group>
                             <template #label>
-                              Tienda en la que va a retirar
+                              Tienda que ofrece el producto y/o servicio.
                             </template>
 
                             <validation-provider name="tienda_id" rules="required" #default="{ valid, errors }">

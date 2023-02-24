@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Imagen;
 use App\Models\Sistema;
+use App\Models\Video;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\{DB,File,Storage};
 
 use function PHPUnit\Framework\isNull;
 
@@ -13,7 +15,7 @@ class SistemaController extends Controller
    
     public function fetch(){
 
-        $sistema = Sistema::with(['cuenta','divisa'])->first();
+        $sistema = Sistema::with(['cuenta','divisa','imagenes','videos'])->first();
         return response()->json($sistema);
 
     }
@@ -47,6 +49,7 @@ class SistemaController extends Controller
                 $sistema->update($this->validar($request,$sistema));
                 $sistema->cuenta;
                 $sistema->divisa;
+                $sistema->load(['imagenes','videos']);
 
             DB::commit();
             $result = true;
@@ -79,4 +82,103 @@ class SistemaController extends Controller
 
         return response()->json(['result' => $result,'sistema' => $sistema]);
     }
+
+
+    public function uploadArchivos(Request $request){
+        
+        $archivos  = $request->file('archivos');
+
+        try {
+            DB::beginTransaction();
+            $sistema = Sistema::find($request->get('model_id'));
+
+            foreach ($archivos as $key => $archivo) {
+
+                $archivo_name = \sha1($archivo->getClientOriginalName()) . '.' . $archivo->getClientOriginalExtension();
+
+                Storage::disk('archivos_multimedias')->put($archivo_name, File::get($archivo));
+                switch (\explode('/', $archivo->getClientMimeType())[0]) {
+                    case 'image':
+
+                        $sistema->addImagen([
+                            'imagen' => $archivo_name,
+                        ]);
+                        break;
+
+                    case 'video':
+                        $sistema->addVideo([
+                            'nombre' => $archivo->getClientOriginalName(),
+                            'url' => $archivo_name
+                        ]);
+                        break;
+                }
+            }
+
+            DB::commit();
+
+            $result = true;
+
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            $result = false;
+
+            dd($th->getMessage());
+        }
+
+       
+
+        $sistema->refresh();
+
+        $sistema->load(['cuenta', 'divisa', 'imagenes', 'videos']);
+
+        return response()->json([
+            'result' => $result,
+            'sistema' => $sistema
+        ]);
+
+
+        
+    }
+
+
+
+    public function eliminarArchivo(Request $request, Sistema $sistema){
+
+        $datos = $request->all();
+
+        try {
+            DB::beginTransaction();
+
+            switch ($datos['tipo_archivo']) {
+                case 'imagen':
+                    $imagen = Imagen::find($datos['archivo_id']);
+                    Storage::disk('archivos_multimedias')->delete($imagen->imagen);
+                    $result = $sistema->quitarImagen($imagen);
+                    break;
+
+                case 'video':
+                    $video = Video::find($datos['archivo_id']);
+                    Storage::disk('archivos_multimedias')->delete($video->url);
+                    $result = $sistema->quitarVideo($video);
+                    break;
+            }
+
+            DB::commit();
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            $result = false;
+
+            dd($th->getMessage());
+        }
+
+        $sistema->refresh();
+        $sistema->load(['cuenta', 'divisa', 'imagenes', 'videos']);
+
+        return response()->json([
+            'result' => $result,
+            'sistema' => $sistema,
+        ]);
+
+    }
+
 }

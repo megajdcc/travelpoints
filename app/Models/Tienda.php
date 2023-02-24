@@ -42,6 +42,13 @@ class Tienda extends Model
         return $this->belongsToMany(Tienda::class, 'tienda_producto', 'tienda_id', 'producto_id')->withPivot(['cantidad']);
     }
 
+    public function direccion(){
+        return $this->direccion." (". $this->ciudad?->ciudad." - ".$this->estado?->estado.' - '. $this->estado?->pais?->pais.')'; 
+    }
 
+    public function consumos(){
+        return $this->hasMany(Consumo::class,'tienda_id','id');
+    }
+    
 
 }

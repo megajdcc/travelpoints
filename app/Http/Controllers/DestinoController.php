@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\{DB,Storage,File};
 
 use Illuminate\Database\Eloquent\Builder;
 use App\Models\Imagen;
+use Illuminate\Support\Collection;
 
 class DestinoController extends Controller
 {
@@ -81,9 +82,9 @@ class DestinoController extends Controller
     }
 
 
-    private function validar(Request $request, Destino $destino = null) :array{
+    private function validar(Request $request, Destino $destino = null) : Collection {
 
-        return $request->validate([
+        return collect($request->validate([
             'nombre'      => 'required',
             'titulo'      => 'required',
             'descripcion' => 'required',
@@ -91,8 +92,9 @@ class DestinoController extends Controller
             'estado_id'   => 'nullable',
             'iata_id'     => 'required',
             'lat' => 'nullable',
-            'lng' => 'nullable'
-        ]);
+            'lng' => 'nullable',
+            'imagenes' => 'nullable'
+        ]));
 
     }
     /**
@@ -103,11 +105,29 @@ class DestinoController extends Controller
      */
     public function store(Request $request)
     {
+        $datos = $this->validar($request);
+
+
         try{
             DB::beginTransaction();
 
-            $destino = Destino::create($this->validar($request));
+            $destino = Destino::create($datos->except(['imagenes'])->toArray());
 
+
+            if (isset($datos['imagenes']) && count($datos['imagenes']) > 0) {
+                foreach ($datos['imagenes'] as $imagen) {
+
+                    $img = Imagen::find($imagen);
+
+                    Storage::copy("/public/multimedias/{$img->imagen}", "/public/destinos/imagenes/{$img->imagen}");
+
+                    $destino->addImagen([
+                        'imagen' => $img->imagen,
+                    ]);
+                }
+            }
+
+            $destino->refresh();
             $destino->iata;
             $destino->ciudad;
             $destino->estado?->pais;
@@ -136,10 +156,12 @@ class DestinoController extends Controller
      */
     public function update(Request $request, Destino $destino)
     {
+        $datos = $this->validar($request,$destino);
+
         try {
             DB::beginTransaction();
 
-            $destino->update($this->validar($request,$destino));
+            $destino->update($datos->except(['imagenes'])->toArray());
 
             $destino->iata;
             $destino->ciudad;

@@ -132,6 +132,9 @@ import producto from './modules/tienda/producto.js';
 
 import consumo from './modules/tienda/consumo.js';
 
+// carrito Compra
+
+import carrito from './modules/tienda/carrito.js';
 
 
 Vue.use(Vuex)
@@ -275,7 +278,8 @@ export default new Vuex.Store({
     categoriaProducto,
     tienda,
     producto,
-    consumo
+    consumo,
+    carrito
   },
 
   strict: process.env.DEV,

@@ -163,6 +163,12 @@ export default {
 
       })
 
+    },
+
+    marcarComentada({commit},consumo_id){
+      return new Promise((resolve, reject) => {
+        axios.get(`/api/consumos/${consumo_id}/marcar/comentada`).then(({data}) => resolve(data)).catch(e => reject(e))
+      })
     }
   }
 

@@ -251,28 +251,31 @@ class DestinoController extends Controller
     public function getPorNombre(Request $request){
 
         $destino = Destino::where('nombre',$request->get('nombre'))->first();
-
-        $destino->iata;
-        $destino->imagenes;
-        $destino->ciudad;
-        $destino->estado?->pais;
-        $destino->likes;
-        $destino->modelType = $destino->model_type;
         
-        $destino->negocios = $destino->negocios();
-        
+        if($destino){
+            $destino->iata;
+            $destino->imagenes;
+            $destino->ciudad;
+            $destino->estado?->pais;
+            $destino->likes;
+            $destino->modelType = $destino->model_type;
 
-        foreach($destino->atracciones as $atraccion){
-            $atraccion->ruta = "/Atraccions?q={$atraccion->nombre}";
-            $atraccion->opinions;
-            $atraccion->telefono;
-            $atraccion->imagenes;
-            $atraccion->destino;
-            $atraccion->horarios;
-            $atraccion->likes;
-            $atraccion->modelType = $atraccion->model_type;
+            $destino->negocios = $destino->negocios();
+
+
+            foreach ($destino->atracciones as $atraccion) {
+                $atraccion->ruta = "/Atraccions?q={$atraccion->nombre}";
+                $atraccion->opinions;
+                $atraccion->telefono;
+                $atraccion->imagenes;
+                $atraccion->destino;
+                $atraccion->horarios;
+                $atraccion->likes;
+                $atraccion->modelType = $atraccion->model_type;
+            }
+
         }
-
+        
         return response()->json(['result' => $destino ? true : false,'destino' => $destino]);
     }
 

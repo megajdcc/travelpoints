@@ -39,7 +39,9 @@
                <b-col cols="12" md="10"  class="d-flex justify-content-center align-items-center">
 
                   <!-- <article class="img-central"> -->
-                     <vue-hover-zoom :imageUrl="`/storage/productos/${getImagenSeleccionada().imagen}`"  class="img-central d-flex justify-content-center" :alt="producto.nombre" style="width:100%;height:100%;position:relative; object-fit:contain; "></vue-hover-zoom>
+                     <vue-hover-zoom :imageUrl="`/storage/productos/${getImagenSeleccionada().imagen}`"  class="img-central d-flex justify-content-center" :alt="producto.nombre" style="width:100%;height:100%;position:relative; object-fit:contain; ">
+                    
+                    </vue-hover-zoom>
                   <!-- </article> -->
 
                </b-col>
@@ -61,7 +63,7 @@
                         </b-badge>
 
                         <b-badge class="" varaint="success">
-                            {{ producto.disponibles > 1 ? `${producto.disponibles} productos disponible` : `${producto.disponibles} producto disponible` }}
+                            {{ disponibles > 1 ? `${disponibles} productos disponible` : `${disponibles} producto disponible` }}
                         </b-badge>
 
                         <b-card-title>
@@ -71,21 +73,17 @@
                         <b-card-text class="item-company mb-0">
                         <span>{{ $t('Tienda') }}</span>
 
-                        <b-link class="company-name">
-                           {{  `${producto.tienda.nombre}` }}
-                        </b-link>
+                       
                         </b-card-text>
 
                         <!-- Price And Ratings -->
                         <div class="ecommerce-details-price d-flex flex-wrap mt-1">
                           <h1 class="item-price mr-1">
                             <strong>
-                                {{ producto.precio  | currency(producto.tienda.divisa.iso)}}
+                                {{ producto.precio  | currency(producto.divisa.iso)}}
                             </strong>
                             
                           </h1>
-
-                        
                         
                         </div>
 
@@ -97,7 +95,7 @@
                           </el-divider>
 
                           <section class="d-flex flex-column">
-                            <h3>Precio:  <strong class="text-primary">{{ producto.envio.precio | currency(producto.tienda.divisa.iso) }}</strong> </h3>
+                            <h3>Precio:  <strong class="text-primary">{{ producto.envio.precio | currency(producto.divisa.iso) }}</strong> </h3>
                             <strong class="">Condiciones que aplican </strong>
                             <p class="text-justify">
                               {{ producto.envio.condiciones }}
@@ -144,7 +142,7 @@
                         </b-button-group>
 
                         <b-button-group size="lg" v-else>
-                          <b-button @click="comprar()" variant="success">
+                          <b-button @click="agregarCarrito" variant="success">
                             <font-awesome-icon icon="fas fa-paper-plane"/>
                             Comprar
                           </b-button>
@@ -176,57 +174,27 @@
             <b-container fluid class="px-0 mx-0">
               <b-row>
 
-                <b-col cols="12" v-if="producto.tienda.fisica">
+                <b-col cols="12" v-if="producto.tiendas.length">
                   <!-- ubicación -->
                   <b-card-title>
-                      <h1>{{ $t('Ubicación de la tienda') }}</h1> 
+                      <h1>{{ $t('Disponibilidad en tiendas') }}</h1> 
                   </b-card-title>
-                <table class="table table-sm table-hover ">
-                  <tr>
-                    <td>Pais:</td><td> {{ producto.tienda.estado.pais.pais }}</td>
-                  </tr>
+ 
+                  <GmapMap :center="{ lat: promedioLatitud, lng: promedioLongitud}" :zoom="3" map-type-id="terrain"
+                    style="width: 100%; height: 300px" :options="{styles:stylos}" ref="mapa">
+                  
+                    <GmapMarker :visible="true" :draggable="false" :icon="iconMap" :clickable="true" v-for="(tienda,i) in producto.tiendas.filter(val => val.fisica)" :key="i" :position="{
+                      lat: Number(tienda.lat),
+                      lng: Number(tienda.lng)
+                    }">
+                  
+                      <GmapInfoWindow :options="optionsPlace(tienda)">
+                      </GmapInfoWindow>
+                  
+                    </GmapMarker>
+                  
+                  </GmapMap>
 
-                  <tr>
-                    <td>Estado:</td>
-                    <td> {{ producto.tienda.estado.estado }}</td>
-                  </tr>
-
-                  <tr>
-                    <td>Ciudad:</td>
-                    <td> {{ producto.tienda.ciudad ? producto.tienda.ciudad.ciudad : 'Sin definir' }}</td>
-                  </tr>
-
-                  <tr>
-                    <td>Dirección:</td>
-                    <td> {{ producto.tienda.direccion }}</td>
-                  </tr>
-
-                  <tr>
-                    <td>Iata:</td>
-                    <td> {{ producto.tienda.iata ? `${producto.tienda.iata.codigo} - ${producto.tienda.iata.aeropuerto}` : 'Sin definir' }}</td>
-                  </tr>
-
-                  <tr>
-                    <td colspan="2">
-                        <GmapMap :center="{ lat: Number(producto.tienda.lat), lng: Number(producto.tienda.lng) }" :zoom="17" map-type-id="terrain"
-                          style="width: 100%; height: 300px">
-                        
-                          <GmapMarker :key="0" :position="{
-                            lat: Number(producto.tienda.lat),
-                            lng: Number(producto.tienda.lng)
-                          }" :visible="true" :draggable="false" :clickable="false">
-                        
-                            <GmapInfoWindow :options="optionsPlace(producto.tienda)">
-                            </GmapInfoWindow>
-                        
-                          </GmapMarker>
-                        
-                        </GmapMap>
-                    </td>
-                  </tr>
-
-
-                </table>
                 </b-col>
 
               </b-row>
@@ -261,88 +229,109 @@
     </b-card>
 
 
-     <b-modal v-model="isCompra" size="sm" centered  no-close-on-backdrop hide-backdrop lazy @hide="showPaypal = false" >
-      
-      <template #modal-title>
-        Realizar Compra de {{ producto.nombre }}
-      </template>
 
-      <b-container fluid>
-        <b-row>
-          <b-col cols="12">
-            <b-form-group label="¿Cuantos quieres?" v-for="(produc,i) in formulario.productos" :key="i">
-              <validation-provider name="cantidad" rules="required" #default="{errors,valid}">
-                <b-form-spinbutton v-model="produc.cantidad" :state="valid" :min="0" :max="producto.disponibles" @change="cantidadCambiada(i,$event)"/>
+    <b-sidebar v-model="addCarrito" no-header-close >
+                  <template #title>
+                    <h3>Elija la cantidad</h3>
+                  </template>
 
-                <b-form-invalid-feedback :state="valid">
-                  {{ errors[0]  }}
-                </b-form-invalid-feedback>
+                  <b-container fluid >
+                    <b-row>
+                      <b-col>
+                          <b-card class="ecommerce-card" no-body>
+        
+                              <div class="item-img text-center py-0">
+                                <b-link :to="{
+                                  name: !isStore ? 'producto.show' : 'tienda.travel.show.producto',
+                                  params: { id: producto.id }
+                                }" style="height:100%">
+                                  <b-img :alt="producto.nombre" fluid class="card-img-top img-fluid" v-if="producto.imagenes.length"
+                                    :src="getImagenPrincipal(producto)" />
+                                </b-link>
+                              </div>
+                    
+                              <b-card-body>
+                                <div class="item-wrapper">
+                    
+                                  <div>
+                                    <h2 class="item-price">
+                                      {{ producto.precio | currency(producto.id ? producto.divisa.iso : 'MXN') }}
+                                    </h2>
 
-              </validation-provider>
-            </b-form-group>
-          </b-col>
-        </b-row>
+                                    <b-badge variant="primary">{{ producto.id ? producto.categoria.nombre : '' }}</b-badge>
+                                  </div>
+                                </div>
+                              
+                                <h6 class="item-name">
+                                  <b-link class="text-body" :to="{
+                                    name: !isStore ? 'producto.show' : 'tienda.travel.show.producto',
+                                    params: { id: producto.id }
+                                  }">
+                                    {{ producto.nombre }}
+                                  </b-link>
+                          
+                                </h6>
 
-        <b-row>
-          <b-col>
-            <section class="d-flex flex-column">
-              <strong>Total a pagar: <span class="text-primary">{{ formulario.total | currency(producto.tienda ? producto.tienda.divisa.iso : 'MXN') }}</span></strong> 
-            </section>
+                              </b-card-body>
 
-            <section class="d-flex flex-column">
-                  <strong>Su saldo disponible: <span class="text-primary">Tps{{  usuario.cuenta.saldo | currency  }}</span></strong> 
-            </section>
+                          </b-card>
 
-             <section class="d-flex flex-column">
-                    <strong>Su saldo despues de comprar: <span class="text-primary">Tps{{ (usuario.cuenta.saldo - formulario.total) | currency }}</span></strong> 
-              </section>
+                          <b-form-group>
+                            <template #label>
+                              Tienda en la que va a retirar
+                            </template>
 
-              <section class="d-flex flex-column" v-if="usuario.cuenta.saldo < formulario.total">
-                  <strong class="text-justify">
-                    Te faltan Tps{{ montoPaypal | currency }} en Travel Points. Puedes cancelar la diferencia con Paypal o esperar a ganar más.
-                  </strong> 
-              </section>
+                            <validation-provider name="tienda_id" rules="required" #default="{ valid, errors }">
 
-              <section class="d-flex flex-column">
-                <strong class="text-danger">
-                  Nota: <br> <small>Si su saldo es insuficiente , puede cancelar la diferencia o el total con Paypal. </small>
-                </strong>
-              </section>
-          </b-col>
-        </b-row>
-      </b-container>
+                              <v-select v-model="formulario.tienda_id" :options="producto.tiendas" :reduce="option => option.id" label="nombre">
+                              </v-select>
 
-
-       <template #modal-footer="{hide}">
-
-         <section class="d-flex align-items-center justify-content-between w-100">
-           <PayPal 
-              v-if="showPaypal"
-              :amount="montoPaypal" 
-              :currency="producto.tienda.divisa.iso == 'Tp' ? 'USD' : producto.tienda.divisa.iso" 
-              :client="credentialPaypal" 
-              :env="sistema.production_paypal ? 'live' : 'sandbox'" @payment-completed="pagoCompletadoPaypal">
-              </PayPal>
-
-          <b-button-group size="sm" >
-            
-            <b-button variant="primary" @click="realizarCompra()" :disabled="loading || formulario.productos[0].cantidad < 1 || saldoInsuficiente" v-loading="loading" title="Realizar Compra" >
-              <font-awesome-icon icon="fas fa-paper-plane"/>
-              Comprar
-            </b-button>
-
-              <b-button variant="dark" @click="hide" :disabled="loading" v-loading="loading" title="Cerrar, no comprar" >
-                <font-awesome-icon icon="fas fa-times"/>
-                Cerrar
-              </b-button>
-
-          </b-button-group>
-         </section>
-          
-      </template>
+                              <b-form-invalid-feedback :state="valid">
+                                {{ errors[0] }}
+                              </b-form-invalid-feedback>
+                            </validation-provider>
 
 
-    </b-modal>
+                          </b-form-group>
+
+                            <b-form-group v-if="formulario.tienda_id">
+                              <template #label>
+                                Cantidad de productos
+                              </template>
+
+                              <validation-provider name="tienda_id" rules="required" #default="{ valid, errors }">
+                                <b-form-spinbutton v-model="formulario.cantidad" :min="0" :max="getMaxCantidad"></b-form-spinbutton>
+                                <b-form-invalid-feedback :state="valid">
+                                  {{ errors[0] }}
+                                </b-form-invalid-feedback>
+                              </validation-provider>
+
+
+                            </b-form-group>
+                  
+                      </b-col>
+                    </b-row>
+                  </b-container>
+
+
+                  <template #footer="{ hide }">
+                    <b-button-group  class="p-1">
+
+                        <b-button variant="primary" @click="guardarCarrito" v-loading="loading" :disabled="formulario.cantidad < 1 || loading">
+                              <font-awesome-icon icon="fas fa-cart-plus"/>
+                              Comprar
+                        </b-button>
+
+                        <b-button variant="dark" @click="hide">
+                          <font-awesome-icon icon="fas fa-times"/>
+                          Cerrar
+                        </b-button>
+
+                      
+                    </b-button-group>
+                  </template>
+
+              </b-sidebar>
 
   </section>
 </template>
@@ -352,14 +341,15 @@
 import { useRouter } from '@core/utils/utils'
 
 import store from '@/store'
-import { ref,toRefs,onMounted,onActivated,computed,watch,nextTick,inject} from '@vue/composition-api'
+import { ref,toRefs,onMounted,onActivated,computed,watch,nextTick,inject,h} from '@vue/composition-api'
 
 import {
   ValidationProvider
 } from 'vee-validate'
+import vSelect from 'vue-select'
 
 import {required} from '@validations'
-
+import * as VueGoogleMaps from 'vue2-google-maps'
 import {
   BCard, BCardBody, BRow, BCol, BImg, BCardText, BLink, BButton, BDropdown, BDropdownItem, BAlert,
   BCarousel,
@@ -384,7 +374,9 @@ import {
   BModal,
   BFormGroup,
   BFormSpinbutton,
-  BFormInvalidFeedback
+  BFormInvalidFeedback,
+    BSidebar
+
   
 } from 'bootstrap-vue'
 import PayPal from 'vue-paypal-checkout'
@@ -451,79 +443,25 @@ export default {
     BFormGroup,
     BFormSpinbutton,
     BFormInvalidFeedback,
-    PayPal
+    PayPal,
+    vSelect,
+    BSidebar
   },
 
   setup(props,{emit}) {
   
     const { id } = toRefs(props)
-    const isCompra = ref(false)
     const { producto,productos } =toRefs(store.state.producto)
     const { usuario } = toRefs(store.state.usuario)
     const { is_loggin } = useAuth(); 
     const { sistema } = toRefs(store.state.sistema)
-    const { consumo:formulario } = toRefs(store.state.consumo)
-    const showPaypal = ref(false)
+    const mapa = ref(null)
+    const addCarrito = ref(false);
+    const { formulario,carrito } = toRefs(store.state.carrito)
     const swal = inject('swal')
 
-    const montoPaypal = computed(() => {
-      return String(usuario.value.cuenta.saldo - formulario.value.total).slice(1)
-    })
     
-    const realizarCompra = () => {
-    
-      formulario.value.cliente_id = usuario.value.id
-      formulario.value.divisa_id = producto.value.tienda.divisa_id;
-      formulario.value.productos[0].producto_id = producto.value.id
 
-      store.dispatch('consumo/guardar',formulario.value).then(({result,consumo:consum}) => {
-        if(result){
-         swal({
-            icon: 'success',
-            title: 'Su pago de ha sido procesado con éxito!',
-            text:producto.value.tipo_producto == 2 ? 'Su Producto digital fué enviado a su correo Electrónico, vaya a su bandeja de entrada, si no lo consigues, puedes contactarnos' : 'Puedes retirar tu producto en una de nuestras tiendas, en horario de Oficina',
-            cancelButtonText: 'Ok',
-            showCancelButton: false,
-            showConfirmButton: false,
-            color: '#1e9ad7',
-
-          })
-
-          cargarForm();
-
-          if(usuario.value.id === consum.cliente.id){
-            store.commit('usuario/updatePerfil',consum.cliente)
-          }
-          
-          // store.commit('consumo/clear')
-          showPaypal.value = false
-          isCompra.value = false
-
-
-        }else{
-          toast('Su compra no pudo ser procesada, intente de nuevo',{position:'bottom-right'})
-        }
-      }).catch(e => {
-        console.log(e)
-
-      })
-
-    }
-
-    const comprar = () => {
-
-      if(!is_loggin.value){
-        router.push({name:'login'})
-      }
-
-      setTimeout(() => {
-          showPaypal.value = true
-      }, 500);
-
-      isCompra.value = true;
-
-
-    }
 
     const seleccionarFoto = (imagen) => {
 
@@ -552,59 +490,107 @@ export default {
         store.commit('producto/capturar',id.value)
       }
 
-      formulario.value.divisa_id = computed(() => producto.value.tienda.divisa_id)
       
-      if(producto.value.id){
-        formulario.value.total = producto.value.precio
-      }
-
-      formulario.value.productos = [
-       {
-          cantidad: 0,
-          producto_id: 0,
-          monto: producto.value.precio
-       }
-    ]
 
    }
 
    cargarForm()
    
    watch([producto],(val) => {
-    if(val.id){
-      formulario.value.productos[0].monto = producto.value.precio
-    } 
+    
    })
 
    watch([id,productos],() => cargarForm())
 
-   const cantidadCambiada = (idx,cant) => {
-    formulario.value.productos[idx].monto = producto.value.precio * cant
-    formulario.value.total = producto.value.precio * cant
-   }
+ 
 
-   const pagoCompletadoPaypal = (data) => {
-      const { state, payer } = data;
 
-      if(state == 'approved'){
-        formulario.value.paypal_id = payer.payer_info.payer_id
-        formulario.value.paypal = data
 
-        realizarCompra();
+   const iconMap =  ref({
+      path: "M531.6 103.8L474.3 13.1C469.2 5 460.1 0 450.4 0H93.6C83.9 0 74.8 5 69.7 13.1L12.3 103.8c-29.6 46.8-3.4 111.9 51.9 119.4c4 .5 8.1 .8 12.1 .8c26.1 0 49.3-11.4 65.2-29c15.9 17.6 39.1 29 65.2 29c26.1 0 49.3-11.4 65.2-29c15.9 17.6 39.1 29 65.2 29c26.2 0 49.3-11.4 65.2-29c16 17.6 39.1 29 65.2 29c4.1 0 8.1-.3 12.1-.8c55.5-7.4 81.8-72.5 52.1-119.4zM483.7 254.9l-.1 0c-5.3 .7-10.7 1.1-16.2 1.1c-12.4 0-24.3-1.9-35.4-5.3V384H112V250.6c-11.2 3.5-23.2 5.4-35.6 5.4c-5.5 0-11-.4-16.3-1.1l-.1 0c-4.1-.6-8.1-1.3-12-2.3V384v64c0 35.3 28.7 64 64 64H432c35.3 0 64-28.7 64-64V384 252.6c-4 1-8 1.8-12.3 2.3z",
+      fillColor: "#e01283",
+      fillOpacity: 1,
+      strokeWeight: 0,
+      rotation: 0,
+      scale: .1,
+    })
 
+    onMounted(() => {
+
+      // console.log(mapa.value)
+      
+      // infoWindow.addListener('closeclick', () => {
+        // Handle focus manually.
+      // });
+
+    
+
+      // iconMap.value.anchor = new google.maps.Point(15, 30);
+
+     
+
+
+    })
+
+    const agregarCarrito = (produc) => {
+      store.commit('producto/capturar', produc)
+      addCarrito.value = true;
+    }
+
+    const verificarTiendas = () => {
+
+      if (carrito.value.length) {
+
+        return carrito.value.filter(val => val.pivot.tienda_id != formulario.value.tienda_id).length > 0 ? false : true
+
+      } else {
+        return true;
+      }
+
+    }
+
+    const guardarCarrito = () => {
+
+      if(verificarTiendas()){
+        formulario.value.producto_id = producto.value.id
+        formulario.value.precio_unitario = producto.value.precio
+        formulario.value.monto = producto.value.precio * formulario.value.cantidad
+
+
+        store.dispatch('carrito/agregarCarrito', formulario.value).then(({ result }) => {
+
+          if (result) {
+            addCarrito.value = false
+            // swal({
+            //   title: "Este producto se ha agregado al carrito de forma Automática.",
+            //   text: "Tiene 2 horas para finalizar la compra, de lo contrario, su carrito se vaciará de forma automática",
+            //   icon: "success",
+            //   confirmButtonText: 'Ok!',
+            //   showCancelButton: false,
+            // });
+            router.push({ name: 'caja' });
+
+          } else {
+            toast.info('No se pudo agregar al carrito el producto, inténte de nuevo .', { position: 'bottom-right' })
+          }
+        }).catch(e => {
+          console.log(e)
+        })
       }else{
         swal({
-          icon: 'info',
-          title: 'Su pago no fué procesado por el procesador de pago paypal',
-          cancelButtonText: 'Ok',
+          title: "En el carrito de compra ya hay productos de otra Tienda",
+          text: "Finaliza la compra de tus productos que tienes en tu carrito primero",
+          icon: "info",
+          confirmButtonText: 'Ok!',
           showCancelButton: false,
-          showConfirmButton: false
-        })
+        });
       }
       
-   }
+    }
 
+    
    return {
+    addCarrito,
       producto,
       usuario,
       seleccionarFoto,
@@ -612,19 +598,150 @@ export default {
       getImagenSeleccionada,
       promedioCalificacion: computed(() => store.getters['producto/promedioCalificacion'](producto.value)),
       porcentajeOpinions: (cal) => store.getters['producto/porcentajeOpinions'](cal),
-      comprar,
-      isCompra,
-      realizarCompra,
       required,
       formulario,
-      cantidadCambiada,
       sistema,
-      montoPaypal,
-      credentialPaypal:computed(() => store.getters['sistema/credentialPaypal']),
-      pagoCompletadoPaypal,
-      showPaypal,
-      saldoInsuficiente:computed(() => usuario.value.cuenta.saldo < formulario.value.total),
-      optionsPlace: (tienda) => ({ content: `<strong>${tienda.nombre}</strong>` })
+      iconMap,
+      agregarCarrito,
+      guardarCarrito,
+      disponibles:computed(() => {
+        if(producto.value.tiendas.length){
+           return producto.value.tiendas.map(val => val.pivot.cantidad)
+           .reduce((a, b) => a + b, 0);
+        }else{
+          return 0;
+        }
+       
+      }),
+
+      optionsPlace: (tienda) => ({ content: `<strong>${tienda.nombre} <br> Disponibilidad: ${tienda.pivot.cantidad} Producto </strong>` }),
+
+      promedioLatitud:computed(() => {
+
+        let sum = 0;
+
+        producto.value.tiendas.filter(val => val.fisica).forEach(val => {
+            sum = sum + Number(val.lat)
+        })
+
+
+        let result = sum / producto.value.tiendas.filter(val => val.fisica).length
+
+
+        return result
+      }),
+
+      getMaxCantidad: computed(() => {
+        return producto.value.tiendas.find(val => val.id === formulario.value.tienda_id).pivot.cantidad || 0
+      }),
+
+      getImagenPrincipal: (produc) => {
+
+        const imagen_principal = produc.imagenes.find(val => val.portada)
+
+        if (imagen_principal) {
+          return `/storage/productos/${imagen_principal.imagen}`
+        }
+        return `/storage/productos/${produc.imagenes[0].imagen}`
+      },
+
+
+      promedioLongitud: computed(() => {
+          let sum = 0;
+
+          producto.value.tiendas.forEach(val => {
+            sum += val.fisica ? Number(val.lng) : 0
+
+          })
+
+          let result = sum / producto.value.tiendas.filter(val => val.fisica).length
+          // console.log(result)
+
+          return  result
+
+      }),
+
+      stylos: [
+        { elementType: "geometry", stylers: [{ color: "#242f3e" }] },
+        { elementType: "labels.text.stroke", stylers: [{ color: "#242f3e" }] },
+        { elementType: "labels.text.fill", stylers: [{ color: "#746855" }] },
+        {
+          featureType: "administrative.locality",
+          elementType: "labels.text.fill",
+          stylers: [{ color: "#d59563" }],
+        },
+        {
+          featureType: "poi",
+          elementType: "labels.text.fill",
+          stylers: [{ color: "#d59563" }],
+        },
+        {
+          featureType: "poi.park",
+          elementType: "geometry",
+          stylers: [{ color: "#263c3f" }],
+        },
+        {
+          featureType: "poi.park",
+          elementType: "labels.text.fill",
+          stylers: [{ color: "#6b9a76" }],
+        },
+        {
+          featureType: "road",
+          elementType: "geometry",
+          stylers: [{ color: "#38414e" }],
+        },
+        {
+          featureType: "road",
+          elementType: "geometry.stroke",
+          stylers: [{ color: "#212a37" }],
+        },
+        {
+          featureType: "road",
+          elementType: "labels.text.fill",
+          stylers: [{ color: "#9ca5b3" }],
+        },
+        {
+          featureType: "road.highway",
+          elementType: "geometry",
+          stylers: [{ color: "#746855" }],
+        },
+        {
+          featureType: "road.highway",
+          elementType: "geometry.stroke",
+          stylers: [{ color: "#1f2835" }],
+        },
+        {
+          featureType: "road.highway",
+          elementType: "labels.text.fill",
+          stylers: [{ color: "#f3d19c" }],
+        },
+        {
+          featureType: "transit",
+          elementType: "geometry",
+          stylers: [{ color: "#2f3948" }],
+        },
+        {
+          featureType: "transit.station",
+          elementType: "labels.text.fill",
+          stylers: [{ color: "#d59563" }],
+        },
+        {
+          featureType: "water",
+          elementType: "geometry",
+          stylers: [{ color: "#17263c" }],
+        },
+        {
+          featureType: "water",
+          elementType: "labels.text.fill",
+          stylers: [{ color: "#515c6d" }],
+        },
+        {
+          featureType: "water",
+          elementType: "labels.text.stroke",
+          stylers: [{ color: "#17263c" }],
+        },
+      ] ,
+      mapa
 
     }
   },
@@ -713,6 +830,15 @@ export default {
     padding-top: 0.3rem !important;
     padding-bottom: 0.3rem !important;
 }
+
+.hover-zoom-image img {
+    width: 100% !important;
+    margin-bottom: -4px;
+    transition: all .3s linear;
+    object-fit: contain;
+    background-color: black;
+}
+
 
 </style>
 

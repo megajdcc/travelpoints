@@ -20,8 +20,7 @@ use Illuminate\Support\Str;
 use App\Models\Telefono;
 
 use App\Models\Like;
-
-
+use App\Models\Producto;
 
 class UserController extends Controller
 {
@@ -720,5 +719,53 @@ class UserController extends Controller
 
     }
 
+
+    public function getCarrito(User $usuario){
+
+        $carrito_productos = $usuario->carritoCompra;
+
+        $carrito_productos->load(['opinions','imagenes','categoria','tiendas','divisa']);
+
+        return response()->json($carrito_productos);
+    }
+
+    public function sacarProductoCarrito(User $usuario,Producto $producto){
+
+        $result = $usuario->sacarProducto($producto);
+
+        return response()->json(['result' => $result]);
+    }
+
+
+    public function addProductoCarrito(Request $request){
+
+       
+        $result = $request->user()->addProducto(
+
+            $request->validate([
+                'tienda_id'       => 'required',
+                'producto_id'     => 'required',
+                'monto'           => 'required',
+                'precio_unitario' => 'required',
+                'cantidad'        => 'required',
+                'cliente_id'      => 'nullable'
+                ])
+        );
+
+        return response()->json([
+            'result' => $result,
+            'carrito' => $request->user()->carritoCompra
+        ]);
+    }
+
+    public function fetchDataCarrito(Request $request){
+
+        $datos = $request->all();
+
+        $response = $request->user()->fetchDataCarrito($datos);
+
+        return response()->json($response);
+
+    }
 
 }

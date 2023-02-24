@@ -36,8 +36,12 @@ class Tienda extends Model
     }
 
 
-    public function productos(){
-        return $this->hasMany(Producto::class,'tienda_id','id');
+
+    public function productos()
+    {
+        return $this->belongsToMany(Tienda::class, 'tienda_producto', 'tienda_id', 'producto_id')->withPivot(['cantidad']);
     }
+
+
 
 }

@@ -63,4 +63,9 @@ class Divisa extends Model
     public function sistema(){
         return $this->hasOne(Sistema::class,'divisa_id','id');
     }
+
+    public function productos(){
+        return $this->hasMany(Producto::class,'divisa_id','id');
+        
+    }
 }

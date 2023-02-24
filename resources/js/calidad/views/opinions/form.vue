@@ -12,13 +12,17 @@
                <b-form @submit.prevent="handleSubmit(guardar)" style="max-height:450px;overflow-y:scroll">
                   <b-container fluid>
                      <b-row>
-            
+         
                         <b-col cols="12" >
                            <b-form-group>
             
-                              <template #label>
+                              <template #label v-if="!isCompra">
                                  Califica tu experiencia: <small>(Obligatorio)</small>
                               </template>
+
+                                 <template #label v-else>
+                                       Que calificación le pones al producto comprado: <small>(Obligatorio)</small>
+                                 </template>
                               
                                 
 
@@ -94,7 +98,7 @@
                            
                            </b-form-group>
 
-                           <b-form-group>
+                           <b-form-group v-if="!isCompra">
                               <template #label>
                                  ¿ Quién fue contigo ?: <small>(Obligatorio)</small>
                               </template>
@@ -190,7 +194,8 @@ export default {
    props:{
       modelType:String,
       modelId:Number,
-      isConsumo:Boolean
+      isConsumo:Boolean,
+      isCompra:Boolean
    },
 
    setup(props,{emit}){

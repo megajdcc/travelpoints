@@ -17,7 +17,7 @@ use Illuminate\Broadcasting\Channel;
 
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Support\Facades\{Hash};
-use App\Trais\{hasCuenta, Has_roles, hasTelefonos};
+use App\Trais\{hasCuenta, Has_roles, hasTelefonos,hasCarrito};
 
 use App\Models\Divisa;
 use App\Models\Negocio\Cupon;
@@ -29,7 +29,7 @@ class User extends Authenticatable
 {
     use HasApiTokens,HasFactory, Notifiable;
     use Has_roles;
-    use hasCuenta,hasTelefonos;
+    use hasCuenta,hasTelefonos,hasCarrito;
 
 
     public readonly string $model_type;
@@ -259,6 +259,11 @@ class User extends Authenticatable
     }
 
 
+    public function carritoCompra()
+    {
+        return $this->belongsToMany(Producto::class, 'carrito_productos', 'cliente_id', 'producto_id')->withPivot(['cantidad', 'precio_unitario', 'monto','tienda_id']);
+    }
+
     public function cargar(): User{
 
         
@@ -282,6 +287,7 @@ class User extends Authenticatable
         $this->recomendaciones;
         $this->seguidos;
         $this->cupones;
+        $this->carritoCompra;
 
         return $this;
     }

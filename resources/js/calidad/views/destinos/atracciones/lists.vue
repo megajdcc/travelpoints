@@ -50,11 +50,11 @@
 
                      </template>
 
-                     <h4 v-b-popover.hover="atraccion.descripcion" :title="atraccion.nombre">
+                     <h4 v-b-popover.hover="atraccion.descripcion.substring(0,150)" :title="atraccion.nombre">
                         {{ atraccion.nombre }}
                      </h4>
 
-                     <p class="text-justify" v-b-popover.hover="atraccion.descripcion" :title="atraccion.nombre">
+                     <p class="text-justify" v-b-popover.hover="atraccion.descripcion.substring(0,150)" :title="atraccion.nombre">
                         {{ atraccion.descripcion.substring(0, 80) }} ...
                      </p>
 
@@ -73,7 +73,6 @@
                            <b-button :to="{ name:'imagenes.atraccion',params:{id:atraccion.id}}"
                               v-if="$can('update','atracciones')" variant="dark">
                               <feather-icon icon="ImageIcon" />
-                              Imagenes
                            </b-button>
 
                            <b-button :to="{ name:'atraccion.horarios',params:{id:atraccion.id}}"

@@ -14,6 +14,8 @@
       <b-navbar-nav class="nav align-items-center ml-auto">
          <locale class="d-none d-md-flex" />
 
+         <carrito-compra v-if="is_loggin && carrito.length" />
+
          <b-nav-item :to="{name:'about'}" v-b-tooltip.hover.bottom title="¿Qué es TravelPoints?"
             class="d-none d-md-flex">
             <feather-icon size="21" icon="InfoIcon" />
@@ -46,6 +48,8 @@ import NotificationDropdown from '@/components/notifications.vue'
 import UserDropdown from './components/UserDropdown.vue'
 import useAuth from '@core/utils/useAuth'
 
+import {toRefs,onMounted,watch} from '@vue/composition-api'
+import store from '@/store'
 
 export default {
    components: {
@@ -57,6 +61,7 @@ export default {
       NotificationDropdown,
       UserDropdown,
       BNavItem,
+      carritoCompra:() => import('components/carritoCompra.vue'),
    },
    directives:{
       'b-tooltip':VBTooltip
@@ -71,12 +76,23 @@ export default {
 
 
    setup(){
+      const {carrito} = toRefs(store.state.carrito)
+      const {usuario} = toRefs(store.state.usuario)
+
+      onMounted(() => {
+         store.dispatch('carrito/getCarrito',usuario.value.id)
+      })
+      
+      watch([usuario],() => {
+         store.dispatch('carrito/getCarrito', usuario.value.id)
+      })
 
       const {
          is_loggin 
       } = useAuth()
 
       return {
+         carrito,
          is_loggin
       }
    }

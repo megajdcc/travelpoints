@@ -8,23 +8,26 @@ export default {
       nombre: '',
       breve:'',
       categoria_id: null,
-      producto_id: null,
+      tiendas: [],
       precio: null,
       descripcion: null,
       disponibles: 1,
       caracteristicas:[],
       envio: null,
+      divisa_id:null,
       tipo_producto:1, // 1 => fisico, 2 => digital
       archivo:null,
       categoria:null,
       producto:null,
       opinions:[],
       imagenes:[],
-      consumos:[]
-
+      consumos:[],
+      divisa: null,
+      carritos: []
     },
 
     productos: []
+    
   }),
 
 
@@ -76,8 +79,9 @@ export default {
         nombre: '',
         breve: '',
         categoria_id: null,
-        producto_id: null,
+        tiendas: [],
         precio: null,
+        divisa_id: null,
         descripcion: null,
         disponibles: 1,
         caracteristicas: [],
@@ -88,7 +92,9 @@ export default {
         producto: null,
         opinions: [],
         imagenes: [],
-        consumos: []
+        consumos: [],
+        divisa:null,
+        carritos:[]
 
       }
     },
@@ -174,7 +180,22 @@ export default {
             
          }
 
-      }
+      },
+
+    agregarTienda(state){
+      
+      state.producto.tiendas.push({
+        cantidad:1,
+        tienda_id:null
+      })
+
+
+    },
+
+
+    quitarTienda(state,i){
+      state.producto.tiendas.splice(i,1)
+    }
 
 
   },
@@ -211,9 +232,6 @@ export default {
       return new Promise((resolve, reject) => {
 
         axios.get(`/api/productos/${producto_id}/fetch/data`).then(({data}) => {
-
-          console.log(data);
-
           commit('setProducto', data)
           resolve(data)
         }).catch(e => reject(e))

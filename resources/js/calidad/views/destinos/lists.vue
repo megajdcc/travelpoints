@@ -67,7 +67,6 @@
 
                            <b-button :to="{name:'imagenes.destino',params:{id:destino.id}}" v-if="$can('update','destinos')" variant="dark">
                               <feather-icon icon="ImageIcon" />
-                              Imagenes
                            </b-button>
 
                               <b-button :to="{ name:'atracciones.lists',params:{destino:destino.id}}" v-if="$can('update','atracciones')" variant="warning">

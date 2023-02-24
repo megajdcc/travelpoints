@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('nombre');
             $table->foreignId('categoria_id')->constrained('categoria_productos')->cascadeOnDelete()->cascadeOnUpdate();
             $table->foreignId('tienda_id')->constrained('tiendas')->cascadeOnDelete()->cascadeOnUpdate();
-            $table->decimal('precio');
+            $table->decimal('precio',18);
             $table->longText('descripcion')->nullable();
             $table->integer('disponibles')->default(0);
             $table->json('caracteristicas')->nullable();

@@ -268,7 +268,7 @@ export default [
        {
           path: 'compras',
           name: 'socio.compras',
-          component: () => import('views/socio/compras'),
+          component: () => import('views/socio/compras/index.vue'),
           meta: {
              resource: 'perfil',
              action: 'read',
@@ -2233,6 +2233,24 @@ export default [
          }
       ]
    },
+
+
+   /*****************************************/
+   /* Pago en caja
+   /*************************************** */
+
+   {
+      path:'/carrito/caja',
+      component:() => import('views/tienda/caja.vue'),
+      name:'caja',
+      meta:{
+         resource:'Auth',
+         action:'read',
+         layout:'travel'
+      }
+
+   },
+
 
    /*****************************************/
    /* PAGINA DE perfil de negocios

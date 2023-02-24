@@ -10,6 +10,8 @@ use Illuminate\Support\Facades\DB;
 use App\Notifications\NuevoConsumo;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\NuevoConsumo as newConsumo;
+use App\Models\Divisa;
+
 class ConsumoController extends Controller
 {
    
@@ -38,6 +40,9 @@ class ConsumoController extends Controller
                 ['email', "like", "%{$datos['q']}%", "OR"],
             ]);
         })
+        ->when($datos['usuario_id'],function($q) use($datos){
+                $q->where('cliente_id',$datos['usuario_id']);
+        })
         ->with(['divisa','productos','cliente','empleado'])
         ->orderBy($datos['sortBy'] ?: 'id', $datos['isSortDirDesc'] ? 'desc' :'asc')
         ->paginate($datos['perPage'] ?: 10000);
@@ -50,6 +55,8 @@ class ConsumoController extends Controller
             if($consumo->empleado){
                 $consumo->empleado->avatar = $consumo->empleado->getAvatar();
             }
+
+            $consumo->productos->load(['opinions']);
         }
 
         return response()->json([
@@ -99,6 +106,7 @@ class ConsumoController extends Controller
     {
         $datos = $this->validar($request);
 
+        // dd($datos);
         try {
             DB::beginTransaction();
             
@@ -109,7 +117,7 @@ class ConsumoController extends Controller
                 'paypal_id'   => $datos['paypal_id'],
                 'paypal'      => $datos['paypal'],
                 'comentado'   => false,
-                'divisa_id'   => $datos['divisa_id']
+                'divisa_id'   => Divisa::where('iso','Tp')->first()->id
             ]);
 
 
@@ -122,7 +130,6 @@ class ConsumoController extends Controller
 
             $consumo->cliente->avatar = $consumo->cliente->getAvatar();
            
-
             if ($consumo->empleado) {
                 $consumo->empleado->avatar = $consumo->empleado->getAvatar();
             }
@@ -133,10 +140,13 @@ class ConsumoController extends Controller
             $result = true;
 
             // Descontamos la disponibiblidad
-            foreach($consumo->productos as $producto){
-                $producto->disponibles -= $producto->pivot->cantidad;
-                $producto->save();
-            }
+            // foreach($consumo->productos as $producto){
+            //     $producto->disponibles -= $producto->pivot->cantidad;
+            //     $producto->save();
+            // }
+
+            // Limpiamos el Carrito 
+            $consumo->cliente->carritoCompra()->detach();
 
             // Descontamos los tps consumidos al usuario generando un movimiento a su billetera por la compra
             $consumo->cliente->cargar();
@@ -145,8 +155,8 @@ class ConsumoController extends Controller
 
             // Notificar al Cliente y TravelPoints de la Nueva Compra
 
-            $consumo->cliente->notify(new NuevoConsumo($consumo));
-            Mail::to($consumo->cliente)->send(new newConsumo($consumo));
+            // $consumo->cliente->notify(new NuevoConsumo($consumo));
+            // Mail::to($consumo->cliente)->send(new newConsumo($consumo));
 
         } catch (\Throwable $th) {
             DB::rollBack();
@@ -171,6 +181,16 @@ class ConsumoController extends Controller
 
         return $consumo->tps;
 
+    }
+
+
+    public function marcarComentada(Consumo $consumo){
+
+
+        $result = $consumo->update(['comentado' => true]);
+
+        return response()->json(['result' => $result]);
+        
     }
 
 

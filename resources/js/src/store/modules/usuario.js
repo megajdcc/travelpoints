@@ -40,7 +40,8 @@ export default {
 				referidor:[],
 				likes:[],
 				negocios:[],
-				cupones:[]
+				cupones:[],
+				carrito_compra:[]
 
 
 			},
@@ -78,7 +79,9 @@ export default {
 				referidos: [],
 				referidor: [],
 				negocios: [],
-				cupones: []
+				cupones: [],
+				carrito_compra: []
+
 
 
 
@@ -154,7 +157,9 @@ export default {
 				referidos: [],
 				referidor: [],
 				negocios: [],
-				cupones: []
+				cupones: [],
+				carrito_compra: []
+
 
 			}
 		},

@@ -441,8 +441,17 @@ Route::get('negocios/{negocio}/recomendacions/toggle/user/{usuario}',[NegocioCon
     Route::post('consumos/fetch/data', [ConsumoController::class, 'fetchData']);
     Route::get('consumos/{consumo}/fetch/data', [ConsumoController::class, 'fetch']);
     Route::resource('consumos', ConsumoController::class);
+    Route::get('consumos/{consumo}/marcar/comentada',[ConsumoController::class,'marcarComentada']);
 
+    /*****************************/
+    /* Carrito Compra
+    /*****************************/
 
+    Route::get('carrito/compra/{usuario}/get',[UserController::class,'getCarrito']);
+    Route::get('carrito/compra/{usuario}/quitar/producto/{producto}',[UserController::class,'sacarProductoCarrito']);
+    Route::post('carrito/comprar/agregar/producto',[UserController::class,'addProductoCarrito']);
+
+    Route::post('carrito/fetch/data',[UserController::class,'fetchDataCarrito']);
 
 });
 

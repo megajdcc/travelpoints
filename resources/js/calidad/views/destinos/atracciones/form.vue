@@ -191,7 +191,7 @@
 
                <b-row class="my-1">
                   
-                  <b-col cols="12" md="6">
+                  <b-col cols="12" md="6" v-if="formulario.telefono">
 
                      <b-form-group label="Teléfono" description="Puede agregar un número de teléfono o no, esto es opcional">
                         <b-form-input v-model="formulario.telefono.telefono" />
@@ -209,7 +209,7 @@
                      <b-button-group size="sm" class="mb-1">
                         <b-button @click="agregarInclusion" variant="primary"> 
                            <feather-icon icon="PlusIcon"/>
-                           Agregar Inlcusión
+                           Agregar Inclusión
                         </b-button>
                      </b-button-group>
 
@@ -386,8 +386,18 @@ export default {
 
       const cargarform = () => {
 
+         
          if (formulario.value.id) {
+
             optionsPlace.value.content = '<div><strong>' + formulario.value.nombre + '</strong>'
+
+            if(!formulario.value.telefono){
+               formulario.value.telefono = {
+                     telefono:null,
+                     is_whatsapp:false
+               }
+            }
+
          }
 
       }

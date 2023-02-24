@@ -85,6 +85,9 @@ class VentaController extends Controller
             ->when($datos['model_type'],function($query) use($datos) {
                 $query->where('model_type',$datos['model_type']);
             })
+            ->when($datos['usuario_id'],function($q) use($datos){
+                $q->where('cliente_id',$datos['usuario_id']);
+            })
             ->with(['model', 'empleado', 'cliente', 'divisa'])
             ->orderBy($datos['sortBy'] ?: 'id', $datos['isSortDirDesc'] ? 'desc' : 'asc')
             ->paginate($datos['perPage'] ?: 10000);
@@ -100,6 +103,7 @@ class VentaController extends Controller
                 $venta->empleado->usuario->avatar = $venta->empleado->usuario->getAvatar();
             }
             
+           
 
             $venta->cliente->avatar = $venta->cliente->getAvatar();
 

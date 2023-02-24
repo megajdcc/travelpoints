@@ -41,6 +41,10 @@
             </slot>
       </section>
 
+      <slot name="prePaginate" :items="items">
+         
+      </slot>
+
       <paginate-table :dataMeta="dataMeta" :currentPage.sync="currentPage" :perPage="perPage" :total="total"
          class="mt-1" />
 

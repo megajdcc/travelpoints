@@ -1,5 +1,5 @@
 {
-    "allowJs":true,
+    "allowJS":true,
     "compilerOptions": {
         "jsx":"preserve",
         "baseUrl": ".",

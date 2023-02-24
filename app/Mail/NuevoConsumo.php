@@ -10,6 +10,7 @@ use App\Models\Consumo;
 
 // use Illuminate\Mail\Mailables\Attachment;
 use Illuminate\Mail\Attachment;
+
 class NuevoConsumo extends Mailable implements ShouldQueue
 {
     use Queueable, SerializesModels;

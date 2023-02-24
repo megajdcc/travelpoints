@@ -6,6 +6,7 @@ use App\Models\Imagen;
 use App\Models\Producto;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
@@ -16,7 +17,7 @@ class ProductoController extends Controller
 
     public function __construct()
     {
-        $this->middleware('convertir.null')->only(['store','update']);
+        // $this->middleware('convertir.null')->only(['store','update']);
 
     }
 
@@ -25,12 +26,10 @@ class ProductoController extends Controller
         $datos  = $request->all();
 
         $is_categorias = count($datos['categoria_id']) > 0;
-
         $paginator = Producto::where([
             ['nombre','like',"%{$datos['q']}%","OR"],
             ['breve', 'like', "%{$datos['q']}%", "OR"],
-            ['descripcion', 'like', "%{$datos['q']}%", "OR"],
-            ['disponibles', 'like', "%{$datos['q']}%", "OR"],
+            ['descripcion','like', "%{$datos['q']}%", "OR"],
             ['precio', 'like', "%{$datos['q']}%", "OR"],
             ['caracteristicas', 'like', "%{$datos['q']}%", "OR"],
             ['envio', 'like', "%{$datos['q']}%", "OR"],
@@ -42,26 +41,17 @@ class ProductoController extends Controller
             ]);
         })
         
-        ->whereHas('tienda', function (Builder $q) use ($datos) {
-            $q->orWhere([
-                ['nombre', 'LIKE', "%{$datos['q']}%", "OR"],
-            ]);
-        })
+
         ->when($is_categorias,function($q) use($datos){
             $q->whereIn('categoria_id',$datos['categoria_id']);
         })
         ->whereBetween('precio',$datos['precios'])
-        ->with(['categoria','imagenes','opinions','tienda.divisa','consumos'])
+        ->with(['categoria','imagenes','opinions','tiendas','consumos','divisa'])
         ->orderBy('precio', $datos['sortBy'] == 'price-asc' ? 'asc' : 'desc')
         ->paginate($datos['perPage'] ?: 10000);
 
-
         $productos = collect($paginator->items());
 
-        foreach($productos as $producto){
-            $producto->tienda?->ciudad;
-            $producto->tienda?->estado?->pais;
-        }
 
         return response()->json(['total' => $paginator->total(), 'productos' => $productos]);
 
@@ -70,33 +60,29 @@ class ProductoController extends Controller
 
     public function fetch(Producto $producto){
 
-        $producto->load(['categoria', 'imagenes', 'opinions', 'tienda.divisa','consumos']);
-        $producto->tienda?->ciudad;
-        $producto->tienda?->estado?->pais;
-
-
+        $producto->load(['categoria', 'imagenes', 'tiendas', 'consumos', 'divisa','opinions']);
         return response()->json($producto);
         
     }
 
 
-    private function validar(Request $request){
-        return $request->validate([
+    private function validar(Request $request) : Collection {
+        return collect($request->validate([
             'id'              => 'nullable',
             'nombre'          => 'required',
             'breve'           => 'nullable',
             'categoria_id'    => 'required',
-            'tienda_id'       => 'required',
+            'tiendas'       => 'nullable',
             'precio'          => 'required',
-            'disponibles'     => 'required',
             'descripcion'     => 'nullable',
             'caracteristicas' => 'nullable',
             'envio'           => 'nullable',
             'tipo_producto'   => 'required',
+            'divisa_id' => 'required'
 
         ],[
             'archivo.required_without' => 'El archivo es importante, no debe faltar'
-        ]);
+        ]));
     }
     /**
      * Store a newly created resource in storage.
@@ -110,14 +96,20 @@ class ProductoController extends Controller
 
         try {
             DB::beginTransaction();
-            
-            $producto = Producto::create($datos);
 
+            $producto = Producto::create($datos->except(['tiendas','id'])->toArray());
 
-            $producto->load(['categoria', 'imagenes', 'tienda.divisa', 'consumos']);
+            if(isset($datos['tiendas'])){
+
+                foreach($datos['tiendas'] as $tienda){
+                    $producto->tiendas()->attach($tienda['tienda_id'],['cantidad' => $tienda['cantidad']]);
+                }
+
+            }
+           
 
             $producto->envio;
-            $producto->caracteristicas;
+        $producto->caracteristicas;
 
             DB::commit();
             $result = true;
@@ -125,6 +117,8 @@ class ProductoController extends Controller
         } catch (\Throwable $th) {
             DB::rollBack();
             $result = false;
+
+            dd($th);
         }
 
         return response()->json(['result' => $result, 'producto' => $result ? $producto : null]);
@@ -146,12 +140,18 @@ class ProductoController extends Controller
             DB::beginTransaction();
 
 
-            $producto->update($datos);
+            $producto->update($datos->except(['tiendas'])->toArray());
+
+            if (isset($datos['tiendas'])) {
+                $producto->tiendas()->detach();
+
+                foreach ($datos['tiendas'] as $tienda) {
+                    $producto->tiendas()->attach($tienda['tienda_id'], ['cantidad' => $tienda['cantidad']]);
+                }
+            }
 
 
-            $producto->load(['categoria', 'imagenes', 'tienda.divisa', 'consumos']);
-            $producto->tienda?->ciudad;
-            $producto->tienda?->estado?->pais;
+            $producto->load(['categoria', 'imagenes', 'tiendas', 'consumos','divisa','opinions']);
 
             $producto->envio;
             $producto->caracteristicas;
@@ -177,10 +177,9 @@ class ProductoController extends Controller
 
         $result = $producto->save();
         
-        $producto->tienda?->ciudad;
-        $producto->tienda?->estado?->pais;
-        
-        $producto->load(['categoria', 'imagenes', 'tienda.divisa', 'consumos']);
+
+        $producto->load(['categoria', 'imagenes', 'tiendas', 'consumos', 'divisa','opinions']);
+
 
         return response()->json(['result' => $result,'producto' => $producto]);
     }
@@ -206,9 +205,11 @@ class ProductoController extends Controller
     public function rangoPrecios(){
 
         $precios = collect([
-            Producto::min('precio') ?: 0,
-            Producto::max('precio') ?: 20000
+            Producto::count() < 2 ? 0 : (double) Producto::min('precio'),
+            (double) Producto::max('precio') ?: 20000
         ]);
+
+        // dd($precios);
 
         return response()->json($precios);
         
@@ -234,7 +235,7 @@ class ProductoController extends Controller
             }
 
             $producto->refresh();
-            $producto->load(['categoria','imagenes', 'tienda.divisa', 'consumos']);
+            $producto->load(['categoria', 'imagenes', 'tiendas', 'consumos', 'divisa','opinions']);
 
             $producto->imagenes;
 

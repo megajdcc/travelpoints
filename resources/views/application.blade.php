@@ -52,10 +52,15 @@
 
   @endif
 
+    {{-- <script
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCNWsVH2kmknm6knGSRKDuzGeMWM1PT6gA&callback=initMap&v=weekly"
+        defer
+      ></script> --}}
+
     <script src="{{ mix('js/manifest.js')}}"></script>
     <script src="{{ mix('js/vendor.js')}}"></script>
     <script src="{{ mix('js/app.js')}}"></script>
-
-</body>
+  
+  </body>
 
 </html>

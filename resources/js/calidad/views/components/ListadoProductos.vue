@@ -25,7 +25,7 @@
               </h6>
 
               <vue-slider :value="precios" @change="precios = $event" lazy :min="precio_minimo" :max="precio_maximo"
-                 :tooltipFormatter="(val) => `$ ${val}`">
+                 :tooltipFormatter="(val) => `$ ${val}`" silent :interval=".2">
                  
                 </vue-slider>
 
@@ -51,6 +51,7 @@
                 <div class="ecommerce-header-items d-flex justify-content-between align-items-center flex-wrap">
               
                   <div class="result-toggler">
+
                     <div class="search-results">
                       {{ total }} {{ $t('Productos encontrados') }}
                     </div>
@@ -197,7 +198,7 @@ export default {
   setup(props,{emit}) {
 
     const { actions } = toRefs(props)
-    let range_precio = ref([1, 2000]);
+    let range_precio = ref([0, 20000]);
 
     const itemView = ref('grid-view')
 
@@ -241,8 +242,9 @@ export default {
 
 
       axios.get('/api/productos/rango/precios').then(({ data }) => {
-        precios.value = data.map(val => Number(val));
-        range_precio.value = data.map(val => Number(val));
+       
+        range_precio.value = data
+         precios.value = data
       })
 
     }
@@ -277,8 +279,8 @@ export default {
       itemView,
       itemViewOptions,
       sortByOptions,
-      precio_minimo:computed(() => Number(range_precio.value[0])),
-      precio_maximo: computed(() => Number(range_precio.value[1])),
+      precio_minimo:computed(() => range_precio.value[0]),
+      precio_maximo: computed(() => range_precio.value[1]),
 
     }
 

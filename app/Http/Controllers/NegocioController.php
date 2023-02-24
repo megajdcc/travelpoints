@@ -359,13 +359,15 @@ class NegocioController extends Controller
     public function cargarNegocioEmpleado(Request $request, int|string $ultimoNegocio = null){
 
 
+
         if($ultimoNegocio){
             $negocio = $request->user()->negocios->where('id',$ultimoNegocio)->first();
         }else{
+
             $negocio = $request->user()->negocios->first();
         }
 
-        $negocio->cargar();
+        $negocio?->cargar();
 
         return response()->json($negocio);
         

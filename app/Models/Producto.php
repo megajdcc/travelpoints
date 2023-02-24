@@ -20,14 +20,13 @@ class Producto extends Model
         'nombre',
         'breve',
         'categoria_id',
-        'tienda_id',
         'precio',
         'descripcion',
-        'disponibles',
         'caracteristicas',
         'envio',
         'tipo_producto',
-        'archivo'
+        'archivo',
+        'divisa_id'
     ];
 
 
@@ -35,6 +34,7 @@ class Producto extends Model
         'caracteristicas' => 'array',
         'envio' => 'array',
     ];
+
 
 
     public function __construct(){
@@ -45,12 +45,6 @@ class Producto extends Model
         return $this->belongsTo(CategoriaProducto::class,'categoria_id','id');
     }
 
-
-    public function tienda(){
-        return $this->belongsTo(Tienda::class,'tienda_id','id');
-    }
-
-
     public function consumos()
     {
         return $this->belongsToMany(Consumo::class, 'consumo_productos', 'producto_id', 'consumo_id')->withPivot([
@@ -58,5 +52,31 @@ class Producto extends Model
             'monto'
         ]);
     }
+
+
+    public function tiendas(){
+        return $this->belongsToMany(Tienda::class,'tienda_producto','producto_id','tienda_id')->withPivot(['cantidad']);
+    }
     
+
+    public function divisa(){
+        return $this->belongsTo(Divisa::class,'divisa_id','id');
+    }
+
+
+
+    public function carritos(){
+        return $this->belongsToMany(User::class,'carrito_productos','producto_id','cliente_id')->withPivot(['cantidad','precio_unitario','monto','tienda_id']);
+    }
+
+    public function cargar(){
+
+        $this->carritos;
+        $this->divisa;
+        $this->tiendas;
+        $this->consumos;
+        $this->categoria;
+    }
+
+
 }

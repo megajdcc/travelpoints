@@ -73,7 +73,7 @@ export default {
       Search:() => import('components/Search.vue'),
       Atracciones: () => import('components/Atracciones.vue'),
       Destinos : () => import('components/Destinos.vue'),
-      Negocios:() => import('components/Negocios.vue')
+   Negocios:() => import('components/Negocios.vue')
    },
 
    directives: {

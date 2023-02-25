@@ -104,10 +104,6 @@
                               </validation-provider>
                            </b-form-group>
 
-                           
-                           
-
-
                            <!-- Url en el Sitio -->
                            <b-form-group title="Este será el enlace directo al perfil de tú negocio." v-b-tooltip.hover.v-primary>
 

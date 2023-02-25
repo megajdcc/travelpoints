@@ -16,7 +16,7 @@
               <!-- Comision por persona o porcentaje -->
     
               <b-badge variant="success" v-if="negocio.tipo_comision == 2" v-b-tooltip.hover="'Monto por Persona'">
-                {{ negocio.comision | currency(negocio.divisa.iso) }}
+                {{ negocio.comision | currency('Tp') }}
               </b-badge>
     
               <b-badge variant="success" v-else v-b-tooltip.hover="'Porcentaje por lo que consumas'">

@@ -67,7 +67,7 @@
           <section class="d-flex align-items-center">
             <!-- Logo -->
             <section class="w-25">
-              <b-img style="width:100%; height:60px; object-fit:cover"
+              <b-img style="width:100%; height:60px; object-fit:contain"
                 :src="`/storage/negocios/logos/${negocio.logo}`" />
             </section>
 
@@ -131,9 +131,23 @@
 
           <el-divider></el-divider>
 
-          <p class="text-justify">
-            {{ negocio.descripcion }}
-          </p>
+       
+
+          <!-- Perfil Negocio Mapa -->
+            <GmapMap :center="{lat:Number(negocio.lat), lng:Number(negocio.lng)}" :zoom="17" map-type-id="terrain" style="width: 100%; height: 300px">
+              
+              <GmapMarker :key="0" :position="{
+                lat:Number(negocio.lat),
+                lng:Number(negocio.lng)
+              }" :visible="true" :draggable="false" :clickable="false">
+
+                      <GmapInfoWindow :options="optionsPlace">
+                      </GmapInfoWindow>
+              
+              </GmapMarker>
+              
+            </GmapMap>
+
 
           <el-divider></el-divider>
 
@@ -152,7 +166,7 @@
 
           <el-divider></el-divider>
 
-          <table class="table table-hover table-sm " border="0" v-if="negocio.precios">
+          <table class="table table-hover table-sm " border="0" v-if="negocio.redes.length">
             <tr>
               <td>
                 <strong>Seguir</strong>
@@ -208,42 +222,47 @@
           </b-nav>
         </b-card>
 
-        <h2 class="display-4">Horario de  <span class="text-warning">Trabajo</span></h2>
+        <template v-if="negocio.horarios.length">
+            <h2 class="display-4">Horario de  <span class="text-warning">Trabajo</span></h2>
 
-        <b-card>
-          <table class="table table-sm table-hover ">
+          <b-card>
+            <table class="table table-sm table-hover ">
 
-            <tr v-for="(horario,i) in negocio.horarios">
-                <td>
-                  {{  horario.dia | dia  }}
-                </td>
+              <tr v-for="(horario, i) in negocio.horarios">
+                  <td>
+                    {{ horario.dia | dia }}
+                  </td>
 
-                <td>
-                  <template v-if="horario.apertura && horario.cierre">
-                    {{ horario.apertura | fecha('hh:mm A',true) }} - {{ horario.cierre | fecha('hh:mm A',true) }}
-                  </template>
+                  <td>
+                    <template v-if="horario.apertura && horario.cierre">
+                      {{ horario.apertura | fecha('hh:mm A', true) }} - {{ horario.cierre | fecha('hh:mm A', true) }}
+                    </template>
 
-                  <template v-else>
-                    <strong class="text-danger">Cerrado</strong>
-                  </template>
+                    <template v-else>
+                      <strong class="text-danger">Cerrado</strong>
+                    </template>
                   
-                </td>
-            </tr>
+                  </td>
+              </tr>
 
-          </table>
-        </b-card>
+            </table>
+          </b-card>
+        </template>
+      
 
-        <h2 class="display-4">Amenidades</h2>
-        
-        <b-card>
+        <template v-if="negocio.amenidades.length">
+          <h2 class="display-4">Amenidades</h2>
+          <b-card>
 
-          <b-form-checkbox-group :options="negocio.amenidades"  text-field="nombre" value-field="id"
-           disabled :checked="negocio.amenidades.map(val => val.id)">
-          </b-form-checkbox-group>
+            <b-form-checkbox-group :options="negocio.amenidades"  text-field="nombre" value-field="id"
+             disabled :checked="negocio.amenidades.map(val => val.id)">
+            </b-form-checkbox-group>
 
-        </b-card>
+          </b-card>
+        </template>
+      
 
-        <section class="d-flex justify-content-center align-items-center flex-column">
+        <section class="d-flex justify-content-center align-items-center flex-column" v-if="negocio.formas_pago.length">
             <h2 class="display-5 text-muted">Pagos Aceptados</h2>
 
             <article class="d-flex flex-wrap">
@@ -320,7 +339,8 @@ export default {
     BNav,
     BNavItem,
     BFormCheckboxGroup,
-    BannerNegocio:() => import('components/BannerNegocio.vue')
+    BannerNegocio:() => import('components/BannerNegocio.vue'),
+
 
   },
 
@@ -361,6 +381,8 @@ export default {
       negocio,
       promedioCalificacion: computed(() => store.getters['negocio/promedioCalificacion'](negocio.value)),
       porcentajeOpinions: (cal) => store.getters['negocio/porcentajeOpinions'](cal),
+      optionsPlace: computed(() => ({ content: `<strong>${negocio.value.nombre}</strong>` })),
+
       getColorRed: (red) => {
         switch (red) {
           case 'Facebook':

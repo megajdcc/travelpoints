@@ -105,24 +105,7 @@
                            </b-form-group>
 
                            
-                           <!-- Descripcion del negocio -->
-                           <b-form-group
-                              title="Explica con más detalle acerca de tu negocio. Los socios de TravelPoints tambien pueden encontrar tu negocio por su descripción. Puedes agregar palabras claves para facilitar la busqueda."
-                              v-b-tooltip.hover.v-primary>
-                              <template #label>
-                                 Descripción del negocio: <span class="text-danger">*</span>
-                                 <feather-icon icon="HelpCircleIcon" class="text-warning" />
-                              </template>
                            
-                              <validation-provider name="descripcion" rules="required" #default="{errors}">
-                                 <b-form-textarea v-model="formulario.descripcion" :state="errors.length ? false : null" :rows="4"
-                                    placeholder="Descripción del negocio" />
-                                 <b-form-invalid-feedback :state="errors.length ? false : null">
-                                    {{ errors[0] }}
-                                 </b-form-invalid-feedback>
-                           
-                              </validation-provider>
-                           </b-form-group>
 
 
                            <!-- Url en el Sitio -->
@@ -256,6 +239,29 @@
                         
                         </b-col>
 
+                     </b-row>
+
+                     <b-row>
+                        <b-col>
+                           <!-- Descripcion del negocio -->
+                              <b-form-group
+                                 title="Explica con más detalle acerca de tu negocio. Los socios de TravelPoints tambien pueden encontrar tu negocio por su descripción. Puedes agregar palabras claves para facilitar la busqueda."
+                                 v-b-tooltip.hover.v-primary>
+                                 <template #label>
+                                    Descripción del negocio: <span class="text-danger">*</span>
+                                    <feather-icon icon="HelpCircleIcon" class="text-warning" />
+                                 </template>
+                           
+                                 <validation-provider name="descripcion" rules="required" #default="{ errors }">
+                                      <editor output-format="html" :value="formulario.descripcion" @input="formulario.descripcion = $event"
+                          api-key="t1i940nuarrf1zefgxbf6ow5cxmgjmcad7q7l3fm5prgebyc" :init="optionsEditor" />
+                                    <b-form-invalid-feedback :state="errors.length ? false : null">
+                                       {{ errors[0] }}
+                                    </b-form-invalid-feedback>
+                           
+                                 </validation-provider>
+                              </b-form-group>
+                        </b-col>
                      </b-row>
                   
                   
@@ -686,6 +692,7 @@
 
 
 <script>
+import Editor from '@tinymce/tinymce-vue'
 
 import {
    BCard,
@@ -724,6 +731,7 @@ import {regresar} from '@core/utils/utils'
 import {computed,onMounted,watch,toRefs,ref} from '@vue/composition-api'
 
 import useDireccion from '@core/utils/useDireccion'
+import { optionsEditor } from '@core/utils/utils';
 
 export default {
    
@@ -758,7 +766,7 @@ export default {
       FormImagen: () => import('components/FormImagen.vue'),
       FormHorario: () => import('components/FormHorario.vue'),
       FormTelefono:() => import('components/FormTelefono.vue'),
-
+      Editor
 
    },
 
@@ -1099,7 +1107,7 @@ export default {
          actionsImagenes,
          actionsTelefono,
          usuarios,
-
+         optionsEditor,
          filtrarUsuarios:({nombre,email},search) => {
             
             return (nombre || email || '').toLocaleLowerCase().indexOf(search.toLocaleLowerCase()) > -1

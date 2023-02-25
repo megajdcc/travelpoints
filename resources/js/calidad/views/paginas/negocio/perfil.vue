@@ -32,8 +32,8 @@
     </b-card>
 
   
-    <!-- Perfil Negocio mana -->
-  <GmapMap :center="{lat:Number(negocio.lat), lng:Number(negocio.lng)}" :zoom="17" map-type-id="terrain" style="width: 100%; height: 300px">
+    <!-- Perfil Negocio Mapa -->
+  <!-- <GmapMap :center="{lat:Number(negocio.lat), lng:Number(negocio.lng)}" :zoom="17" map-type-id="terrain" style="width: 100%; height: 300px">
     
     <GmapMarker :key="0" :position="{
     	lat:Number(negocio.lat),
@@ -45,21 +45,28 @@
     
     </GmapMarker>
     
-  </GmapMap>
+  </GmapMap> -->
 
-  <hr>
+      <b-card>
+        <b-card-body v-html="negocio.descripcion">
+        </b-card-body>
+      </b-card>
+     <!-- <p class="text-justify">
+            {{ negocio.descripcion }}
+      </p> -->
+
+  
   <!-- Video del negocio -->
   <template v-if="negocio.videos.length">
-
+    <hr>
     <h2>Video</h2>
     
     <section class="d-flex flex-column ">
       <video :poster="portada" :src="`/storage/negocios/videos/${video}`" controls class="video-negocio" controlslist="nodownload"></video>
     </section>
-
+    <hr>
   </template>
 
-  <hr>
   <!-- Opiniones del negocio -->
   <h2 >Opiniones sobre este <strong class="text-warning">negocio</strong></h2>
 
@@ -87,6 +94,7 @@ import {
   BCard,
   BImg,
   BButton,
+  BCardBody,
   VBTooltip
 } from 'bootstrap-vue'
 
@@ -101,6 +109,7 @@ export default {
 
   components:{
     BCard,
+    BCardBody,
     BImg,
     BButton,
     Swiper,

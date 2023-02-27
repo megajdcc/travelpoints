@@ -77,6 +77,7 @@ import { ref, onMounted, watch, toRefs, computed, onUnmounted } from '@vue/compo
 
 import store from '@/store';
 import router from '@/router';
+import useAuth from '@core/utils/useAuth';
 
 export default {
   components: {
@@ -110,13 +111,19 @@ export default {
     const {carrito} = toRefs(store.state.carrito)
     const carritoRef = ref(null)
 
+    const {
+      is_loggin
+    } = useAuth();
+
     let cargarForm = () => {
 
-      store.dispatch('carrito/getCarrito', usuario.value.id)
+      if(is_loggin.value){
+        store.dispatch('carrito/getCarrito', usuario.value.id)
 
-       setInterval(() => {
+        setInterval(() => {
           store.dispatch('carrito/getCarrito', usuario.value.id)
-       }, 60000);
+        }, 60000);
+      }
 
     }
 

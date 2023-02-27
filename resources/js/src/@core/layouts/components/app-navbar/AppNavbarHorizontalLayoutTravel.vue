@@ -79,17 +79,21 @@ export default {
       const {carrito} = toRefs(store.state.carrito)
       const {usuario} = toRefs(store.state.usuario)
 
-      onMounted(() => {
-         store.dispatch('carrito/getCarrito',usuario.value.id)
-      })
-      
-      watch([usuario],() => {
-         store.dispatch('carrito/getCarrito', usuario.value.id)
-      })
-
       const {
-         is_loggin 
+         is_loggin
       } = useAuth()
+
+      const cargarForm = () => {
+           if (is_loggin.value) {
+            store.dispatch('carrito/getCarrito', usuario.value.id)
+         }
+      }
+
+      onMounted(() => cargarForm())
+      
+      watch([usuario],() =>  cargarForm())
+
+    
 
       return {
          carrito,

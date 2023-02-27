@@ -42,6 +42,7 @@ class HorarioController extends Controller
         }catch(\Exception $e){
             DB::rollBack();
             $result = false;
+            dd($e->getMessage());
         }
 
         return response()->json(['result' => $result,'model' => $result ? $model : null]);

@@ -234,13 +234,34 @@
                   </td>
 
                   <td>
-                    <template v-if="horario.apertura && horario.cierre">
-                      {{ horario.apertura | fecha('hh:mm A', true) }} - {{ horario.cierre | fecha('hh:mm A', true) }}
-                    </template>
+                    <section v-if="!horario.doble_turno">
+                       <template v-if="horario.apertura && horario.cierre">
+                        {{ horario.apertura[0] | fecha('hh:mm A', true) }} - {{ horario.cierre[0] | fecha('hh:mm A', true) }}
+                      </template>
 
-                    <template v-else>
-                      <strong class="text-danger">Cerrado</strong>
-                    </template>
+                      <template v-else>
+                        <strong class="text-danger">Cerrado</strong>
+                      </template>
+                    </section>
+
+                    <section v-else class="">
+                       <template v-if="horario.apertura.length && horario.cierre.length">
+
+                        <section class="d-flex justify-content-between">
+                           Mañana: ({{ horario.apertura[0] | fecha('hh:mm A', true) }} - {{ horario.cierre[0] | fecha('hh:mm A', true) }})
+                        </section>
+                       
+                        <section class="d-flex justify-content-between">
+                            Tarde: ({{ horario.apertura[1] | fecha('hh:mm A', true) }} - {{ horario.cierre[1] | fecha('hh:mm A', true) }})
+                        </section>
+                       
+                      </template>
+
+                      <template v-else>
+                        <strong class="text-danger">Cerrado</strong>
+                      </template>
+                    </section>
+                   
                   
                   </td>
               </tr>

@@ -1,12 +1,7 @@
 import Vue from 'vue'
-// axios
 import axios from 'axios'
-import {Notification} from 'element-ui';
 
 import useAuth from '@core/utils/useAuth.js';
-
-import ToastificationContent from '@core/components/toastification/ToastificationContent';
-
 
 const axiosIns = axios.create({
   baseURL: window.location.origin,
@@ -82,15 +77,15 @@ axiosIns.interceptors.response.use((response) => {
 
       if (response.data.message) {
 
-        toast({
-          component: ToastificationContent,
-          props: {
-            title: response.data.message,
-            icon: 'AlertCircleIcon'
-          }
-        }, {
-          position: 'bottom-left'
-        })
+        // toast({
+        //   component: ToastificationContent,
+        //   props: {
+        //     title: response.data.message,
+        //     icon: 'AlertCircleIcon'
+        //   }
+        // }, {
+        //   position: 'bottom-left'
+        // })
 
       }
 
@@ -119,15 +114,9 @@ axiosIns.interceptors.response.use((response) => {
     
 })
 
-
-
-
 axiosIns.interceptors.response.use(undefined, (error) => {
 
   const response = error.response;
-
-  
-
   return Promise.reject(error);
 
 });

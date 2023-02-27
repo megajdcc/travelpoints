@@ -42,8 +42,8 @@ trait hasHorario
       for ($i=1; $i <= 7 ; $i++) { 
          Horario::create([
             'dia' => $i,
-            'apertura' => now()->format('h:i:s'),
-            'cierre' => now()->format('h:i:s'),
+            'apertura' => [now()->setTime(7,0)->format('h:i:s')],
+            'cierre' => [now()->setTime(10,0)->format('h:i:s')], 
             'model_type' => $this->model_type,
             'model_id' => $this->id
          ]);

@@ -1,6 +1,6 @@
 <template>
     <section class="banner-perfil-negocio" :style="{ 'background-image': `url(${portada})` }">
-      <b-container fluid class="py-2 px-3">
+      <b-container fluid class="py-2 px-1 px-md-3">
         <b-row>
     
           <b-col cols="12" md="8" class="d-flex flex-column flex-wrap">

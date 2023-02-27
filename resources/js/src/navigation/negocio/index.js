@@ -209,12 +209,14 @@ export default [
             route: 'negocio.video',
             resource: 'preferencias negocio',
             action: 'read'
+         },
+
+         {
+            title: 'Menú del Negocio',
+            route: 'negocio.menu',
+            resource: 'preferencias negocio',
+            action: 'read'
          }
-
-
-
-
-
       ]
 
    },

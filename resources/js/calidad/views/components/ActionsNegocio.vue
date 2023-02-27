@@ -3,7 +3,9 @@
     <b-button variant="primary" @click.stop="toggleSeguidor" :disabled="!usuario.id" class="font-weight-bolder flex-grow-1" v-b-tooltip.hover="legendSeguidor">
       <font-awesome-icon :icon="getIconSeguidor" :class="{'mr-1' : !hideLegend}"  :color="getColorSeguidor"  />
         <template v-if="!hideLegend">
-          {{ legendSeguidor }}
+          <span class="d-none d-md-inline">
+            {{ legendSeguidor }}
+          </span>
         </template>
     </b-button>
 
@@ -16,7 +18,10 @@
       <font-awesome-icon icon="fa fa-heart" :class="{'mr-1' : !hideLegend}" :color="getColorRecomendacion" />
 
       <template v-if="!hideLegend">
-        {{ legendRecomendacion }}
+          <span class="d-none d-md-inline">
+              {{ legendRecomendacion }}
+          </span>
+       
       </template>
     </b-button>
 

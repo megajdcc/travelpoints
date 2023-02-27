@@ -104,6 +104,14 @@ return [
             'visibility' => 'public',
         ],
 
+
+        'negocio_menu' => [
+            'driver' => 'local',
+            'root' => storage_path('app/public/negocios/menu'),
+            'url' => env('APP_URL') . '/storage/negocios/menu',
+            'visibility' => 'public', 
+        ],
+
         'imagenes_productos' => [
             'driver' => 'local',
             'root' => storage_path('app/public/productos'),

@@ -1,8 +1,8 @@
 <template>
   <b-container fluid class="mx-0 px-0" v-if="negocio.id">
     
-    <b-row class="mx-0">
-      <b-col cols="12 mx-0 px-0">
+    <b-row class="mx-0 px-0">
+      <b-col cols="12 mx-0 px-0 ">
 
         <!-- Banner Header Perfil Negocio - terminar actions de los botones y las calificaciones -->
         <banner-negocio :negocio="negocio" :promedioCalificacion="promedioCalificacion"></banner-negocio>
@@ -11,7 +11,7 @@
 
 
     <b-row>
-      <b-col cols="12" md="8">
+      <b-col cols="12" md="8" class="">
 
         <transition :name="routerTransition" mode="out-in">
           <router-view />
@@ -19,7 +19,7 @@
 
       </b-col>
 
-      <b-col cols="12" md="4">
+      <b-col cols="12" md="4" class="">
 
         <b-card class="mt-1">
 
@@ -36,7 +36,6 @@
             {{ negocio.recomendaciones.length > 1 ? `${negocio.recomendaciones.length} personas lo recomienda` : `${negocio.recomendaciones.length} persona lo recomienda` }} 
 
           </section>
-
 
           <section class="d-flex align-items-center sticky-top" style="top:5rem">
           
@@ -111,15 +110,31 @@
                   </td>
                 </tr>
 
-                <tr class="">
-                  <td>
-                    <font-awesome-icon icon="fas fa-map" />
-                  </td>
+               
+                
+                 <tr class="" >
+                    <td>
+                      <font-awesome-icon icon="fas fa-map" />
+                    </td>
 
-                  <td>
-                    {{ negocio.direccion }}
-                  </td>
-                </tr>
+                    <td>
+                      {{ negocio.direccion }}
+                    </td>
+                  </tr>
+
+                   <tr class="" v-if="negocio.tipo_menu == 1">
+                      <td>
+                        <font-awesome-icon icon="fas fa-globe" />
+                      </td>
+
+                      <td>
+                        <b-link :href="negocio.menu" target="_blank" style="text-decoration:none;">
+                          Ver carta digital
+                        </b-link>
+                      </td>
+                    </tr>
+
+
 
 
 
@@ -128,6 +143,8 @@
             </section>
 
           </section>
+
+
 
           <el-divider></el-divider>
 

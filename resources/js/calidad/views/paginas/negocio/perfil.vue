@@ -67,6 +67,15 @@
     <hr>
   </template>
 
+  <template v-if="negocio.tipo_menu == 2 || negocio.tipo_menu == 3">
+      <hr>
+      <h2>Menú</h2>
+      <section class="d-flex justify-content-center">
+          <mi-pdf :pdf="negocio.menu" height="600px" v-if="negocio.tipo_menu == 2"/>
+      </section>
+      <hr>
+  </template>
+
   <!-- Opiniones del negocio -->
   <h2 >Opiniones sobre este <strong class="text-warning">negocio</strong></h2>
 
@@ -116,6 +125,7 @@ export default {
     SwiperSlide,
     Gallerie: () => import('components/Gallerie.vue'),
     ReviewsOpinion: () => import('components/ReviewsOpinion.vue'),
+    MiPdf:() => import('components/MiPdf.vue')
 
   },
 

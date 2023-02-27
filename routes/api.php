@@ -233,6 +233,9 @@ Route::get('negocios/{negocio}/recomendacions/toggle/user/{usuario}',[NegocioCon
 
     Route::post('negocios/users/asociado',[NegocioController::class,'negociosAsociados']);
 
+    Route::put('negocios/{negocio}/update/menu',[NegocioController::class,'updateMenu']);
+    
+
     /*****************************/
     /* Divisas
     /*****************************/

@@ -711,5 +711,43 @@ class NegocioController extends Controller
         return response()->json(['total' => $paginator->total(),'negocios' => $negocios]);
     }
 
+    public function updateMenu(Request $request,Negocio $negocio){
+
+
+        $datos = $request->validate([
+            'tipo_menu' => 'required',
+            'menu' => 'required'
+        ]);
+
+        try {
+            DB::beginTransaction();
+
+            if($datos['tipo_menu'] == 2 || $datos['tipo_menu'] == 3){
+                $archivo = $request->file('menu');
+                $archivo_name = \sha1($archivo->getClientOriginalName()).'.'.$archivo->getClientOriginalExtension();
+                Storage::disk('negocio_menu')->put($archivo_name,File::get($archivo));
+            }
+            
+            $negocio->update([
+                'tipo_menu' => $datos['tipo_menu'],
+                'menu' => ($datos['tipo_menu'] == 2 || $datos['tipo_menu'] == 3) ? $archivo_name : $datos['menu'],
+            ]);
+
+            DB::commit();
+            $result = true;
+
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            $result = false;
+            // dd($th->getMessage());
+        }
+
+        $negocio->refresh();
+        $negocio->cargar();
+
+        return response()->json(['result' => $result, 'negocio' => $negocio]);
+
+    }
+
 
 }

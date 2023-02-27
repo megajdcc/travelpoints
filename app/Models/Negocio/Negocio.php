@@ -55,11 +55,13 @@ class Negocio extends Model
         'iata_id',
         'divisa_id',
         'precios', // [precio_minimo => 0,precio_maximo => 0]
+        'tipo_menu', // 1 => URL , 2=> PDF 3 => image
+        'menu'
     ];
 
     public $casts = [
         'emails'          => 'array',
-        'ultima_recarga'  => 'datetime: Y-m-d H: i: s',
+        'ultima_recarga'  => 'datetime: Y-m-d Hi:s',
         'floor_plan'      => 'boolean',
         'acepta_reservas' => 'boolean',
         // 'precios'         => 'object'
@@ -126,7 +128,6 @@ class Negocio extends Model
 
         return $cargo;
     }
-
 
 
     public function cargar() : Negocio{

@@ -71,7 +71,8 @@
       <hr>
       <h2>Menú</h2>
       <section class="d-flex justify-content-center">
-          <mi-pdf :pdf="negocio.menu" height="600px" v-if="negocio.tipo_menu == 2"/>
+          <mi-pdf  v-if="negocio.tipo_menu == 2" :pdf="negocio.menu" height="600px" />
+          <b-img v-if="negocio.tipo_menu == 3" :src="`/storage/negocios/menu/${negocio.menu}`" class="w-100 h-auto rounded-sm" style="max-height:600px; object-fit: contain;"></b-img>
       </section>
       <hr>
   </template>

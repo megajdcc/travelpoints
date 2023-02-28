@@ -129,15 +129,10 @@
 
                       <td>
                         <b-link :href="negocio.menu" target="_blank" style="text-decoration:none;">
-                          Ver carta digital
+                          Ver menú
                         </b-link>
                       </td>
                     </tr>
-
-
-
-
-
 
               </table>
             </section>
@@ -252,7 +247,7 @@
 
                   <td>
                     <section v-if="!horario.doble_turno">
-                       <template v-if="horario.apertura && horario.cierre">
+                       <template v-if="horario.apertura[0] && horario.cierre[0]">
                         {{ horario.apertura[0] | fecha('hh:mm A', true) }} - {{ horario.cierre[0] | fecha('hh:mm A', true) }}
                       </template>
 
@@ -265,11 +260,25 @@
                        <template v-if="horario.apertura.length && horario.cierre.length">
 
                         <section class="d-flex justify-content-between">
-                           Mañana: ({{ horario.apertura[0] | fecha('hh:mm A', true) }} - {{ horario.cierre[0] | fecha('hh:mm A', true) }})
+
+                          <template v-if="horario.apertura[0] && horario.cierre[0]">
+                            Mañana: ({{ horario.apertura[0] | fecha('hh:mm A', true) }} - {{ horario.cierre[0] | fecha('hh:mm A', true) }})
+                          </template>
+
+                          <template v-else>
+                            <strong class="text-danger">Cerrado</strong>
+                          </template>
+
                         </section>
                        
                         <section class="d-flex justify-content-between">
-                            Tarde: ({{ horario.apertura[1] | fecha('hh:mm A', true) }} - {{ horario.cierre[1] | fecha('hh:mm A', true) }})
+                             <template v-if="horario.apertura[1] && horario.cierre[1]">
+                              Tarde: ({{ horario.apertura[1] | fecha('hh:mm A', true) }} - {{ horario.cierre[1] | fecha('hh:mm A', true) }})
+                            </template>
+
+                            <template v-else>
+                              <strong class="text-danger">Cerrado</strong>
+                            </template>
                         </section>
                        
                       </template>

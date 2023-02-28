@@ -71,17 +71,31 @@
 
                                                      <b-form-group label="Entrada">
 
-                                                      <b-form-timepicker v-model="horario.apertura[0]" locale="es"  
+                                                      <!-- <b-form-timepicker v-model="horario.apertura[0]" locale="es"  
                                                                 reset-button @hidden="guardarHorario(horario)" placeholder="Entrada" 
-                                                                label-close-button="Ok" hour12 size="sm" />
+                                                                label-close-button="Ok" hour12 size="sm" /> -->
+                                                            <el-time-picker
+                                                               v-model="horario.apertura[0]"
+                                                               placeholder="Entrada"
+                                                               value-format="HH:mm:SS"
+                                                               @change="guardarHorario(horario)" class="w-100">
+                                                            </el-time-picker>
+                                                            <!-- <b-form-input type="time" v-model="horario.apertura[0]" 
+                                                            placeholder="Entrada" @input="guardarHorario(horario)" ></b-form-input> -->
 
                                                    </b-form-group>
 
                                                    <b-form-group label="Salida">
 
-                                                         <b-form-timepicker v-model="horario.cierre[0]" locale="es"  reset-button 
+                                                       <el-time-picker
+                                                                  v-model="horario.cierre[0]"
+                                                                  placeholder="Salida"
+                                                                   value-format="HH:mm:SS"
+                                                                  @change="guardarHorario(horario)" class="w-100">
+                                                               </el-time-picker>
+                                                         <!-- <b-form-timepicker v-model="horario.cierre[0]" locale="es"  reset-button 
                                                                   @hidden="guardarHorario(horario)" placeholder="Salida" 
-                                                                  label-close-button="Ok" hour12  size="sm"/>
+                                                                  label-close-button="Ok" hour12  size="sm"/> -->
 
                                                    </b-form-group>
 
@@ -94,16 +108,29 @@
 
                                                         <b-form-group label="Entrada">
 
-                                                         <b-form-timepicker v-model="horario.apertura[1]" locale="es"  
+
+                                                          <el-time-picker
+                                                                     v-model="horario.apertura[1]"
+                                                                     placeholder="Entrada"
+                                                                      value-format="HH:mm:SS"
+                                                                     @change="guardarHorario(horario)" class="w-100">
+                                                                  </el-time-picker>
+                                                         <!-- <b-form-timepicker v-model="horario.apertura[1]" locale="es"  
                                                                    reset-button @hidden="guardarHorario(horario)" 
-                                                                   placeholder="Entrada" label-close-button="Ok" hour12 size="sm" />
+                                                                   placeholder="Entrada" label-close-button="Ok" hour12 size="sm" /> -->
                                                       </b-form-group>
 
                                                       <b-form-group label="Salida">
 
-                                                            <b-form-timepicker v-model="horario.cierre[1]" locale="es"  reset-button 
+                                                          <el-time-picker
+                                                                     v-model="horario.cierre[1]"
+                                                                     placeholder="Salida"
+                                                                      value-format="HH:mm:SS"
+                                                                     @change="guardarHorario(horario)" class="w-100">
+                                                                  </el-time-picker>
+                                                            <!-- <b-form-timepicker v-model="horario.cierre[1]" locale="es"  reset-button 
                                                                      @hidden="guardarHorario(horario)" placeholder="Salida" 
-                                                                     label-close-button="Ok" hour12 size="sm" />
+                                                                     label-close-button="Ok" hour12 size="sm" /> -->
                                                       </b-form-group>
                                                 </div>
                                              </div>  
@@ -113,11 +140,27 @@
                                        </section>
 
                                        <section v-else class="d-flex w-100">
-                                             <b-form-timepicker v-model="horario.apertura[0]" locale="es"  
-                                                      reset-button @hidden="guardarHorario(horario)" label-close-button="Ok" size="sm" hour12  />
 
-                                                   <b-form-timepicker v-model="horario.cierre[0]" locale="es"  reset-button  
-                                                   @hidden="guardarHorario(horario)" label-close-button="Ok" hour12 size="sm" />
+                                          <el-time-picker
+                                                   v-model="horario.apertura[0]"
+                                                   placeholder="Entrada"
+                                                    value-format="HH:mm:SS"
+                                                   @change="guardarHorario(horario)" class="w-100">
+                                                </el-time-picker>
+
+                                             <!-- <b-form-timepicker v-model="horario.apertura[0]" locale="es"  
+                                                      reset-button @hidden="guardarHorario(horario)" label-close-button="Ok" size="sm" hour12  /> -->
+
+                                                   <!-- <b-form-timepicker v-model="horario.cierre[0]" locale="es"  reset-button  
+                                                   @hidden="guardarHorario(horario)" label-close-button="Ok" hour12 size="sm" /> -->
+
+
+                                          <el-time-picker
+                                                   v-model="horario.cierre[0]"
+                                                   placeholder="Salida"
+                                                    value-format="HH:mm:SS"
+                                                   @change="guardarHorario(horario)" class="w-100">
+                                                </el-time-picker>
                                        </section>
                                                    
                                         

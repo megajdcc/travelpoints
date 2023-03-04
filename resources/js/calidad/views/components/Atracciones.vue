@@ -209,7 +209,7 @@ export default {
 </script>
 
 
-<style lang="scss">
+<style lang="scss" scoped>
 .banner-search {
    height: 300px;
    background-position: center top;

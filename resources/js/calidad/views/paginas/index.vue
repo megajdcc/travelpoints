@@ -10,11 +10,11 @@
          </b-col>
       </b-row>
 
+      <!-- Destinos -->
+         <destinos :destinos="destinos"/>
+
       <!-- Atracciones -->
       <atracciones :atracciones="atracciones"  />
-
-      <!-- Destinos -->
-      <destinos :destinos="destinos"/>
 
       <!-- Negocios -->
       <negocios />
@@ -73,7 +73,7 @@ export default {
       Search:() => import('components/Search.vue'),
       Atracciones: () => import('components/Atracciones.vue'),
       Destinos : () => import('components/Destinos.vue'),
-   Negocios:() => import('components/Negocios.vue')
+      Negocios:() => import('components/Negocios.vue')
    },
 
    directives: {
@@ -87,6 +87,7 @@ export default {
       const { authGoogle,is_loggin } = useAuth()
       const { atracciones } = toRefs(store.state.atraccion)
       const { destinos } = toRefs(store.state.destino)
+      const { sistema } = toRefs(store.state.sistema)
 
       
       const cargarForm = () => {
@@ -172,7 +173,8 @@ export default {
          is_loggin,
          irAtraccion: (atrac) => router.push({name:'edit.atraccion', params: { id: atrac.id}}),
          loading:computed(() => store.state.loading),
-         imageBanner: require('@images/banner/banner-travel.jpg'),
+         // imageBanner: require('@images/banner/banner-travel.jpg'),
+         imageBanner:computed(() => `/storage/${sistema.value.banner_principal}`)
       }
 
    },
@@ -183,10 +185,10 @@ export default {
 <style lang="scss">
 .banner-search{
    height: 300px;
-   background-position: center top;
+   background-position: center center !important;
    background-repeat: no-repeat;
    background-size: cover;
-   background-attachment: fixed;
+   // background-attachment: fixed;
 }
 .title-card{
    font-size: 16pt;

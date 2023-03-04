@@ -104,7 +104,7 @@
                   </td>
 
                   <td>
-                    <b-link :href="negocio.sitio_web" target="_blank">
+                    <b-link :href="negocio.sitio_web" target="_blank" style="overflow-wrap:anywhere ;">
                       {{ negocio.sitio_web }}
                     </b-link>
                   </td>

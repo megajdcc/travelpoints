@@ -136,6 +136,9 @@ import consumo from './modules/tienda/consumo.js';
 
 import carrito from './modules/tienda/carrito.js';
 
+// Sucursales
+import sucursal from './modules/sucursal.js'
+
 
 Vue.use(Vuex)
 
@@ -279,7 +282,8 @@ export default new Vuex.Store({
     tienda,
     producto,
     consumo,
-    carrito
+    carrito,
+    sucursal
   },
 
   strict: process.env.DEV,

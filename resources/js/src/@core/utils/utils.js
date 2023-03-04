@@ -8,6 +8,7 @@ import store from '@/store'
 import axios from 'axios'
 import moment from 'moment';
 
+import { fab } from '@fortawesome/free-brands-svg-icons'
 
 export const isToday = date => {
   const today = new Date()
@@ -47,6 +48,9 @@ export const useRouter = () => {
 
   return { ...toRefs(state), router: vm.$router }
 }
+
+export const marcasFontAwesome = ref([...new Set(Object.keys(fab).map(val => fab[val].iconName))]);
+
 
 export const  chartColors = {
   primaryColorShade: '#836AF9',

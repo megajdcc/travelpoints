@@ -5,11 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Trais\hasCuenta;
-use App\Trais\{hasImages,hasVideos};
+use App\Trais\{hasImages, hasRedes, hasSucursal, hasVideos};
 
 class Sistema extends Model
 {
-    use HasFactory, hasCuenta, hasImages, hasVideos;
+    use HasFactory, hasCuenta, hasImages, hasVideos,hasSucursal,hasRedes;
     protected $table = 'sistema';
 
     public string $model_type = 'App\Models\Sistema';
@@ -23,13 +23,15 @@ class Sistema extends Model
         'paypal_secrect',
         'production_paypal',
         'paypal',
-        'divisa_id'
+        'divisa_id',
+        'banner_principal',
+        'empresa_digital',
     ];
-
 
     protected $casts = [
         'paypal' => 'boolean',
-        'production_paypal' => 'boolean'
+        'production_paypal' => 'boolean',
+        'empresa_digital' => 'boolean'
     ];
 
 
@@ -37,6 +39,16 @@ class Sistema extends Model
 
         return $this->belongsTo(Divisa::class,'divisa_id','id');
     
+    }
+
+    public function cargar(){
+        $this->divisa;
+        $this->redes;
+        $this->cuenta;
+        $this->imagenes;
+        $this->videos;
+        $this->sucursales;
+
     }
 
     

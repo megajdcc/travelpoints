@@ -15,11 +15,15 @@ export default {
       paypal_id:null,
       paypal_secrect:null,
       production_paypal:false,
-      paypa:false,
+      banner_principal:null,
+      paypal:false,
       divisa_id:null,
+      empresa_digital:false,
       cuenta:null,
       imagenes:[],
       videos: [],
+      sucursales:[],
+      redes:[]
     },
 
 
@@ -41,7 +45,21 @@ export default {
   mutations:{
 
     setSistema: (state,sistema) => state.sistema = sistema,
-    update:(state,sistema) => state.sistema = sistema
+    update:(state,sistema) => state.sistema = sistema,
+
+    agregarRedSocial(state){
+      
+      state.sistema.redes.push({
+        nombre:'',
+        url:'',
+        icono:'',
+      });
+
+    },
+
+    eliminarRed:(state,idx) => {
+      state.sistema.redes.splice(idx,1)
+    }
     
   },
 
@@ -161,6 +179,43 @@ export default {
 
         }).catch(e => reject(e))
       })
+    },
+
+
+    updateBanner({commit,state},datos){
+      const formData = new FormData();
+
+      formData.append('banner',datos.banner_principal);
+      formData.append('_method','PUT');
+
+      return new Promise((resolve, reject) => {
+          axios.post(`/api/sistema/${state.sistema.id}/update/banner`,formData,{
+            headers:{
+              ContentType:'multipart/form-data'
+            }
+          }).then(({data}) => {
+            if(data.result){
+              commit('update',data.sistema)
+            }
+            resolve(data)
+          }).catch(e => reject(e))
+
+      })
+
+    },
+
+    eliminarRed({state,commit},red){
+       
+      return new Promise((resolve, reject) => {
+
+        axios.delete(`/api/sistema/${state.sistema.id}/eliminar/red/social/${red}`).then(({data}) => {
+          if(data.result){
+            commit('update',data.sistema)
+          }
+          resolve(data)
+        }).catch(e => reject(e))
+
+       })
     }
 
 

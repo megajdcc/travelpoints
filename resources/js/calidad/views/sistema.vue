@@ -67,6 +67,17 @@
             
                 </validation-provider>
               </b-form-group>
+
+              <b-form-group label="¿Es una empresa Digital?">
+                <validation-provider name="empresa_digital" rules="required" #default="{errors,valid}">
+                    <b-form-radio-group v-model="formulario.empresa_digital" :state="valid" 
+                    :options="[{ text: 'Sí', value: true }, { text: 'No', value: false },]">
+                    </b-form-radio-group>
+                     <b-form-invalid-feedback :state="valid">
+                      {{ errors[0] }}
+                    </b-form-invalid-feedback>
+                </validation-provider>
+              </b-form-group>
             </b-col>
 
             
@@ -169,6 +180,97 @@
 
 
           </b-row>
+
+          <el-divider content-position="left">Banner Principal</el-divider>
+          <b-row>
+            <b-col cols="12">
+                <section class="banner-principal-img" :style="{
+                  'background-image':`url('/storage/${formulario.banner_principal}')`
+                }" @click="refBanner.$el.click()"> 
+
+                </section>
+
+                <b-form-file ref="refBanner" v-model="banner_principal" plain class="d-none" accept="image/*" @input="updateBanner">
+
+                </b-form-file>
+
+                <small>
+                  <strong class="text-danger">Nota:</strong>
+                  Clics sobre la imagen para actualizarla, cargue una imagen ultra wide preferiblemente de este tamaño, 1300 x 300 PX. Esta imagen es mostrada en los principales Banner de las paginas Publicas.
+                </small>
+            </b-col>
+          </b-row>
+
+          <el-divider content-position="left">
+            Redes Sociales
+          </el-divider>
+
+          <b-row>
+            <b-col cols="12">
+              <b-button-group size="sm">
+                <b-button variant="primary" title="Agregar Red Social" @click="$store.commit('sistema/agregarRedSocial')">
+                  Agregar
+                </b-button>
+              </b-button-group>
+
+              <table class="table table-sm table-hover w-100 mt-1">
+                <thead>
+                  
+                  <th>Red Social</th>
+                  <th>Url</th>
+                  <th>Icono de la Red Social</th>
+                  <th></th>
+                </thead>
+                <tbody>
+                  <tr v-for="(red_social,i) in formulario.redes" :key="i">
+                      <td>
+                        <validation-provider name="nombre" rules="required" #default="{valid,errors}">
+                          <b-form-input v-model="red_social.nombre" :state="valid" placeholder="Facebook, Twitter ..." />
+                          <b-form-invalid-feedback :state="valid">
+                            {{ errors[i] }}
+                          </b-form-invalid-feedback>
+                        </validation-provider>
+                      </td>
+
+                       <td>
+                          <validation-provider name="url" rules="required|url" #default="{ valid, errors }">
+                            <b-form-input v-model="red_social.url" :state="valid" placeholder="https://facebook.com/travelpoints" />
+                            <b-form-invalid-feedback :state="valid">
+                              {{ errors[i] }}
+                            </b-form-invalid-feedback>
+                          </validation-provider>
+                        </td>
+
+                      <td>
+                          <validation-provider name="redes.icono" rules="required" #default="{ valid, errors }">
+                            <v-select v-model="red_social.icono" :options="marcasFontAwesome" :reduce="option => option" :filterBy="filtradoIcon">
+                                  <template #option="{label}">
+                                    <font-awesome-icon :icon="['fab',label]" class="mr-1"/>
+                                    {{ label }}
+                                  </template>
+
+                                  <template #selected-option="{label}">
+                                      <font-awesome-icon :icon="['fab',label]" class="mr-1"/>
+                                      {{ label }}
+                                  </template>
+                            </v-select>
+                            <b-form-invalid-feedback :state="valid">
+                              {{ errors[i] }}
+                            </b-form-invalid-feedback>
+                          </validation-provider>
+                        </td>
+
+                        <td>
+                          <b-button variant="danger"  title="eliminar" @click="eliminarRedSocial(red_social,i)">
+                            <font-awesome-icon icon="fas fa-trash"/>
+                          </b-button>
+                        </td>
+                  </tr>
+                </tbody>
+              </table>
+            </b-col>
+          </b-row>
+
         </b-container>
 
         <template #footer>
@@ -202,7 +304,7 @@ import store from '@/store'
 
 import { regresar,optionsEditor } from '@core/utils/utils';
 
-import {required} from '@validations'
+import {required,url} from '@validations'
 import Editor from '@tinymce/tinymce-vue'
 
 import {
@@ -226,6 +328,7 @@ import {
 
 import {computed,toRefs,ref,onMounted} from '@vue/composition-api'
 import vSelect from 'vue-select'
+import {  marcasFontAwesome } from '@core/utils/utils';
 
 export default {
   
@@ -263,6 +366,8 @@ export default {
     const {sistema:formulario} = toRefs(store.state.sistema)
     const urlLogo1 = ref(null)
     const urlLogo2 = ref(null)
+    const banner_principal = ref(null)
+    const refBanner = ref(null)
 
     const {sistema} = toRefs(store.state.sistema)
     const {divisas} = toRefs(store.state.divisa)
@@ -273,15 +378,17 @@ export default {
 
     const logoSeleccionado = ( tipo_logo = 1) => {
 
-
-
     }   
+
+    onMounted(() => {
+    })
 
     const guardar  = () => {
 
-      store.dispatch('sistema/guardar',formulario.value).then(({result}) => {
+      store.dispatch('sistema/guardar',formulario.value).then(({result,sistema:sistem}) => {
 
         if(result){
+          formulario.value.banner_principal = sistem.banner_principal
           toast.success('Se ha guardado con éxito',{position:'bottom-right'})
         }else{
           toast.info('No se pudo guardar, inténte de nuevo', { position: 'bottom-right' })
@@ -303,8 +410,37 @@ export default {
       });
 
 
-    }
+    } 
 
+    const updateBanner = (file) => {
+
+
+      store.dispatch('sistema/updateBanner',{banner_principal:file}).then(({result}) => {
+
+        if(result){
+          toast.success('Se ha cargado con éxito la nueva imagen',{position:'bottom-right'})
+        }else{
+          toast.info('No se pudo cargar la imagen, inténtelo de nuevo', { position: 'bottom-right'})
+
+        }
+      })
+    }
+    const eliminarRedSocial = (red,i) => {
+
+      if(!red.id){
+        store.commit('sistema/eliminarRed',i)
+      }else{
+        
+        store.dispatch('sistema/eliminarRed',red.id).then(({result}) => {
+          if(result){
+            toast.success('Se Ha eliminado con éxito la Red Social',{position:'bottom-right'})
+          }else{
+            toast.info('No se pudo Eliminar la red social, inténtelo de nuevo...', { position: 'bottom-right' })
+          }
+        })
+
+      }
+    }
     return {
       loading:computed(() => store.state.loading),
       formulario,
@@ -318,10 +454,19 @@ export default {
 
       regresar,
       required,
+      url,
       optionsEditor,
       crearCuentaSistema,
       sistema,
       divisas,
+      refBanner,
+      banner_principal,
+      updateBanner,
+      marcasFontAwesome,
+      filtradoIcon:(option,label,search) => {
+         return (label || '').toLocaleLowerCase().indexOf(search.toLocaleLowerCase()) > -1
+      },
+      eliminarRedSocial
 
 
     }
@@ -329,3 +474,16 @@ export default {
   }
 }
 </script>
+
+<style lang="scss">
+  .banner-principal-img{
+    width: 100%;
+    height: 350px;
+    border: 3px dotted rgba(0,0,0,.5);
+    border-radius: 20px;
+    cursor: pointer;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center center;
+  }
+</style>

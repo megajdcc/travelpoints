@@ -407,6 +407,8 @@ Route::get('negocios/{negocio}/recomendacions/toggle/user/{usuario}',[NegocioCon
 
     Route::put('sistema/{sistema}',[ SistemaController::class, 'update' ]);
     Route::get('sistemas/{sistema}/crear/cuenta',[SistemaController::class,'crearCuenta']);
+    Route::put('sistema/{sistema}/update/banner',[SistemaController::class,'updateBanner']);
+    Route::delete('sistema/{sistema}/eliminar/red/social/{red}',[SistemaController::class,'eliminarRedSocial']);
 
 
     /*****************************/

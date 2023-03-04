@@ -3,10 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Models\Imagen;
+use App\Models\Red;
 use App\Models\Sistema;
 use App\Models\Video;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\{DB,File,Storage};
+use ParagonIE\Sodium\Compat;
 
 use function PHPUnit\Framework\isNull;
 
@@ -15,22 +18,25 @@ class SistemaController extends Controller
    
     public function fetch(){
 
-        $sistema = Sistema::with(['cuenta','divisa','imagenes','videos'])->first();
+        $sistema = Sistema::first();
+        $sistema->cargar();
         return response()->json($sistema);
 
     }
 
-    private function validar(Request $request,Sistema $sistema){
+    private function validar(Request $request,Sistema $sistema) : Collection {
         
-        return $request->validate([
+        return collect($request->validate([
             'nombre'            => 'required',
             'terminos'          => 'nullable',
             'paypal_id'         => 'nullable',
             'paypal_secrect'    => 'nullable',
             'production_paypal' => 'nullable',
             'paypal'            => 'nullable',
-            'divisa_id' => 'required'
-        ]);
+            'divisa_id'         => 'required',
+            'empresa_digital'   => 'nullable',
+            'redes'             => 'nullable'
+        ]));
         
     }
     /**
@@ -42,21 +48,28 @@ class SistemaController extends Controller
      */
     public function update(Request $request, Sistema $sistema)
     {
-        
+        $datos = $this->validar($request,$sistema);
         try {
             DB::beginTransaction();
 
-                $sistema->update($this->validar($request,$sistema));
-                $sistema->cuenta;
-                $sistema->divisa;
-                $sistema->load(['imagenes','videos']);
+              
+                $sistema->update($datos->except(['redes'])->toArray());
+                
+                if(isset($datos['redes'])){
+                    foreach($datos['redes'] as $red){
+                    $sistema->agregarRed($red);
+                    }
+                }
 
+                $sistema->cargar();
             DB::commit();
             $result = true;
 
         } catch (\Throwable $th) {
             DB::rollBack();
             $result = false;
+
+            dd($th->getMessage());
         }
 
         return response()->json(['result' => $result,'sistema' => $sistema]);
@@ -129,7 +142,7 @@ class SistemaController extends Controller
 
         $sistema->refresh();
 
-        $sistema->load(['cuenta', 'divisa', 'imagenes', 'videos']);
+        $sistema->cargar();
 
         return response()->json([
             'result' => $result,
@@ -172,13 +185,63 @@ class SistemaController extends Controller
         }
 
         $sistema->refresh();
-        $sistema->load(['cuenta', 'divisa', 'imagenes', 'videos']);
+        $sistema->cargar();
 
         return response()->json([
             'result' => $result,
             'sistema' => $sistema,
         ]);
 
+    }
+
+    public function updateBanner(Request $request, Sistema $sistema){
+
+        try {
+
+            $archivo = $request->file('banner');
+
+            $archivo_name = \sha1($archivo->getClientOriginalName()).'.'.$archivo->getClientOriginalExtension();
+            $result = Storage::disk('public')->put($archivo_name,File::get($archivo));
+            if($result){
+                if($sistema->banner_principal){
+                    Storage::disk('public')->delete($sistema->banner_principal);
+                }
+               
+            }
+            $sistema->update([
+                'banner_principal' => $archivo_name
+            ]);
+
+            $sistema->refresh();
+            $sistema->cargar();
+
+            
+        } catch (\Throwable $th) {
+
+            $result = false;
+        }
+
+        return response()->json(compact('sistema','result'));
+
+    }
+
+    public function eliminarRedSocial(Sistema $sistema, Red $red){
+
+        try {
+            DB::beginTransaction();
+                $red->delete();
+
+            DB::commit();
+            $result = true;
+        } catch (\Throwable $th) {
+            Db::rollBack();
+            $result = false;
+        }   
+
+        $sistema->refresh();
+        $sistema->cargar();
+
+        return response()->json(['result' => $result,'sistema' => $sistema]);
     }
 
 }

@@ -15,6 +15,7 @@ return new class extends Migration
     {
         Schema::create('sucursals', function (Blueprint $table) {
             $table->id();
+            $table->string('nombre');
             $table->foreignId('ciudad_id')->nullable()->constrained('ciudads')->onDelete('set null')->cascadeOnUpdate();
             $table->foreignId('estado_id')->constrained('estados')->cascadeOnDelete()->cascadeOnUpdate();
             $table->text('direccion');

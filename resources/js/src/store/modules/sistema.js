@@ -59,7 +59,8 @@ export default {
 
     eliminarRed:(state,idx) => {
       state.sistema.redes.splice(idx,1)
-    }
+    },
+
     
   },
 

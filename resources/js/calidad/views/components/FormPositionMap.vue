@@ -3,7 +3,7 @@
 
       <b-row>
         <b-col cols="12" md="6">
-            <b-form-group description="Escribe la dirección de la tienda">
+            <b-form-group description="Escribe la dirección ">
               <template #label>
                 Dirección: <span class="text-danger">*</span>
               </template>
@@ -21,7 +21,7 @@
 
         <b-col  cols="12" md="6">
       
-          <b-form-group description="Cual es el Aeropuerto mas cercano a este destino, selecciona el IATA Correspondiente">
+          <b-form-group description="Cual es el Aeropuerto mas cercano, selecciona el IATA Correspondiente">
             <template #label>
               IATA: <span class="text-danger">*</span>
             </template>
@@ -313,6 +313,8 @@ export default {
       }
 
     }
+
+    watch([formulario],() => cargarform())
       
     return {
       paises,

@@ -86,8 +86,8 @@ export default{
          }
       },
 
-      setSucursals(state,sucursals){
-         state.sucursales = sucursals
+      setSucursales(state,sucursales){
+         state.sucursales = sucursales
       }
   },
 

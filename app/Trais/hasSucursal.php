@@ -3,6 +3,7 @@
 namespace App\Trais;
 
 use App\Models\Sucursal;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 
 /**
@@ -16,26 +17,15 @@ trait hasSucursal
   }
 
 
-  public function agregarSucursal(array $datos) : bool{
+  public function agregarSucursal(array | Collection $datos) : Sucursal | null{
+    // dd($datos);
+    $sucursal = Sucursal::create([
+      ...$datos,
+      ...['model_id' => $this->id, 'model_type' => $this->model_type],
+    ]);
 
-    try {
-      DB::beginTransaction();
-      $sucursal = Sucursal::create([
-        ...[
-          'model_id' => $this->id,
-          'model_type' => $this->model_type
-        ],
-        ...$datos
-      ]);
-      
-      DB::commit();
-      $result = true;
-    } catch (\Throwable $th) {
-      DB::rollBack();
-      $result = false;
-    }
 
-    return $result;
+    return $sucursal;
   }
 
 }

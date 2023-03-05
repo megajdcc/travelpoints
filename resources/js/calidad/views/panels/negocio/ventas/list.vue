@@ -9,7 +9,7 @@
 
          </template>
 
-         <template #contenido="{ eliminar, items }">
+         <template #contenido="{ items }">
 
             <b-card v-for="(venta,i) in items" :key="i" class="my-1">
                <strong>Cliente</strong>

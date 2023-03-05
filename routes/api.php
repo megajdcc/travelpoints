@@ -1,7 +1,7 @@
 <?php
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\{AuthController};
-use App\Http\Controllers\{AmenidadController, CargoController, CategoriaFaqController, CategoriaProductoController, ConsumoController, CuponController, DestinoController, DivisaController, EmpleadoController, EventoController, FaqController, FormaPagoController, HomeController, HorarioController, HorarioReservacionController, IataController, MovimientoController, NegocioCategoriaController, NegocioController, UserController,NotificacionController,RolController,PermisoController, SolicitudController, TelefonoController,OpinionController, PanelController, ProductoController, PublicacionController, ReservacionController, SistemaController, TiendaController, VentaController};
+use App\Http\Controllers\{AmenidadController, CargoController, CategoriaFaqController, CategoriaProductoController, ConsumoController, CuponController, DestinoController, DivisaController, EmpleadoController, EventoController, FaqController, FormaPagoController, HomeController, HorarioController, HorarioReservacionController, IataController, MovimientoController, NegocioCategoriaController, NegocioController, UserController,NotificacionController,RolController,PermisoController, SolicitudController, TelefonoController,OpinionController, PanelController, ProductoController, PublicacionController, ReservacionController, SistemaController, SucursalController, TiendaController, VentaController};
 use App\Http\Middleware\convertirNull;
 use Laravel\Socialite\Facades\Socialite;
 use App\Models\{CategoriaFaq, CategoriaProducto, Pais,Estado,Ciudad,};
@@ -464,6 +464,17 @@ Route::get('negocios/{negocio}/recomendacions/toggle/user/{usuario}',[NegocioCon
 
     Route::post('sistema/upload/archivos',[SistemaController::class,'uploadArchivos']);
     Route::put('sistemas/{sistema}/eliminar/archivo',[SistemaController::class,'eliminarArchivo']);
+
+
+    /*****************************/
+    /* Sucursal
+    /*****************************/
+    Route::post('sucursals/fetch/data',[SucursalController::class,'fetchData']);
+    Route::get('sucursals/get/all',[SucursalController::class,'getAll']);
+    Route::get('sucursals/{sucursal}/fetch/data',[SucursalController::class,'fetch']);
+    Route::resource('sucursals',SucursalController::class);
+
+
 
 });
 

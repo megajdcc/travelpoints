@@ -1956,7 +1956,10 @@ export default [
 
       ]
    },
-
+   
+   /*****************************************/
+   /* Sistema
+   /*************************************** */
    {  
       path:'/admin/sistema',
       name:'sistema',
@@ -1978,6 +1981,94 @@ export default [
          ]
       }
    },
+
+   {  
+      path:'/admin/sucursales',
+      component:() => import('views/sucursales/index.vue'),
+      children:[
+         {
+            path:'',
+            component:() => import('views/sucursales/list.vue'),
+            name:'sucursales.list',
+            meta:{
+               resource:'sucursales',
+               action:'read',
+               pageTitle:'Sucursales',
+               breadcrumb:[
+                  {
+                     text: 'Home',
+                     to: 'home',
+                     active: false,
+                  },
+                  {
+                     text: 'Sucursales',
+                     active: true,
+                  },
+               ]
+            }
+         },
+
+          {
+            path:'create',
+            component:() => import('views/sucursales/create.vue'),
+            name:'sucursales.create',
+            meta:{
+               resource:'sucursales',
+               action:'write',
+               pageTitle:'Sucursales',
+               navActiveLink:'sucursales.list',
+               breadcrumb:[
+                  {
+                     text: 'Home',
+                     to: 'home',
+                     active: false,
+                  },
+                  {
+                     text: 'Sucursales',
+                     active: false,
+                     to:{name:'sucursales.list'}
+                  },
+                    {
+                     text: 'Crear',
+                     active: true,
+                  },
+               ]
+            }
+         },
+
+          {
+            path:':id/edit',
+            props:true,
+            component:() => import('views/sucursales/edit.vue'),
+            name:'sucursales.edit',
+            meta:{
+               resource:'sucursales',
+               action:'update',
+               pageTitle:'Sucursales',
+               navActiveLink:'sucursales.list',
+               breadcrumb:[
+                  {
+                     text: 'Home',
+                     to: 'home',
+                     active: false,
+                  },
+                  {
+                     text: 'Sucursales',
+                     active: false,
+                     to:{name:'sucursales.list'}
+                  },
+                  {
+                     text: 'Editar',
+                     active: true,
+                  },
+               ]
+            }
+         }
+      ]
+   
+   },
+
+
 
 
    /*****************************************/

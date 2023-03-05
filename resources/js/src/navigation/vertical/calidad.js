@@ -106,6 +106,15 @@ export default [
             action:'read'
          },
 
+          {
+            title:'Sucursales',
+            route:'sucursales.list',
+            icon:'fa-map-location',
+            resource:'sucursales',
+            action:'read',
+            fontAwesome:true,
+         },
+
          {
             title: 'Roles',
             // exact:false,

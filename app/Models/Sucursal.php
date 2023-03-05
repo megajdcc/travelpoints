@@ -12,6 +12,7 @@ class Sucursal extends Model
     use HasFactory,HasDireccion,hasTelefonos;
 
     protected $fillable = [
+        'nombre',
         'ciudad_id',
         'estado_id',
         'direccion',
@@ -29,6 +30,14 @@ class Sucursal extends Model
 
     public function model(){
         return $this->morphTo();
+    }
+
+
+    public function cargar(){
+        $this->iata;
+        $this->model;
+        $this->ciudad;
+        $this->estado?->pais;
     }
 
 }

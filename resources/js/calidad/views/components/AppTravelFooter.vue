@@ -60,39 +60,68 @@
       </b-row>
 
       <b-row class="clearfix border-top">
-         <b-col cols="12" class="d-flex justify-content-center mt-1 mb-0">
-            <p class="text-center">
+         <b-col cols="12" :md="sistema.redes.length ? 8 : 12" class="d-flex mt-1 mb-0 flex-column  ">
+            <strong>{{ sistema.sucursales.length > 1 ? 'SUCURSALES' : 'SUCURSAL' }}</strong>
+             <swiper class="swiper-parallax" :options="swiperOptions" >
+                  <div slot="parallax-bg" class="parallax-bg" data-swiper-parallax="-23%">
+                     <!-- <b-img class="img-fluid" :src="require('@/assets/images/banner/parallax-4.jpg')" alt="banner" /> -->
+                  </div>
+                  <swiper-slide v-for="(sucursal,index) in sistema.sucursales" :key="index">
+                        <div class="title font-weight-bolder" data-swiper-parallax="-300">
+                           {{ sucursal.estado.pais.pais }} 
+                        </div>
+                        <!-- <div class="subtitle" data-swiper-parallax="-200">
+                           {{ data.subtitle }}
+                        </div> -->
+                        <div class="text" data-swiper-parallax="-100">
+                           <b-card-text>
+                              {{ sucursal.direccion }}
+                           </b-card-text>
+                           <b-card-text>
+
+                              <!-- <b-link v-for="(telefono,i) in sucursal.telefonos" :key="i" 
+                              :href="`tel:${telefono.numero}`" 
+                              target="_blank">
+                                 <feather-icon icon="PhoneIcon"/>
+                                 {{ telefono.numero }}
+                              </b-link> -->
+                           
+                           </b-card-text>
+                        </div>
+                  </swiper-slide>
+            </swiper>
+
+            <!-- <p class="text-center">
                Marina Vallarta Business Center, Oficina 204, Plaza Marina. <br>
                Puerto Vallarta, México. <br>
                01 800 400 INFO (4636), (322) 225 9635.
-            </p>
+            </p> -->
          </b-col>
+
+          <b-col cols="12" :md="sistema.redes.length ? 4 : 12" class="mb-0 d-flex align-items-center flex-column mt-1" v-if="sistema.redes.length">
+            <strong class="mb-1"> REDES SOCIALES</strong>
+            <div class="d-flex flex-sm-row justify-content-start align-items-center w-100">
+               
+               <ul class="list-unstyled d-flex m-0 justify-content-center w-100">
+                  <li  v-for="({url,nombre,icono},i) in sistema.redes" :key="i" :class="{'ml-2' : i > 0}">
+                     <b-link :href="url" :alt="nombre" :title="nombre" v-b-tooltip.hover.top.v-primary target="_blank" 
+                     class="wow bounceInDown " :data-wow-delay="`1.${i}`" >
+                        <font-awesome-icon :icon="['fab',icono]" size="2x"/>
+                     </b-link>
+                  </li>
+         
+               </ul>
+            </div>
+         </b-col>
+
+
 
          <b-col cols="12" class="mb-0">
             <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center pt-1">
 
-               <ul class="list-unstyled d-flex m-0">
-                  <li class="mr-3">
-                     <b-link href="#" target="_blank" class="text-secondary">
-                        <feather-icon icon="TwitterIcon" size="24" />
-                     </b-link>
-                  </li>
-                  <li class="mr-3">
-                     <b-link href="#" target="_blank" class="text-secondary">
-                        <feather-icon icon="InstagramIcon" size="24" />
-                     </b-link>
-                  </li>
-                  <li>
-                     <b-link href="#" target="_blank" class="text-secondary">
-                        <feather-icon icon="FacebookIcon" size="24" />
-                     </b-link>
-                  </li>
-               </ul>
-
-
                <span class="float-md-left d-block d-md-inline-block mt-25">
                   COPYRIGHT © {{ new Date().getFullYear() }}
-                  <b-link class="ml-25" href="#" target="_blank">TravelPoints</b-link>
+                  <b-link class="ml-25" href="#" target="_blank">{{ sistema.nombre || 'Travel'  }}</b-link>
                   <span class="d-none d-sm-inline-block">, Todos los derechos reservados</span>
                </span>
 
@@ -108,23 +137,34 @@ import {
    BLink,
    BContainer,
    BRow,
-   BCol
+   BCol,
+   BCardText,
+   VBTooltip
 } from 'bootstrap-vue'
 import useAuth from '@core/utils/useAuth'
 import { $themeConfig } from '@themeConfig'
-import { toRefs, computed } from '@vue/composition-api'
+import { toRefs, computed, ref} from '@vue/composition-api'
 import store from '@/store'
-
+import { Swiper, SwiperSlide } from 'vue-awesome-swiper'
+import 'swiper/css/swiper.css'
 export default {
    components: {
       BContainer,
       BRow,
       BCol,
       BLink,
+      Swiper,
+      SwiperSlide,
+      BCardText,
+
+   },
+
+   directives:{
+      'b-tooltip' :VBTooltip
    },
 
    setup(){
-
+      const {sistema} = toRefs(store.state.sistema)
       const {
          appName:app_name
       } = $themeConfig.app;
@@ -135,11 +175,47 @@ export default {
          is_loggin
       } = useAuth()
 
+      const swiperOptions = ref({
+         speed: 600,
+         parallax: true,
+         autoplay:{
+            delay:6000,
+            disableOnInteraction: false
+         },
+
+         pagination: {
+            el: '.swiper-pagination',
+            clickable: true,
+         },
+         navigation: {
+            nextEl: '.swiper-button-next',
+            prevEl: '.swiper-button-prev',
+         }
+      })
+
       return {
          windowWidth,
          is_loggin,
-         app_name
+         app_name,
+         sistema,
+         swiperOptions
       }
    }
 }
 </script>
+
+<style lang="scss">
+.swiper-container {
+   width: 100%;
+}
+
+.swiper-wrapper{
+   display: flex;
+   text-align: center;
+}
+.swiper-slide {
+
+   text-align: justify;
+}
+</style>
+

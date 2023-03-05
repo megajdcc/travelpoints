@@ -18,7 +18,8 @@ export default{
       ciudad:null,
       estado:null,
       model:null,
-      iata:null
+      iata:null,
+      telefonos:[],
     },
     sucursales:[]
   }),
@@ -45,7 +46,9 @@ export default{
             ciudad:null,
             estado:null,
             model:null,
-            iata:null
+            iata:null,
+            telefonos:[],
+
          }
       },
 
@@ -88,6 +91,18 @@ export default{
 
       setSucursales(state,sucursales){
          state.sucursales = sucursales
+      },
+
+      agregarTelefono(state){
+         state.sucursal.telefonos.push({
+            telefono : null,
+            is_whatsapp:false,
+            principal:false
+         })
+      },
+
+      quitarTelefono(state,i){
+         state.sucursal.telefonos.splice(i,1)
       }
   },
 
@@ -164,6 +179,15 @@ export default{
 
             }).catch(e => reject(e))
 
+         })
+
+      },
+      quitarTelefono({commit},telefono){
+
+         return new Promise((resolve, reject) => {
+            axios.delete(`/api/telefonos/${telefono}`).then(({data}) => {
+               resolve(data)
+            }).catch(e => reject(e))
          })
 
       }

@@ -11,6 +11,8 @@ class Sucursal extends Model
 {
     use HasFactory,HasDireccion,hasTelefonos;
 
+    public readonly string $model_type;
+
     protected $fillable = [
         'nombre',
         'ciudad_id',
@@ -22,6 +24,10 @@ class Sucursal extends Model
         'model_id',
         'model_type'
     ];
+
+    public function __construct(){
+        $this->model_type = 'App\Models\Sucursal';
+    }
 
     public function iata(){
         return $this->belongsTo(Iata::class,'iata_id','id');
@@ -37,6 +43,7 @@ class Sucursal extends Model
         $this->iata;
         $this->model;
         $this->ciudad;
+        $this->telefonos;
         $this->estado?->pais;
     }
 

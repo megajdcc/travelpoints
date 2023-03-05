@@ -47,7 +47,7 @@ class Sistema extends Model
         $this->cuenta;
         $this->imagenes;
         $this->videos;
-        $this->sucursales;
+        $this->sucursales->load(['estado.pais','iata',]);
 
     }
 

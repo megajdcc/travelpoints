@@ -4,9 +4,9 @@
       COPYRIGHT  © {{ new Date().getFullYear() }}
       <b-link
         class="ml-25"
-        href="#"
+        href="/"
         target="_blank"
-      >TravelPoints</b-link>
+      >{{ sistema.nombre || 'Travel' }}</b-link>
       <span class="d-none d-sm-inline-block">, Todos los derechos reservados</span>
     </span>
 
@@ -22,10 +22,20 @@
 
 <script>
 import { BLink } from 'bootstrap-vue'
+import store from '@/store'
+import {toRefs} from '@vue/composition-api'
 
 export default {
   components: {
     BLink,
   },
+
+  setup(){
+    const {sistema} = toRefs(store.state.sistema)
+
+    return {
+      sistema
+    }
+  }
 }
 </script>

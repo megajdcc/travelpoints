@@ -271,10 +271,6 @@
             </b-col>
           </b-row>
 
-          <el-divider content-position="left">
-             Sucursales
-          </el-divider>
-
           <b-row>
             <b-col cols="12">
                

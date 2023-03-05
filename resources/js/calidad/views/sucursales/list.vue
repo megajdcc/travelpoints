@@ -58,6 +58,12 @@
                                   {{ item.iata.codigo }} - {{ item.iata.aeropuerto }}
                                 </b-form-group>
                               </b-col>
+
+                        <b-col cols="12" md="6">
+                          <b-form-group label="Teléfonos">
+                            {{ item.telefonos.map(val => val.telefono).join() }}
+                          </b-form-group>
+                        </b-col>
                     </b-row>
                   </b-container>
                   

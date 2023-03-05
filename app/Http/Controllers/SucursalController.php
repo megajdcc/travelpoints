@@ -15,9 +15,7 @@ class SucursalController extends Controller
     public function getAll(){
         $sucursales = Sucursal::all();
 
-        foreach($sucursales as $sucursal){
-            $sucursal->cargar();
-        }
+        $sucursales->each(fn($val) => $val->cargar());
 
         return response()->json($sucursales);
 
@@ -68,6 +66,7 @@ class SucursalController extends Controller
             'iata_id'    => 'required',
             'model_id'   => 'nullable',
             'model_type' => 'nullable',
+            'telefonos' => 'nullable'
         ]));
     }
 
@@ -85,14 +84,21 @@ class SucursalController extends Controller
             DB::beginTransaction();
 
             if(isset($datos['model_id']) && isset($datos['model_type'])){
-                $sucursal = Sucursal::created($datos->toArray());
+                $sucursal = Sucursal::created($datos->except(['telefonos'])->toArray());
             }else{
                 $sistema = Sistema::first();
 
-                $sucursal = $sistema->agregarSucursal($datos->except(['model_id','model_type'])->toArray());
+                $sucursal = $sistema->agregarSucursal($datos->except(['model_id','model_type','telefonos'])->toArray());
                
             }
+            
+            if(isset($datos['telefonos'])){
 
+                foreach($datos['telefonos'] as $telefono){
+                    $sucursal->addTelefono($telefono);
+                }
+
+            }
 
             DB::commit();   
             $result = true;
@@ -128,9 +134,16 @@ class SucursalController extends Controller
         $datos = $this->validar($request,$sucursal);
         try {
             DB::beginTransaction();
-                $sucursal->update($datos->toArray());
+                $sucursal->update($datos->except(['telefonos'])->toArray());
             DB::commit();
             $result = true;
+
+            if (isset($datos['telefonos'])) {
+
+                foreach ($datos['telefonos'] as $telefono) {
+                    $sucursal->actualizarTelefono($telefono);
+                }
+            }
             $sucursal->cargar();
         } catch (\Throwable $th) {
             DB::rollBack();

@@ -17,7 +17,8 @@
       :class="{'dropdown-toggle': item.children}"
       @click="() => updateGroupOpen(!isOpen)"
     >
-      <feather-icon :icon="item.icon || 'CircleIcon'" />
+     <font-awesome-icon :icon="[item.iconFa || 'fas', item.icon]" v-if="item.fontAwesome"  />
+      <feather-icon :icon="item.icon || 'CircleIcon'" v-else />
       <span class="menu-title">{{ t(item.title) }}</span>
     </b-link>
     <ul

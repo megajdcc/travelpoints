@@ -95,15 +95,13 @@
       <div class="customizer-section">
 
         <!-- Layout Type -->
-        <!-- <b-form-group
-          label="Menu Layout"
-        >
+        <b-form-group label="Menu Layout">
           <b-form-radio-group
             v-model="layoutType"
             name="layout-type"
             :options="layoutTypeOptions"
           />
-        </b-form-group> -->
+        </b-form-group>
 
         <!-- Collapsible -->
         <div

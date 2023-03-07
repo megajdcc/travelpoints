@@ -8,10 +8,8 @@
       class="nav-link"
       :to="{ name: item.route }"
     >
-      <feather-icon
-        size="14"
-        :icon="item.icon"
-      />
+      <font-awesome-icon :icon="[item.iconFa || 'fas', item.icon]" v-if="item.fontAwesome"  />
+      <feather-icon :icon="item.icon || 'CircleIcon'" v-else />
       <span>{{ t(item.title) }}</span>
     </b-link>
   </li>

@@ -15,14 +15,6 @@
                <b-col md="8">
                   <b-input-group size="sm">
                      <b-form-input v-model="searchQuery" type="search" placeholder="..." />
-                     <!-- <b-input-group-append>
-                        <b-button variant="dark" size="sm" :to="{ name: 'negocio.create' }"
-                           v-if="$can('write', 'negocios')" class="d-flex">
-                           <span class="d-flex align-items-center py-0">
-                              Agregar Negocio
-                           </span>
-                        </b-button>
-                     </b-input-group-append> -->
                   </b-input-group>
                </b-col>
 
@@ -82,16 +74,6 @@
          <paginate-table :dataMeta="dataMeta" :currentPage.sync="currentPage" :perPage="perPage" :total="total"  class="mt-1"/>
 
          <b-card class="mt-1">
-
-        
-         <b-container class="mb-1">
-            <b-row>
-               <b-col class="px-1">
-                  <b-button @click="regresar" size="sm">Regresar</b-button>
-               </b-col>
-            </b-row>
-         </b-container>
-
 
       </b-card>
    </b-container>

@@ -183,7 +183,7 @@
                   <GmapMap :center="{ lat: promedioLatitud, lng: promedioLongitud}" :zoom="3" map-type-id="terrain"
                     style="width: 100%; height: 300px" :options="{styles:stylos}" ref="mapa">
                   
-                    <GmapMarker :visible="true" :draggable="false" :icon="iconMap" :clickable="true" v-for="(tienda,i) in producto.tiendas.filter(val => val.fisica)" :key="i" :position="{
+                    <GmapMarker :visible="true" :draggable="false" :icon="iconMapa" :clickable="true" v-for="(tienda,i) in producto.tiendas.filter(val => val.fisica)" :key="i" :position="{
                       lat: Number(tienda.lat),
                       lng: Number(tienda.lng)
                     }">
@@ -331,7 +331,7 @@
                     </b-button-group>
                   </template>
 
-              </b-sidebar>
+    </b-sidebar>
 
   </section>
 </template>
@@ -390,6 +390,7 @@ import Swal from 'sweetalert2'
 import router from '@/router'
 
 import useAuth from '@core/utils/useAuth'
+import iconMapa from '@images/icons/icon_map.png'
 
 export default {
 
@@ -603,6 +604,7 @@ export default {
       sistema,
       iconMap,
       agregarCarrito,
+      iconMapa,
       guardarCarrito,
       disponibles:computed(() => {
         if(producto.value.tiendas.length){

@@ -21,6 +21,10 @@
   <link rel="shortcut icon" href="{{ asset('favicons/favicon-8x8.png') }}">
   <script src="https://accounts.google.com/gsi/client" async defer ></script>
 
+  <script src="//code.jivosite.com/widget/upCavB6QwA" async></script>
+
+ 
+
 </head>
 
 <body>

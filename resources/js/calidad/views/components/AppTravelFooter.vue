@@ -216,6 +216,8 @@ export default {
 .swiper-slide {
 
    text-align: justify;
+   display: flex;
+   flex-direction: column !important;
 }
 </style>
 

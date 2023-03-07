@@ -1,7 +1,7 @@
 <?php
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\{AuthController};
-use App\Http\Controllers\{AmenidadController, CargoController, CategoriaFaqController, CategoriaProductoController, ConsumoController, CuponController, DestinoController, DivisaController, EmpleadoController, EventoController, FaqController, FormaPagoController, HomeController, HorarioController, HorarioReservacionController, IataController, MovimientoController, NegocioCategoriaController, NegocioController, UserController,NotificacionController,RolController,PermisoController, SolicitudController, TelefonoController,OpinionController, PanelController, ProductoController, PublicacionController, ReservacionController, SistemaController, SucursalController, TiendaController, VentaController};
+use App\Http\Controllers\{AmenidadController, ApplicationController, CargoController, CategoriaFaqController, CategoriaProductoController, ConsumoController, CuponController, DestinoController, DivisaController, EmpleadoController, EventoController, FaqController, FormaPagoController, HomeController, HorarioController, HorarioReservacionController, IataController, MovimientoController, NegocioCategoriaController, NegocioController, UserController,NotificacionController,RolController,PermisoController, SolicitudController, TelefonoController,OpinionController, PanelController, ProductoController, PublicacionController, ReservacionController, SistemaController, SucursalController, TiendaController, VentaController};
 use App\Http\Middleware\convertirNull;
 use Laravel\Socialite\Facades\Socialite;
 use App\Models\{CategoriaFaq, CategoriaProducto, Pais,Estado,Ciudad,};
@@ -551,3 +551,7 @@ Route::get('tiendas/get/all',[TiendaController::class,'getAll']);
 
 Route::post('productos/fetch/data', [ProductoController::class, 'fetchData']);
 Route::get('productos/{producto}/fetch/data', [ProductoController::class, 'fetch']);
+
+
+// Contacto
+Route::post('enviar/mensaje/contacto', [ApplicationController::class, 'enviarMensajeContacto']);

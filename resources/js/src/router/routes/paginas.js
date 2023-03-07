@@ -192,6 +192,24 @@ export default [
    },
 
 
+   // Contacto
+
+   {
+      path:'/contacto',
+      component:() => import('views/paginas/contacto.vue'),
+      name:'contacto',
+      meta:{
+         resource:'Auth',
+         action:'read',
+         layout:'travel',
+         // pageTitle:'Contáctanos',
+         // breadcrumb:[
+         //    {text:'Contacto',active:true}
+         // ]
+      }
+   },
+
+
    // Tienda de Regalos
 
    {

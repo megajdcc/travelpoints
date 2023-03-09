@@ -77,6 +77,11 @@
               <!-- Column: Actions -->
               <template #cell(actions)="{ item }">
                   <b-button-group size="sm">
+                     <b-button variant="dark" title="Entrar al panel de este negocio"  v-b-tooltip.hover
+                     @click="entrarPanelnegocio(item.id)" v-if="$can('write','negocios')">
+                        <font-awesome-icon icon="fas fa-right-to-bracket" />
+                        Panel
+                     </b-button>
                      <b-button variant="primary" title="Editar" :to="{ name: 'negocio.edit', params: { id: item.id } }" v-if="$can('update', 'negocios')">
                         <font-awesome-icon icon="fas fa-pen-to-square"/>
                      </b-button>
@@ -183,13 +188,23 @@ export default {
          showBalance.value = true;
       }
 
+      const entrarPanelnegocio = (negocio_id) => {
+          store.dispatch('negocio/cambiarNegocio', negocio_id).then(({ result }) => {
+
+            if (result) {
+               router.push({ name: 'negocio.home' })
+            }
+         })
+      }
+
       return {
          actions,
          refTable:actions.refTable,
          loading: computed(() => store.state.loading),
          promedioCalificacion: (negocio) => store.getters['negocio/promedioCalificacion'](negocio),
          mostrarBalances,
-         showBalance
+         showBalance,
+         entrarPanelnegocio
 
       }
 

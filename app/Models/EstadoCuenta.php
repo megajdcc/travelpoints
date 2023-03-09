@@ -35,8 +35,9 @@ class EstadoCuenta extends Model
         return $this->morphTo();
     }
 
-    public function movimientoApertura($monto_apertura = 1) : Movimiento{
-        
+    public function movimientoApertura($monto_apertura = 3) : Movimiento{
+    
+
       $movimiento = Movimiento::add(
         cuenta:$this,
         monto: $monto_apertura,

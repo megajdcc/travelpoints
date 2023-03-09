@@ -38,8 +38,8 @@ class Divisa extends Model
 
 
     /**
-     * @param App\Models\Divisa $divisa La divisa 
-     * @param int|float $monto
+     * @param App\Models\Divisa $divisa La divisa en la que se quiere convertir 
+     * @param int|float $monto  El monto a convertir
      * @return float|int;
      */
     public function convertir(Divisa $divisa, $monto) : int|float{

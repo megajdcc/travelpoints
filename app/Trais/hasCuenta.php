@@ -14,7 +14,7 @@ trait hasCuenta
       return $this->morphOne(EstadoCuenta::class, 'model');
    }
 
-   public function aperturarCuenta() : EstadoCuenta{
+   public function aperturarCuenta($monto_apertura = null) : EstadoCuenta{
 
       $cuenta = EstadoCuenta::create([
          'saldo'      => 0,
@@ -23,7 +23,7 @@ trait hasCuenta
          'divisa_id'  => $this->divisa_id
       ]);
 
-      $movimiento = $cuenta->movimientoApertura();
+      $movimiento = $cuenta->movimientoApertura($monto_apertura);
       // $cuenta->saldo = $movimiento->balance;
 
       // $cuenta->save();
@@ -40,6 +40,7 @@ trait hasCuenta
 
 
    public function generarMovimiento($monto, string $concepto, int $tipo_movimiento = Movimiento::TIPO_INGRESO) : Movimiento{
+
 
       $movimiento = Movimiento::add(
          cuenta: $this->cuenta,

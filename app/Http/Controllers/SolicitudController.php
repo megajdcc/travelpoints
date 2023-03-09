@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Divisa;
 use App\Models\Negocio\Solicitud;
 use Illuminate\Http\Request;
 use Illuminate\Database\Eloquent\Builder;
@@ -12,6 +13,7 @@ use App\Models\User;
 
 use App\Notifications\{SolicitudNegocioActualizada,SolicitudEnviada};
 use App\Models\Negocio\Negocio;
+use App\Models\Sistema;
 use App\Models\Usuario\Permiso;
 
 class SolicitudController extends Controller
@@ -295,7 +297,11 @@ class SolicitudController extends Controller
                     ...\array_filter($solicitud->toArray(),fn($key) => !\in_array($key,['comentario','telefono','situacion','email']) )
                  ]);
 
-                $negocio->aperturarCuenta();
+                $sistema = Sistema::first();
+                $divisa_credito = Divisa::find($sistema->negocio['divisa_id']);
+                $saldo_apertura = $divisa_credito->convertir($negocio->divisa, $sistema->negocio->credito);
+
+                $negocio->aperturarCuenta($saldo_apertura);
 
                 $negocio->addTelefono([
                     'telefono'=> $solicitud->telefono,

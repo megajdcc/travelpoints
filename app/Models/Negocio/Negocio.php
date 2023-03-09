@@ -9,6 +9,7 @@ use App\Models\{Divisa, FormaPago, User,Iata};
 use Illuminate\Database\Eloquent\Casts\Attribute;
 
 use App\Models\Amenidad;
+use App\Models\Sistema;
 
 
 class Negocio extends Model
@@ -19,12 +20,16 @@ class Negocio extends Model
     use hasVideos,hasVenta,hasRecomendacion,hasSeguidores,hasLocation;
 
     public readonly string $model_type;
+    public $saldo_apertura = 5;
 
     public $table = 'negocios';
 
     public function __construct()
     {
         $this->model_type = 'App\Models\Negocio\Negocio';
+
+       
+
     }
 
 

@@ -195,10 +195,10 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     /*****************************/
 
     Route::post('negocio/solicituds/fetch/data',[SolicitudController::class,'fetchData']);
+    Route::get('negocio/solicituds/sinaceptar', [SolicitudController::class, 'solicitudesSinAceptar']);
     Route::resource('negocio/solicituds',SolicitudController::class)->middleware(convertirNull::class);
     Route::get('negocio/solicituds/get/all',[SolicitudController::class,'getAll']);
     Route::get('negocio/solicituds/{solicitud}/get',[SolicitudController::class,'getSolicitud']);
-
 
     /*****************************/
     /* Negocios
@@ -234,6 +234,8 @@ Route::get('negocios/{negocio}/recomendacions/toggle/user/{usuario}',[NegocioCon
     Route::post('negocios/users/asociado',[NegocioController::class,'negociosAsociados']);
 
     Route::put('negocios/{negocio}/update/menu',[NegocioController::class,'updateMenu']);
+
+    Route::put('negocios/{negocio}/gestion/saldo',[NegocioController::class,'gestionSaldo']);
     
 
     /*****************************/

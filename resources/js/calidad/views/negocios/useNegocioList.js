@@ -2,60 +2,39 @@
 import store from '@/store'
 import { ref, computed, onMounted, watch } from '@vue/composition-api'
 
+import useFilterTable from '@core/utils/useFilterTable'
 export default function useNegociolist() {
 
-   const isSortDirDesc = ref(true)
-   const sortBy = ref('id')
-   const searchQuery = ref('')
-   const perPage = ref(12)
-   const currentPage = ref(1)
-   const total = ref(0);
+   const tableColumns = ref([
+      {key:'id',label:'#',sortable:true},
+      {key:'nombre',sortable:true,label:'Nombre',},
+      {key:'comision',sortable:true,label:'Comisión'},
+      {key:'saldo',sortable:false,label:'Saldo',sortKey:'id'},
+      {key:'origen',sortable:false,label:'Origen',sortKey:'id'},
+      {key:'created_at',sortable:true,label:'Registrado',sortKey:'id'},
+      {key:'actions',sortable:false,label:'Actions',sortKey:'id'},
+
+   ]) 
+
    const items = ref([]);
-   const perPageOptions = ref([
-      {
-         label: '12',
-         value: 12,
-      },
-      {
-         label: '25',
-         value: 25,
-      },
-      {
-         label: '50',
-         value: 50,
-      },
-      {
-         label: '100',
-         value: 100,
-      },
-      {
-         label: 'Todas',
-         value: 0,
-      },
 
-   ])
+   const {
+      perPageOptions,
+      currentPage,
+      perPage,
+      searchQuery,
+      sortBy,
+      isSortDirDesc,
+      refTable,
+      total,
+      dataMeta,
+      refetchData,
+   } = useFilterTable();
 
-   const dataMeta = computed(() => {
+ 
+   
 
-      const localItemsCount = items.value ? items.value.length : 0
-
-      return {
-         from: perPage.value * (currentPage.value - 1) + (localItemsCount ? 1 : 0),
-         to: perPage.value * (currentPage.value - 1) + localItemsCount,
-         of: total.value,
-      }
-
-   })
-
-   const refetchData = () => fetchData((destinos) => items.value = destinos)
-
-   watch([currentPage, perPage, searchQuery], () => {
-      refetchData()
-   })
-
-   onMounted(() => refetchData())
-
-   const fetchData = (next) => {
+   const fetchData = (ctx, next) => {
 
       store.dispatch('negocio/fetchData', {
          perPage: perPage.value,
@@ -87,7 +66,6 @@ export default function useNegociolist() {
    }
 
    return {
-      items,
       isSortDirDesc,
       sortBy,
       searchQuery,
@@ -99,7 +77,9 @@ export default function useNegociolist() {
       dataMeta,
       refetchData,
       fetchData,
-      eliminar
+      refTable,
+      eliminar,
+      tableColumns
    }
 
 }

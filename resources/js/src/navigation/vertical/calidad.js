@@ -1,3 +1,7 @@
+
+import store from '@/store'
+
+
 export default [
   
    {
@@ -10,21 +14,26 @@ export default [
 
    {
       title: 'Negocios',
-      icon: 'HomeIcon',
+      icon: 'fa-house-chimney',
+      fontAwesome:true,
       children:[
          {
             title: 'negocios',
             route: 'negocio.lists',
             action: 'read',
             resource: 'negocios',
-            icon: 'ListIcon',
+            icon: 'fa-shop',
+            fontAwesome:true,
+            
+            
          },
          {
             title: 'Solicitudes',
             route: 'listar.solicitudes.negocios',
             action: 'read',
             resource: 'solicitudes',
-            icon: 'ListIcon',
+            icon: 'fa-table-list',
+            fontAwesome:true
          },
 
       ]
@@ -32,7 +41,8 @@ export default [
 
    {
       title:'Eventos',
-      icon:'OctagonIcon',
+      icon:'fa-calendar-day',
+      fontAwesome:true,
       route:'eventos.list',
       resource:'eventos',
       action:'read'
@@ -41,13 +51,15 @@ export default [
    {
       
       title:'Destinos e Iata',
-      icon:'MapPinIcon',
-
+      icon:'fa-map-location-dot',
+      fontAwesome:true,
       children:[
 
          {
             title: 'Destinos',
             route: 'destino.lists',
+            icon:'fa-arrows-turn-to-dots',
+            fontAwesome:true,
             action: 'read',
             resource: 'destinos'
          },
@@ -55,6 +67,8 @@ export default [
          {
             title:'Códigos IATA',
             route:'iata.lists',
+            icon:'fa-plane-departure',
+            fontAwesome:true,
             action:'read',
             resource:'iatas'
          }

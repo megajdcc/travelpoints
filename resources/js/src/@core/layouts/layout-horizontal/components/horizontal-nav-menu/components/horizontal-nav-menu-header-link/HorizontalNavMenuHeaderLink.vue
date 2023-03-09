@@ -1,14 +1,9 @@
 <template>
-  <li
-    v-if="canViewHorizontalNavMenuHeaderLink(item)"
-    class="nav-item"
-    :class="{'sidebar-group-active active': isActive}"
-  >
-    <b-link
-      class="nav-link"
-      :to="{ name: item.route }"
-    >
-      <font-awesome-icon :icon="[item.iconFa || 'fas', item.icon]" v-if="item.fontAwesome"  />
+  <li v-if="canViewHorizontalNavMenuHeaderLink(item)" class="nav-item"
+    :class="{'sidebar-group-active active': isActive}" >
+    <b-link class="nav-link" :to="{ name: item.route }" >
+      <font-awesome-icon :icon="[item.iconFa || 'fas', item.icon]" 
+      v-if="item.fontAwesome"  />
       <feather-icon :icon="item.icon || 'CircleIcon'" v-else />
       <span>{{ t(item.title) }}</span>
     </b-link>

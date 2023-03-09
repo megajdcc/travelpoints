@@ -35,7 +35,8 @@ class SistemaController extends Controller
             'paypal'            => 'nullable',
             'divisa_id'         => 'required',
             'empresa_digital'   => 'nullable',
-            'redes'             => 'nullable'
+            'redes'             => 'nullable',
+            'negocio' => 'nullable'
         ]));
         
     }

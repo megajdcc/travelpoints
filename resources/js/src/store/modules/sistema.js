@@ -19,6 +19,10 @@ export default {
       paypal:false,
       divisa_id:null,
       empresa_digital:false,
+      negocio:{
+        credito:0,
+        divisa_id:null,
+      },
       cuenta:null,
       imagenes:[],
       videos: [],
@@ -44,7 +48,16 @@ export default {
 
   mutations:{
 
-    setSistema: (state,sistema) => state.sistema = sistema,
+    setSistema: (state,sistema) => {
+      state.sistema = sistema
+      if(!state.sistema.negocio){
+        state.sistema.negocio = {
+          credito:0,
+          divisa_id:null,
+        }
+      }
+    },
+    
     update:(state,sistema) => state.sistema = sistema,
 
     agregarRedSocial(state){

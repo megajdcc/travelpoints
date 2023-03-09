@@ -302,7 +302,8 @@ export default{
             
             axios.get(`/api/negocios/${negocio_id}/fetch/data`).then(({data}) => {
                commit('setNegocio',data)
-            })
+               resolve(data)
+            }).catch(e => reject(e))
 
          })
       },
@@ -827,15 +828,21 @@ export default{
 
          })
       
+      },
+
+
+      gestionSaldo({state,commit},datos){
+         return new Promise((resolve, reject) => {
+            axios.put(`/api/negocios/${state.negocio.id}/gestion/saldo`,datos).then(({data}) => {
+
+               if(data.result){
+                  commit('update',data.negocio)
+               }
+
+               resolve(data)
+            }).catch(e => reject(e))
+         })
       }
-
-
-
-
-
-
-
-
 
    }
 

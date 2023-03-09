@@ -6,12 +6,14 @@ export default [
 
   {
     title: 'Home',
-    icon:'HomeIcon',
+    icon:'fa-house',
+    fontAwesome:true,
     children:[
 
       {
-        title: 'Home',
-        icon: 'HomeIcon',
+        title: 'Tablero',
+        icon: 'fa-house',
+        fontAwesome:true,
         tagVariant: 'light-warning',
         route: 'home',
         resource: 'home',

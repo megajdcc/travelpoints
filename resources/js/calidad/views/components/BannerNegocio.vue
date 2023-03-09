@@ -1,5 +1,5 @@
 <template>
-    <section class="banner-perfil-negocio" :style="{ 'background-image': `url(${portada})` }">
+    <section class="banner-perfil-negocio" :style="{ 'background-image': `url(${portada})`, position:'relative' }">
       <b-container fluid class="py-2 px-1 px-md-3">
         <b-row>
     

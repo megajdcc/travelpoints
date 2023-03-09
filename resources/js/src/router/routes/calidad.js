@@ -2379,11 +2379,12 @@ export default [
       children:[
 
         {
+
          path:'',
          component:() => import('views/paginas/negocio/perfil.vue'),
          name:'perfil.negocio',
          meta: {
-            layout: 'travel',
+            layout:'travel',
          },
 
         },

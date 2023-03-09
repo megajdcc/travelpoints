@@ -360,4 +360,8 @@ class SolicitudController extends Controller
         return response()->json(['result' => $result]);
 
     }
+
+    public function solicitudesSinAceptar(){
+        return response()->json(23);
+    }
 }

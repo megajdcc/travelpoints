@@ -253,6 +253,13 @@ export default {
 
          })
 
+      },
+
+
+      solicitudesNoaceptadas(){
+         return new Promise((resolve, reject) => {
+            axios.get(`/api/negocio/solicituds/sinaceptar`).then(({data}) => resolve(data)).catch(e => reject(e))
+         })
       }
 
 

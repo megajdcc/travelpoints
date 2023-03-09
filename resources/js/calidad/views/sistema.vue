@@ -271,10 +271,52 @@
             </b-col>
           </b-row>
 
+          <el-divider content-position="left">
+            Negocios
+          </el-divider>
           <b-row>
-            <b-col cols="12">
-               
+            
+            <b-col cols="12" md="6">
+              <b-form-group 
+              description="Divisa en la que se asignará el crédito correspondiente, el crédito se asignará a los negocios una vez se den de Alta">
+                  <template #label>
+                    Divisa: <span class="text-danger">*</span>
+                  </template>
+        
+                  <validation-provider name="negocio.divisa_id" rules="required" #default="{ errors, valid }">
+                  
+                    <v-select v-model="formulario.negocio.divisa_id" :options="divisas.filter(val => !val.principal)" label="nombre" 
+                      :reduce="(option) => option.id"></v-select>
+        
+                    <b-form-invalid-feedback :state="valid">
+                      {{ errors[0] }}
+                    </b-form-invalid-feedback>
+        
+                  </validation-provider>
+                </b-form-group>
+            </b-col>
+
+            <b-col cols="12" md="6">
+               <b-form-group label="Crédito a los negocios" 
+               description="Este monto es el que los negocios podrán usar para registrar consumos">
+                <validation-provider name="negocio.credito" rules="required"  #default="{valid,errors}">
+                  <currency-input :value="formulario.negocio.credito" @change="formulario.negocio.credito = $event" 
+                  :options="{
+                    ...optionsCurrency,
+                    ...{
+                      currency:getIsoDivisa
+                    }
+                  }" 
+                  InputClass="form-control" />
+
+                  <b-form-invalid-feedback :state="valid">
+                    {{  errors[0]  }}
+                  </b-form-invalid-feedback>
+                </validation-provider>
+               </b-form-group>
             </b-col>  
+
+           
           </b-row>
 
         </b-container>
@@ -308,7 +350,7 @@ import {ValidationObserver,ValidationProvider} from 'vee-validate'
 
 import store from '@/store'
 
-import { regresar,optionsEditor } from '@core/utils/utils';
+import { regresar,optionsEditor,optionsCurrency } from '@core/utils/utils';
 
 import {required,url} from '@validations'
 import Editor from '@tinymce/tinymce-vue'
@@ -360,7 +402,8 @@ export default {
     BFormRadioGroup,
     BAlert,
     BLink,
-    vSelect
+    vSelect,
+    currencyInput:() => import('components/CurrencyInput.vue')
 
   },
 
@@ -472,7 +515,14 @@ export default {
       filtradoIcon:(option,label,search) => {
          return (label || '').toLocaleLowerCase().indexOf(search.toLocaleLowerCase()) > -1
       },
-      eliminarRedSocial
+      eliminarRedSocial,
+      optionsCurrency,
+      getIsoDivisa:computed(() => {
+        const divisa = divisas.value.find(val => val.id == formulario.value.negocio.divisa_id);
+        return  divisa
+        ? divisa.iso 
+        : 'EUR'
+      })
 
 
     }

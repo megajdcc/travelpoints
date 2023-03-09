@@ -7,6 +7,7 @@ use App\Models\Negocio\Negocio;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\{DB,Storage,File};
 use App\Models\Imagen;
+use App\Models\Movimiento;
 use App\Models\Negocio\HorarioReservacion;
 use App\Models\Red;
 use App\Models\User;
@@ -39,6 +40,7 @@ class NegocioController extends Controller
             ['codigo_postal', 'LIKE', "%{$datos['q']}%", "OR"],
 
         ])
+        ->with(['cuenta.divisa'])
         ->orderBy($datos['sortBy'] ?: 'id',$datos['isSortDirDesc'] ? 'desc' : 'desc')
         ->paginate($datos['perPage']);
 
@@ -47,8 +49,6 @@ class NegocioController extends Controller
 
         foreach ($negocios as $key => $negocio) {
             $negocio->cargar();
-
-
         }   
 
 
@@ -747,6 +747,27 @@ class NegocioController extends Controller
 
         return response()->json(['result' => $result, 'negocio' => $negocio]);
 
+    }
+
+
+    public function gestionSaldo(Request $request,Negocio $negocio){
+
+        $datos = $request->all();
+
+        try {
+            DB::beginTransaction();
+            Movimiento::add($negocio->cuenta,$datos['monto'], $datos['concepto'],$datos['tipo'] == 1 ? Movimiento::TIPO_INGRESO : Movimiento::TIPO_EGRESO);
+            $negocio->cargar();
+            DB::commit();
+            $result = true;
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            $result = false;
+        }
+        
+        $negocio->refresh();
+
+        return response()->json(['result' => $result, 'negocio' => $negocio]);
     }
 
 

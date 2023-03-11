@@ -186,6 +186,16 @@ export const getDay = (dia) => {
 
 } 
 
+export const diasSemana = [
+  {text:'Lunes',value:1},
+  {text:'Martes',value:2},
+  {text:'Miercoles',value:3},
+  {text:'Jueves',value:4},
+  {text:'Viernes',value:5},
+  {text:'Sabado',value:6},
+  {text:'Domingo',value:0},
+]
+
 export const getHora = (hora) => {
   return moment(moment().format(`Y-M-D ${hora}`)).format('h:mm A');
 }

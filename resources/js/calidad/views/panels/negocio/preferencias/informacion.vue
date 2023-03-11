@@ -118,13 +118,13 @@
 
                         <validation-provider name="comision" rules="required" #default="{ errors }">
 
-
                            <currency-input :value="formulario.comision" @input="formulario.comision = $event"
-                              :options="optionsCurrency" class="form-control" />
+                              :options="{...optionsCurrency,...{ currency: getCurrency }}" class="form-control" />
 
                            <b-form-invalid-feedback :state="errors.length ? false : null">
                               {{ errors[0] }}
                            </b-form-invalid-feedback>
+
 
                         </validation-provider>
 
@@ -136,7 +136,7 @@
 
                            <validation-provider name="divisa_id" rules="required" #default="{ valid, errors }">
                               <v-select v-model="formulario.divisa_id" :reduce="(option) => option.id"
-                                 :options="divisas" label="nombre" class="w-100" />
+                                 :options="divisas.filter(val => !val.principal)" label="nombre" class="w-100" />
 
                               <b-form-invalid-feedback :state="valid">
                                  {{ errors[0] }}
@@ -931,7 +931,11 @@ export default {
 
          agregarTelefono,
          quitarTelefono,
-         optionsEditor
+         optionsEditor,
+         getCurrency:computed(() => {
+            let divisa = divisas.value.find(val => val.id === formulario.value.divisa_id)
+            return divisa ? divisa.iso : 'MXN'
+         })
       }
 
    },

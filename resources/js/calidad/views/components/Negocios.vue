@@ -114,12 +114,12 @@ export default{
     atraccion: Object,
     titulo:{
       type:String,
-      default:'Negocios'
+      default:'Negocios Travel Points'
     },
 
     subTitulo: {
       type: String,
-      default: 'Explora los Restaurantes, Bares y mas...'
+      default: 'Descubre los restaurantes, experiencias y otras actividades turísticas que te dan puntos'
     }
   },
 

@@ -22,6 +22,22 @@ class EventoController extends Controller
         return response()->json($evento);
     }
 
+    public function fetchEventos(Request $request){
+
+        $datos = $request->all();
+
+        $eventos = Evento::when(isset($datos['model_type']), function($query) use($datos) {
+                $query->where('model_id', $datos['model_id'])->where('model_type', $datos['model_type']);
+        })
+                ->where('status',isset($datos['perfil']) && $datos['perfil'] == true ? 1 :  '>', 0)
+                ->with(['imagenes', 'model'])
+                ->orderBy('fecha_inicio','asc')
+                ->get();
+
+
+        return response()->json($eventos);
+
+    }
 
     public function fetchData(Request $request){
 
@@ -67,8 +83,11 @@ class EventoController extends Controller
         return $request->validate([
             'titulo' => 'required',
             'fecha_inicio' => 'required',
-            'fecha_fin' => 'required',
+            'fecha_fin' => 'nullable',
             'recurrente' => 'required',
+            'recurrencia' => 'nullable',
+            'all_dia' => 'nullable',
+            'tipo_recurrencia' => 'nullable',
             'contenido' => 'required',
             'url' => ['required',$evento ? Rule::unique('eventos','url')->ignore($evento) : 'unique:eventos,url']
         ]);
@@ -97,11 +116,9 @@ class EventoController extends Controller
                 'url' => Str::slug($datos['url'])
             ]]);
             
-            $evento->establecerEstaus();
+            // $evento->establecerEstaus();
 
-            $evento->model;
-            $evento->model->model_type;
-            $evento->imagenes;
+            $evento->load(['imagenes','model']);
 
             DB::commit();
             $result = true;

@@ -533,6 +533,7 @@ Route::post('publicacions/fetch/data', [PublicacionController::class, 'fetchData
 // perfil Negocio Eventos
 
 Route::post('eventos/fetch/data', [EventoController::class, 'fetchData']);
+Route::post('eventos/fetch/eventos',[EventoController::class,'fetchEventos']);
 
 // Negocios
 

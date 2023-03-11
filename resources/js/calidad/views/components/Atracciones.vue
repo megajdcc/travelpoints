@@ -2,7 +2,7 @@
       <b-row>
          <b-col cols="12">
             <h3>{{ titulo }}</h3>
-            <p>Los mejores tours, actividades y boletos</p>
+            <p>Descubre los lugares que no te debes perder</p>
          </b-col>
          <b-col cols="12">
                <!-- <SwiperComponent /> -->
@@ -110,7 +110,7 @@ export default {
       titulo:{
          type:String,
          required:false,
-         default:'Las experiencias más populares en TravelPoints',
+         default:'Las experiencias que te recomendamos',
       }
    },
 

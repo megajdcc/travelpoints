@@ -3,7 +3,7 @@
             <b-col cols="12">
          
                <h3>{{ titulo }}</h3>
-               <p>Recomendado en función de tus actividades</p>
+               <p>Descubre los negocios que regalan Travel Points en estos destinos</p>
          
             </b-col>
          
@@ -93,7 +93,7 @@ export default {
       titulo: {
          type: String,
          required: false,
-         default: 'Los destinos más populares para los amantes del viaje',
+         default: 'Destinos Travel Points',
       }
    },
 

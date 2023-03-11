@@ -15,8 +15,15 @@ export default{
          model_id    : null,
          model_type  : '',
          recurrente  : false,
+         recurrencia: {
+            dia_semana:[],
+            hora_inicio:null,
+            hora_fin:null,
+            id_group:''
+         },
+         tipo_recurrencia:1, // 1 => semanalmente, 2 => mensual , 3 => anual
+         all_dia:false,
          url         : '',
-
          model       : null,
          imagenes    : []
       },
@@ -36,19 +43,26 @@ export default{
 
       clear(state){
          state.evento = {
-            id: null,
-            titulo: '',
-            contenido: '',
+            id          : null,
+            titulo      : '',
+            contenido   : '',
             fecha_inicio: null,
-            fecha_fin: null,
-            status: 1, // 1 > activo 2 > vencido 3 > prorrateado
-            model_id: null,
-            model_type: '',
-            recurrente: false,
-            url: '',
-
-            model: null,
-            imagenes: []
+            fecha_fin   : null,
+            status      : 1, // 1 > activo 2 > vencido 3 > prorrateado
+            model_id    : null,
+            model_type  : '',
+            recurrente  : false,
+            recurrencia: {
+               dia_semana:[],
+               hora_inicio:null,
+               hora_fin:null,
+               id_group:''
+            },
+            tipo_recurrencia:1, // 1 => semanalmente, 2 => mensual , 3 => anual
+            all_dia:false,
+            url         : '',
+            model       : null,
+            imagenes    : []
          }
       },
 
@@ -131,6 +145,19 @@ export default{
             
             axios.post(`/api/eventos/fetch/data`,datos).then(({data}) => {
                commit('setEventos',data.eventos)
+               resolve(data)
+            }).catch(e => reject(e))
+
+
+         })
+      },
+
+      fetchEventos({state,commit},datos){
+
+         return new Promise((resolve, reject) => {
+            
+            axios.post(`/api/eventos/fetch/eventos`,datos).then(({data}) => {
+               commit('setEventos',data)
                resolve(data)
             }).catch(e => reject(e))
 

@@ -4,7 +4,7 @@ vendor
 .nvmrc
 public/storage
 storage
-public/js
+public/js/
 public/css/
 public/images
 queue.log

@@ -32,6 +32,9 @@ class EventoController extends Controller
         ->when(count($datos['filterOption']) > 0 , function($query) use($datos){
             $query->whereIn('model_type',$datos['filterOption']);
         })
+        ->when(isset($datos['negocio']),function($query) use($datos){
+            $query->where('model_id',$datos['negocio'])->where('model_type',"App\Models\Negocio\Negocio");
+        })
                 ->where('status',isset($datos['perfil']) && $datos['perfil'] == true ? 1 :  '>', 0)
                 ->with(['imagenes'])
                 ->orderBy('fecha_inicio','asc')
@@ -93,6 +96,8 @@ class EventoController extends Controller
             'all_dia' => 'nullable',
             'tipo_recurrencia' => 'nullable',
             'contenido' => 'required',
+            'model_type' => 'nullable',
+            'model_id' => 'nullable',
             'url' => ['required',$evento ? Rule::unique('eventos','url')->ignore($evento) : 'unique:eventos,url']
         ]);
 
@@ -115,8 +120,8 @@ class EventoController extends Controller
             DB::beginTransaction();
 
             $evento = Evento::create([...$datos,...[
-                'model_type' => $model['model_type'],
-                'model_id' => $model['model_id'],
+                'model_type' => isset($datos['model_type']) ? $datos['model_type'] : $model['model_type'],
+                'model_id' => isset($datos['model_id']) ? $datos['model_id'] : $model['model_id'],
                 'url' => Str::slug($datos['url'])
             ]]);
             
@@ -130,7 +135,7 @@ class EventoController extends Controller
             DB::rollBack();
             $result = false;
 
-            dd($e->getMessage());
+            // dd($e->getMessage());
         }
 
 

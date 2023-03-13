@@ -10,7 +10,7 @@ import interactionPlugin from '@fullcalendar/interaction'
 import esLocale from '@fullcalendar/core/locales/es';
 import { createPopper } from '@popperjs/core';
 
-export default function useEventosList(elemen) {
+export default function useEventosList(negocio = null) {
 
       const calendarApi = ref(null)
       const showEvent = ref(false)
@@ -58,7 +58,8 @@ export default function useEventosList(elemen) {
       store.dispatch('evento/fetchEventos',{
          start:info.start.valueOf(),
          end:info.end.valueOf(),
-         filterOption:filterOption.value
+         filterOption:filterOption.value,
+         negocio:negocio ? negocio.value.id: null
       }).then((eventos) => {
 
          next(eventos.map(val => {

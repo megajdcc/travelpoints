@@ -880,7 +880,7 @@ export default [
                      text: 'Actualizar',
                      active: true
                   }
-               ]
+               
             }
          },
 

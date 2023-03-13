@@ -2,7 +2,7 @@
 
   <div>
 
-    <b :id="`popover-reactive-${event.id}`">{{ event.title.toUpperCase() }}</b>
+    <b :id="`popover-reactive-${event.id}`" class="text-wrap">{{ event.title.toUpperCase() }}</b>
     <b-popover
       :target="getElementEvent"
       triggers="hover"

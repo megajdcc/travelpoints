@@ -7,15 +7,22 @@
         :aria-expanded="String(isEventHandlerSidebarActive)"
         variant="primary"
         block
-        :to="{name:'create.evento'}"
-        v-if="$can('write','eventos')">
+        :to="{name:negocio ? 'negocio.evento.create' : 'create.evento'}"
+        v-if="$can('write','eventos')" >
         Agregar Evento
       </b-button>
 
-      <el-divider content-position="left">Filtro</el-divider>
-      <b-form-group>
-        <b-form-checkbox-group :value="filterOption" @change="$emit('update:filterOption',$event)" :options="optionsFilter" stacked></b-form-checkbox-group>
-      </b-form-group>
+      <template v-if="!negocio">
+         
+        <el-divider content-position="left">Filtro</el-divider>
+
+        <b-form-group>
+          <b-form-checkbox-group :value="filterOption" @change="$emit('update:filterOption',$event)" :options="optionsFilter" stacked>
+          </b-form-checkbox-group>
+        </b-form-group>
+        
+      </template>
+     
     </div>
     <!-- <b-img :src="require('@/assets/images/pages/calendar-illustration.png')" /> -->
   </div>
@@ -46,7 +53,8 @@ export default {
       require: true,
     },
 
-    filterOption:[]
+    filterOption:[],
+    negocio:Boolean
   },
 
   model:{

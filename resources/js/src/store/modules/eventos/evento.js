@@ -21,7 +21,7 @@ export default{
             hora_fin:null,
             id_group:''
          },
-         tipo_recurrencia:1, // 1 => semanalmente, 2 => mensual , 3 => anual
+         tipo_recurrencia:1, // 0 => diariamente, 1 => semanalmente, 2 => mensual , 3 => anual
          all_dia:false,
          url         : '',
          model       : null,

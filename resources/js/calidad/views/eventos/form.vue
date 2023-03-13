@@ -33,7 +33,7 @@
                                     </validation-provider>
                                  </b-form-group>
 
-                                 <b-form-group label="Seleccione un Destino o Atracción: " >
+                                 <b-form-group label="Seleccione un Destino o Atracción: " v-if="!negocio" >
                               
                                     <validation-provider name="model_id" rules="required" #default="{valid,errors}">
                                     

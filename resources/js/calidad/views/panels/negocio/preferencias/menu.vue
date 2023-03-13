@@ -102,6 +102,8 @@ import store from '@/store'
 
 import { computed, toRefs, ref, onMounted } from '@vue/composition-api'
 
+import MiPdf from 'components/MiPdf.vue';
+
 
 export default {
 
@@ -119,7 +121,7 @@ export default {
     ValidationObserver,
     ValidationProvider,
     BImg,
-    MiPdf:() => import('components/MiPdf.vue')
+    MiPdf
 
   },
 

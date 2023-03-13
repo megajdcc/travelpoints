@@ -4,8 +4,8 @@
         "jsx":"preserve",
         "baseUrl": ".",
         "paths": {
-            "@/*": ["resources/js/src/*"],
-            "@core/*": ["resources/js/src/@core/*"],
+            "@/*": ["js/src/*"],
+            "@core/*": ["js/src/@core/*"],
         }
     }
 }

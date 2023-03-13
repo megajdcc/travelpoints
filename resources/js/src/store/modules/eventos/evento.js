@@ -36,6 +36,23 @@ export default{
 
       draft(state) {
          return clone(state.evento)
+      },
+
+
+      getStatus(state){
+         return (event) => {
+            let status = ['Activo','Vencido','Prorrateado'];
+
+            return status[event.status - 1];
+         }
+      },
+
+       getRecurrencia(state){
+         return (event) => {
+            let tipo_recurrencia = ['Semanalmente','Mensual','Anual'];
+
+            return tipo_recurrencia[event.tipo_recurrencia - 1];
+         }
       }
    },
 

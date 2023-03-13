@@ -52,6 +52,11 @@ class Evento extends Model
         return $this->morphTo();
     }
 
+    public function cargar(){
+        $this->model;
+        $this->imagenes;
+    }
+
     public function establecerEstaus(){
 
         if($this->recurrente){

@@ -8,16 +8,14 @@ import timeGridPlugin from '@fullcalendar/timegrid'
 import listPlugin from '@fullcalendar/list'
 import interactionPlugin from '@fullcalendar/interaction'
 import esLocale from '@fullcalendar/core/locales/es';
-import cardEvent from 'components/cardEvent.vue'
-import {BPopover} from 'bootstrap-vue'
+import { createPopper } from '@popperjs/core';
 
-export default function useEventosList() {
+export default function useEventosList(elemen) {
 
       const calendarApi = ref(null)
-      
-cardEvent
+      const showEvent = ref(false)
       const refCalendar = ref(null)
-
+      const filterOption = ref([]);
       // ------------------------------------------------
       // (UI) updateEventInCalendar
       // ------------------------------------------------
@@ -35,8 +33,6 @@ cardEvent
 
       const refetchEvents = () => {
          
-         console.log('consultando')
-         console.log(calendarApi.value)
 
          calendarApi.value.refetchEvents()
       }
@@ -46,8 +42,7 @@ cardEvent
 
       const isCalendarOverlaySidebarActive = ref(false)
 
-  
-
+      watch([filterOption], () => refetchEvents())
 
       onMounted(() => {
             calendarApi.value = refCalendar.value.getApi()
@@ -62,7 +57,8 @@ cardEvent
 
       store.dispatch('evento/fetchEventos',{
          start:info.start.valueOf(),
-         end:info.end.valueOf()
+         end:info.end.valueOf(),
+         filterOption:filterOption.value
       }).then((eventos) => {
 
          next(eventos.map(val => {
@@ -79,12 +75,13 @@ cardEvent
                   allDay:val.all_dia,
                   extendedProps:val,
                   backgroundColor:colorRand(),
-                  classNames:['text-white','bg-primary',],
+                  eventColor:colorRand(),
+                  classNames:['text-white',`evento-${val.id}`],
                   startRecur:val.fecha_inicio,
                   endRecur:val.fecha_fin ? val.fecha_fin : null,
                   resourceEditable:false,
                   durationEditable:false,
-                  startEditable:false,
+                  startEditable:false, 
                   editable:false,
                   // display: 'background'
                }
@@ -96,7 +93,11 @@ cardEvent
                id:val.id,
                allDay:val.all_dia,
                backgroundColor:colorRand(),
-               classNames:['bg-warning','text-white'],
+               eventColor:colorRand(),
+
+               classNames:['text-white',`evento-${val.id}`],
+               extendedProps:val,
+
 
             }
 
@@ -113,7 +114,8 @@ cardEvent
       store.dispatch('evento/eliminar', evento_id).then(({ result }) => {
          if (result) {
             toast.success('Se ha eliminado con éxito el evento', { position: 'bottom-right' })
-            refetchData();
+            refetchEvents();
+            showEvent.value = false
          }
       })
 
@@ -165,8 +167,13 @@ cardEvent
       navLinks: true,
 
       eventClick({ event: clickedEvent }) {
-         isEventHandlerSidebarActive.value = true
-         console.log('vento click ', clickedEvent)
+         // isEventHandlerSidebarActive.value = true
+         store.commit('evento/setEvento',clickedEvent.extendedProps)
+         showEvent.value = true
+      },
+
+      eventMouseEnter({el}){
+
       },
 
       customButtons: {
@@ -180,6 +187,8 @@ cardEvent
 
       dateClick(info) {
          isEventHandlerSidebarActive.value = true
+
+         
       },
 
 
@@ -196,14 +205,21 @@ cardEvent
       },
 
 
-   eventDidMount: (info)  =>   () => h(cardEvent,{
-            target:info.el,
-            info
-         }),
+      eventDidMount:function(info){
+         // // console.log(info)
+
+         // const h2 = () => h('h2','hola')
+         // let elemnt = info.el
+         // createPopper(info.el,h2(), {
+         // placement: 'right',
+         // })
+      }
+   ,
+
    //   eventContent: ({event}) => (h('div', { id: 'foo' }, 'hello')),
 
-      rerenderDelay: 350,
-      })
+   rerenderDelay: 350,
+   })
 
 
 
@@ -218,6 +234,8 @@ cardEvent
       calendarOptions,
       refetchEvents,
       isEventHandlerSidebarActive,
+      showEvent,
+      filterOption
    }
 
 }

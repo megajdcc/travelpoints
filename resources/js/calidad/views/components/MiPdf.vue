@@ -1,12 +1,12 @@
 <template>
 
   <section>
-     <pdf :src="uri" @num-pages="numeroPagina" :page="paginaMostrar" class="mipdf" :style="{
+     <vue-pdf-embed :source="uri" :page="paginaMostrar" @loaded="pdfCargado" :scale="1" class="mipdf" 
+     :height="height" :width="width" :style="{
       height:height,
       width:width
-     }">
-                  
-    </pdf>
+     }"/>
+                
 
     <section class="d-flex justify-content-center mt-1">
 
@@ -33,7 +33,7 @@
 
 <script>
 
-import pdf from 'vue-pdf'
+import VuePdfEmbed from 'vue-pdf-embed/dist/vue2-pdf-embed'
 
 import {
   BButton,
@@ -57,7 +57,7 @@ export default {
     },
 
     height: {
-      type: String | Number,
+      type: String|Number,
       default: '450px'
     },
 
@@ -65,7 +65,7 @@ export default {
 
   components:{
       BButton,
-      pdf,
+      VuePdfEmbed,
   BButtonGroup,
 
   },
@@ -96,7 +96,8 @@ export default {
       numeroPagina,
       siguientePagina,
       paginaAnterior,
-      uri:computed(() => `${path.value}${pdf.value}`)
+      uri:computed(() => `${path.value}${pdf.value}`),
+      pdfCargado:({_pdfInfo:info}) => paginasPdf.value = info.numPages
     }
   }
 }

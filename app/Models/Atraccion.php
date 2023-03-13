@@ -6,13 +6,13 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Destino;
 
-use App\Trais\{hasTelefonos,hasImages,hasHorario, hasLike, hasLocation, hasOpinion};
+use App\Trais\{hasTelefonos,hasImages,hasHorario, hasLike, hasLocation, hasOpinion,hasEvento};
 use Illuminate\Support\Collection;
 
 class Atraccion extends Model
 {
 
-    use HasFactory, hasTelefonos, hasImages, hasHorario, hasLike, hasLocation, hasOpinion;
+    use HasFactory, hasTelefonos, hasImages, hasHorario, hasLike, hasLocation, hasOpinion,hasEvento;
 
     public readonly string $model_type;
 

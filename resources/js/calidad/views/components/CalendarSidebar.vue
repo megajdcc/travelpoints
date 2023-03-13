@@ -12,6 +12,10 @@
         Agregar Evento
       </b-button>
 
+      <el-divider content-position="left">Filtro</el-divider>
+      <b-form-group>
+        <b-form-checkbox-group :value="filterOption" @change="$emit('update:filterOption',$event)" :options="optionsFilter" stacked></b-form-checkbox-group>
+      </b-form-group>
     </div>
     <!-- <b-img :src="require('@/assets/images/pages/calendar-illustration.png')" /> -->
   </div>
@@ -22,6 +26,8 @@ import {
   BButton, BFormGroup, BFormCheckboxGroup, BFormCheckbox, BImg,
 } from 'bootstrap-vue'
 import Ripple from 'vue-ripple-directive'
+
+import {ref} from '@vue/composition-api'
 
 export default {
   directives: {
@@ -39,9 +45,27 @@ export default {
       type: Boolean,
       require: true,
     },
+
+    filterOption:[]
   },
+
+  model:{
+    prop:'filterOption',
+    event:'update:filterOption'
+  },
+  
   setup() {
     
+    const optionsFilter = ref([
+        {text:'Negocios',value:'App\\Models\\Negocio\\Negocio'},
+        { text: 'Atracciones', value: 'App\\Models\\Atraccion' },
+        { text: 'Destinos', value: 'App\\Models\\Destino' },
+    ])
+
+    return {
+        optionsFilter
+    }
+
   },
 }
 </script>

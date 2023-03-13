@@ -29,12 +29,16 @@ class EventoController extends Controller
         $eventos = Evento::when(isset($datos['model_type']), function($query) use($datos) {
                 $query->where('model_id', $datos['model_id'])->where('model_type', $datos['model_type']);
         })
+        ->when(count($datos['filterOption']) > 0 , function($query) use($datos){
+            $query->whereIn('model_type',$datos['filterOption']);
+        })
                 ->where('status',isset($datos['perfil']) && $datos['perfil'] == true ? 1 :  '>', 0)
-                ->with(['imagenes', 'model'])
+                ->with(['imagenes'])
                 ->orderBy('fecha_inicio','asc')
-                ->get();
+                ->get()
+                ->each(fn($event) => $event->cargar());
 
-
+            
         return response()->json($eventos);
 
     }

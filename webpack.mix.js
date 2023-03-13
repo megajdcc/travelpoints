@@ -114,7 +114,7 @@ mix
   .sass('resources/scss/app.scss','css')
   .vue({version:2})
   .options({
-    postCss: [require('autoprefixer'), require('postcss-rtl')]
+    postCss: [require('autoprefixer')]
   })
   .extract();
 

@@ -276,5 +276,7 @@ export default {
 
 <style lang="scss">
 @import "@core/scss/vue/apps/calendar.scss";
+
+
 </style>
 

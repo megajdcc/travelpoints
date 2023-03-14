@@ -2,7 +2,7 @@
 
   <div>
 
-    <b :id="`popover-reactive-${event.id}`" class="text-wrap">{{ event.title.toUpperCase() }}</b>
+    <strong :id="`popover-reactive-${event.id}`" class="text-wrap">{{ event.title.toUpperCase() }}</strong>
     <b-popover
       :target="getElementEvent"
       triggers="hover"
@@ -136,10 +136,20 @@ export default {
 }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
   .mi-popover{
     width:450px !important;
     min-width:450px !important;
 
+  }
+
+  strong{
+    color:black ;
+  }
+
+  .dark-layout{
+    strong{
+      color:white !important;
+    }
   }
 </style>

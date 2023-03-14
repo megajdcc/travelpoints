@@ -68,6 +68,7 @@ export default function useEventosList(negocio = null) {
                return {
                   title:val.titulo,
                   start:val.fecha_inicio,
+                  end:val.fecha_fin,
                   id:val.id,
                   groupId:val.recurrencia.id_group,
                   daysOfWeek:val.recurrencia.dia_semana,
@@ -77,7 +78,7 @@ export default function useEventosList(negocio = null) {
                   extendedProps:val,
                   backgroundColor:colorRand(),
                   eventColor:colorRand(),
-                  classNames:['text-white',`evento-${val.id}`],
+                  classNames:[`evento-${val.id}`],
                   startRecur:val.fecha_inicio,
                   endRecur:val.fecha_fin ? val.fecha_fin : null,
                   resourceEditable:false,
@@ -91,12 +92,13 @@ export default function useEventosList(negocio = null) {
             return {
                title:val.titulo,
                start:val.fecha_inicio,
+               end:val.fecha_fin,
                id:val.id,
                allDay:val.all_dia,
                backgroundColor:colorRand(),
                eventColor:colorRand(),
 
-               classNames:['text-white',`evento-${val.id}`],
+               classNames:[`evento-${val.id}`],
                extendedProps:val,
 
 
@@ -132,7 +134,7 @@ export default function useEventosList(negocio = null) {
       dayMaxEvents: true, // allow "more" link when too many events
       headerToolbar: {
          start: 'sidebarToggle, prev,next, title',
-         end: 'dayGridMonth,timeGridWeek,timeGridDay,listMonth',
+         end: 'dayGridMonth,timeGridWeek,listMonth',
       },
 
       events:fetchEvents,

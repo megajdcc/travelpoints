@@ -2,13 +2,15 @@
 @import './fuentes/fuentes';
 
 h1,h2,h3,h4,h5,h6{
-   font-family: 'Myriad Regular';
+   font-family: 'Myriad Bold';
    font-weight: bolder;
 }
 
 body{
-   font-family: 'Nexa' !important;
-   font-size: 12pt;
+  
+   font-family: "Myriad Regular" !important;
+   font-size: 13pt;
+   line-height: 14.3pt;
 }
 
 strong{

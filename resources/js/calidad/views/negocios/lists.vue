@@ -137,7 +137,7 @@ import useNegocioList from './useNegocioList.js'
 import store from '@/store'
 import router from '@/router'
 
-import { ref, toRefs, computed, onMounted } from '@vue/composition-api'
+import { ref, toRefs, computed, onMounted } from 'vue'
 
 import { regresar } from '@core/utils/utils.js'
 

@@ -275,7 +275,7 @@
 <script>
 import { BRow, BCol, BForm, BFormGroup, BFormInput, BFormRadioGroup, BFormCheckboxGroup, BButton } from 'bootstrap-vue'
 import flatPickr from 'vue-flatpickr-component'
-import { ref } from '@vue/composition-api'
+import { ref } from 'vue'
 import vSelect from 'vue-select'
 
 export default {

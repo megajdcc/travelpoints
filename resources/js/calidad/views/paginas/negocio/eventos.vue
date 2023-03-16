@@ -63,7 +63,7 @@ import useEventosList from 'views/panels/negocio/eventos/useEventosList.js'
 
 import store from '@/store'
 
-import { toRefs, ref, computed, onMounted, watch } from '@vue/composition-api';
+import { toRefs, ref, computed, onMounted, watch } from 'vue';
 
 import {
     BCard,

@@ -48,7 +48,7 @@ import NotificationDropdown from '@/components/notifications.vue'
 import UserDropdown from './components/UserDropdown.vue'
 import useAuth from '@core/utils/useAuth'
 
-import {toRefs,onMounted,watch} from '@vue/composition-api'
+import {toRefs,onMounted,watch} from 'vue'
 import store from '@/store'
 
 export default {

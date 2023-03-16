@@ -128,7 +128,7 @@ import {
 } from 'bootstrap-vue'
 import useAuth from '@core/utils/useAuth';
 
-import {toRefs,computed,onMounted} from '@vue/composition-api'
+import {toRefs,computed,onMounted} from 'vue'
 import store from '@/store'
 export default {
 

@@ -198,7 +198,7 @@
 
 <script>
 
-import { toRefs, ref, computed, onMounted,inject } from '@vue/composition-api'
+import { toRefs, ref, computed, onMounted,inject } from 'vue'
 
 import useProductosList from './useProductosList.js'
 import store from '@/store'

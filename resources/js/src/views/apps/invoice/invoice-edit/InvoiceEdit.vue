@@ -605,7 +605,7 @@
 
 <script>
 import Logo from '@core/layouts/components/Logo.vue'
-import { ref, onUnmounted } from '@vue/composition-api'
+import { ref, onUnmounted } from 'vue'
 import { heightTransition } from '@core/mixins/ui/transition'
 import Ripple from 'vue-ripple-directive'
 import store from '@/store'

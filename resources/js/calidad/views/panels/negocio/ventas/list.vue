@@ -72,7 +72,7 @@
 <script>
 
 import store from '@/store'
-import {toRefs,ref,computed,watch} from '@vue/composition-api'
+import {toRefs,ref,computed,watch} from 'vue'
 
 import useVentasList from './useVentasList.js'
 import { avatarText } from '@core/utils/filter'

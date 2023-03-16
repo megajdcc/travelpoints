@@ -706,7 +706,7 @@ import {
 import useDireccion from '@core/utils/useDireccion'
 import vSelect from 'vue-select'
 
-import {toRefs,ref,onMounted,watch,computed} from '@vue/composition-api'
+import {toRefs,ref,onMounted,watch,computed} from 'vue'
 import store from '@/store'
 import {required,min,max,comision,email} from '@validations'
 import { optionsCurrency,getSituacionSolicitud } from '@core/utils/utils'

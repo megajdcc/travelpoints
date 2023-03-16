@@ -109,7 +109,7 @@
 <script>
 import store from '@/store'
 
-import {onMounted,watch,computed,ref} from '@vue/composition-api'
+import {onMounted,watch,computed,ref} from 'vue'
 import useSucursalesList from './useSucursalesList.js'
 import useDireccion from '@core/utils/useDireccion.js'
 

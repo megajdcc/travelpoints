@@ -175,7 +175,7 @@
 import store from '@/store'
 import {
   ref, watch, computed, onUnmounted,
-} from '@vue/composition-api'
+} from 'vue'
 import {
   BFormInput, BInputGroup, BInputGroupPrepend, BDropdown, BDropdownItem,
   BFormCheckbox, BBadge, BAvatar,

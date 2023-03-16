@@ -1,7 +1,7 @@
 
 import store from '@/store'
 
-import {ref,onMounted, watch } from '@vue/composition-api'
+import {ref,onMounted, watch } from 'vue'
 import axios from 'axios'
 
 export default function useDireccion(){

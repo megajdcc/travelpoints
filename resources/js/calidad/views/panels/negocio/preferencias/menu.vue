@@ -100,7 +100,7 @@ import {required,url} from '@validations';
 
 import store from '@/store'
 
-import { computed, toRefs, ref, onMounted } from '@vue/composition-api'
+import { computed, toRefs, ref, onMounted } from 'vue'
 
 import MiPdf from 'components/MiPdf.vue';
 

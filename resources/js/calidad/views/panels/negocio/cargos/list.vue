@@ -84,7 +84,7 @@ import {
 
 import { regresar } from '@core/utils/utils'
 import store from '@/store'
-import {toRefs,watch,computed,onMounted} from '@vue/composition-api'
+import {toRefs,watch,computed,onMounted} from 'vue'
 
 export default {
 

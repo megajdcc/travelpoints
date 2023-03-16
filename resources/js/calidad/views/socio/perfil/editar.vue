@@ -391,7 +391,7 @@ import Cleave from 'vue-cleave-component'
 import 'cleave.js/dist/addons/cleave-phone.us'
 
 import { ValidationObserver, ValidationProvider} from 'vee-validate'
-import {ref,toRefs,onMounted,computed,watch } from '@vue/composition-api'
+import {ref,toRefs,onMounted,computed,watch } from 'vue'
 
 import {required,email} from '@validations'
 import store from '@/store'

@@ -261,7 +261,7 @@ import {
 
 import useNegocioSolicitudesList from './useNegocioSolicitudesList'
 
-import { ref } from '@vue/composition-api'
+import { ref } from 'vue'
 import { getSituacionSolicitud } from '@core/utils/utils';
 
 export default {

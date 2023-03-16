@@ -232,7 +232,7 @@ import {
 import useDireccion from '@core/utils/useDireccion'
 import vSelect from 'vue-select'
 
-import { computed, toRefs, ref, onMounted, watch } from '@vue/composition-api'
+import { computed, toRefs, ref, onMounted, watch } from 'vue'
 import {
   ValidationProvider,
 } from 'vee-validate'

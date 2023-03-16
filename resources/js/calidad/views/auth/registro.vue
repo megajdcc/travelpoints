@@ -130,7 +130,7 @@ import useTogglePassword from '@core/utils/useTogglePassword';
 
 import ToastificationContent from '@core/components/toastification/ToastificationContent.vue'
 
-import { ref, computed, toRefs, onMounted, watch } from '@vue/composition-api'
+import { ref, computed, toRefs, onMounted, watch } from 'vue'
 import router from '@/router'
 import store from '@/store'
 

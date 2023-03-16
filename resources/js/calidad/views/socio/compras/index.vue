@@ -110,7 +110,7 @@
 <script>
 import useVentasList from 'views/tienda/productos/ventas/useVentasList.js'
 import store from '@/store'
-import { ref, toRefs, computed, onMounted, watch } from '@vue/composition-api'
+import { ref, toRefs, computed, onMounted, watch } from 'vue'
 import { avatarText } from '@core/utils/filter'
 
 import {

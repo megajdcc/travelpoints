@@ -1,5 +1,5 @@
 import useFilterTable from "@core/utils/useFilterTable";
-import {ref} from '@vue/composition-api'
+import {ref} from 'vue'
 import store from '@/store';
 
 export default function useIataList() {

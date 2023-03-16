@@ -374,7 +374,7 @@ import {
   BLink
 } from 'bootstrap-vue'
 
-import {computed,toRefs,ref,onMounted} from '@vue/composition-api'
+import {computed,toRefs,ref,onMounted} from 'vue'
 import vSelect from 'vue-select'
 import {  marcasFontAwesome } from '@core/utils/utils';
 

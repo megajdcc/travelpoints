@@ -1,5 +1,5 @@
 
-import { ref, watch } from '@vue/composition-api'
+import { ref, watch } from 'vue'
 
 import useFilterTable from '@core/utils/useFilterTable'
 

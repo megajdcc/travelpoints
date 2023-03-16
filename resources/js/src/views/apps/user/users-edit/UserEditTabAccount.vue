@@ -224,7 +224,7 @@ import {
 import { avatarText } from '@core/utils/filter'
 import vSelect from 'vue-select'
 import { useInputImageRenderer } from '@core/comp-functions/forms/form-utils'
-import { ref } from '@vue/composition-api'
+import { ref } from 'vue'
 import useUsersList from '../users-list/useUsersList'
 
 export default {

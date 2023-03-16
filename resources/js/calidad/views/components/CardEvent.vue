@@ -96,7 +96,7 @@ import {
   BBadge
 } from 'bootstrap-vue'
 
-import {onMounted,ref,toRefs,watch,computed} from '@vue/composition-api'
+import {onMounted,ref,toRefs,watch,computed} from 'vue'
 
 export default {
   components:{

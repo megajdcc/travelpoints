@@ -196,7 +196,7 @@ import {required} from '@validations'
 import { regresar } from '@core/utils/utils'
 
 import store from '@/store'
-import {toRefs,ref,computed,onMounted,inject,watch, onActivated} from '@vue/composition-api';
+import {toRefs,ref,computed,onMounted,inject,watch, onActivated} from 'vue';
 
 import { optionsCurrency } from '@core/utils/utils'
 

@@ -10,7 +10,7 @@
 
 <script>
 
-import { ref, watch, toRefs } from '@vue/composition-api'
+import { ref, watch, toRefs } from 'vue'
 import { useCurrencyInput } from 'vue-currency-input'
 import { ValidationProvider } from 'vee-validate';
 

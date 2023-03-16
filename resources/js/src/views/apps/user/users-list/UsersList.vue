@@ -229,7 +229,7 @@ import {
 } from 'bootstrap-vue'
 import vSelect from 'vue-select'
 import store from '@/store'
-import { ref, onUnmounted } from '@vue/composition-api'
+import { ref, onUnmounted } from 'vue'
 import { avatarText } from '@core/utils/filter'
 import UsersListFilters from './UsersListFilters.vue'
 import useUsersList from './useUsersList'

@@ -4,7 +4,7 @@ import timeGridPlugin from '@fullcalendar/timegrid'
 import listPlugin from '@fullcalendar/list'
 import interactionPlugin from '@fullcalendar/interaction'
 import esLocale from '@fullcalendar/core/locales/es';
-import { ref, computed, watch, onMounted } from '@vue/composition-api'
+import { ref, computed, watch, onMounted } from 'vue'
 import store from '@/store'
 
 export default function userCalendar() {

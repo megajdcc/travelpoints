@@ -157,7 +157,7 @@ import Ripple from 'vue-ripple-directive'
 import { quillEditor } from 'vue-quill-editor'
 import vSelect from 'vue-select'
 
-import {ref, toRefs,computed,watch,onMounted} from '@vue/composition-api'
+import {ref, toRefs,computed,watch,onMounted} from 'vue'
 
 import store from '@/store'
 

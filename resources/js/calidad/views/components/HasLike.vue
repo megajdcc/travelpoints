@@ -12,7 +12,7 @@ import {
 
 import store from '@/store'
 
-import {toRefs,computed,onMounted,watch} from '@vue/composition-api'
+import {toRefs,computed,onMounted,watch} from 'vue'
 import useAuth  from '@core/utils/useAuth'
 import router from '@/router'
 

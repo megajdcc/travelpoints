@@ -1,5 +1,5 @@
 <script>
-import {h} from '@vue/composition-api'
+import {h} from 'vue'
 import Views from 'components/Views.vue'
 
 export default {

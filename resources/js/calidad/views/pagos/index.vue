@@ -13,7 +13,7 @@
 </template>
 
 <script>
-import {onMounted} from '@vue/composition-api';
+import {onMounted} from 'vue';
 import store from '@/store';
 
 export default {

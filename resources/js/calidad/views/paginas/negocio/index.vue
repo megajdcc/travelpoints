@@ -336,12 +336,12 @@
 
 <script>
 
-import { toRefs, ref, computed } from '@vue/composition-api'
+import { toRefs, ref, computed } from 'vue'
 
 import store from '@/store'
 import router from '@/router';
-import { Swiper, SwiperSlide } from 'vue-awesome-swiper'
-import 'swiper/css/swiper.css'
+import { Swiper, SwiperSlide } from 'swiper/vue'
+import 'swiper/css'
 
 import {
   BContainer,

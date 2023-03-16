@@ -5,7 +5,7 @@ import form from './form.vue'
 
 import store from '@/store'
 
-import { onMounted, h,toRefs,watch } from '@vue/composition-api'
+import { onMounted, h,toRefs,watch } from 'vue'
 
 export default {
    props:['id'],

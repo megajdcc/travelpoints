@@ -17,7 +17,7 @@
       <b-avatar :variant="`light-${colorIcon}`" class="avatar-icon" >
       
         <slot name="icon">
-          <font-awesome-icon :icon="['fa-solid',icon]" size="3x" />
+          <font-awesome-icon :icon="['fa-solid',icon]" size="3x"  />
         </slot>
 
       </b-avatar>
@@ -63,6 +63,17 @@ export default {
       default:'dark'
     },
   },
+
+
+  setup(props){
+
+
+    return {
+
+
+    }
+    
+  }
 }
 </script>
 

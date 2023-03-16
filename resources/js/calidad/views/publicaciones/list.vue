@@ -66,7 +66,7 @@
 <script>
 
 import usePublicacionesList from './usePublicacionesList'
-import {toRefs,computed,ref,watch} from '@vue/composition-api'
+import {toRefs,computed,ref,watch} from 'vue'
 import store from '@/store'
 import {
    BButtonGroup,

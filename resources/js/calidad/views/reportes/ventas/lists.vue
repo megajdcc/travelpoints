@@ -207,7 +207,7 @@ import {
 import StatisticCardWithLineChart from '@core/components/statistics-cards/StatisticCardWithLineChart.vue'
 import StatisticCardHorizontal from '@core/components/statistics-cards/StatisticCardHorizontal.vue'
 
-import {ref,onMounted,watch} from '@vue/composition-api';
+import {ref,onMounted,watch} from 'vue';
 import xlsx from 'xlsx'
 
 import store from '@/store';

@@ -88,7 +88,7 @@
 <script>
 import { ValidationProvider,ValidationObserver } from 'vee-validate'
 import {required} from '@validations'
-import {ref,computed,toRefs,onMounted, watch,onUnmounted} from '@vue/composition-api'
+import {ref,computed,toRefs,onMounted, watch,onUnmounted} from 'vue'
 import store from '@/store'
 import { regresar } from '@core/utils/utils'
 import {

@@ -134,7 +134,7 @@ import {
 } from 'bootstrap-vue'
 
 import store from '@/store'
-import {toRefs,ref,computed,onMounted} from '@vue/composition-api'
+import {toRefs,ref,computed,onMounted} from 'vue'
 import vSelect from 'vue-select'
 import { fab } from '@fortawesome/free-brands-svg-icons'
 

@@ -76,7 +76,7 @@ import {
   BCol
 } from 'bootstrap-vue'
 
-import {computed,toRef,ref,toRefs} from '@vue/composition-api'
+import {computed,toRef,ref,toRefs} from 'vue'
 import store from '@/store'
 
 import useAuth from '@core/utils/useAuth'

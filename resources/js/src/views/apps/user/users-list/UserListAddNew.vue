@@ -259,7 +259,7 @@
 <script>
 import { BSidebar, BForm, BFormGroup, BFormInput, BFormInvalidFeedback, BButton } from 'bootstrap-vue'
 import { ValidationProvider, ValidationObserver } from 'vee-validate'
-import { ref } from '@vue/composition-api'
+import { ref } from 'vue'
 import { required, alphaNum, email } from '@validations'
 import formValidation from '@core/comp-functions/forms/form-validation'
 import Ripple from 'vue-ripple-directive'

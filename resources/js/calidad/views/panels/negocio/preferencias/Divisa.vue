@@ -109,7 +109,7 @@ import {
    BButton
 } from 'bootstrap-vue'
 
-import {computed,toRefs,ref,onMounted} from '@vue/composition-api'
+import {computed,toRefs,ref,onMounted} from 'vue'
 
 import store from '@/store'
 import { regresar, optionsCurrency } from '@core/utils/utils'

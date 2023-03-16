@@ -152,7 +152,7 @@ import {ValidationObserver,ValidationProvider} from 'vee-validate';
 import {required} from '@validations'
 
 import store from '@/store'
-import {toRefs,ref,computed,onMounted,watch} from '@vue/composition-api';
+import {toRefs,ref,computed,onMounted,watch} from 'vue';
 import { regresar } from '@core/utils/utils';
 import useDireccion from '@core/utils/useDireccion';
 export default {

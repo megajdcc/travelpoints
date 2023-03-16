@@ -176,7 +176,7 @@
 import store from '@/store'
 import {
   ref, onUnmounted, nextTick,
-} from '@vue/composition-api'
+} from 'vue'
 import {
   BAvatar, BDropdown, BDropdownItem, BForm, BInputGroup, BFormInput, BButton,
 } from 'bootstrap-vue'

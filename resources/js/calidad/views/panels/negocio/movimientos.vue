@@ -188,7 +188,7 @@ import useCuentaList from 'views/socio/perfil/useCuentaList.js'
 
 import store from '@/store'
 import PayPal from 'vue-paypal-checkout'
-import {toRefs,computed,watch,ref} from '@vue/composition-api'
+import {toRefs,computed,watch,ref} from 'vue'
 import {ValidationProvider} from 'vee-validate'
 import CurrencyInput from 'components/CurrencyInput.vue'
 import {required} from '@validations'

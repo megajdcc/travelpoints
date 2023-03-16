@@ -108,10 +108,10 @@ import {
   VBTooltip
 } from 'bootstrap-vue'
 
-import { Swiper, SwiperSlide } from 'vue-awesome-swiper'
-import 'swiper/css/swiper.css'
+import { Swiper, SwiperSlide } from 'swiper/vue'
+import 'swiper/css'
 
-import { toRefs, computed, ref, nextTick , onMounted } from '@vue/composition-api';
+import { toRefs, computed, ref, nextTick , onMounted } from 'vue';
 import store from '@/store'
 import router from '@/router'
 

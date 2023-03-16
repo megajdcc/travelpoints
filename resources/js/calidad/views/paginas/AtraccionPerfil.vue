@@ -185,11 +185,11 @@
 
 <script>
 
-import {toRefs, ref,onMounted,computed,nextTick,watch} from '@vue/composition-api'
+import {toRefs, ref,onMounted,computed,nextTick,watch} from 'vue'
 import store from '@/store'
 
-import { Swiper, SwiperSlide } from 'vue-awesome-swiper'
-import 'swiper/css/swiper.css'
+import { Swiper, SwiperSlide } from 'swiper/vue'
+import 'swiper/css'
 
 
 

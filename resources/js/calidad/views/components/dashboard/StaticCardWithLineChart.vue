@@ -30,20 +30,20 @@
 
     </b-card-body>
 
-    <vue-apex-charts
+    <!-- <vue-apex-charts
       type="line"
       height="100"
       width="100%"
       :options="chartOptionsComputed"
       :series="chartData"
-    />
+    /> -->
 
   </b-card>
 </template>
 
 <script>
 import { BCard, BCardBody, BAvatar } from 'bootstrap-vue'
-import VueApexCharts from 'vue-apexcharts'
+// import VueApexCharts from 'vue-apexcharts'
 import { $themeColors } from '@themeConfig'
 import { lineChartOptions } from './chartOptions'
 

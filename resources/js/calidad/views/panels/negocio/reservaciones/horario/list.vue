@@ -212,7 +212,7 @@ import {required} from '@validations'
 
 import store from '@/store'
 
-import {computed,onMounted,toRefs,ref,watch} from '@vue/composition-api'
+import {computed,onMounted,toRefs,ref,watch} from 'vue'
 
 import flatPickr from 'vue-flatpickr-component'
 import { tooltip } from 'leaflet'

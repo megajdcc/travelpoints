@@ -1,6 +1,6 @@
 
 import store from '@/store'
-import {toRefs, ref, watch,onMounted,computed} from '@vue/composition-api'
+import {toRefs, ref, watch,onMounted,computed} from 'vue'
 
 
 export default function usePersonalList(negocio){

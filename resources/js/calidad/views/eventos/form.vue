@@ -294,7 +294,7 @@ import {
 import { optionsEditor,dateOption,regresar, diasSemana } from '@core/utils/utils'
 import flatPickr from 'vue-flatpickr-component'
 
-import {computed,onMounted,watch,toRefs,ref} from '@vue/composition-api'
+import {computed,onMounted,watch,toRefs,ref} from 'vue'
 
 import store from '@/store'
 

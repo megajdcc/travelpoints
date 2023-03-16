@@ -1,5 +1,5 @@
 <script>
-import { h, onMounted,toRefs,watch } from '@vue/composition-api'
+import { h, onMounted,toRefs,watch } from 'vue'
 
 import store from '@/store'
 

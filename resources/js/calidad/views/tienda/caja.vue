@@ -151,7 +151,7 @@ import {
 } from '@validations'
 
 import store from '@/store'
-import {computed,toRefs,ref,watch,onMounted,inject} from '@vue/composition-api'
+import {computed,toRefs,ref,watch,onMounted,inject} from 'vue'
 import useListCaja from './useListCaja.js'
 import router from '@/router'
 

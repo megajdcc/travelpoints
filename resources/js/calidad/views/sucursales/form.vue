@@ -126,7 +126,7 @@ import {
 
 import store from '@/store'
 
-import {toRefs,ref,computed} from '@vue/composition-api'
+import {toRefs,ref,computed} from 'vue'
 
 import {
   required

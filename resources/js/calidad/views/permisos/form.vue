@@ -88,7 +88,7 @@ import {
 	import {required } from '@validations'
 	import { regresar } from '@core/utils/utils';
 
-	import { ref,computed,toRefs,onMounted} from '@vue/composition-api'
+	import { ref,computed,toRefs,onMounted} from 'vue'
 	import store from '@/store'
 
 	import vSelect from 'vue-select'

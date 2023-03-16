@@ -54,7 +54,7 @@ import {
 
 import {required} from '@validations'
 
-import {toRefs,ref,computed} from '@vue/composition-api';
+import {toRefs,ref,computed} from 'vue';
 
 import {ValidationObserver,ValidationProvider} from 'vee-validate'
 

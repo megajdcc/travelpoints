@@ -14,12 +14,12 @@
     </b-card-header>
 
     <b-card-body>
-      <vue-apex-charts
+      <!-- <vue-apex-charts
         type="bar"
         height="400"
         :options="chartOptions"
         :series="data"
-      />
+      /> -->
     </b-card-body>
   </b-card>
 </template>
@@ -28,10 +28,10 @@
 import {
   BCard, BCardBody, BCardHeader, BCardTitle, BCardSubTitle, BBadge,BFormGroup
 } from 'bootstrap-vue'
-import VueApexCharts from 'vue-apexcharts'
-import apexChatData from './apexChartData'
+// import VueApexCharts from 'vue-apexcharts'
+// import apexChatData from './apexChartData'
 import { $themeColors } from '@themeConfig'
-import {ref, toRefs} from '@vue/composition-api';
+import {ref, toRefs} from 'vue';
 import vSelect from 'vue-select'
 export default {
 

@@ -144,7 +144,7 @@ import {
 } from 'bootstrap-vue'
 import Ripple from 'vue-ripple-directive'
 import { useInputImageRenderer } from '@core/comp-functions/forms/form-utils'
-import { ref } from '@vue/composition-api'
+import { ref } from 'vue'
 import {mapState,mapGetters} from 'vuex';
 
 export default {

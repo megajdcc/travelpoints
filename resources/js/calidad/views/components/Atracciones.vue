@@ -92,10 +92,10 @@ import {
    BBadge
 
 } from 'bootstrap-vue'
-import { Swiper, SwiperSlide } from 'vue-awesome-swiper'
-import 'swiper/css/swiper.css'
+import { Swiper, SwiperSlide } from 'swiper/vue'
+import 'swiper/css'
 
-import {ref,computed} from '@vue/composition-api'
+import {ref,computed} from 'vue'
 import useAuth from '@core/utils/useAuth'
 import store from '@/store'
 

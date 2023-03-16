@@ -1,7 +1,7 @@
 
 import store from '@/store'
 
-import { ref, computed, onMounted, watch,h } from '@vue/composition-api'
+import { ref, computed, onMounted, watch,h } from 'vue'
 
 import dayGridPlugin from '@fullcalendar/daygrid'
 import timeGridPlugin from '@fullcalendar/timegrid'

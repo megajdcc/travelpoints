@@ -146,7 +146,7 @@ import store from '@/store'
 import router from '@/router'
 import Ripple from 'vue-ripple-directive'
 
-import { ref, toRefs, computed, onActivated,onMounted,watch } from '@vue/composition-api'
+import { ref, toRefs, computed, onActivated,onMounted,watch } from 'vue'
 import VueSlider from 'vue-slider-component'
 import vSelect from 'vue-select'
 import { regresar } from '@core/utils/utils.js'

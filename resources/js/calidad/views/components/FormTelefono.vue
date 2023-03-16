@@ -150,7 +150,7 @@ import {
    required
 } from '@validations'
 
-import {computed,onMounted,ref,toRefs} from '@vue/composition-api'
+import {computed,onMounted,ref,toRefs} from 'vue'
 import store from '@/store'
 import {regresar} from '@core/utils/utils'
 

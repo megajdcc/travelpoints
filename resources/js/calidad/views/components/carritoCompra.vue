@@ -73,7 +73,7 @@ import {
 import VuePerfectScrollbar from 'vue-perfect-scrollbar'
 import Ripple from 'vue-ripple-directive'
 
-import { ref, onMounted, watch, toRefs, computed, onUnmounted } from '@vue/composition-api';
+import { ref, onMounted, watch, toRefs, computed, onUnmounted } from 'vue';
 
 import store from '@/store';
 import router from '@/router';

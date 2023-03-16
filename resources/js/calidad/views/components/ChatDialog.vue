@@ -105,7 +105,7 @@ import {
 
 } from 'bootstrap-vue'
 
-import {toRefs,watch,ref,nextTick,onUpdated,computed} from '@vue/composition-api'
+import {toRefs,watch,ref,nextTick,onUpdated,computed} from 'vue'
 
 import store  from '@/store'
 

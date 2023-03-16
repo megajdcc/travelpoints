@@ -166,7 +166,7 @@ import vSelect from 'vue-select'
 import {required,min} from '@validations'
 import { regresar } from '@core/utils/utils';
 
-import {ref,computed,onMounted,toRefs} from '@vue/composition-api'
+import {ref,computed,onMounted,toRefs} from 'vue'
 import store from '@/store'
 import router from '@/router'
 import useAuth from '@core/utils/useAuth';

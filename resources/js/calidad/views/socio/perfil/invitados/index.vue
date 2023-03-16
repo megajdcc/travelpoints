@@ -89,7 +89,7 @@ import {
 
 } from 'bootstrap-vue'
 
-import { ref,computed,toRefs} from '@vue/composition-api'
+import { ref,computed,toRefs} from 'vue'
 
 import store from '@/store'
 

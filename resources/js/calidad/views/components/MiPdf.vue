@@ -40,7 +40,7 @@ import {
   BButtonGroup,
 } from 'bootstrap-vue';
 
-import { computed, toRefs, ref, onMounted } from '@vue/composition-api'
+import { computed, toRefs, ref, onMounted } from 'vue'
 
 export default {
   

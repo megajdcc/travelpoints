@@ -75,7 +75,7 @@ import { BCard, BLink, BCardText, BCardTitle, BFormGroup, BFormInput, BForm, BBu
 import { required, email } from '@validations'
 
 
-import {ref,toRefs} from '@vue/composition-api';
+import {ref,toRefs} from 'vue';
 import {Notification} from 'element-ui';
 import store from 'store';
 

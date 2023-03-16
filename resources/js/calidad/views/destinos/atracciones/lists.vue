@@ -128,7 +128,7 @@ import {
 
 import useAtraccionesList from './useAtraccionesList.js'
 import store from '@/store'
-import { ref, toRefs, computed, onActivated } from '@vue/composition-api'
+import { ref, toRefs, computed, onActivated } from 'vue'
 
 import { regresar } from '@core/utils/utils.js'
 

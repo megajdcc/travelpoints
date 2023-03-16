@@ -38,7 +38,7 @@ import {
 } from 'bootstrap-vue'
 import store from '@/store'
 
-import { computed,toRefs,ref, onMounted } from '@vue/composition-api'
+import { computed,toRefs,ref, onMounted } from 'vue'
 
 export default{
 

@@ -1,6 +1,6 @@
 import router from '@/router'
 // eslint-disable-next-line object-curly-newline
-import { reactive, getCurrentInstance, watch, toRefs,ref } from '@vue/composition-api'
+import { reactive, getCurrentInstance, watch, toRefs,ref } from 'vue'
 import Swal from 'sweetalert2'
 export const isObject = obj => typeof obj === 'object' && obj !== null
 import 'animate.css';

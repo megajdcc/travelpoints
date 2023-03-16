@@ -1,7 +1,7 @@
 
 import store from '@/store'
 import router from '@/router'
-import {ref,computed,onMounted} from '@vue/composition-api'
+import {ref,computed,onMounted} from 'vue'
 import { initialAbility } from '@/libs/acl/config'
 import ability from '@/libs/acl/ability'
 import ToastificationContent from '@core/components/toastification/ToastificationContent'

@@ -341,7 +341,7 @@
 import { useRouter } from '@core/utils/utils'
 
 import store from '@/store'
-import { ref,toRefs,onMounted,onActivated,computed,watch,nextTick,inject,h} from '@vue/composition-api'
+import { ref,toRefs,onMounted,onActivated,computed,watch,nextTick,inject,h} from 'vue'
 
 import {
   ValidationProvider

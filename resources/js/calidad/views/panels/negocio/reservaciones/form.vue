@@ -168,7 +168,7 @@ import { required,min } from '@validations'
 
 import {regresar} from '@core/utils/utils'
 
-import {toRefs,ref,computed,onMounted,toRef,watch, onActivated} from '@vue/composition-api'
+import {toRefs,ref,computed,onMounted,toRef,watch, onActivated} from 'vue'
 
 import store from '@/store'
 import vSelect from 'vue-select'

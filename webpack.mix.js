@@ -1,6 +1,6 @@
 const mix = require('laravel-mix');
 require('laravel-mix-workbox');
-
+// const { VueLoaderPlugin } = require('vue-loader')
 
 const webpack = require('webpack');
 // import webpack from 'webpack';
@@ -42,7 +42,6 @@ mix.webpackConfig({
     }
   },
   module: {
-
     rules: [
       {
         test: /\.s[ac]ss$/i,
@@ -68,6 +67,28 @@ mix.webpackConfig({
         ]
       },
 
+     
+
+
+    //   {
+    //     test: /\.vue$/,
+    //     loader: 'vue-loader'
+    //   },
+
+    //   {
+    //   test: /\.css$/,
+    //   use: [
+    //     'vue-style-loader',
+    //     {
+    //       loader: 'css-loader',
+    //       options: { importLoaders: 1 }
+    //     },
+    //     'postcss-loader'
+    //   ]
+    // }
+
+
+
       // {
       //   test: /\.(otf|woff|woff2|eot|ttf)$/,
       //   use:['url-loader','file-loader']
@@ -86,8 +107,13 @@ mix.webpackConfig({
       //     }
       //   ]
       // }
-    ]
+    ],
   },
+
+  // plugins: [
+  //   new VueLoaderPlugin()
+  // ],
+
   
   output: {
     asyncChunks:false,

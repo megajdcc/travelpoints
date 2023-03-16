@@ -80,7 +80,7 @@
 
 <script>
 
-import { computed, toRefs, ref, onMounted } from '@vue/composition-api'
+import { computed, toRefs, ref, onMounted } from 'vue'
 
 import store from '@/store'
 import VueGallerySlideshow from 'vue-gallery-slideshow';

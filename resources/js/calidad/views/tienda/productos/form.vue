@@ -382,7 +382,7 @@ import {
   BFormFile
 } from 'bootstrap-vue';
 
-import { toRefs, computed, ref,watch, provide } from '@vue/composition-api';
+import { toRefs, computed, ref,watch, provide } from 'vue';
 import vSelect from 'vue-select'
 
 import store from '@/store'

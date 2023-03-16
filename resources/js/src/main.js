@@ -1,8 +1,5 @@
-
 import Vue from 'vue'
 import { ToastPlugin, ModalPlugin } from 'bootstrap-vue'
-import VueCompositionAPI from '@vue/composition-api'
-
 import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
 import lang from 'element-ui/lib/locale/lang/es';
@@ -46,7 +43,7 @@ import '@/libs/toastification'
 import '@/libs/sweet-alerts'
 import '@/libs/vue-select'
 import '@/libs/tour'
-import '@/libs/markdown-editor'
+// import '@/libs/markdown-editor'
 
 import VueCurrencyFilter from 'vue-currency-filter'
 import moment from 'moment';
@@ -88,8 +85,6 @@ Vue.use(ModalPlugin)
 Vue.use(ElementUI);
 
 
-// Composition API
-Vue.use(VueCompositionAPI)
 
 
 // Feather font icon - For form-wizard

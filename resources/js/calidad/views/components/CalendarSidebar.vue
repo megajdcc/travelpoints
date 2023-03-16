@@ -34,7 +34,7 @@ import {
 } from 'bootstrap-vue'
 import Ripple from 'vue-ripple-directive'
 
-import {ref} from '@vue/composition-api'
+import {ref} from 'vue'
 
 export default {
   directives: {

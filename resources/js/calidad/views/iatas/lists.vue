@@ -89,7 +89,7 @@ import {
 
 import useIataList from './useIataList.js'
 import store from '@/store'
-import { ref, toRefs, computed } from '@vue/composition-api'
+import { ref, toRefs, computed } from 'vue'
 
 import { regresar } from '@core/utils/utils.js'
 

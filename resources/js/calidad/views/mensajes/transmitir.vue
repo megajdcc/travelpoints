@@ -6,7 +6,7 @@
 </template>
 <script>
 
-import {ref,toRefs,onMounted,watch,computed} from '@vue/composition-api'
+import {ref,toRefs,onMounted,watch,computed} from 'vue'
 
 import { ValidationObserver,ValidationProvider } from 'vee-validate'
 

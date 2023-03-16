@@ -143,10 +143,10 @@ import {
 } from 'bootstrap-vue'
 import useAuth from '@core/utils/useAuth'
 import { $themeConfig } from '@themeConfig'
-import { toRefs, computed, ref} from '@vue/composition-api'
+import { toRefs, computed, ref} from 'vue'
 import store from '@/store'
-import { Swiper, SwiperSlide } from 'vue-awesome-swiper'
-import 'swiper/css/swiper.css'
+import { Swiper, SwiperSlide } from 'swiper/vue'
+import 'swiper/css'
 export default {
    components: {
       BContainer,

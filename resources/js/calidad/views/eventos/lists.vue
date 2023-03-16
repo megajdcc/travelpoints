@@ -152,7 +152,7 @@ import FullCalendar from '@fullcalendar/vue'
 import useEventosList from './useEventosList.js'
 import store from '@/store'
 
-import { ref, toRefs, computed, onActivated, onUnmounted,onMounted } from '@vue/composition-api'
+import { ref, toRefs, computed, onActivated, onUnmounted,onMounted } from 'vue'
 
 import { regresar } from '@core/utils/utils.js'
 import CardEvent from 'components/CardEvent.vue';

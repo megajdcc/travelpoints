@@ -2,7 +2,7 @@
 <script>
 import form from './form.vue'
 
-import {h,toRefs,ref,onMounted} from '@vue/composition-api'
+import {h,toRefs,ref,onMounted} from 'vue'
 import store from '@/store'
 import router from '@/router'
 export default {

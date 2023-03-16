@@ -334,7 +334,7 @@ import {
 
 import store from '@/store'
 
-import { computed, toRefs, ref, onMounted, watch,provide } from '@vue/composition-api'
+import { computed, toRefs, ref, onMounted, watch,provide } from 'vue'
 
 import vSelect from 'vue-select'
 

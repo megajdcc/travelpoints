@@ -1,6 +1,6 @@
 <script>
 
-import { h,toRefs,watch } from '@vue/composition-api'
+import { h,toRefs,watch } from 'vue'
 import store from '@/store'
 import form from './form.vue'
 

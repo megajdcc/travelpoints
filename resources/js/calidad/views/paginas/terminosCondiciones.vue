@@ -314,7 +314,7 @@ import {
    BEmbed
 } from 'bootstrap-vue'
 
-import { toRefs, computed,onActivated,onMounted } from '@vue/composition-api'
+import { toRefs, computed,onActivated,onMounted } from 'vue'
 import store from '@/store'
 import useAuth from '@core/utils/useAuth';
 

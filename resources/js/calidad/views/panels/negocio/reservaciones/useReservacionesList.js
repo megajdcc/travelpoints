@@ -2,7 +2,7 @@ import useFilterTable from "@core/utils/useFilterTable";
 
 import store from '@/store'
 
-import { ref } from '@vue/composition-api'
+import { ref } from 'vue'
 
 export default function useReservacionesList(negocio){
 

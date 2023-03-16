@@ -1,6 +1,6 @@
 <script>
 
-import {h} from '@vue/composition-api'
+import {h} from 'vue'
 
 import View from 'components/Views.vue'
 

@@ -36,8 +36,8 @@ import {
    BBadge,
    BFormRating,
 } from 'bootstrap-vue'
-import { Swiper,SwiperSlide } from 'vue-awesome-swiper'
-import {onMounted,onActivated,computed,ref,toRefs} from '@vue/composition-api'
+import { Swiper,SwiperSlide } from 'swiper/vue'
+import {onMounted,onActivated,computed,ref,toRefs} from 'vue'
 
 // import { Pagination, Navigation } from 'swiper'
 
@@ -45,7 +45,7 @@ import vSelect from 'vue-select'
 import store from '@/store'
 import useAuth from '@core/utils/useAuth';
 import router from '@/router'
-import 'swiper/css/swiper.css'
+import 'swiper/css'
 import Ripple from 'vue-ripple-directive'
 
 

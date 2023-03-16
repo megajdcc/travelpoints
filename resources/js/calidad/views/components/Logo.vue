@@ -8,7 +8,7 @@
 import {
    BLink,
 } from 'bootstrap-vue'
-import {toRefs,computed} from '@vue/composition-api'
+import {toRefs,computed} from 'vue'
 import store from '@/store'
 import { $themeConfig } from '@themeConfig'
 

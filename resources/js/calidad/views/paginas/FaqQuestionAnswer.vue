@@ -33,7 +33,7 @@
 import { BAvatar,BOverlay } from 'bootstrap-vue'
 import AppCollapse from '@core/components/app-collapse/AppCollapse.vue'
 import AppCollapseItem from '@core/components/app-collapse/AppCollapseItem.vue'
-import {computed,onMounted} from '@vue/composition-api'
+import {computed,onMounted} from 'vue'
 
 import store from '@/store'
 import useAuth from '@core/utils/useAuth';

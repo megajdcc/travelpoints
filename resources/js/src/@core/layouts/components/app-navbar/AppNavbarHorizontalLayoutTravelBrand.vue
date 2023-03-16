@@ -18,7 +18,7 @@
 <script>
 import { BLink, BImg } from 'bootstrap-vue'
 import { $themeConfig } from '@themeConfig'
-import {computed,toRefs,onMounted} from '@vue/composition-api'
+import {computed,toRefs,onMounted} from 'vue'
 import store from '@/store'
 
 

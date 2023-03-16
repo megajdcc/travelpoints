@@ -1,6 +1,6 @@
 
 import useFilterTable from "@core/utils/useFilterTable";
-import {ref,toRefs} from '@vue/composition-api'
+import {ref,toRefs} from 'vue'
 import store from '@/store'
 
 

@@ -64,7 +64,7 @@
 
 <script>
 import { BCardBody, BCardText, BImg, BLink } from 'bootstrap-vue'
-import { Swiper, SwiperSlide } from 'vue-awesome-swiper'
+import { Swiper, SwiperSlide } from 'swiper/vue'
 
 export default {
   components: {
@@ -155,5 +155,5 @@ export default {
 
 <style lang="scss">
 @import '~@core/scss/vue/libs/swiper.scss';
-@import '~swiper/css/swiper.css';
+@import '~swiper/css';
 </style>

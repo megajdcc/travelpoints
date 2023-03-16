@@ -1,6 +1,6 @@
 <script>
 
-import {h,toRefs,onMounted} from '@vue/composition-api'
+import {h,toRefs,onMounted} from 'vue'
 
 import store from '@/store'
 

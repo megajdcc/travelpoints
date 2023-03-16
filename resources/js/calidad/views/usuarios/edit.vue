@@ -2,7 +2,7 @@
 
 import form from './form';
 
-import { h, onMounted,watch,computed,toRefs } from '@vue/composition-api'
+import { h, onMounted,watch,computed,toRefs } from 'vue'
 import store from '@/store'
 
 export default {

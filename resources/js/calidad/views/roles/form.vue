@@ -123,7 +123,7 @@ import {
 	import {required} from '@validations';
 
 	import store from '@/store'
-	import {ref,onMounted,watch,computed,toRefs} from '@vue/composition-api'
+	import {ref,onMounted,watch,computed,toRefs} from 'vue'
 
 	import { regresar } from '@core/utils/utils';
 	export default{  

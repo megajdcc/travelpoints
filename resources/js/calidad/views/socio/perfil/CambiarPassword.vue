@@ -120,7 +120,7 @@ import { ValidationObserver,ValidationProvider } from 'vee-validate';
 import {required} from '@validations'
 
 import store from '@/store'
-import {ref,computed} from '@vue/composition-api'
+import {ref,computed} from 'vue'
 
 export default {
   components: {

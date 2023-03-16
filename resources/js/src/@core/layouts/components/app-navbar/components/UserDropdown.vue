@@ -54,7 +54,7 @@ import {
 } from 'bootstrap-vue'
 
 import { avatarText } from '@core/utils/filter'
-import { computed,toRefs } from '@vue/composition-api';
+import { computed,toRefs } from 'vue';
 import store from '@/store';
 
 import useAuth from '@core/utils/useAuth'

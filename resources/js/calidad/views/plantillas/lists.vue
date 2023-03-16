@@ -83,7 +83,7 @@
 </template>
 <script>
 
-import {ref,toRefs,onMounted,computed} from '@vue/composition-api'
+import {ref,toRefs,onMounted,computed} from 'vue'
 
 import usePlantillasList from './usePlantillasList'
 

@@ -69,7 +69,7 @@ import {
 } from 'bootstrap-vue'
 import useAuth from '@core/utils/useAuth';
 
-import {onMounted} from '@vue/composition-api'
+import {onMounted} from 'vue'
 
 export default {
    components: {

@@ -91,7 +91,7 @@ import {
 
 import useCuentaList from './useCuentaList.js'
 import store from '@/store'
-import {ref,toRefs,computed,onMounted} from '@vue/composition-api'
+import {ref,toRefs,computed,onMounted} from 'vue'
 
 import {regresar} from '@core/utils/utils.js'
 

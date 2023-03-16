@@ -6,7 +6,7 @@
 <script>
 
 import { BRow, BCol } from 'bootstrap-vue'
-import { ref, onMounted, watch, toRefs, computed } from '@vue/composition-api';
+import { ref, onMounted, watch, toRefs, computed } from 'vue';
 
 import StatisticCardWithLineChart from 'components/dashboard/StaticCardWithLineChart.vue'
 import TarjetasAgrupadasStaticas from 'components/dashboard/TarjetasAgrupadasStaticas.vue';

@@ -724,7 +724,7 @@ import vSelect from 'vue-select'
 import store from '@/store'
 
 import {regresar} from '@core/utils/utils'
-import {computed,onMounted,watch,toRefs,ref} from '@vue/composition-api'
+import {computed,onMounted,watch,toRefs,ref} from 'vue'
 
 import useDireccion from '@core/utils/useDireccion'
 import { optionsEditor } from '@core/utils/utils';

@@ -128,7 +128,7 @@ import {
 
 import usePersonalList from './usePersonalList.js'
 import store from '@/store'
-import {toRefs,computed} from '@vue/composition-api'
+import {toRefs,computed} from 'vue'
 
 
 export default {

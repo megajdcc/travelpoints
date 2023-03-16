@@ -234,7 +234,7 @@ import store from '@/store'
 
 import { regresar } from '@core/utils/utils'
 
-import { toRefs, ref, computed, watch, onMounted } from '@vue/composition-api'
+import { toRefs, ref, computed, watch, onMounted } from 'vue'
 import { horarioDia } from '@core/utils/filter';
 
 export default {

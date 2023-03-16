@@ -2,7 +2,7 @@
 import useFilterTable from "@core/utils/useFilterTable";
 
 import store from '@/store'
-import {ref,onMounted,watch,computed} from '@vue/composition-api'
+import {ref,onMounted,watch,computed} from 'vue'
 
 export default function useConsumosList(usuario){
 

@@ -58,7 +58,7 @@ import {
 
 import store from '@/store'
 
-import {ref,computed,onMounted,toRefs} from '@vue/composition-api'
+import {ref,computed,onMounted,toRefs} from 'vue'
 export default {
 
    props:['usuario'],

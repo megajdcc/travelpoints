@@ -4,7 +4,7 @@
 
 <script>
 
-import { onMounted, watch, toRefs, ref, computed } from '@vue/composition-api'
+import { onMounted, watch, toRefs, ref, computed } from 'vue'
 import store from '@/store'
 
 export default {

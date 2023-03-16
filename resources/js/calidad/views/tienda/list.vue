@@ -129,7 +129,7 @@
 
 <script>
 
-import { toRefs, ref, computed, onMounted } from '@vue/composition-api'
+import { toRefs, ref, computed, onMounted } from 'vue'
 
 import useTiendasList from './useTiendasList.js'
 import store from '@/store'

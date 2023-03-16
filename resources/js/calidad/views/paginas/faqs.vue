@@ -110,7 +110,7 @@ import {
 
 import FaqQuestionAnswer from './FaqQuestionAnswer.vue'
 import store from '@/store'
-import {ref,onMounted,watch,toRefs,computed,onActivated} from '@vue/composition-api'
+import {ref,onMounted,watch,toRefs,computed,onActivated} from 'vue'
 
 
 import useAppConfig from '@core/app-config/useAppConfig';

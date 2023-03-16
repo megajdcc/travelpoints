@@ -56,7 +56,7 @@ import {mapState, mapMutations, mapActions, mapGetters} from 'vuex';
 import vSelect from 'vue-select'
 
 import store from '@/store'
-import {toRefs,ref,toRef,computed,watch} from '@vue/composition-api'
+import {toRefs,ref,toRef,computed,watch} from 'vue'
 
 export default {
   components: {

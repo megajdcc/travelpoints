@@ -23,7 +23,7 @@
 <script>
 import { BLink } from 'bootstrap-vue'
 import store from '@/store'
-import {toRefs} from '@vue/composition-api'
+import {toRefs} from 'vue'
 
 export default {
   components: {

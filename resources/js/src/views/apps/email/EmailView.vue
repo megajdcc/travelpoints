@@ -216,7 +216,7 @@ import {
   BDropdown, BDropdownItem, BRow, BCol, BBadge, BCard, BLink,
 } from 'bootstrap-vue'
 import VuePerfectScrollbar from 'vue-perfect-scrollbar'
-import { ref, watch } from '@vue/composition-api'
+import { ref, watch } from 'vue'
 import useEmail from './useEmail'
 import EmailMessageCard from './EmailMessageCard.vue'
 

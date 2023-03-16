@@ -161,7 +161,7 @@ import {
 
 } from 'bootstrap-vue'
 import store from '@/store'
-import { computed, toRefs,watch,onMounted } from '@vue/composition-api'
+import { computed, toRefs,watch,onMounted } from 'vue'
 
 import { useRoute, } from 'vue2-helpers/vue-router'
 export default {

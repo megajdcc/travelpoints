@@ -9,6 +9,9 @@ import axios from 'axios'
 import moment from 'moment';
 
 import { fab } from '@fortawesome/free-brands-svg-icons'
+import { Pagination, Navigation } from "swiper";
+
+const modules = [Pagination,Navigation] ;
 
 export const isToday = date => {
   const today = new Date()
@@ -51,6 +54,39 @@ export const useRouter = () => {
 
 export const marcasFontAwesome = ref([...new Set(Object.keys(fab).map(val => fab[val].iconName))]);
 
+
+export const optionsSwiper = ref({
+         slidesPerView: 1,
+         'centered-slides': false,
+         'space-between': 10,
+         pagination: {
+            type: 'fraction'
+         },
+         navigation: true,
+         modules,
+         loop: true,
+         speed: 500,
+         'css-mode': true,
+         breakpoints: {
+            1024: {
+               slidesPerView: 4,
+               spaceBetween: 40,
+            },
+            768: {
+               slidesPerView: 3,
+               spaceBetween: 30,
+            },
+            640: {
+               slidesPerView: 2,
+               spaceBetween: 20,
+            },
+            320: {
+               slidesPerView: 1,
+               spaceBetween: 10,
+            },
+         }
+
+      })
 
 export const  chartColors = {
   primaryColorShade: '#836AF9',

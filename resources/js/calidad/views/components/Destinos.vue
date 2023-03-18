@@ -7,20 +7,21 @@
          
             </b-col>
          
-            <b-col cols="12">
+            <b-col cols="12" style="position:relative">
                <!-- <SwiperComponent /> -->
          
-               <swiper class="swiper-centered-slides px-0 py-1" :options="swiperOptions">
+               <swiper-container ref="swiperRef" init="false">
          
                   <!-- slides -->
          
-                  <swiper-slide v-for="(destino, i) in destinos" :key="i" class="rounded ">
+                  <swiper-slide v-for="(destino, i) in destinos" :key="i" >
          
                      <b-card class="cursor-pointer" header-class="p-0 header-card" body-class="mt-1 px-1 contenido-card"
                         @click="$router.push(destino.ruta)" style="height:370px !important; ">
          
                         <template #header>
-                           <b-img  v-if="destino.imagenes.length" :src="`/storage/destinos/imagenes/${destino.imagenes[0].imagen}`" thumbnail class="card-img"/>
+                           <b-img  v-if="destino.imagenes.length" :src="`/storage/destinos/imagenes/${destino.imagenes[0].imagen}`" 
+                           thumbnail class="card-img"/>
          
                            <has-like :model="{ model_id: destino.id, model_type: destino.modelType }" />
          
@@ -47,14 +48,9 @@
                      </b-card>
          
                   </swiper-slide>
-         
-                  <!-- Add Arrows -->
-                  <div slot="button-next" class="swiper-button-next btn-swiper-next" >
-                     <font-awesome-icon icon="fa-angle-right" size="2x" />
-                  </div>
-                  <!-- <div slot="button-prev" class="swiper-button-prev" /> -->
-               </swiper>
-         
+
+               </swiper-container>
+           
          
             </b-col>
          
@@ -77,11 +73,11 @@ import {
    BBadge
 
 } from 'bootstrap-vue'
-import { Swiper, SwiperSlide } from 'swiper/vue'
-import 'swiper/css'
 
-import { ref } from 'vue'
+import { ref,onMounted} from 'vue'
 import useAuth from '@core/utils/useAuth'
+import { optionsSwiper } from '@core/utils/utils.js'
+
 export default {
 
    props: {
@@ -103,8 +99,6 @@ export default {
       BCol,
       BFormInput,
       BFormGroup,
-      SwiperSlide,
-      Swiper,
       BImg,
       BLink,
       BFormRating,
@@ -119,60 +113,11 @@ export default {
 
    setup(props) {
 
-      const swiperOptions = ref({
-         slidesPerView: 4,
-         // allowSlidePrev:false,
-         // allowSlideNext: false,
-         // loop:true,
-         autoplay: {
-            delay: 5000,
-         },
-         // centeredSlides: true,
-         spaceBetween: 30,
-         watchSlidesProgress: true,
-         effect: 'creative',
-         creativeEffect: {
-            prev: {
-               // will set `translateZ(-400px)` on previous slides
-               translate: [0, 0, -400],
-            },
-            next: {
-               // will set `translateX(100%)` on next slides
-               translate: ['100%', 0, 0],
-            },
-         },
-
-         pagination: {
-            el: '.swiper-pagination',
-            type: 'fraction',
-            dynamicBullets: true,
-         },
-         navigation: {
-            nextEl: '',
-            prevEl: ''
-
-         },
-         breakpoints: {
-            1024: {
-               slidesPerView: 4,
-               spaceBetween: 40,
-            },
-            768: {
-               slidesPerView: 3,
-               spaceBetween: 30,
-            },
-            640: {
-               slidesPerView: 2,
-               spaceBetween: 20,
-            },
-            320: {
-               slidesPerView: 1,
-               spaceBetween: 10,
-            },
-         },
-
+      const swiperRef = ref(null)
+      onMounted(() => {
+            Object.assign(swiperRef.value, optionsSwiper.value)
+            swiperRef.value.initialize();
       })
-
 
 
       const {
@@ -180,8 +125,8 @@ export default {
       } = useAuth();
 
       return {
-         swiperOptions,
-         is_loggin
+         is_loggin,
+         swiperRef
       }
 
    }
@@ -215,18 +160,18 @@ export default {
 }
 
 
-.swiper-button-prev,
-.swiper-button-next {
-   // display: none;
-}
-.btn-swiper-next{
-   background: #1e9ad7;
-   border-radius: 50%;
-   width: 40px;
-   height: 40px;
-   color: white;
-   font-weight: 900;
-}
+// .swiper-button-prev,
+// .swiper-button-next {
+//    // display: none;
+// }
+// .btn-swiper-next{
+//    background: #1e9ad7;
+//    border-radius: 50%;
+//    width: 40px;
+//    height: 40px;
+//    color: white;
+//    font-weight: 900;
+// }
 
 .contenido-card {
    overflow-y: hidden;
@@ -241,6 +186,52 @@ export default {
    -webkit-box-orient: vertical;
 
 }
+
+.swiper {
+  width: 100%;
+  height: 100%;
+}
+
+.swiper-slide {
+  text-align: center;
+  font-size: 18px;
+  background: #fff;
+
+  /* Center slide text vertically */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.swiper-slide img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.swiper {
+  width: 100%;
+  height: 300px;
+  margin: 20px auto;
+}
+.append-buttons {
+  text-align: center;
+  margin-top: 20px;
+}
+
+.append-buttons button {
+  display: inline-block;
+  cursor: pointer;
+  border: 1px solid #007aff;
+  color: #007aff;
+  text-decoration: none;
+  padding: 4px 10px;
+  border-radius: 4px;
+  margin: 0 10px;
+  font-size: 13px;
+}
+
 
 </style>
 

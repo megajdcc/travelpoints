@@ -8,15 +8,15 @@
 import { BRow, BCol } from 'bootstrap-vue'
 import { ref, onMounted, watch, toRefs, computed } from 'vue';
 
-import StatisticCardWithLineChart from 'components/dashboard/StaticCardWithLineChart.vue'
-import TarjetasAgrupadasStaticas from 'components/dashboard/TarjetasAgrupadasStaticas.vue';
+// import StatisticCardWithLineChart from 'components/dashboard/StaticCardWithLineChart.vue'
+// import TarjetasAgrupadasStaticas from 'components/dashboard/TarjetasAgrupadasStaticas.vue';
 
 import store from '@/store';
-import ApexChart from 'components/ApexChart/ApexChart.vue';
+// import ApexChart from 'components/ApexChart/ApexChart.vue';
 
-import StatisticCardHorizontal from 'components/dashboard/StatisticCardHorizontal.vue'
+// import StatisticCardHorizontal from 'components/dashboard/StatisticCardHorizontal.vue'
 
-import ChartjsPolarArea from 'components/charts/ChartjsPolarArea.vue'
+// import ChartjsPolarArea from 'components/charts/ChartjsPolarArea.vue'
 
 import { chartColors} from '@core/utils/utils';
 import { $themeColors } from '@themeConfig'

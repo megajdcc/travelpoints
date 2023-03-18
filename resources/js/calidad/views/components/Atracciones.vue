@@ -6,12 +6,13 @@
          </b-col>
          <b-col cols="12">
                <!-- <SwiperComponent /> -->
-               <swiper class="swiper-centered-slides px-0 py-1" :options="swiperOptions">
+               <swiper-container class="swiper-centered-slides px-0 py-1" ref="swiperRef">
          
                   <!-- slides -->
                   <swiper-slide v-for="(atraccion, i) in atracciones" :key="i" class="rounded ">
          
-                     <b-card class="cursor-pointer" header-class="p-0 header-card" body-class="mt-1 px-1 contenido-card" @click="$router.push(atraccion.ruta)" style="height:370px !important; "> 
+                     <b-card class="cursor-pointer" header-class="p-0 header-card" body-class="mt-1 px-1 contenido-card"
+                      @click="$router.push(atraccion.ruta)" style="height:370px !important; "> 
          
                         <template #header>
          
@@ -68,7 +69,7 @@
                   </div>
 
                   <!-- <div slot="button-prev" class="swiper-button-prev" /> -->
-               </swiper>
+               </swiper-container>
          </b-col>
 
       
@@ -92,12 +93,11 @@ import {
    BBadge
 
 } from 'bootstrap-vue'
-import { Swiper, SwiperSlide } from 'swiper/vue'
-import 'swiper/css'
 
-import {ref,computed} from 'vue'
+import {ref,computed,onMounted} from 'vue'
 import useAuth from '@core/utils/useAuth'
 import store from '@/store'
+import {optionsSwiper} from '@core/utils/utils'
 
 export default {
    
@@ -120,8 +120,6 @@ export default {
       BCol,
       BFormInput,
       BFormGroup,
-      SwiperSlide,
-      Swiper,
       BImg,
       BLink,
       BFormRating,
@@ -188,18 +186,20 @@ export default {
          },
 
       })
-
-
-
+      const swiperRef = ref(null)
       const {
          is_loggin
       } = useAuth();
 
-      return {
-         swiperOptions,
-         is_loggin,
 
-         promedioCalificacion:(atraccion) => store.getters['atraccion/promedioCalificacion'](atraccion)
+      onMounted(() => {
+         Object.assign(swiperRef.value, optionsSwiper.value)
+      })
+
+      return {
+         swiperRef,
+         is_loggin,
+         promedioCalificacion:(atraccion) => store.getters['atraccion/promedioCalificacion'](atraccion),
       }
 
    }

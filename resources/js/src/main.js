@@ -51,6 +51,13 @@ import moment from 'moment';
 window.moment = require('moment');
 moment.locale('es')
 
+
+// Swiper
+
+import { register } from 'swiper/element/bundle'
+
+register();
+
 Vue.filter('fecha',(val,format = 'LL', time= false) => {
   if(val && !time) {
     return moment(new Date(val)).format(format);

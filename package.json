@@ -134,7 +134,7 @@
     "sass": "1.32.*",
     "sass-loader": "^13.2.0",
     "vue-loader": "^15.10.1",
-    "webpack": "^5.73.0",
+    "webpack": "^5.76.2",
     "workbox-webpack-plugin": "^6.5.3"
   },
   "overrides": {

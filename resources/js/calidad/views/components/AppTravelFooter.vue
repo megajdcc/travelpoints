@@ -62,10 +62,9 @@
       <b-row class="clearfix border-top">
          <b-col cols="12" :md="sistema.redes.length ? 8 : 12" class="d-flex mt-1 mb-0 flex-column  ">
             <strong>{{ sistema.sucursales.length > 1 ? 'SUCURSALES' : 'SUCURSAL' }}</strong>
-             <swiper class="swiper-parallax" :options="swiperOptions" >
-                  <div slot="parallax-bg" class="parallax-bg" data-swiper-parallax="-23%">
-                     <!-- <b-img class="img-fluid" :src="require('@/assets/images/banner/parallax-4.jpg')" alt="banner" /> -->
-                  </div>
+             <swiper-container class="swiper-parallax" v-bind="swiperOptions" ref="swiperRef" :autoplay-delay="5000" 
+             autoplay-disable-on-interaction="false" >
+
                   <swiper-slide v-for="(sucursal,index) in sistema.sucursales" :key="index">
                         <div class="title font-weight-bolder" data-swiper-parallax="-300">
                            {{ sucursal.estado.pais.pais }} 
@@ -89,7 +88,7 @@
                            </b-card-text>
                         </div>
                   </swiper-slide>
-            </swiper>
+            </swiper-container>
 
             <!-- <p class="text-center">
                Marina Vallarta Business Center, Oficina 204, Plaza Marina. <br>
@@ -145,16 +144,12 @@ import useAuth from '@core/utils/useAuth'
 import { $themeConfig } from '@themeConfig'
 import { toRefs, computed, ref} from 'vue'
 import store from '@/store'
-import { Swiper, SwiperSlide } from 'swiper/vue'
-import 'swiper/css'
 export default {
    components: {
       BContainer,
       BRow,
       BCol,
       BLink,
-      Swiper,
-      SwiperSlide,
       BCardText,
 
    },
@@ -177,20 +172,7 @@ export default {
 
       const swiperOptions = ref({
          speed: 600,
-         parallax: true,
-         autoplay:{
-            delay:6000,
-            disableOnInteraction: false
-         },
-
-         pagination: {
-            el: '.swiper-pagination',
-            clickable: true,
-         },
-         navigation: {
-            nextEl: '.swiper-button-next',
-            prevEl: '.swiper-button-prev',
-         }
+         loop:true,
       })
 
       return {
@@ -204,7 +186,7 @@ export default {
 }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .swiper-container {
    width: 100%;
 }

@@ -39,7 +39,12 @@ class MovimientoController extends Controller
                 break;
 
             case 'Sistema':
-                $model = Sistema::find($datos['model_id']);
+                $rol = $request->user()->rol;
+                $model = $request->user();
+                if(in_array($rol->nombre,['Desarrollador','Administrador'])){
+                    $model = Sistema::find($datos['model_id']);
+                }
+               
                 break;
 
         }
@@ -59,7 +64,7 @@ class MovimientoController extends Controller
                                 ['created_at', 'LIKE', "%{$datos['q']}%", 'OR'],
                             ])
                             ->orderBy($datos['sortBy'],$datos['isSortDirDesc'] ? 'desc' : 'asc')
-                            ->paginate($datos['perPage'] == 0  ? 10000 : $datos['perPage']);
+                            ->paginate($datos['perPage']?: 1000, pageName:'currentPage');
 
         
                             $movimientos = $pagination->items();

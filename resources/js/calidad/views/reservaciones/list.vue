@@ -16,6 +16,20 @@
           sticky-header="700px" :no-border-collapse="false" borderless outlined :busy="loading" :perPage="perPage"
           showEmpty small stacked="md">
 
+          <template #cell(id)="{item,detailsShowing, toggleDetails }">
+            <b-button variant="primary" @click="toggleDetails" size="sm" class="text-nowrap">
+              #-{{ item.id }} 
+              <font-awesome-icon :icon="['fas' , detailsShowing ? 'angle-up' : 'angle-down']" class="ml-1" />
+            </b-button>
+          </template>
+
+          <template #row-details="{item}">
+            <el-divider content-position="left">Observación de la reserva</el-divider>
+            <p class="text-justify">
+              {{ item.observacion }}
+            </p>
+          </template>
+
           <template #cell(fecha)="{ item }">
             <span class="text-nowrap">
               {{ `${item.fecha} ${item.hora}` | fecha('YYYY-MM-DD hh:mm A') }}

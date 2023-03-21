@@ -450,9 +450,7 @@ class UserController extends Controller
 
         $datos = $request->all();
 
-        if(Auth::user()->rol->nombre == 'Desarrollador'){
-            
-            $paginator = User::where([
+         $paginator = User::where([
                 ['username','LIKE',"%{$datos['q']}%",'OR'],
                 ['email', 'LIKE', "%{$datos['q']}%", 'OR'],
                 ['nombre', 'LIKE', "%{$datos['q']}%", 'OR'],
@@ -465,53 +463,14 @@ class UserController extends Controller
             ->when(isset($datos['role']),function($query) use($datos){
                 $query->where('rol_id',$datos['role'] ? $datos['role'] : '>',0);
             })
+            ->when(!in_array($request->user()->rol->nombre,['Desarrollador','Administrador']),function($query){
+                $query->whereHas('rol', fn(Builder $q) => $q->whereNotIn('nombre', ['Desarrollador', 'Administrador']));
+            })
+            
             ->orderBy($datos['sortBy'],$datos['sortDesc'] ? 'desc' : 'asc')
             ->paginate($datos['perPage'] == 0 ? 10000 : $datos['perPage']);
-
-   
-
-               
-        }else{
-
-            $paginator = DB::table('users', 'u')
-                ->selectRaw("
-                            concat(u.nombre,' ',u.apellido) as usuario,
-                            u.username,
-                            u.email,
-                            u.telefono,
-                            r.nombre as rol,
-                            u.id,
-                            u.imagen as avatar
-                        ")
-                ->join('rols as r', 'u.rol_id', 'r.id')
-                ->when(isset($datos['role']), function ($query) use ($datos) {
-                    $query->where('rol_id', $datos['role'] ? $datos['role'] : '>', 0);
-                })
-                ->where('r.nombre','!=','Desarrollador')
-                ->where([
-                    ['u.nombre', 'LIKE', '%' . $datos['q'] . '%', 'OR'],
-                    ['u.email', 'LIKE', '%' . $datos['q'] . '%', 'OR'],
-                    ['u.apellido', 'LIKE', '%' . $datos['q'] . '%', 'OR'],
-                    ['u.bio', 'LIKE', '%' . $datos['q'] . '%', 'OR'],
-                    ['u.direccion', 'LIKE', '%' . $datos['q'] . '%','OR'],
-                ['r.nombre', 'LIKE', '%' . $datos['q'] . '%','OR'],
-                ])
-                ->orderBy($datos['sortBy'] ?: 'u.id' , ($datos['sortDesc']) ? 'desc' : 'asc')
-                ->paginate($datos['perPage'] == 0 ? 10000 : $datos['perPage']);
-
-        }
-
-        $usuarios = $paginator->items();
-
-
-        foreach($usuarios as $key => $usuario){
-
-            $usuario->cargar();
-    
-            // $usuario->referidor;
-            // $usuario->referidos;
-
-        }
+            
+        $usuarios = collect($paginator->items())->each(fn($user) => $user->cargar());
 
         return response()->json([
             'users' => $usuarios,

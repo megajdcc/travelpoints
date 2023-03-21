@@ -42,7 +42,7 @@ class NegocioController extends Controller
         ])
         ->with(['cuenta.divisa'])
         ->orderBy($datos['sortBy'] ?: 'id',$datos['isSortDirDesc'] ? 'desc' : 'desc')
-        ->paginate($datos['perPage']);
+        ->paginate($datos['perPage']?: 10000,pageName:'currentPage');
 
         
         $negocios = $paginator->items();
@@ -634,7 +634,7 @@ class NegocioController extends Controller
             })
           
             ->orderBy($datos['sortBy'] ?: 'id', $datos['isSortDirDesc'] ? 'desc' : 'desc')
-            ->paginate($datos['perPage']);
+            ->paginate($datos['perPage']?:1000, pageName:'currentPage');
 
 
         $negocios = collect($paginator->items());

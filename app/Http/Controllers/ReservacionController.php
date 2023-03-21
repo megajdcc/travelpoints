@@ -15,6 +15,8 @@ class ReservacionController extends Controller
     public function fetchData(Request $request){
 
         $datos = $request->all();
+        $rol = $request->user()->rol;
+        
 
             $paginator = Reservacion::where([
                 ['fecha','like',"%{$datos['q']}%",'OR'],
@@ -40,7 +42,9 @@ class ReservacionController extends Controller
             ->when(isset($datos['negocio_id']) , function($query) use($datos){
                  $query->where('negocio_id',$datos['negocio_id']);
             })
-           
+           ->when(in_array($rol->nombre,['Promotor','Tienda','Lider','Coordinador']),function($query) use ($request){
+                $query->where('operador_id',$request->user()->id);
+           })
             ->with(['usuario','operador','negocio'])
             ->orderBy($datos['sortBy'] ?: 'id', $datos['isSortDirDesc'] ? 'desc' : 'asc')
             ->paginate($datos['perPage'] ?: 10000);

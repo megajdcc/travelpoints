@@ -1,77 +1,37 @@
 <template>
-      <b-container fluid class="px-0 mx-0">
-      
-         <!-- Table Container Card -->
-         <b-card no-body class="mb-0">
-      
-            <div class="m-2">
-               <!-- Table Top -->
 
-               <b-row>
-                  <b-col>
-                     <h3>Movimientos de Cuentas</h3>
-                  </b-col>
-               </b-row>
-               <b-row>
-                  <!-- Per Page -->
-                  <b-col cols="12" md="6" class="d-flex align-items-center justify-content-start mb-1 mb-md-0">
-                     <per-page v-model="perPage" :perPageOptions="perPageOptions"></per-page>
-                  </b-col>
-      
-                  <b-col md="6">
-                     <div class="d-flex align-items-center justify-content-end">
-      
-                        <b-input-group size="sm">
-      
-                           <b-form-input v-model="searchQuery" type="search" placeholder="..." />
-      
-                      
-                        </b-input-group>
-      
-      
-                     </div>
-                  </b-col>
-      
-               </b-row>
-      
-            </div>
-      
-            <b-table ref="refTable" :items="fetchData" responsive :fields="tableColumns" primary-key="id"
-               :sort-by.sync="sortBy" empty-text="No se encontró ningún movimiento" :sort-desc.sync="isSortDirDesc"
-               sticky-header="700px" :no-border-collapse="false" borderless outlined small>
+      <listado :actions="actions" hideFooter>
+         <template #titulo>
+             <h3>Movimientos de Cuentas</h3>
+         </template>
+         <template #contenido="{fetchData,tableColumns,isSortDirDesc,sortBy}">
+            <b-card>
+                <b-table ref="refTable" :items="fetchData" responsive :fields="tableColumns" primary-key="id"
+                     :sort-by="sortBy" empty-text="No se encontró ningún movimiento" :sort-desc="isSortDirDesc"
+                     sticky-header="700px" :no-border-collapse="false" borderless outlined small>
 
-               <template #cell(created_at)="{item}">
-                     {{ item.created_at | fecha('LLL') }}
-               </template>
+                     <template #cell(created_at)="{ item }">
+                           {{ item.created_at | fecha('LLL') }}
+                     </template>
 
-               <template #cell(monto)="{item}">
-                  <span style="color:black" class="font-weight-bolder">
-                  {{ item.tipo_movimiento == 1 ? '+' : '-' }} {{ item.cuenta.divisa.iso.toUpperCase() }}{{ item.monto | currency({symbol:item.cuenta.divisa.simbolo}) }}
-                  </span>
-               </template>
+                     <template #cell(monto)="{ item }">
+                        <span style="color:black" class="font-weight-bolder">
+                        {{ item.tipo_movimiento == 1 ? '+' : '-' }} {{ item.cuenta.divisa.iso.toUpperCase() }}{{ item.monto | currency({ symbol: item.cuenta.divisa.simbolo }) }}
+                        </span>
+                     </template>
 
-               <template #cell(balance)="{item}">
-                  <span style="color:black" class="font-weight-bolder">
-                     {{ item.tipo_movimiento == 1 ? '+' : '-' }}{{ item.cuenta.divisa.iso.toUpperCase() }}{{ item.balance | currency({symbol:item.cuenta.divisa.simbolo}) }}
-                  </span>
-               </template>
+                     <template #cell(balance)="{ item }">
+                        <span style="color:black" class="font-weight-bolder">
+                           {{ item.tipo_movimiento == 1 ? '+' : '-' }}{{ item.cuenta.divisa.iso.toUpperCase() }}{{ item.balance | currency({ symbol: item.cuenta.divisa.simbolo }) }}
+                        </span>
+                     </template>
 
-            </b-table>
-      
-            <paginate-table :dataMeta="dataMeta" :currentPage.sync="currentPage" :perPage="perPage" :total="total" />
-      
-      
-            <b-container class="mb-1">
-               <b-row>
-                  <b-col class="px-1">
-                     <b-button @click="regresar" size="sm">Regresar</b-button>
-                  </b-col>
-               </b-row>
-            </b-container>
-      
-      
-         </b-card>
-      </b-container>
+                  </b-table>
+            </b-card>
+           
+         </template>
+      </listado>
+
 </template>
 
 <script>
@@ -92,12 +52,7 @@ import {
 import useCuentaList from './useCuentaList.js'
 import store from '@/store'
 import {ref,toRefs,computed,onMounted} from 'vue'
-
-import {regresar} from '@core/utils/utils.js'
-
 import { useRoute } from 'vue2-helpers/vue-router'
-
-
 
 export default {
    
@@ -109,10 +64,9 @@ export default {
       BButton,
       BButtonGroup,
       BTable,
-   BInputGroup,
+      BInputGroup,
       BFormInput,
-      perPage:() => import('components/PerPage.vue'),
-      paginateTable:() => import('components/PaginateTable.vue')
+      Listado:() => import('components/Listado.vue')
 
    },
 
@@ -122,46 +76,21 @@ export default {
       const { sistema } = toRefs(store.state.sistema)
       const route = useRoute();
 
-      const {
-         perPageOptions,
-         currentPage,
-         perPage,
-         searchQuery,
-         sortBy,
-         isSortDirDesc,
-         refTable,
-         total,
-         dataMeta,
-         refetchData,
-         fetchData,
-         items,
-         tableColumns
-      } = useCuentaList({
-         model_id:computed(() => route.meta.layout == 'travel' ? usuario.value.id : sistema.value.id),
-         model_type:route.meta.layout == 'travel' ? 'User' : 'Sistema'
+      const actions =   useCuentaList({
+         model_id: computed(() => route.meta.layout == 'travel' ? usuario.value.id : sistema.value.id),
+         model_type: route.meta.layout == 'travel' ? 'User' : 'Sistema'
       });
+     
 
       onMounted(() => {
-         console.log(route)
+         setTimeout(() => actions.refetchData(),500)
       })
 
 
       return {
-         perPageOptions,
-         currentPage,
-         perPage,
-         searchQuery,
-         sortBy,
-         isSortDirDesc,
-         refTable,
-         total,
-         dataMeta,
-         refetchData,
-         fetchData,
-         items,
-         tableColumns,
+         refTable:actions.refTable,
          loading:computed(() => store.state.loading),
-         regresar
+         actions
       }
 
    }

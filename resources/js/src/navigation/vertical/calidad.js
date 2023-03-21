@@ -113,7 +113,9 @@ export default [
       title:'Multimedias',
       icon:'fa-upload',
       fontAwesome:true,
-      route:'multimedias'
+      route:'multimedias',
+      resource:'multimedias',
+      action:'read'
    },
 
    {
@@ -179,7 +181,7 @@ export default [
             route: 'negocio.categorias.list',
             icon: 'ListIcon',
             action: 'read',
-            resource: 'negocio categorías'
+            resource: 'negocio categorias'
          },
 
 

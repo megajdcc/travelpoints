@@ -39,7 +39,9 @@
 										<template >
 											<el-divider content-position="left">{{ panel }}</el-divider>
 
-											<b-table striped :fields="fieldsTable" small class="mb-0" :items="formulario.permisos.filter(val => val.panel_id === id)">
+											<b-table striped :fields="fieldsTable" small class="mb-0" 
+											:items="formulario.permisos.filter(val => val.panel_id === id)">
+
 												<template #cell(module)="data">
 													{{ data.value }}
 												</template>
@@ -155,14 +157,7 @@ import {
 			const { panels } = toRefs(store.state.panel)
 			const refTable = ref(null)
 
-			const PickerOptions = ref({
-				disabledDate(time){
-					return time.getTime() > Date.now()
-				}		
-			})
-
 			const permisos = ref([])
-
 
 			const {rol:formulario} = toRefs(store.state.rol) 
 
@@ -178,15 +173,10 @@ import {
 			})
 
 			const cargarForm = () => {
-
 				formulario.value.permisos = clone(getPermissionUserForPanel.value({panels:panels.value,rol:formulario.value}))
-
-				if(!panels.value.length){
-					store.dispatch('panel/getPanels')
-				}
-
 			}
 
+			store.dispatch('panel/getPanels')
 			store.dispatch('permiso/cargarPermisos')
 
 			onMounted(() => {
@@ -214,7 +204,6 @@ import {
 				required,
 				formulario,
 				loading:computed(() => store.state.loading),
-				PickerOptions,
 				regresar,
 				getPermissionUser,
 				panels,

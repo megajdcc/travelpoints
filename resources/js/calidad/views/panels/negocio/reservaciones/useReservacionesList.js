@@ -8,7 +8,7 @@ export default function useReservacionesList(negocio = null){
 
   const tableColumns = ref([
     { key:'id',label:'#' },
-    { key:'usuario_id',label:'Usuario',sortable:true},
+    { key:'usuario_id',label:'Reservante',sortable:true},
     { key: 'operador_id', label: 'Operador', sortable: true },
     { key: 'negocio_id', label: 'Negocio', sortable: true },
     { key: 'fecha', label: 'Fecha', sortable: true },

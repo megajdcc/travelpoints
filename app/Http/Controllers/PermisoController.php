@@ -28,15 +28,15 @@ class PermisoController extends Controller
 
         $datos = $request->all();
 
-        $paginator = Permiso::where([
-            ['nombre','LIKE','%'.$datos['q'].'%','OR'],
-        ])
-        ->whereHas('panel',function(Builder $q) use($datos){
-            $q->orWhere('panel','LIKE',"%{$datos['q']}%");
+        $paginator = Permiso::whereHas('panel', function (Builder $query) use ($datos) {
+            $query->where([
+                ['panel', 'LIKE', "%{$datos['q']}%","OR"]
+            ]);
         })
+        ->orWhere('nombre', "LIKE", "%{$datos['q']}%")
         ->with(['roles','usuarios','panel'])
         ->orderBy($datos['sortBy'], $datos['isSortDirDesc'] ? 'desc' : 'asc')
-        ->paginate($datos['perPage']  == 0 ? 10000 : $datos['perPage']);
+        ->paginate($datos['perPage']?: 1000);
 
         
         return response()->json([

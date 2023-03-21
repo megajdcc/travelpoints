@@ -115,6 +115,10 @@ export default {
 			state.usuarios = usuarios;
 		},
 
+		setUsuario(state,usuario){
+			state.user = usuario
+		},
+
 		pushUsuario(state,usuario){
 			state.usuarios.push(usuario);
 		},
@@ -381,8 +385,6 @@ export default {
 		getListado:(state) => {
 			return (users_id) => {
 
-			
-
 				var users = [];
 
 				users_id.forEach((e,i) => {
@@ -566,7 +568,11 @@ export default {
 		fetchUsers({state,commit},searchQuery){
 				return new Promise((resolve, reject) => {
 					axios.post('/api/fetch/usuarios', searchQuery)
-						.then(response => resolve(response))
+						.then((response) => {
+							const {data} = response;
+							commit('setUsuarios',data.users)
+							resolve(response)
+						})
 						.catch(error => reject(error))
 				});
 		},

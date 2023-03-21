@@ -1,6 +1,6 @@
 <template>
 
-   <b-container fluid class="px-0">
+   <b-container fluid class="px-0 mx-0">
       <!-- Search -->
       <b-row>
          <b-col cols="12">
@@ -11,7 +11,7 @@
       </b-row>
 
       <!-- Destinos -->
-         <destinos :destinos="destinos"/>
+      <destinos :destinos="destinos"/>
 
       <!-- Atracciones -->
       <atracciones :atracciones="atracciones"  />

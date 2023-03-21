@@ -17,7 +17,7 @@
 
                <b-col md="8">
                   <b-input-group size="sm">
-                     <b-form-input v-model="searchQuery" type="search" placeholder="..." />
+                     <b-form-input v-model="searchQuery" type="search" :placeholder="searchPlaceholder" />
                      <b-input-group-append >
                         <slot name="btn-action"></slot>
                      </b-input-group-append>
@@ -37,7 +37,7 @@
 
       <section v-loading="loading" class="w-100 mt-1" style="min-height:100px">
          <slot name="contenido" :items="items" :eliminar="eliminar" :fetchData="fetchData" :tableColumns="tableColumns"
-            :sortB="sortBy" :isSortDirDesc="isSortDirDesc" :perPage="perPage" :refTable="refTable">
+            :sortBy="sortBy" :isSortDirDesc="isSortDirDesc" :perPage="perPage" :refTable="refTable">
             </slot>
       </section>
 
@@ -132,7 +132,11 @@ export default {
       actions:Object|Function,
       isTable:Boolean,
       hideFooter:Boolean,
-      hideHeader:Boolean
+      hideHeader:Boolean,
+      searchPlaceholder:{
+         type:String,
+         default:'...'
+      }
    },
 
 
@@ -152,7 +156,7 @@ export default {
          dataMeta,
          refetchData,
          fetchData,
-         eliminar,
+         eliminar = null,
          tableColumns = [],
          refTable = null,
       } = actions.value;

@@ -6,17 +6,16 @@ use App\Models\Negocio\Negocio;
 use App\Models\Negocio\Reservacion;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 
 class ReservacionController extends Controller
 {
-    
 
     public function fetchData(Request $request){
 
         $datos = $request->all();
 
-        if($datos['negocio_id']){
             $paginator = Reservacion::where([
                 ['fecha','like',"%{$datos['q']}%",'OR'],
                 ['personas', 'like', "%{$datos['q']}%", 'OR'],
@@ -38,43 +37,15 @@ class ReservacionController extends Controller
                     
                 ]);
             })
-            ->where('negocio_id',$datos['negocio_id'])
+            ->when(isset($datos['negocio_id']) , function($query) use($datos){
+                 $query->where('negocio_id',$datos['negocio_id']);
+            })
+           
             ->with(['usuario','operador','negocio'])
             ->orderBy($datos['sortBy'] ?: 'id', $datos['isSortDirDesc'] ? 'desc' : 'asc')
             ->paginate($datos['perPage'] ?: 10000);
 
-        }else{
-
-            $paginator = Reservacion::where([
-                ['fecha', 'like', "%{$datos['q']}%", 'OR'],
-                ['personas', 'like', "%{$datos['q']}%", 'OR'],
-                ['status', 'like', "%{$datos['q']}%", 'OR'],
-            ])
-                ->whereHas('usuario', function (Builder $q) use ($datos) {
-                    $q->orWhere([
-                        ['nombre', 'like', "%{$datos['q']}%", 'OR'],
-                        ['apellido', 'like', "%{$datos['q']}%", 'OR'],
-                        ['nombre', 'like', "%{$datos['q']}%", 'OR'],
-                        ['username', 'like', "%{$datos['q']}%", 'OR'],
-                    ]);
-                })
-                ->whereHas('negocio', function (Builder $q) use ($datos) {
-                    $q->orWhere([
-                        ['nombre', 'like', "%{$datos['q']}%", 'OR'],
-                        ['breve', 'like', "%{$datos['q']}%", 'OR'],
-                        ['descripcion', 'like', "%{$datos['q']}%", 'OR'],
-
-                    ]);
-                })
-                ->where('negocio_id', $datos['negocio_id'])
-                ->with(['usuario', 'operador', 'negocio'])
-                ->orderBy($datos['sortBy'] ?: 'id', $datos['isSortDirDesc'] ? 'desc' : 'asc')
-                ->paginate($datos['perPage'] ?: 10000);
-        }
-
-
         $reservaciones  = $paginator->items();
-
 
         foreach($reservaciones as $reserva){
             $reserva->usuario->avatar = $reserva->usuario->getAvatar();
@@ -160,9 +131,9 @@ class ReservacionController extends Controller
     }
 
 
-    private function validar(Request $request, Reservacion $reservacion = null){
+    private function validar(Request $request, Reservacion $reservacion = null) : Collection{
 
-        return $request->validate([
+        return collect($request->validate([
             'fecha'       => 'required',
             'hora'        => 'required',
             'observacion' => 'nullable',
@@ -174,7 +145,7 @@ class ReservacionController extends Controller
             'observacion' => 'nullable'
         ],[
             'personas.min' => 'El mínimo de personas es 1'
-        ]);
+        ]));
     }
 
     /**
@@ -190,14 +161,12 @@ class ReservacionController extends Controller
 
         try {
             DB::beginTransaction();
-            $reservacion = Reservacion::create([...$datos,...['status' => 1 ]]);
+            $reservacion = Reservacion::create([...$datos->toArray(),...['status' => 1 ]]);
             DB::commit();
             $result = true;
             $reservacion->load(['negocio','usuario','operador']);
             
             // Notificar al usuario de su Reservación
-
-
 
         } catch (\Throwable $th) {
            DB::rollBack();
@@ -210,8 +179,6 @@ class ReservacionController extends Controller
 
         return response()->json(['result' => $result, 'reservacion' => $result ? $reservacion : null]);
     }
-
-
 
 
     /**
@@ -228,7 +195,7 @@ class ReservacionController extends Controller
         try {
             DB::beginTransaction();
 
-            $reservacion->update([...$datos]);
+            $reservacion->update([...$datos->except(['operador_id'])->toArray()]);
 
             DB::commit();
             $result = true;

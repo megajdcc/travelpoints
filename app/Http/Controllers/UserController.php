@@ -451,7 +451,6 @@ class UserController extends Controller
         $datos = $request->all();
 
         if(Auth::user()->rol->nombre == 'Desarrollador'){
-
             
             $paginator = User::where([
                 ['username','LIKE',"%{$datos['q']}%",'OR'],
@@ -463,7 +462,9 @@ class UserController extends Controller
                 ['codigo_postal', 'LIKE', "%{$datos['q']}%", 'OR'],
                 ['bio', 'LIKE', "%{$datos['q']}%", 'OR'],
             ])
-            ->where('rol_id',$datos['role'] ? $datos['role'] : '>',0)
+            ->when(isset($datos['role']),function($query) use($datos){
+                $query->where('rol_id',$datos['role'] ? $datos['role'] : '>',0);
+            })
             ->orderBy($datos['sortBy'],$datos['sortDesc'] ? 'desc' : 'asc')
             ->paginate($datos['perPage'] == 0 ? 10000 : $datos['perPage']);
 
@@ -483,7 +484,9 @@ class UserController extends Controller
                             u.imagen as avatar
                         ")
                 ->join('rols as r', 'u.rol_id', 'r.id')
-                ->where('u.rol_id', $datos['role'] ? $datos['role'] : '>', 0)
+                ->when(isset($datos['role']), function ($query) use ($datos) {
+                    $query->where('rol_id', $datos['role'] ? $datos['role'] : '>', 0);
+                })
                 ->where('r.nombre','!=','Desarrollador')
                 ->where([
                     ['u.nombre', 'LIKE', '%' . $datos['q'] . '%', 'OR'],

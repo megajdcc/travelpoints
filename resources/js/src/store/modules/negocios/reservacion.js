@@ -83,7 +83,11 @@ export default{
     },
 
     push(state, reservacion) {
-      state.reservaciones.push(reservacion)
+      if(typeof state.reservaciones == 'object'){
+        state.reservaciones.push(reservacion)
+      }else{
+        state.reservaciones = [reservacion]
+      }
 
     },
 
@@ -156,6 +160,7 @@ export default{
          return new Promise((resolve, reject) => {
             axios.get(`/api/reservacions/${reservacion_id}/fetch/data`).then(({data}) => {
                commit('setReservacion',data)
+               commit('push',data)
                resolve(data)
             }).catch(e => reject(e))
 

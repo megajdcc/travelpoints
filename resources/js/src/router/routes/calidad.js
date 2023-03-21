@@ -203,7 +203,7 @@ export default [
        },
        // reservaciones
        {
-          path: '/reservaciones',
+          path: '/socio/reservaciones',
           name: 'socio.reservaciones',
           component: () => import('views/socio/reservaciones'),
           meta: {
@@ -2359,6 +2359,61 @@ export default [
       }
    },
 
+   /*****************************************/
+   /* Reservaciones
+   /****************************************/
+   {
+      path:'/reservaciones',
+      name:'reservaciones',
+      component:() => import('views/reservaciones/index.vue'),
+      children:[
+         {
+            path:'',
+            name:'reservaciones.list',
+            component:() => import('views/reservaciones/list.vue'),
+            meta:{
+               resource:'reservaciones',
+               action:'read',
+               pageTitle:'Reservaciones',
+               breadcrumb:[
+                  {text:'listado',active:true}
+               ]
+            }
+         },
+         {
+            path:'create',
+            name:'reservacion.create',
+            component:() => import('views/reservaciones/create.vue'),
+            meta:{
+               resource:'reservaciones',
+               action:'write',
+               pageTitle:'Crear Reservación',
+               navActiveLink:'reservaciones.list',
+               breadcrumb:[
+                  {text:'listado',active:false,to:{name:'reservaciones.list'}},
+                  {text:'crear',active:true},
+
+               ]
+            }
+         },
+          {
+            path:':id/edit',
+            name:'reservacion.edit',
+            props:true,
+            component:() => import('views/reservaciones/edit.vue'),
+            meta:{
+               resource:'reservaciones',
+               action:'update',
+               pageTitle:'Editar Reservación',
+               navActiveLink:'reservaciones.list',
+               breadcrumb:[
+                  {text:'Listado',active:false,to:{name:'reservaciones.list'}},
+                  {text:'Editar',active:true},
+               ]
+            }
+         }
+      ]
+   },
 
 
 

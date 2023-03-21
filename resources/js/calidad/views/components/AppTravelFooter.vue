@@ -60,31 +60,19 @@
       </b-row>
 
       <b-row class="clearfix border-top">
-         <b-col cols="12" :md="sistema.redes.length ? 8 : 12" class="d-flex mt-1 mb-0 flex-column  ">
+         <b-col cols="12" :md="sistema.redes.length ? 8 : 12" class="d-flex mt-1 mb-0 flex-column  " style="position:relative">
             <strong>{{ sistema.sucursales.length > 1 ? 'SUCURSALES' : 'SUCURSAL' }}</strong>
-             <swiper-container class="swiper-parallax" v-bind="swiperOptions" ref="swiperRef" :autoplay-delay="5000" 
-             autoplay-disable-on-interaction="false" >
+             <swiper-container  v-bind="swiperOptions" ref="swiperRef" :autoplay-delay="5000" autoplay-disable-on-interaction="false" >
 
                   <swiper-slide v-for="(sucursal,index) in sistema.sucursales" :key="index">
-                        <div class="title font-weight-bolder" data-swiper-parallax="-300">
+                        <div class="title font-weight-bolder" >
                            {{ sucursal.estado.pais.pais }} 
                         </div>
-                        <!-- <div class="subtitle" data-swiper-parallax="-200">
-                           {{ data.subtitle }}
-                        </div> -->
-                        <div class="text" data-swiper-parallax="-100">
-                           <b-card-text>
-                              {{ sucursal.direccion }}
-                           </b-card-text>
+
+                        <div class="text" >
+                             <p>{{ sucursal.direccion }}</p> 
                            <b-card-text>
 
-                              <!-- <b-link v-for="(telefono,i) in sucursal.telefonos" :key="i" 
-                              :href="`tel:${telefono.numero}`" 
-                              target="_blank">
-                                 <feather-icon icon="PhoneIcon"/>
-                                 {{ telefono.numero }}
-                              </b-link> -->
-                           
                            </b-card-text>
                         </div>
                   </swiper-slide>
@@ -144,6 +132,7 @@ import useAuth from '@core/utils/useAuth'
 import { $themeConfig } from '@themeConfig'
 import { toRefs, computed, ref} from 'vue'
 import store from '@/store'
+
 export default {
    components: {
       BContainer,
@@ -171,7 +160,7 @@ export default {
       } = useAuth()
 
       const swiperOptions = ref({
-         speed: 600,
+         speed:600,
          loop:true,
       })
 
@@ -187,19 +176,17 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.swiper-container {
-   width: 100%;
-}
 
-.swiper-wrapper{
-   display: flex;
-   text-align: center;
-}
-.swiper-slide {
+swiper-container{
+   //  width: 320px !important;
+    max-width:100%;
 
-   text-align: justify;
-   display: flex;
-   flex-direction: column !important;
+
+   swiper-slide {
+      text-align: justify;
+      display: flex;
+      flex-direction: column !important;
+   }
 }
 </style>
 

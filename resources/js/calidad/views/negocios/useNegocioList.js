@@ -34,7 +34,7 @@ export default function useNegociolist() {
  
    
 
-   const fetchData = (ctx, next) => {
+   const fetchData = (ctx , next) => {
 
       store.dispatch('negocio/fetchData', {
          perPage: perPage.value,

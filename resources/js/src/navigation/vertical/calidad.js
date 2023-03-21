@@ -40,6 +40,15 @@ export default [
    },
 
    {
+      title:'Reservaciones',
+      route:'reservaciones.list',
+      action:'read',
+      resource:'reservaciones',
+      icon:'fa-calendar-check',
+      fontAwesome:true,
+   },
+
+   {
       title:'Eventos',
       icon:'fa-calendar-day',
       fontAwesome:true,

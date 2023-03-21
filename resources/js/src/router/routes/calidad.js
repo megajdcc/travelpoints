@@ -2360,6 +2360,63 @@ export default [
    },
 
    /*****************************************/
+   /* Comisiones
+   /****************************************/
+   {
+      path:'/comisiones',
+      name:'comisiones',
+      component:() => import('views/comisiones/index.vue'),
+      children:[
+         {
+            path:'',
+            name:'comisiones.list',
+            component:() => import('views/comisiones/list.vue'),
+            meta:{
+               pageTitle:'Comisiones de Roles',
+               resource:'comisiones',
+               action:'read',
+               breadcrumb:[
+                  {text:'Listado',active:true}
+               ]
+            }
+         },
+
+           {
+            path:'create',
+            name:'comision.create',
+            component:() => import('views/comisiones/create.vue'),
+            meta:{
+               pageTitle:'Crear Comisión',
+               resource:'comisiones',
+               action:'write',
+               navActiveLink:'comisiones.list',
+               breadcrumb:[
+                  {text:'Listado',active:false,to:{name:'comisiones.list'}},
+                  {text:'Crear',active:true},
+               ]
+            }
+         },
+
+         {
+            path:':id/edit',
+            props:true,
+            name:'comision.edit',
+            component:() => import('views/comisiones/edit.vue'),
+            meta:{
+               pageTitle:'Editar Comisión',
+               resource:'comisiones',
+               action:'update',
+               navActiveLink:'comisiones.list',
+               breadcrumb:[
+                  {text:'Listado',active:false,to:{name:'comisiones.list'}},
+                  {text:'Editar',active:true},
+               ]
+            }
+         }
+      ]
+   },
+
+   /*****************************************/
    /* Reservaciones
    /****************************************/
    {

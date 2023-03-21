@@ -1,7 +1,7 @@
 <?php
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\{AuthController};
-use App\Http\Controllers\{AmenidadController, ApplicationController, CargoController, CategoriaFaqController, CategoriaProductoController, ConsumoController, CuponController, DestinoController, DivisaController, EmpleadoController, EventoController, FaqController, FormaPagoController, HomeController, HorarioController, HorarioReservacionController, IataController, MovimientoController, NegocioCategoriaController, NegocioController, UserController,NotificacionController,RolController,PermisoController, SolicitudController, TelefonoController,OpinionController, PanelController, ProductoController, PublicacionController, ReservacionController, SistemaController, SucursalController, TiendaController, VentaController};
+use App\Http\Controllers\{AmenidadController, ApplicationController, CargoController, CategoriaFaqController, CategoriaProductoController, ComisionController, ConsumoController, CuponController, DestinoController, DivisaController, EmpleadoController, EventoController, FaqController, FormaPagoController, HomeController, HorarioController, HorarioReservacionController, IataController, MovimientoController, NegocioCategoriaController, NegocioController, UserController,NotificacionController,RolController,PermisoController, SolicitudController, TelefonoController,OpinionController, PanelController, ProductoController, PublicacionController, ReservacionController, SistemaController, SucursalController, TiendaController, VentaController};
 use App\Http\Middleware\convertirNull;
 use Laravel\Socialite\Facades\Socialite;
 use App\Models\{CategoriaFaq, CategoriaProducto, Pais,Estado,Ciudad,};
@@ -336,6 +336,16 @@ Route::get('negocios/{negocio}/recomendacions/toggle/user/{usuario}',[NegocioCon
     Route::post('formas-pago/fetch/data', [FormaPagoController::class, 'fetchData']);
     Route::resource('formas-pago', FormaPagoController::class);
     Route::get('formas-pago/{forma}/fetch/data', [FormaPagoController::class, 'fetch']);
+
+
+    /*****************************/
+    /* Comisiones
+    /*****************************/
+
+    Route::get('comisions/get/all', [ComisionController::class, 'getAll']);
+    Route::post('comisions/fetch/data', [ComisionController::class, 'fetchData']);
+    Route::resource('comisions', ComisionController::class);
+    Route::get('comisions/{comision}/fetch/data', [ComisionController::class, 'fetch']);
 
 
     /*****************************/

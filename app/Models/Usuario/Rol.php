@@ -2,9 +2,9 @@
 
 namespace App\Models\Usuario;
 
+use App\Models\Comision;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Casts\Attibute;
 
 class Rol extends Model
 {
@@ -23,6 +23,10 @@ class Rol extends Model
         return $this->hasMany('App\Models\User','rol_id','id');
     }
 
+
+    public function comision(){
+        return $this->hasOne(Comision::class,'rol_id','id');
+    }
 
 
 }

@@ -139,6 +139,11 @@ import carrito from './modules/tienda/carrito.js';
 // Sucursales
 import sucursal from './modules/sucursal.js'
 
+// Comisiones
+
+import comision from './modules/comision.js'
+
+
 
 Vue.use(Vuex)
 
@@ -283,7 +288,8 @@ export default new Vuex.Store({
     producto,
     consumo,
     carrito,
-    sucursal
+    sucursal,
+    comision
   },
 
   strict: process.env.DEV,

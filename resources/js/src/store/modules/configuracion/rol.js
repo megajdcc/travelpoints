@@ -178,17 +178,12 @@ export default{
 
 		cargarRoles({commit}){
 			
-			commit('toggleLoading',null,{root:true});
-
+			
 			axios.get('/api/listar/roles').then(respon => {
-
 				commit('setRoles',respon.data);
 			}).catch(e => {
 				console.log(e)
-			}).then(() => {
-				commit('toggleLoading',null,{root:true});
-			});
-			
+			})
 
 		},
 

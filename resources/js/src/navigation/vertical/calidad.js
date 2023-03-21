@@ -131,6 +131,16 @@ export default [
             action:'read'
          },
 
+         {
+            title:'Comisiones de Roles',
+            route:'comisiones',
+            icon:'fa-percent',
+            fontAwesome:true,
+            resource:'comisiones',
+            action:'read'
+         },
+
+
           {
             title:'Sucursales',
             route:'sucursales.list',

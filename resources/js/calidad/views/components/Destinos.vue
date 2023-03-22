@@ -10,7 +10,7 @@
             <b-col cols="12" style="position:relative">
                <!-- <SwiperComponent /> -->
          
-               <swiper-container ref="swiperRef" init="false">
+               <swiper-container ref="swiperRef" init="false" >
          
                   <!-- slides -->
          

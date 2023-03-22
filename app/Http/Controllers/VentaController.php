@@ -182,7 +182,9 @@ class VentaController extends Controller
             // generar movimiento para el sistema... 
 
             $sistema = Sistema::first();
-            $sistema->generarMovimiento($sistema->divisa->convertir($venta->divisa,$datos['tps']), "Consumo de cliente {$venta->cliente->nombre} {$venta->cliente->apellido} por un monto de:{$monto}.",Movimiento::TIPO_INGRESO);
+            $sistema->adjudicarComisiones($datos['tps'],$venta);
+
+            
             
             // $sistema->refresh();
 

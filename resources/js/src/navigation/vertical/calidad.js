@@ -133,7 +133,7 @@ export default [
 
          {
             title:'Comisiones de Roles',
-            route:'comisiones',
+            route:'comisiones.list',
             icon:'fa-percent',
             fontAwesome:true,
             resource:'comisiones',

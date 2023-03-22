@@ -6,7 +6,7 @@
          </b-col>
          <b-col cols="12">
                <!-- <SwiperComponent /> -->
-               <swiper-container class="swiper-centered-slides px-0 py-1" ref="swiperRef">
+               <swiper-container class="swiper-centered-slides px-0 py-1" ref="swiperRef" init="false" >
          
                   <!-- slides -->
                   <swiper-slide v-for="(atraccion, i) in atracciones" :key="i" class="rounded ">
@@ -133,59 +133,7 @@ export default {
 
 
    setup(props){
-
-      const swiperOptions = ref({
-         slidesPerView: 4,
-         // allowSlidePrev:false,
-         // allowSlideNext: false,
-         autoplay: {
-            delay: 5000,
-         },
-         // centeredSlides: true,
-         spaceBetween: 30,
-         watchSlidesProgress: true,
-         effect: 'creative',
-         creativeEffect: {
-            prev: {
-               // will set `translateZ(-400px)` on previous slides
-               translate: [0, 0, -400],
-            },
-            next: {
-               // will set `translateX(100%)` on next slides
-               translate: ['100%', 0, 0],
-            },
-         },
-
-         pagination: {
-            el: '.swiper-pagination',
-            type: 'fraction',
-            dynamicBullets: true,
-         },
-         navigation: {
-            nextEl: '',
-            prevEl: ''
-
-         },
-         breakpoints: {
-            1024: {
-               slidesPerView: 4,
-               spaceBetween: 40,
-            },
-            768: {
-               slidesPerView: 3,
-               spaceBetween: 30,
-            },
-            640: {
-               slidesPerView: 2,
-               spaceBetween: 20,
-            },
-            320: {
-               slidesPerView: 1,
-               spaceBetween: 10,
-            },
-         },
-
-      })
+      
       const swiperRef = ref(null)
       const {
          is_loggin
@@ -194,6 +142,8 @@ export default {
 
       onMounted(() => {
          Object.assign(swiperRef.value, optionsSwiper.value)
+         swiperRef.value.initialize();
+
       })
 
       return {

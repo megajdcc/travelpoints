@@ -339,6 +339,7 @@ export default {
       }
 
       formulario.value.divisa_id = negocio.value.divisa_id
+      formulario.value.tps = tps.value
     }
 
     // onActivated(() => cargarForm())

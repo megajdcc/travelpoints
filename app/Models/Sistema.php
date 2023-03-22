@@ -2,10 +2,12 @@
 
 namespace App\Models;
 
+use App\Models\Usuario\Rol;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Trais\hasCuenta;
 use App\Trais\{hasImages, hasRedes, hasSucursal, hasVideos};
+use Illuminate\Database\Eloquent\Builder;
 
 class Sistema extends Model
 {
@@ -53,7 +55,38 @@ class Sistema extends Model
 
     }
 
-    
+
+    public function adjudicarComisiones($tps, Venta $venta){
+        $monto = number_format((float) $venta->monto, 2, '.', ',') . ' ' . $venta->divisa->iso;
+        
+        $movimiento = $this->generarMovimiento(
+            $this->divisa->convertir($venta->divisa, $tps),
+            "Consumo de cliente {$venta->cliente->nombre} {$venta->cliente->apellido} por un monto de:{$monto}.", 
+            Movimiento::TIPO_INGRESO);
+        
+        // Comision Promotor
+        if($promotor = $venta?->reservacion?->operador){
+
+            $rol = (Rol::where('nombre','Promotor')->first());
+            $comision_promotor = $rol->comision;
+        
+            if($comision_promotor){   
+                $monto_comision = $movimiento->monto * $comision_promotor->comision / 100;
+
+                $promotor->generarMovimiento($monto_comision,
+                "Comisión por consumo de cliente {$venta->cliente->getNombreCompleto()} en el negocio {$venta->model->nombre} por un monto de: {$monto}.",Movimiento::TIPO_INGRESO);
+
+
+                $this->generarMovimiento($monto_comision,"Comision adjudicada a promotor {$promotor->getNombreCompleto()}, por consumo de cliente {$venta->cliente->getNombreCompleto()} en el negocio {$venta->model->nombre} por un monto de: {$monto}.",Movimiento::TIPO_EGRESO);
+
+
+            }
+         
+        }
+
+        
+    }
+
 
    
 }

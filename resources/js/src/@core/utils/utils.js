@@ -66,6 +66,9 @@ export const optionsSwiper = ref({
          modules,
          loop: true,
          speed: 500,
+         autoplay:{
+          delay:5000
+         },
          'css-mode': true,
          breakpoints: {
             1024: {

@@ -15,8 +15,11 @@ return new class extends Migration
     {
         Schema::create('comisions', function (Blueprint $table) {
             $table->id();
+            // $table->unsignedBigInteger('rol_id')->nullable();
+            // $table->foreign('rol_id')->references('id')->on('rols')->nullOnDelete()->cascadeOnUpdate();
             $table->foreignId('rol_id')->constrained('rols')->cascadeOnDelete()->cascadeOnUpdate();
             $table->decimal('comision');
+            $table->engine = 'MyISAM';
             $table->timestamps();
         });
     }

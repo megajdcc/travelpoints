@@ -633,7 +633,8 @@ class NegocioController extends Controller
                 });
             })
           
-            ->orderBy($datos['sortBy'] ?: 'id', $datos['isSortDirDesc'] ? 'desc' : 'desc')
+            ->orderBy('tipo_comision', 'desc')
+            ->orderBy('comision','desc')
             ->paginate($datos['perPage']?:1000, pageName:'currentPage');
 
 

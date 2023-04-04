@@ -43,6 +43,9 @@ export default {
         sandbox: state.sistema.paypal_id || 'ARMAQ0_8KFm9nIJKGSOJUNWBfVWngxhsuu1Vj7N6yL2LVnXBAa_JXIDUeuqkMYU2yONIvpWZZQl-DLiw',
         production: "<production client id>"
       }
+    },
+    saldo:(state) => {
+      return state.sistema.cuenta ? state.sistema.cuenta.saldo : 0
     }
   },
 

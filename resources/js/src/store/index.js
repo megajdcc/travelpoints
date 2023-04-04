@@ -289,7 +289,7 @@ export default new Vuex.Store({
     consumo,
     carrito,
     sucursal,
-    comision
+    comision,
   },
 
   strict: process.env.DEV,

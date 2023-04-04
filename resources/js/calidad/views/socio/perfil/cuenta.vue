@@ -1,9 +1,11 @@
 <template>
 
       <listado :actions="actions" hideFooter>
+         
          <template #titulo>
              <h3>Movimientos de Cuentas</h3>
          </template>
+
          <template #contenido="{fetchData,tableColumns,isSortDirDesc,sortBy}">
             <b-card>
                 <b-table ref="refTable" :items="fetchData" responsive :fields="tableColumns" primary-key="id"
@@ -30,6 +32,7 @@
             </b-card>
            
          </template>
+         
       </listado>
 
 </template>

@@ -1,5 +1,3 @@
-import axios from "axios";
-
 let colorRand = () => {
    let colores = [
       '#397DAD',
@@ -147,7 +145,33 @@ export default{
             habitaciones_contratadas:0,
             habitaciones_confirmadas:0,
             habitaciones_por_confirmar:0,
-         habitaciones_solicitadas:0,
+            habitaciones_solicitadas:0,
+
+            // Travelpoints
+
+            totalViajeros:{
+
+               series: [],
+               chartOptions: {
+                  chart: {
+                     width: 380,
+                     type: 'pie',
+                  },
+                  labels: [],
+                  responsive: [{
+                  breakpoint: 480,
+                  options: {
+                     chart: {
+                        width: 200
+                     },
+                     legend: {
+                        position: 'bottom'
+                     }
+                  }
+                  }]
+               },
+          
+            }
 
       }
    },
@@ -185,19 +209,24 @@ export default{
       setTotalHabitacionesContratadas(state,total_habitaciones){
          state.habitaciones_contratadas = total_habitaciones
       },
+
       setTotalHabitacionesConfirmadas(state, total_habitaciones) {
          state.habitaciones_confirmadas = total_habitaciones
       },
+
       setTotalHabitacionesPorConfirmar(state, total_habitaciones) {
          state.habitaciones_por_confirmar = total_habitaciones
       },
 
       setTotalHabitacionesSolicitadas(state, total_habitaciones) {
          state.habitaciones_solicitadas = total_habitaciones
+      },
+
+      // Travelpoints
+      setTotalViajeros(state,{data,categorias}){
+         state.totalViajeros.chartOptions.labels = categorias
+         state.totalViajeros.series = data
       }
-
-
-
 
    },
 
@@ -257,6 +286,15 @@ export default{
                .then(response => resolve(response))
                .catch(error => reject(error))
          });
+      },
+
+      getTotalViajeros({state,commit},filtro){
+         return new Promise((resolve, reject) => {
+            axios.post(`/api/dashboard/total/viajeros`,filtro).then(({data}) => {
+               commit('setTotalViajeros',data)
+               resolve(data)
+            }).catch(e => reject(e))
+         })
       }
 
 

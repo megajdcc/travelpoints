@@ -4,28 +4,18 @@
       <div class="truncate">
 
         <h2 class="font-weight-bolder">
-
             <slot name="valor" :statistic="statistic">
                 {{ statistic }}
             </slot>
-
-        
         </h2>
 
         <span>{{ statisticTitle }}</span>
-      
-       
       </div>
       
-      <b-avatar
-        :variant="`light-${color}`"
-        size="45"
-      >
-
+      <b-avatar :variant="`light-${color}`" size="45">
         <slot name="icon">
           <font-awesome-icon :icon="['fas',icon]" size="2x" />
         </slot>
-    
       </b-avatar>
 
     </b-card-body>
@@ -43,13 +33,12 @@
 
 <script>
 import { BCard, BCardBody, BAvatar } from 'bootstrap-vue'
-// import VueApexCharts from 'vue-apexcharts'
+import VueApexCharts from 'vue-apexcharts'
 import { $themeColors } from '@themeConfig'
 import { lineChartOptions } from './chartOptions'
 
 export default {
   components: {
-    VueApexCharts,
     BCard,
     BCardBody,
     BAvatar,

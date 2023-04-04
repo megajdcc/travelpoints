@@ -1,16 +1,16 @@
 <template>
-  <b-card no-body :bg-variant="color" >
-    <b-card-body class="d-flex justify-content-between align-items-center" style="position:relative; padding: 1rem;">
+  <b-card no-body :bg-variant="color" class="card-horizontal" >
+    <b-card-body class="d-flex justify-content-between align-items-center" style="position:relative; padding: 1rem;" >
       <div class="truncate">
-        <h2 class="mb-25 font-weight-bolder">
+        <h2 class="mb-25 font-weight-bolder" :class="[colorText]">
 
-          <slot name="valor" :statistic="statistic">
+          <slot :statistic="statistic" >
             {{ statistic }}
           </slot>
 
         </h2>
         <slot name="titulo">
-          <span v-html="statisticTitle" />
+          <span v-html="statisticTitle" :class="[colorText]" />
         </slot>
        
       </div>
@@ -28,6 +28,7 @@
 
 <script>
 import { BCard, BCardBody, BAvatar } from 'bootstrap-vue'
+import {toRefs,computed} from 'vue';
 
 export default {
   components: {
@@ -40,15 +41,10 @@ export default {
       type: String,
       required: true,
     },
-    fontAwesome:{
-      type:Boolean,
-      default:false
-    },
-
-
     statistic: {
       type: [Number, String],
-      required: true,
+      required: false,
+      default:0,
     },
     statisticTitle: {
       type: String,
@@ -62,22 +58,28 @@ export default {
       type: String,
       default:'dark'
     },
+    colorText:{
+      type:String,
+      default:'text-black'
+    }
   },
 
 
   setup(props){
-
+    const {colorText} = toRefs(props)
 
     return {
-
-
+      colorTexto:computed(() => colorText.value)
     }
     
   }
 }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
+
+// $color-text:v-bind(colorTexto);
+
 .avatar-icon{
       cursor:pointer;
       transition: 60ms ease;
@@ -92,4 +94,11 @@ export default {
         width: 70px !important;
       }
   }
+
+  // .card-horizontal{
+  //   h2, span{
+  //     color: $color-text !important; 
+  //   }
+  // }
+
 </style>

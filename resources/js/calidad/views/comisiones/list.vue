@@ -9,7 +9,7 @@
       <template #contenido="{fetchData,tableColumns,perPage,eliminar}">
         <b-card class="mt-1">
           <b-table ref="refTable" :items="fetchData" responsive :fields="tableColumns" primary-key="id"
-            :sort-by.sync="sortBy" empty-text="No se encontró ningúna comisión" :sort-desc.desc="isSortDirDesc"
+            :sort-by.sync="sortBy" empty-text="No se encontró ningúna comisión" :sort-desc="isSortDirDesc"
             sticky-header="700px" :no-border-collapse="false" borderless outlined :busy="loading" :perPage="perPage"
             showEmpty small stacked="md">
 

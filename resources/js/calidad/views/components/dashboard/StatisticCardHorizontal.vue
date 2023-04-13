@@ -1,26 +1,35 @@
 <template>
   <b-card no-body :bg-variant="color" class="card-horizontal" >
-    <b-card-body class="d-flex justify-content-between align-items-center" style="position:relative; padding: 1rem;" >
-      <div class="truncate">
-        <h2 class="mb-25 font-weight-bolder" :class="[colorText]">
+    <b-card-body class="d-flex justify-content-between align-items-center flex-column" style="position:relative; padding: 1rem;" >
 
-          <slot :statistic="statistic" >
-            {{ statistic }}
+      <section class="d-flex justify-content-between aling-items-center w-100">
+        <div class="truncate">
+          <h2 class="mb-25 font-weight-bolder" :class="[colorText]">
+
+            <slot :statistic="statistic" >
+              {{ statistic }}
+            </slot>
+
+          </h2>
+
+          <slot name="titulo">
+            <span v-html="statisticTitle" :class="[colorText]" />
+          </slot>
+       
+        </div>
+        <b-avatar :variant="`light-${colorIcon}`" class="avatar-icon" >
+      
+          <slot name="icon">
+            <font-awesome-icon :icon="['fa-solid', icon]" size="3x"  />
           </slot>
 
-        </h2>
-        <slot name="titulo">
-          <span v-html="statisticTitle" :class="[colorText]" />
-        </slot>
-       
-      </div>
-      <b-avatar :variant="`light-${colorIcon}`" class="avatar-icon" >
-      
-        <slot name="icon">
-          <font-awesome-icon :icon="['fa-solid',icon]" size="3x"  />
-        </slot>
+        </b-avatar>
+      </section>
 
-      </b-avatar>
+      <div class="filtro-statistic w-100">
+        <slot name="filtro">
+        </slot>
+      </div>
 
     </b-card-body>
   </b-card>

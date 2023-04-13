@@ -21,7 +21,7 @@
     <b-card-body>
       <vue-apex-charts
         :type="type"
-        height="400"
+        :height="height"
         :options="chartOptions"
         :series="data"
         ref="chartRef"
@@ -77,7 +77,7 @@ export default {
       chartOptions:{
          type:Object,
          default:{
-               chart: {
+               chart:{
                   zoom: {
                      enabled: true,
                   },
@@ -129,7 +129,9 @@ export default {
       type:{
          type:String,
          default:'bar'
-      }
+      },
+
+      height:String|Number
 
 
 

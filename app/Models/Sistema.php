@@ -86,7 +86,18 @@ class Sistema extends Model
 
         
     }
+    
 
+
+    public static function totalIngresoTienda(){
+        $sistema = Sistema::first();
+
+        $cuenta = $sistema->cuenta;
+
+        
+        return '$ '.number_format((float) ($cuenta->saldo * 25 / 100),2). ' '.$cuenta->divisa->iso;
+
+    }
 
    
 }

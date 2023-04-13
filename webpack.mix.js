@@ -183,7 +183,7 @@ if (mix.inProduction()) {
     ],
 
     skipWaiting: true,
-    maximumFileSizeToCacheInBytes: 10485760
+    maximumFileSizeToCacheInBytes: 20 * 1024 * 1024,
   });
 
  

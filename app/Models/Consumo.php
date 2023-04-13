@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 class Consumo extends Model
 {
@@ -20,7 +21,6 @@ class Consumo extends Model
         'paypal',
         'tienda_id',
     ];
-
 
     protected $casts = [
         'comentado' => 'boolean',
@@ -52,6 +52,15 @@ class Consumo extends Model
             'monto'
         ]);
         
+    }
+
+    public static function totalRegaloVendidos(){
+        $productos_vendidos = DB::table('consumo_productos','cp')
+                            ->selectRaw('count(*) as cantidad')
+                            ->first('cantidad');
+                            
+       return $productos_vendidos->cantidad;
+       
     }
 
 

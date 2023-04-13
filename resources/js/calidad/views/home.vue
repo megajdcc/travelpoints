@@ -10,19 +10,74 @@
           <statistic-card-horizontal 
             icon="fa-money-bill" 
             statisticTitle="Balance TravelPoints" 
-            color="primary"
-            colorIcon="sucess"
+            color="success"
+            colorIcon="dark"
             colorText="text-white">
 
             {{  saldoSistema | currency  }}
           
           </statistic-card-horizontal>
 
+          <statistic-card-horizontal 
+            icon="fa-percent" 
+            statisticTitle="Viajeros Activos" 
+            color="dark"
+            colorIcon="success"
+            colorText="text-white">
+
+            {{  viajerosActivos  }} %
+
+            <template #filtro>
+             <flat-pickr v-model="filtro.rango_fecha" :config="configRangoFecha" 
+             class="form-control form-control-sm mt-2"
+             placeholder="Rango de fecha" />
+
+            </template>
+          
+          </statistic-card-horizontal>
+
+          <statistic-card-horizontal 
+              icon="fa-map-location" 
+              statisticTitle="Destinos Activos" 
+              color="dark"
+              colorIcon="success"
+              colorText="text-white">
+              {{ destinosActivos }} 
+          </statistic-card-horizontal>
+
+
+           <statistic-card-horizontal 
+                icon="fa-users-gear" 
+                statisticTitle="Total operaciones TravelPoints" 
+                color="danger"
+                colorIcon="dark"
+                colorText="text-white">
+                {{ operacionesTravel }} 
+            </statistic-card-horizontal>
+
           </b-col>
 
           <b-col cols="12" md="8">
+             <map-chart title="Total Paises activos" subtitulo="Con almenos un destino activo" :series="paisesActivos" ></map-chart>
+          </b-col>
+        </b-row>
+
+        <b-row>
+          <b-col cols="12">
+            <el-divider content-position="left">Destinos</el-divider>
+          </b-col>
+          <b-col cols="12" md="6">
+                <!-- Destinos Activos -->
+                <apex-chart titulo="Total negocios activos" subtitulo="Por Destinos" 
+                :chartOptions="totalDestinosActivos.chartOptions" :data="totalDestinosActivos.series" type="bar" :height="400"> 
+              
+                  </apex-chart>
+          </b-col>
+
+          <b-col cols="12" md="6">
+              <!-- TOtal Viajeros -->
               <apex-chart titulo="Total Viajeros" subtitulo="Por Paises, Rango de Edad y Género" 
-              :chartOptions="totalViajeros.chartOptions" :data="totalViajeros.series" type="pie">
+              :chartOptions="totalViajeros.chartOptions" :data="totalViajeros.series" type="pie" :height="320">
                 <template #filtro>
                   <b-container fluid class="mx-0 px-0">
 
@@ -52,12 +107,67 @@
                       </b-col>
 
                     </b-row>
-                    
+                  
                   </b-container>
                 </template>
               </apex-chart>
           </b-col>
         </b-row>
+
+        <el-divider content-position="left" >Negocios Turísticos</el-divider>
+        <b-row>
+
+          <b-col cols="12" md="6" >
+             <!-- Total Negocios Afiliados -->
+                <apex-chart titulo="Total negocios afiliados" subtitulo="Por Paises" 
+                :chartOptions="negociosAfiliados.chartOptions" :data="negociosAfiliados.series" type="bar" :height="350"> 
+          
+                </apex-chart>
+          </b-col>
+
+          <b-col cols="12" md="6" >
+             <!-- Porcentaje de Negocios con operación Registrada -->
+                <apex-chart titulo="Porcentaje de Negocios " subtitulo="Con operación registradas" 
+                :chartOptions="porcentajeNegocio.chartOptions" :data="porcentajeNegocio.series" type="donut" :height="450"> 
+          
+                </apex-chart>
+            
+          </b-col>
+
+        </b-row>
+
+        <b-row>
+          <b-col cols="12">
+            <tarjetas-agrupadas-staticas style="min-height:180px" title="Gasto turístico" isFiltro 
+            @changeFiltro="cargarGastosTuristicos" :items="gastosTuristicos.items" 
+            :filtro="filtro_gastos_turisticos" :fecha="gastosTuristicos.ultima_fecha"/>
+          </b-col>
+           <b-col cols="12">
+              <tarjetas-agrupadas-staticas style="min-height:180px" title="Tienda de Regalos" 
+                  :items="tiendaRegalos.items" :fecha="tiendaRegalos.ultima_fecha"/>
+            </b-col>  
+        </b-row>
+
+         <el-divider content-position="left" >Promotores</el-divider>
+
+         <b-row>
+          <b-col cols="12" md="6">
+               <apex-chart titulo="Total promotores registrados" subtitulo="Activos / Inactivos" 
+                :chartOptions="totalPromotores.chartOptions" :data="totalPromotores.series" type="pie" :height="320">
+                </apex-chart>
+          </b-col>
+           <b-col cols="12" md="6">
+                <apex-chart titulo="Total coordinadores registrados" subtitulo="Activos / Inactivos" 
+                  :chartOptions="totalCoordinadores.chartOptions" :data="totalCoordinadores.series" type="pie" :height="320">
+                  </apex-chart>
+            </b-col>
+
+             <b-col cols="12" md="6">
+                  <apex-chart titulo="Total comisiones generadas" subtitulo="Pagadas y por pagar" 
+                    :chartOptions="totalComisionesGeneradas.chartOptions" :data="totalComisionesGeneradas.series" type="pie" :height="320">
+                    </apex-chart>
+              </b-col>
+         </b-row>
 
       </b-container>
 
@@ -108,19 +218,50 @@ export default {
     ApexChart:() => import('components/ApexChart/ApexChart.vue'),
     vSelect,
     BFormGroup,
-    flatPickr
-
+    flatPickr,
+    MapChart:() => import('components/highcharts/MapChart.vue'),
+    TarjetasAgrupadasStaticas:() => import('components/dashboard/TarjetasAgrupadasStaticas.vue')
   },
   
   setup(props){  
-    const { totalViajeros } = toRefs(store.state.dashboard)
+    
+    const { totalViajeros, 
+      viajerosActivos, 
+      destinosActivos, 
+      totalDestinosActivos,
+      paisesActivos, 
+      negociosAfiliados, 
+      porcentajeNegocio, 
+      gastosTuristicos,
+      tiendaRegalos,
+      totalPromotores,
+      totalCoordinadores,
+      totalComisionesGeneradas,
+      operacionesTravel
+     } 
+    = toRefs(store.state.dashboard)
     const siteTraffic = ref({});
+
+     const filtro_gastos_turisticos = ref({
+      pais_id: null,
+      rango_fecha: null,
+      destino_id: null,
+      negocio_id: null
+    })
+    
+    const configRangoFecha = ref({
+      mode: "range",
+      maxDate: "today",
+      dateFormat: "Y-m-d",
+      conjunction:','
+
+    })
 
     const filtro = ref({
       pais:null,
       edades:null,
-      genero:null
-
+      genero:null,
+      rango_fecha:null
     })  
 
     const edades = ref([
@@ -173,10 +314,56 @@ export default {
 
       })
 
+      store.dispatch('dashboard/cargarViajerosActivos',filtro.value).then((data) => {
+      })
+
+       store.dispatch('dashboard/cargarDestinosActivos', filtro.value).then((data) => {
+      })
+
+      store.dispatch('dashboard/cargarDestinosActivosChart').then((data) => {
+
+      });
+
+      store.dispatch('dashboard/cargarPaisesActivos').then(() => {
+        
+      });
+
+      store.dispatch('dashboard/cargarNegociosAfiliados');
+      store.dispatch('dashboard/cargarPorcentajeNegocio');
+      store.dispatch('dashboard/fetchTotalPromotores');
+      store.dispatch('dashboard/fetchTotalCoordinadores');
+      store.dispatch('dashboard/fetchTotalComisionesGeneradas');
+      store.dispatch('dashboard/getTotalOperacionesTravel');
+
+      fetchGastosTuristicos()
+      fetchTiendaRegalos()
     
     }
 
+    const fetchGastosTuristicos = () => {
+      store.dispatch('dashboard/fetchGastosTuristicos',filtro_gastos_turisticos.value).then(({data}) => {
+
+      })
+    }
+
+    const fetchTiendaRegalos = () => {
+       store.dispatch('dashboard/fetchTiendaRegalos')
+    }
+
+    watch([() => filtro.value.rango_fecha],() => cargarDashboard());
     cargarDashboard();
+
+
+   
+
+    const cargarGastosTuristicos = () => {
+      fetchGastosTuristicos()
+    }
+
+    const cargarTiendaRegalos = () => {
+      fetchTiendaRegalos();
+    }
+
 
     return {
       siteTraffic,
@@ -186,7 +373,23 @@ export default {
       edades,
       generos,
       cargarDashboard,
-      totalViajeros
+      totalViajeros,
+      totalDestinosActivos,
+      configRangoFecha,
+      viajerosActivos,
+      destinosActivos,
+      paisesActivos,
+      negociosAfiliados,
+      porcentajeNegocio,
+      cargarGastosTuristicos,
+      cargarTiendaRegalos,
+      filtro_gastos_turisticos,
+      gastosTuristicos,
+      tiendaRegalos,
+      totalPromotores,
+      totalCoordinadores,
+      totalComisionesGeneradas,
+      operacionesTravel
     };
 
   }

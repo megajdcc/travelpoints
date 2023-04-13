@@ -33,122 +33,18 @@ export default{
 
    state(){
       return{
-            staticReservaciones:{
-               total:0,
-               series: [
-                        {
-                           name: 'Traffic Rate',
-                           data: [150, 200, 125, 225, 200, 250],
-                        },
-
-                        {
-                           name: 'Traffic Rate',
-                           data: [100, 40, 125, 150, 180, 230],
-                        },
-
-                     ],
-               
-            },
-
-            staticBodasTotales:{
-               total:0,
-               series: [
-                        {
-                           name: 'Traffic Rate',
-                           data: [150, 200, 125, 225, 200, 250],
-                        },
-
-                        {
-                           name: 'Traffic Rate',
-                           data: [100, 40, 125, 150, 180, 230],
-                        },
-
-                     ],
-               
-            },
-
-            staticBodasActivas: {
-               total: 0,
-               series: [
-                  {
-                     name: 'Traffic Rate',
-                     data: [150, 200, 125, 225, 200, 250],
-                  },
-
-                  {
-                     name: 'Traffic Rate',
-                     data: [100, 40, 125, 150, 180, 230],
-                  },
-
-               ],
-
-            },
-
-            tarjetasAgrupadas:{
-               ultimaActualizacion:null,
-               statisticsItems:[],
-            },
-
-            reservasTotalesPorBodaChart:{
-               series: [],
-               chartOptions: {
-
-                  chart: {
-                     zoom: {
-                        enabled: false,
-                     },
-                     toolbar: {
-                        show: false,
-                     },
-                  },
-
-                  markers: {
-                     strokeWidth: 7,
-                     strokeOpacity: 1,
-                     strokeColors: ['#66DA26','#FF1E1E'],
-                     colors: ['#66DA26', '#FF1E1E'],
-                  },
-
-                  colors: ['#66DA26', '#FF1E1E'],
-                  dataLabels: {
-                     enabled: false,
-                  },
-                  stroke: {
-                     curve: 'smooth',
-                  },
-                  grid: {
-                     xaxis: {
-                        lines: {
-                           show: true,
-                        },
-                     },
-                  },
-                  tooltip: {
-                     custom(data) {
-                        return `${'<div class="px-1 py-50"><span>'}${data.series[data.seriesIndex][data.dataPointIndex]
-                           } Reservas</span></div>`
-                     },
-                  },
-                  xaxis: {
-                     labels: {
-                        rotate: -45
-                     },
-                     categories: [],
-               
-                  },
-                  yaxis: {
-                     // opposite: isRtl,
-                  },
-               },
-            },
-
-            habitaciones_contratadas:0,
-            habitaciones_confirmadas:0,
-            habitaciones_por_confirmar:0,
-            habitaciones_solicitadas:0,
-
+          
             // Travelpoints
+            gastosTuristicos:{
+               items:[],
+               ultima_fecha:null
+            },
 
+            tiendaRegalos:{
+               items:[],
+               ultima_fecha:null
+            },
+            
             totalViajeros:{
 
                series: [],
@@ -171,7 +67,246 @@ export default{
                   }]
                },
           
-            }
+            },
+
+             totalPromotores:{
+
+               series: [],
+               chartOptions: {
+                  chart: {
+                     width: 380,
+                     type: 'pie',
+                  },
+                  labels: [],
+                  responsive: [{
+                  breakpoint: 480,
+                  options: {
+                     chart: {
+                        width: 200
+                     },
+                     legend: {
+                        position: 'bottom'
+                     }
+                  }
+                  }]
+               },
+          
+            },
+
+            totalCoordinadores:{
+
+               series: [],
+               chartOptions: {
+                  chart: {
+                     width: 380,
+                     type: 'pie',
+                  },
+                  labels: [],
+                  responsive: [{
+                  breakpoint: 480,
+                  options: {
+                     chart: {
+                        width: 200
+                     },
+                     legend: {
+                        position: 'bottom'
+                     }
+                  }
+                  }]
+               },
+          
+            },
+
+            totalComisionesGeneradas:{
+
+               series: [],
+               chartOptions: {
+                  chart: {
+                     width: 380,
+                     type: 'pie',
+                  },
+                  labels: [],
+                  responsive: [{
+                  breakpoint: 480,
+                  options: {
+                     chart: {
+                        width: 200
+                     },
+                     legend: {
+                        position: 'bottom'
+                     }
+                  }
+                  }]
+               },
+          
+            },
+
+            
+            totalDestinosActivos:{
+               series:[],
+               chartOptions: {
+                  chart: {
+                     type: 'bar'
+                  },
+                  plotOptions: {
+                     bar: {
+                        horizontal: false,
+                        columnWidth: '55%',
+                        endingShape: 'rounded'
+                     },
+                  },
+                  dataLabels: {
+                     enabled: false
+                  },
+                  stroke: {
+                     show: true,
+                     width: 2,
+                     colors: ['transparent']
+                  },
+                  xaxis: {
+                     categories: [],
+                  },
+                  yaxis: {
+                     title: {
+                        text: 'Total de negocios por destino',
+                     }
+                  },
+                  tooltip: {
+                    
+                  },
+               },
+              
+            },
+
+            viajerosActivos:0,
+            destinosActivos:0,
+
+            paisesActivos:[{
+               name: 'Random data',
+
+               states: {
+                  hover: {
+                     color: '#BADA55'
+                  }
+               },
+               dataLabels: {
+                  enabled: true,
+                  format: '{point.name}'
+               },
+               allAreas: false,
+               data: [
+                  ['km', 69],
+                  ['mn', 145],
+                  ['rw', 146],
+                  ['so', 147],
+                  ['bo', 148],
+                  ['cm', 149],
+                  // ['cg', 150],
+                  ['ci', 170],
+                  ['lr', 171],
+                  ['bn', 172],
+                  ['iq', 173],
+                  ['kg', 211],
+                  ['np', 212],
+                  ['ve', 100]
+               ]
+            }],
+
+
+            negociosAfiliados:{
+               series:[],
+               chartOptions: {
+                  chart: {
+                     type: 'bar'
+                  },
+
+                  plotOptions: {
+                     bar: {
+                        horizontal: true,
+                        columnWidth: '55%',
+                        endingShape: 'rounded'
+                     },
+                  },
+
+                  dataLabels: {
+                     enabled: false
+                  },
+
+                  stroke: {
+                     show: true,
+                     width: 2,
+                     colors: ['transparent']
+                  },
+
+                  xaxis: {
+                     categories:[],
+                  },
+
+                  tooltip: {
+                    
+                  },
+               },
+            },
+
+            porcentajeNegocio:{
+               series:[],
+               chartOptions:{
+
+                  chart:{
+                     type: 'donut'
+                  },
+
+                  plotOptions:{
+                     bar: {
+                        horizontal: true,
+                        columnWidth: '55%',
+                        endingShape: 'rounded'
+                     },
+                  },
+
+                  responsive: [{
+                     breakpoint: 480,
+                     options: {
+                        chart: {
+                           width: 200
+                        },
+                        legend: {
+                           position: 'right'
+                        }
+                     }
+                  }],
+
+                  dataLabels: {
+                     enabled: false
+                  },
+
+                  legend: {
+                     position: 'right',
+                     offsetY: 0,
+                     height: 230,
+                  },
+
+                  stroke:{
+                     show: true,
+                     width: 2,
+                     colors: ['transparent']
+                  },
+                  tooltip:{
+                     y: {
+                        formatter: (val,{ series, seriesIndex, dataPointIndex, w }) => {
+                           return `${val} %`
+                        },
+                        title: {
+                           formatter: (seriesName) => seriesName,
+                        },
+                     },
+                  },
+
+                  labels:[]
+
+               },
+            },
+            operacionesTravel:0
 
       }
    },
@@ -179,54 +314,78 @@ export default{
 
    mutations:{
       
-      setStaticReservaciones(state,{total,series}){
-         state.staticReservaciones.total = total;
-         state.staticReservaciones.series = series
-      },
-
-      setStaticBodasTotales(state,{total,series}){
-         state.staticBodasTotales.total = total;
-         state.staticBodasTotales.series = series
-      },
-
-      setStaticBodasActivas(state,{total}){
-         state.staticBodasActivas.total = total;
-      },
-
-      setTarjetasAgrupadas(state,{ultimaActualizacion,items}){
-         state.tarjetasAgrupadas.ultimaActualizacion = ultimaActualizacion
-         state.tarjetasAgrupadas.statisticsItems = items
-      },
-
-      setDataReservasTotalesPorBoda(state,{data,categorias}){
-
-         state.reservasTotalesPorBodaChart.series = data
-         state.reservasTotalesPorBodaChart.chartOptions.xaxis.labels = { rotate:-45}
-         state.reservasTotalesPorBodaChart.chartOptions.xaxis.categories = categorias
-
-      },
-
-      setTotalHabitacionesContratadas(state,total_habitaciones){
-         state.habitaciones_contratadas = total_habitaciones
-      },
-
-      setTotalHabitacionesConfirmadas(state, total_habitaciones) {
-         state.habitaciones_confirmadas = total_habitaciones
-      },
-
-      setTotalHabitacionesPorConfirmar(state, total_habitaciones) {
-         state.habitaciones_por_confirmar = total_habitaciones
-      },
-
-      setTotalHabitacionesSolicitadas(state, total_habitaciones) {
-         state.habitaciones_solicitadas = total_habitaciones
-      },
 
       // Travelpoints
       setTotalViajeros(state,{data,categorias}){
          state.totalViajeros.chartOptions.labels = categorias
          state.totalViajeros.series = data
+      },
+      setTotalPromotores(state,{data,categorias}){
+         state.totalPromotores.chartOptions.labels = categorias
+         state.totalPromotores.series = data
+      },
+
+       setTotalCoordinadores(state,{data,categorias}){
+         state.totalCoordinadores.chartOptions.labels = categorias
+         state.totalCoordinadores.series = data
+      },
+
+      setTotalDestinosActivos(state,data){
+
+         state.totalDestinosActivos.chartOptions.xaxis.categories = data.map(destino => destino.destino)
+         state.totalDestinosActivos.series = data.map(destino => ({
+               name: destino.destino,
+               data: [destino.totalNegocios],
+               dataNombres:[destino.nombresNegocios]
+            })
+            )
+          
+         
+      },
+
+      setViajerosActivos(state,viajeros){
+         state.viajerosActivos = viajeros
+      },
+      
+      setDestinosActivos(state,destinos){
+         state.destinosActivos = destinos
+      },
+
+      setPaisesActivos(state,data){
+         state.paisesActivos = data
+      },
+
+      setTotalNegociosAfiliados(state,{data,categorias}){
+         state.negociosAfiliados.chartOptions.xaxis.categories = categorias
+         state.negociosAfiliados.series = data
+      },
+      
+      setPorcentajeNegocio(state,{data,categorias}){
+         state.porcentajeNegocio.chartOptions.labels = categorias
+         state.porcentajeNegocio.series = data
+      },
+
+      setGastosTuristicos(state,data){
+         state.gastosTuristicos.items = data.items
+         state.gastosTuristicos.ultima_fecha = data.ultima_fecha
+      },
+
+
+      setTiendaRegalos(state,data){
+         state.tiendaRegalos.items = data.items
+         state.tiendaRegalos.ultima_fecha = data.ultimaFecha
+
+      },
+
+      setTotalComisionesGeneradas(state,{categorias,data}){
+         state.totalComisionesGeneradas.chartOptions.labels = categorias
+         state.totalComisionesGeneradas.series = data
+      },
+
+      setTotalOperaciones(state,data){
+         state.operacionesTravel = data
       }
+
 
    },
 
@@ -238,20 +397,7 @@ export default{
          commit('toggleLoading', null, { root: true })
          axios.get('/api/get/data/dashboard').then(({data}) => {
 
-            // let {staticReservaciones} = respon.data;
-
-            commit('setStaticReservaciones',data.staticReservaciones);
-            commit('setStaticBodasTotales',data.staticBodasTotales);
-            commit('setStaticBodasActivas',data.staticBodasActivas);
-            commit('setTarjetasAgrupadas',data.tarjetasAgrupadas);
-            commit('setTotalHabitacionesContratadas',data.habitaciones_contratadas);
-
-            commit('setTotalHabitacionesConfirmadas',data.habitaciones_confirmadas)
-            commit('setTotalHabitacionesPorConfirmar',data.habitaciones_por_confirmar | 0)
-            commit('setTotalHabitacionesSolicitadas', data.habitaciones_solicitadas | 0)
-
-
-
+            commit('setViajerosActivos',data.viajerosActivos)
 
             
 
@@ -263,29 +409,45 @@ export default{
          })
       },
 
+      cargarViajerosActivos({commit},dato){
+         return new Promise((resolve, reject) => {
+            axios.post(`/api/dashboard/get/viajeros/activos`,dato).then(({data}) => {
+               commit('setViajerosActivos',data)
+               resolve(data)
+            }).catch( e => reject(e))
 
-      cargarReservasTotalesPorBodaChart({state,commit},boda_id){
-         commit('toggleLoading', null, { root: true })
-
-         axios.get(`/api/get/data/dashboard/grafica/reservas/boda/${boda_id}`).then(respon => {
-            
-            commit('setDataReservasTotalesPorBoda',respon.data);
-
-         }).catch(e => {
-            console.log(e)
-         }).then(() => {
-            commit('toggleLoading', null, { root: true })
          })
-
-
       },
 
-      fetchBodasList({state,commit},searchQuery){
+       cargarDestinosActivos({commit},dato){
          return new Promise((resolve, reject) => {
-            axios.post(`/api/fetch/bodas/home`, searchQuery)
-               .then(response => resolve(response))
-               .catch(error => reject(error))
-         });
+
+            axios.post(`/api/dashboard/get/destinos/activos`,dato).then(({data}) => {
+               commit('setDestinosActivos',data)
+               resolve(data)
+
+            }).catch( e => reject(e))
+
+         })
+      },
+
+      cargarDestinosActivosChart({commit}){
+         return new Promise((resolve, reject) => {
+            axios.get('/api/dashboard/total/destinos/activos').then(({data}) => {
+               commit('setTotalDestinosActivos',data)
+               resolve(data);
+            }).catch(e => reject(e));
+
+         })
+      },
+
+      cargarPaisesActivos({commit}){
+         return new Promise((resolve, reject) => {
+               axios.get(`/api/dashboard/get/paises/activos`).then(({data}) => {
+                  commit('setPaisesActivos',data)
+                  resolve(data)
+               }).catch(e => reject(e))
+         })
       },
 
       getTotalViajeros({state,commit},filtro){
@@ -295,7 +457,102 @@ export default{
                resolve(data)
             }).catch(e => reject(e))
          })
+      },
+
+
+      cargarNegociosAfiliados({commit}){
+         return new Promise((resolve, reject) => {
+            axios.get(`/api/dashboard/total/negocios/afiliados`).then(({data}) => {
+               commit('setTotalNegociosAfiliados',data)
+               resolve(data)
+            }).catch(e => reject(e))
+         })
+      },
+
+      cargarPorcentajeNegocio({commit}){
+
+         return new Promise((resolve, reject) => {
+            axios.get(`/api/dashboard/porcentaje/negocios`).then(({data}) => {
+               commit('setPorcentajeNegocio',data)
+               resolve(data)
+
+            }).catch(e => reject(e))
+
+         })
+      },
+      fetchGastosTuristicos({commit},filtro){
+         return new Promise((resolve, reject) => {
+            
+            axios.post(`/api/dashboard/gastos/turisticos`,filtro).then(({data}) => {
+            
+               commit('setGastosTuristicos',data)
+               resolve(data)
+            
+            }).catch(e => reject(e))
+
+
+         })
+      },
+
+        fetchTiendaRegalos({commit}){
+         return new Promise((resolve, reject) => {
+            
+            axios.post(`/api/dashboard/tienda/regalos`).then(({data}) => {
+               commit('setTiendaRegalos',data)
+               resolve(data)
+            
+            }).catch(e => reject(e))
+
+
+         })
+      },
+
+      fetchTotalPromotores({commit}){
+         return new Promise((resolve,reject) => {
+
+            axios.get(`/api/dashboard/total/promotores`).then(({data}) => {
+               commit('setTotalPromotores',data)
+               resolve(data)
+            }).catch(e => reject(e))
+
+         })
+      },
+      
+      fetchTotalCoordinadores({commit}){
+         return new Promise((resolve,reject) => {
+
+            axios.get(`/api/dashboard/total/coordinadores`).then(({data}) => {
+               commit('setTotalCoordinadores',data)
+               resolve(data)
+            }).catch(e => reject(e))
+
+         })
+      },
+      
+      fetchTotalComisionesGeneradas({commit}){
+         return new Promise((resolve,reject) => {
+
+            axios.get(`/api/dashboard/total/comisiones/generadas`).then(({data}) => {
+               commit('setTotalComisionesGeneradas',data)
+               resolve(data)
+            }).catch(e => reject(e))
+            
+
+         })
+      },
+
+      getTotalOperacionesTravel({commit}){
+
+         return new Promise((resolve, reject) => {
+            
+            axios.get(`/api/dashboard/total/operaciones/travel`).then(({data}) => {
+               commit('setTotalOperaciones',data)
+               resolve(data)
+            }).catch(e => reject(e))
+
+         })
       }
+
 
 
 

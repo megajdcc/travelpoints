@@ -326,7 +326,7 @@
                         <template #label>
                            Iata | Aeropuerto mas cercano:
                         </template>
-                        <validation-provider name="iata_id"  #default="{errors,valid}">
+                        <validation-provider name="iata_id" rules="required"  #default="{errors,valid}">
                            <b-input-group>
                            
                               <v-select v-model="formulario.iata_id" :reduce="(option) => option.id" :options="iatas" label="aeropuerto" class=" w-100">

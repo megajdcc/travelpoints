@@ -46,7 +46,6 @@ class Divisa extends Model
 
         // 10 $ dolares convertir a pesos mexicanos 
         // tasa peso mexicano es de 18 por dolar 
-
         // 10 * 18 = 180 Pesos mexicos 
         
         if($divisa->id === $this->id){
@@ -58,6 +57,28 @@ class Divisa extends Model
         return $monto_dolar *  $this->tasa;
 
 
+    }
+
+    public static function convertirDivisa($monto, $tasa, Divisa $monedaDestino)
+    {
+        // Verificar que la tasa de conversión sea mayor que cero
+        if ($tasa <= 0) {
+            throw new \Exception("La tasa de conversión debe ser mayor que cero.");
+        }
+
+        // Verificar que el monto a convertir sea mayor o igual que cero
+        if ($monto < 0) {
+            throw new \Exception("El monto a convertir debe ser mayor o igual que cero.");
+        }
+
+        // Realizar la conversión
+        $montoConvertido = $monto * $tasa;
+
+        // Redondear el resultado a dos decimales
+        $montoConvertido = round($montoConvertido, 2);
+
+        // Devolver el monto convertido con la moneda de destino
+        return $montoConvertido . " " . $monedaDestino->iso;
     }
 
     public function sistema(){

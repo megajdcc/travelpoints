@@ -36,5 +36,9 @@ class Ciudad extends Model
         return $this->hasMany(Solicitud::class,'ciudad_id','id');
     }
 
+
+    public function iatas(){
+        return $this->hasMany(Iata::class,'ciudad_id','id');
+    }
     
 }

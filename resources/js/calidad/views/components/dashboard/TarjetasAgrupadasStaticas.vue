@@ -1,41 +1,70 @@
 <template>
-  <b-card
-    no-body
-    class="card-statistics"
-  >
-    <b-card-header>
-      <b-card-title>Resultado de Bodas Activas</b-card-title>
-      
+  <b-card no-body class="card-statistics">
+    <b-card-header class="pb-0">
+      <b-card-title>
+        <slot name="title">
+          {{ title  }}
+        </slot>
+      </b-card-title>
+
       <b-card-text class="mr-25 mb-0">
-        Actualizado {{ getFecha(tarjetasAgrupadas.ultimaActualizacion) }}
+        Actualizado {{ fecha | fecha('D [ de ] MMMM [ de ] YYYY [ a las ] hh:mm A ') }} 
       </b-card-text>
     
     </b-card-header>
-    <b-card-body class="statistics-body">
+    <b-card-body class="statistics-body pt-1">
+
+      <b-row v-if="isFiltro">
+        <b-col cols="12" md="3">
+          <b-form-group label="Pais">
+            <v-select v-model="filtro.pais_id" :reduce="option => option.id" label="pais" :options="paises" @input="changeFiltro">
+            </v-select>
+          </b-form-group>
+        </b-col>
+
+        <b-col cols="12" md="3">
+          
+          <b-form-group label="Rango de Fecha">
+             <flat-pickr v-model="filtro.rango_fecha" :config="configRangoFecha" class="form-control form-control-lg" 
+                 placeholder="Rango de fecha" @on-change="changeFiltro" />
+          </b-form-group>
+
+        </b-col>
+
+        <b-col cols="12" md="3">
+          
+            <b-form-group label="Destino">
+              <v-select v-model="filtro.destino_id" :reduce="option => option.id" label="nombre" :options="destinos" @input="changeFiltro">
+              </v-select>
+            </b-form-group>
+
+        </b-col>
+
+        <b-col cols="12" md="3">
+          
+            <b-form-group label="Negocio">
+              <v-select v-model="filtro.negocio_id" :reduce="option => option.id" label="nombre" :options="negocios" @input="changeFiltro">
+              </v-select>
+            </b-form-group>
+
+        </b-col>
+      </b-row>
       <b-row>
         <b-col
-          v-for="item in tarjetasAgrupadas.statisticsItems"
+          v-for="item in statisticsItems"
           :key="item.id"
-          md="3"
-          sm="6"
-          class="mb-2 mb-md-0"
-          :class="item.customClass"
-        >
-          <b-media no-body>
-            <b-media-aside
+      
+          class="mb-2 mb-md-0 d-flex flex-wrap"
+          :class="item.customClass">
 
-              class="mr-1"
-            >
-              <b-avatar
-                size="48"
-                :variant="item.color"
-              >
-                <feather-icon
-                  size="24"
-                  :icon="item.icon"
-                />
+          <b-media no-body v-b-tooltip:hover="item.tooltip" class=" my-1" style="min-width:220px;">
+
+            <b-media-aside class="mr-1 h-100 d-flex align-items-center">
+              <b-avatar size="60" :variant="item.color" >
+               <font-awesome-icon :icon="['fas',item.icon]" size="3x"/>
               </b-avatar>
             </b-media-aside>
+
             <b-media-body class="my-auto">
               <h5 class="font-weight-bolder mb-0">
                 {{ item.title }}
@@ -44,6 +73,7 @@
                 {{ item.subtitle }}
               </b-card-text>
             </b-media-body>
+            
           </b-media>
         </b-col>
       </b-row>
@@ -54,10 +84,18 @@
 <script>
 import {
   BCard, BCardHeader, BCardTitle, BCardText, BCardBody, BRow, BCol, BMedia, BMediaAside, BAvatar, BMediaBody,
+  BFormGroup,VBTooltip
 } from 'bootstrap-vue'
 
-import {mapState } from 'vuex';
+import vSelect from 'vue-select'
 
+import useDireccion from '@core/utils/useDireccion.js'
+import flatPickr from 'vue-flatpickr-component';
+import 'flatpickr/dist/flatpickr.css';
+
+import {computed,toRefs,ref,watch} from 'vue'
+import { getFecha } from '@core/utils/utils'
+import store from '@/store'
 
 export default {
   components: {
@@ -72,51 +110,116 @@ export default {
     BAvatar,
     BMediaAside,
     BMediaBody,
+    vSelect,
+    BFormGroup,
+    flatPickr
   },
-  data() {
-    return {
-      statisticsItems: [
-        {
-          icon: 'TrendingUpIcon',
-          color: 'light-primary',
-          title: '230k',
-          subtitle: 'Sales',
-          customClass: 'mb-2 mb-xl-0',
-        },
-        {
-          icon: 'UserIcon',
-          color: 'light-info',
-          title: '8.549k',
-          subtitle: 'Customers',
-          customClass: 'mb-2 mb-xl-0',
-        },
-        {
-          icon: 'BoxIcon',
-          color: 'light-danger',
-          title: '1.423k',
-          subtitle: 'Products',
-          customClass: 'mb-2 mb-sm-0',
-        },
-        {
-          icon: 'DollarSignIcon',
-          color: 'light-success',
-          title: '$9745',
-          subtitle: 'Revenue',
-          customClass: '',
-        },
-      ],
+
+  directives:{
+    'b-tooltip':VBTooltip
+  },
+  props:{
+    title:String,
+    items:Array,
+    isFiltro:{
+      type:Boolean,
+      default:false,
+    },
+    filtro:{
+      type:Object,
+      required:false,
+      default: () => ({
+        pais_id    : null,
+        rango_fecha: null,
+        destino_id : null,
+        negocio_id : null
+      })
+    },
+
+    fecha:{
+      type:String|Object,
+      required:false
     }
   },
+  
+  setup(props,{emit}){
+    
+    const {title,items,filtro} = toRefs(props)
+    const {destinos} = toRefs(store.state.destino)
+    const { negocios } = toRefs(store.state.negocio)
 
-  computed:{
-     ...mapState('dashboard',['tarjetasAgrupadas'])
-  },
+    const statisticsItems = ref([
+      {
+        icon: 'fa-cash-register',
+        color: 'light-primary',
+        title: '23',
+        subtitle: 'Total de operaciones registradas',
+        customClass: 'mb-2 mb-xl-0',
+      },
+      {
+        icon: 'fa-money-check-dollar',
+        color: 'light-info',
+        title: '340$',
+        subtitle: 'Monto promedio por operación',
+        customClass: 'mb-2 mb-xl-0',
+      },
+      {
+        icon: 'fa-money-check-dollar',
+        color: 'light-danger',
+        title: '340$',
+        subtitle: 'Gasto promedio por viajero',
+        customClass: 'mb-2 mb-sm-0',
+      },
+      {
+        icon: 'fa-user-gear',
+        color: 'light-success',
+        title: '1.5',
+        subtitle: 'Registros por usuario',
+        customClass: '',
+      },
+    ])
+
+    const {
+       paises,
+    } = useDireccion()
+
+    const configRangoFecha = ref({
+      mode: "range",
+      maxDate: "today",
+      dateFormat: "Y-m-d",
+      conjunction: ','
+
+    })
+
+    const cargarForm = () => {
+      
+      if(!destinos.value.length){
+        store.dispatch('destino/getDestinos')
+      }
+
+      if(!negocios.value.length) {
+        store.dispatch('negocio/getNegocios')
+      }
+
+    }
+
+    cargarForm();
 
 
-  methods:{
-     getFecha(fecha){
-        return moment(fecha).format('LLL');
-     }
+    const changeFiltro = () => {
+      emit('changeFiltro')
+    }
+
+    return {
+      getFecha,
+      statisticsItems:computed(() => items.value || statisticsItems.value),
+      paises,
+      configRangoFecha,
+      destinos,
+      cargarForm,
+      negocios,
+      changeFiltro
+    }
   }
 }
 </script>

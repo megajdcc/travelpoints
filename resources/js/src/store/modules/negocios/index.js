@@ -842,6 +842,15 @@ export default{
                resolve(data)
             }).catch(e => reject(e))
          })
+      },
+
+      getNegocios({commit}){
+         return new Promise((resolve, reject) => {
+            axios.get(`/api/negocios/get/all`).then(({data}) => {
+               commit('setNegocios',data)
+               resolve(data)
+            }).catch(e => reject(e))
+         })
       }
 
    }

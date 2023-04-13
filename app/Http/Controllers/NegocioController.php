@@ -26,6 +26,12 @@ class NegocioController extends Controller
         return response()->json($negocio);
     }
 
+    public function getNegocios(){
+        $negocios = Negocio::all();
+
+        return response()->json($negocios);
+        
+    }
 
     public function fetchData(Request $request){
 

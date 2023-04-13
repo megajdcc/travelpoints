@@ -236,6 +236,9 @@ Route::get('negocios/{negocio}/recomendacions/toggle/user/{usuario}',[NegocioCon
     Route::put('negocios/{negocio}/update/menu',[NegocioController::class,'updateMenu']);
 
     Route::put('negocios/{negocio}/gestion/saldo',[NegocioController::class,'gestionSaldo']);
+
+    Route::get('negocios/get/all',[NegocioController::class,'getNegocios']);
+    
     
 
     /*****************************/
@@ -491,6 +494,21 @@ Route::get('negocios/{negocio}/recomendacions/toggle/user/{usuario}',[NegocioCon
     /*****************************/
 
     Route::post('dashboard/total/viajeros',[DashboardController::class,'totalViajeros']);
+    Route::post('dashboard/get/viajeros/activos',[DashboardController::class,'viajerosActivos']);
+    Route::post('dashboard/get/destinos/activos', [DashboardController::class, 'destinosActivos']);
+    Route::get('dashboard/total/destinos/activos',[DashboardController::class,'destinosActivosChart']);
+    Route::get('dashboard/get/paises/activos',[DashboardController::class,'getPaisesActivos']);
+    Route::get('dashboard/total/negocios/afiliados',[DashboardController::class,'totalNegociosAfiliados']);
+    Route::get('dashboard/porcentaje/negocios',[DashboardController::class,'porcentajeNegocio']);
+    Route::post('dashboard/gastos/turisticos',[DashboardController::class,'fetchGastosTuristicos']);
+    Route::post('dashboard/tienda/regalos', [DashboardController::class, 'fetchTiendaRegalos']);
+    Route::get('dashboard/total/promotores',[DashboardController::class,'fetchTotalPromotores']);
+    Route::get('dashboard/total/coordinadores', [DashboardController::class, 'fetchTotalCoordinadores']);
+    Route::get('dashboard/total/comisiones/generadas',[DashboardController::class,'fetchComisionesGeneradas']);
+    Route::get('dashboard/total/operaciones/travel',[DashboardController::class,'getTotalOperacionesTravel']);
+
+
+
 
 
 

@@ -164,16 +164,74 @@ window.colorRand = () => {
 }
 
 window.$ = window.jQuery = require('jquery');
-require('datatables.net-buttons-bs4');
-require('datatables.net-buttons/js/buttons.flash.js');
-require('datatables.net-buttons/js/buttons.html5.js');
-require('datatables.net-buttons/js/buttons.print.js');
-require('datatables.net-buttons/js/dataTables.buttons.min.js');
-require('datatables.net-responsive-bs4');
+
 
 import VueMask from 'v-mask'
 
 Vue.use(VueMask);
+
+import HighchartsVue from 'highcharts-vue';
+import Highcharts from 'highcharts';
+
+import Maps from "highcharts/modules/map";
+
+Maps(Highcharts);
+
+// Opcionalmente, también puedes importar módulos adicionales de Highcharts, como exporting o accessibility
+import exportingInit from 'highcharts/modules/exporting';
+exportingInit(Highcharts);
+
+import accessibilityInit from 'highcharts/modules/accessibility';
+accessibilityInit(Highcharts);
+
+// Registra Highcharts Vue Wrapper como componente global
+Highcharts.setOptions({
+	chart:{
+		backgroundColor:{
+			linearGradient:[0,0,0,0],
+			stops:[
+				[0,'rgb(255,255,255)'],
+				[1,'rgb(255,255,255)']
+			]
+		},
+		// borderWidth:2,
+		borderRadius:10,
+		// options3d:{
+		// 	alfa:10,
+		// 	axisLabelPosition:'auto',
+		// 	beta:0,
+		// 	depth:100,
+		// 	enabled:true,
+		// 	fitToPlot:true,
+		// },
+		borderColor:{
+			linearGradient:[0,0,0,0],
+			stops:[
+				[0,'rgb(46,169,214)'],
+				[0.5,'rgb(228,53,149)'],
+				[1,'rgb(96,167,49)']
+			]
+		},
+		plotBackgroundColor:'rgba(255,255,255,.9)',
+		plotShadow:true,
+		plotBorderWidth:1,
+		style:{
+			"fontFamily":'Myriad Regular',
+
+		},
+		spacingTop:10,
+
+	},
+	credits:{
+		enabled:true,
+		href:"https://travelpoints.dev",
+		text:"TravelPoints",
+	},
+});
+
+Vue.use(HighchartsVue,{
+  Highcharts:Highcharts
+});
 
 // Laravel Echo
 

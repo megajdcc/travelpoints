@@ -15,8 +15,6 @@ use Illuminate\Support\Facades\DB;
 
 class DashboardController extends Controller
 {
-    
-
 
     public function totalViajeros(Request $request){
         $filtro  = $request->all();
@@ -63,8 +61,8 @@ class DashboardController extends Controller
         
     }
 
-
     public function fetchTotalPromotores(Request $request){
+
         $filtro  = $request->all();
 
         $promotores_activos = User::whereHas('rol',function(Builder $q) {
@@ -83,8 +81,8 @@ class DashboardController extends Controller
 
         $data = collect([$promotores_activos,$promotores_inactivos]);
 
-
         return response()->json(['data' => $data, 'categorias' => $categorias]);
+
     }
 
     public function fetchTotalCoordinadores(Request $request)

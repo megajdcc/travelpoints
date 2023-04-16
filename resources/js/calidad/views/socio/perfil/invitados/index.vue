@@ -16,12 +16,12 @@
          <validation-observer ref="formValidate" #default="{ handleSubmit }">
             <b-form @submit.prevent="handleSubmit(guardar)">
                <b-form-group label="Comparte tu link">
-                  <validation-provider name="codigo" rules="required" #default="{ errors }">
+                  <validation-provider name="codigo_referidor" rules="required" #default="{ errors,valid }">
                      <b-input-group size="sm" class="w-100">
                         <b-input-group-prepend is-text>
                            {{ url }}
                         </b-input-group-prepend>
-                        <b-form-input v-model="formulario.codigo_referidor" :state="errors.length ? false : null"
+                        <b-form-input v-model="formulario.codigo_referidor" :state="valid"
                            :disabled="usuario.codigo_referidor ? true : false" />
 
                         <b-input-group-append>
@@ -125,6 +125,7 @@ export default {
     
 
       const formulario = ref(store.getters['usuario/draftUsuario'])
+      const formValidate  = ref(null)
       const usuario = computed(() => store.state.usuario.usuario)
       const url = ref('');
       const url_app = ref(window.location.origin)
@@ -159,6 +160,11 @@ export default {
             }
 
 
+         }).catch(e => {
+
+            if(e.response.status === 422){
+               formValidate.value.setErrors(e.response.data.errors)
+            }
          })
 
       }
@@ -173,7 +179,8 @@ export default {
          copiarLink,
          link_referido,
          guardar,
-         usuario
+         usuario,
+         formValidate
       }
    }
 }

@@ -183,8 +183,6 @@ class VentaController extends Controller
 
             $sistema = Sistema::first();
             $sistema->adjudicarComisiones($datos['tps'],$venta);
-
-            
             
             // $sistema->refresh();
 

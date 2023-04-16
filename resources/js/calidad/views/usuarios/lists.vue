@@ -3,7 +3,7 @@
   <div class="container-fluid w-100 px-0 mx-0">
 
     <!-- Filters -->
-    <users-list-filters :role-filter.sync="roleFilter" :role-options="getRols" />
+    <users-list-filters :role-filter.sync="roleFilter" :role-options="getRols" v-if="usuario.rol.nombre != 'Promotor'" />
 
     <!-- Table Container Card -->
     <b-card no-body class="mb-0">
@@ -22,7 +22,7 @@
           <b-col cols="12" md="9" class="d-flex align-items-center justify-content-end">
             <b-input-group size="sm">
               <b-form-input v-model="searchQuery" placeholder="Buscar..." />
-              <template #append is-text>
+              <template #append>
                 <b-button variant="primary" @click="$router.push({name:'create.usuario'})" v-if="$can('write','usuarios')">
                   <span class="text-nowrap">Agregar usuario</span>
                 </b-button>
@@ -73,12 +73,12 @@
             </template>
 
 
-            <b-dropdown-item :to="{ name: 'edit.usuario', params: { id: data.item.id } }">
+            <b-dropdown-item :to="{ name: 'edit.usuario', params: { id: data.item.id } }" v-if="$can('update','usuarios')">
               <feather-icon icon="EditIcon" />
               <span class="align-middle ml-50">Editar</span>
             </b-dropdown-item>
 
-            <b-dropdown-item @click="eliminarUsuario(data.item)">
+            <b-dropdown-item @click="eliminarUsuario(data.item)" v-if="$can('delete', 'usuarios')">
               <feather-icon icon="TrashIcon" />
               <span class="align-middle ml-50">Eliminar</span>
             </b-dropdown-item>
@@ -124,6 +124,8 @@ import useUsersList from './useUsersList'
 
 import { mapGetters,mapMutations,mapActions } from 'vuex';
 
+import {toRefs} from 'vue'
+
 export default {
   components: {
     UsersListFilters,
@@ -162,7 +164,8 @@ export default {
   },
 
   setup() {
-    
+    const { usuario } = toRefs(store.state.usuario)
+
 
 
     const {
@@ -215,6 +218,7 @@ export default {
 
       // Extra Filters
       roleFilter,
+      usuario
     }
   },
 
@@ -245,7 +249,9 @@ export default {
     }
 
 
-  }
+  },
+
+  
 }
 </script>
 

@@ -21,6 +21,7 @@ use App\Models\Telefono;
 
 use App\Models\Like;
 use App\Models\Producto;
+use Illuminate\Database\Query\Builder as QueryBuilder;
 
 class UserController extends Controller
 {
@@ -72,9 +73,18 @@ class UserController extends Controller
 
         $datos = $this->validar($request);
 
+        $user_register  = $request->user();
+
         try{
             DB::beginTransaction();
             $usuario = $this->crearUsuario($datos);
+
+            if($user_register->rol->nombre == 'Promotor'){
+                $user_register->referidos()->attach($usuario->id,['codigo' => $user_register->codigo_referidor ?: 'no_aplica' ,
+                'created_at' => now(),
+                ]);
+            }
+
             $usuario->notify(new WelcomeUsuario($usuario));
             DB::commit();
 
@@ -113,14 +123,13 @@ class UserController extends Controller
             'retypePassword.same' => 'La contraseñas deben ser iguales'
         ]);
 
-
-
+     
         try{
             DB::beginTransaction();
                 $usuario = User::create([
                     'username'    => Str::slug($datos['username']),
                     'email'       => $datos['email'],
-                    'password'    => Hash::make($datos['password']),
+                    'password'    => $datos['password'],
                     'is_password' => true,
                     'rol_id' => Rol::where('nombre','Usuario')->first()->id
                 ]);
@@ -129,7 +138,10 @@ class UserController extends Controller
 
 
                 if($datos['referidor'] && $datos['referidor'] != 'null'){
-                    $usuario->referidor()->attach(User::where('codigo_referidor',$datos['referidor'])->first()->id,['codigo' => $datos['referidor']]);
+                    $usuario->referidor()->attach(User::where('codigo_referidor',$datos['referidor'])->first()->id,[
+                        'codigo' => $datos['referidor'],
+                        'created_at' => now()
+                    ]);
                 }
 
                 $usuario->cargar();
@@ -449,6 +461,7 @@ class UserController extends Controller
     public function getUsers(Request $request){ 
 
         $datos = $request->all();
+        $usuario = $request->user();
 
          $paginator = User::where([
                 ['username','LIKE',"%{$datos['q']}%",'OR'],
@@ -465,6 +478,11 @@ class UserController extends Controller
             })
             ->when(!in_array($request->user()->rol->nombre,['Desarrollador','Administrador']),function($query){
                 $query->whereHas('rol', fn(Builder $q) => $q->whereNotIn('nombre', ['Desarrollador', 'Administrador']));
+            })
+            ->when(in_array($request->user()->rol->nombre, ['Promotor']), function($query) use ($usuario){
+                $query->whereHas('referidor',function(Builder $q) use($usuario){
+                    $q->where('usuario_id', $usuario->id);
+                });
             })
             
             ->orderBy($datos['sortBy'],$datos['sortDesc'] ? 'desc' : 'asc')
@@ -583,7 +601,6 @@ class UserController extends Controller
     public function misReferidos(Request $request){
 
         $datos = $request->all();
-
         $paginator = DB::table('usuario_referencia','ur')
                             ->selectRaw("concat(u.nombre,' ',u.apellido) as nombre_completo, u.id,u.username,u.imagen")
                             ->join('users as u','ur.referido_id','u.id')
@@ -601,7 +618,7 @@ class UserController extends Controller
                 $usuario->imagen =  asset('storage/img-perfil/').$usuario->imagen;
             }
 
-            $usuario->cargar();
+            // $usuario->cargar();
 
 
         }
@@ -727,6 +744,42 @@ class UserController extends Controller
         $response = $request->user()->fetchDataCarrito($datos);
 
         return response()->json($response);
+
+    }
+
+    public function getStatus(Request $request){
+
+        $user = $request->user();
+        
+        $referidos = [
+            'ultimo_mes' => 0,
+            'ultimo_trimestre' => 0,
+            'data' => 0
+        ];
+
+        if($user->rol->nombre == 'Promotor'){
+           $referidos_ultimo_mes =  DB::table('users','u')
+            ->join('usuario_referencia as ur','u.id','ur.usuario_id')
+            ->whereRaw('u.id = :usuario && ur.created_at >= DATE_SUB(CURDATE(), INTERVAL 30 DAY)',[':usuario' => $user->id])
+            ->selectRaw('count(ur.referido_id) as referidos')
+            ->first('referidos');
+
+            $referidos_ultimo_trimestre =  DB::table('users', 'u')
+                ->join('usuario_referencia as ur', 'u.id', 'ur.usuario_id')
+                ->whereRaw('u.id = :usuario && ur.created_at >= DATE_SUB(CURDATE(), INTERVAL 89 DAY)', [':usuario' => $user->id])
+                ->selectRaw('count(ur.referido_id) as referidos')
+                ->first('referidos');
+
+            $referidos['ultimo_mes'] = $referidos_ultimo_mes->referidos;
+            $referidos['ultimo_trimestre'] = $referidos_ultimo_trimestre->referidos;
+           
+
+        }
+
+        
+
+        return response()->json($referidos);
+
 
     }
 

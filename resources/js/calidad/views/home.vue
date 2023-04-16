@@ -6,13 +6,18 @@
 
         <b-row>
           <b-col cols="12" md="4">
+
+          <medal-card title="Estatus del Promotor" subtitle="Por Registros de viajeros" :data="viajeros_referidos" 
+          v-if="$can('read','Tablero medal card promotor') && rolUser == 'Promotor'" :medal="usuario.status" 
+          :legendTooltip="getLegendaStatusPromotor(usuario.status)" :text-footer="getLegendaStatusPromotor(usuario.status)" />
             
           <statistic-card-horizontal 
             icon="fa-money-bill" 
             statisticTitle="Balance TravelPoints" 
             color="success"
             colorIcon="dark"
-            colorText="text-white">
+            colorText="text-white" 
+            v-if="$can('read','Tablero balance travelpoints')" >
 
             {{  saldoSistema | currency  }}
           
@@ -23,7 +28,8 @@
             statisticTitle="Viajeros Activos" 
             color="dark"
             colorIcon="success"
-            colorText="text-white">
+            colorText="text-white"
+            v-if="$can('read', 'Tablero viajeros activos')">
 
             {{  viajerosActivos  }} %
 
@@ -41,7 +47,8 @@
               statisticTitle="Destinos Activos" 
               color="dark"
               colorIcon="success"
-              colorText="text-white">
+              colorText="text-white" 
+              v-if="$can('read', 'Tablero destinos activos')">
               {{ destinosActivos }} 
           </statistic-card-horizontal>
 
@@ -51,33 +58,35 @@
                 statisticTitle="Total operaciones TravelPoints" 
                 color="danger"
                 colorIcon="dark"
-                colorText="text-white">
+                colorText="text-white" 
+                v-if="$can('read', 'Tablero total operaciones travelpoints')">
                 {{ operacionesTravel }} 
             </statistic-card-horizontal>
 
           </b-col>
 
           <b-col cols="12" md="8">
-             <map-chart title="Total Paises activos" subtitulo="Con almenos un destino activo" :series="paisesActivos" ></map-chart>
+             <map-chart title="Total Paises activos" subtitulo="Con almenos un destino activo" :series="paisesActivos" v-if="$can('read', 'Tablero total paises activos')" ></map-chart>
           </b-col>
         </b-row>
 
         <b-row>
           <b-col cols="12">
-            <el-divider content-position="left">Destinos</el-divider>
+            <el-divider content-position="left" v-if="$can('read', 'Tablero total negocios activos') || 
+             $can('read', 'Tablero total viajeros') ">Destinos</el-divider>
           </b-col>
           <b-col cols="12" md="6">
-                <!-- Destinos Activos -->
-                <apex-chart titulo="Total negocios activos" subtitulo="Por Destinos" 
-                :chartOptions="totalDestinosActivos.chartOptions" :data="totalDestinosActivos.series" type="bar" :height="400"> 
-              
-                  </apex-chart>
+              <!-- Destinos Activos -->
+              <apex-chart titulo="Total negocios activos" subtitulo="Por Destinos" 
+              :chartOptions="totalDestinosActivos.chartOptions" :data="totalDestinosActivos.series" type="bar" :height="400" v-if="$can('read', 'Tablero total negocios activos')" > 
+            
+              </apex-chart>
           </b-col>
 
           <b-col cols="12" md="6">
               <!-- TOtal Viajeros -->
               <apex-chart titulo="Total Viajeros" subtitulo="Por Paises, Rango de Edad y Género" 
-              :chartOptions="totalViajeros.chartOptions" :data="totalViajeros.series" type="pie" :height="320">
+              :chartOptions="totalViajeros.chartOptions" :data="totalViajeros.series" type="pie" :height="320"    v-if="$can('read', 'Tablero total viajeros')" >
                 <template #filtro>
                   <b-container fluid class="mx-0 px-0">
 
@@ -114,13 +123,13 @@
           </b-col>
         </b-row>
 
-        <el-divider content-position="left" >Negocios Turísticos</el-divider>
+        <el-divider content-position="left" v-if="$can('read', 'Tablero total negocios afiliados') || $can('read', 'Tablero porcentaje negocios con operaciones registradas')" >Negocios Turísticos</el-divider>
         <b-row>
 
           <b-col cols="12" md="6" >
              <!-- Total Negocios Afiliados -->
-                <apex-chart titulo="Total negocios afiliados" subtitulo="Por Paises" 
-                :chartOptions="negociosAfiliados.chartOptions" :data="negociosAfiliados.series" type="bar" :height="350"> 
+              <apex-chart titulo="Total negocios afiliados" subtitulo="Por Paises" 
+                :chartOptions="negociosAfiliados.chartOptions" :data="negociosAfiliados.series" type="bar" :height="350"  v-if="$can('read', 'Tablero total negocios afiliados')"> 
           
                 </apex-chart>
           </b-col>
@@ -128,7 +137,7 @@
           <b-col cols="12" md="6" >
              <!-- Porcentaje de Negocios con operación Registrada -->
                 <apex-chart titulo="Porcentaje de Negocios " subtitulo="Con operación registradas" 
-                :chartOptions="porcentajeNegocio.chartOptions" :data="porcentajeNegocio.series" type="donut" :height="450"> 
+                :chartOptions="porcentajeNegocio.chartOptions" :data="porcentajeNegocio.series" type="donut" :height="450" v-if="$can('read', 'Tablero porcentaje negocios con operaciones registradas')"> 
           
                 </apex-chart>
             
@@ -140,34 +149,47 @@
           <b-col cols="12">
             <tarjetas-agrupadas-staticas style="min-height:180px" title="Gasto turístico" isFiltro 
             @changeFiltro="cargarGastosTuristicos" :items="gastosTuristicos.items" 
-            :filtro="filtro_gastos_turisticos" :fecha="gastosTuristicos.ultima_fecha"/>
+            :filtro="filtro_gastos_turisticos" :fecha="gastosTuristicos.ultima_fecha"
+            v-if="$can('read', 'Tablero gasto turistico')"
+            />
           </b-col>
            <b-col cols="12">
               <tarjetas-agrupadas-staticas style="min-height:180px" title="Tienda de Regalos" 
-                  :items="tiendaRegalos.items" :fecha="tiendaRegalos.ultima_fecha"/>
+                  :items="tiendaRegalos.items" :fecha="tiendaRegalos.ultima_fecha"
+                  v-if="$can('read', 'Tablero tienda de regalos')"/>
             </b-col>  
         </b-row>
 
-         <el-divider content-position="left" >Promotores</el-divider>
+         <el-divider content-position="left" v-if="$can('read', 'Tablero total promotores registrados') || $can('read', 'Tablero total coordinadores registrados') || $can('read', 'Tablero total comisiones generadas pagadas y por pagar')" >Promotores</el-divider>
 
          <b-row>
           <b-col cols="12" md="6">
                <apex-chart titulo="Total promotores registrados" subtitulo="Activos / Inactivos" 
-                :chartOptions="totalPromotores.chartOptions" :data="totalPromotores.series" type="pie" :height="320">
+                :chartOptions="totalPromotores.chartOptions" :data="totalPromotores.series" type="pie" :height="320" v-if="$can('read', 'Tablero total promotores registrados')" >
                 </apex-chart>
           </b-col>
            <b-col cols="12" md="6">
                 <apex-chart titulo="Total coordinadores registrados" subtitulo="Activos / Inactivos" 
-                  :chartOptions="totalCoordinadores.chartOptions" :data="totalCoordinadores.series" type="pie" :height="320">
+                  :chartOptions="totalCoordinadores.chartOptions" :data="totalCoordinadores.series" type="pie" :height="320" v-if="$can('read', 'Tablero total coordinadores registrados')">
                   </apex-chart>
             </b-col>
 
              <b-col cols="12" md="6">
                   <apex-chart titulo="Total comisiones generadas" subtitulo="Pagadas y por pagar" 
-                    :chartOptions="totalComisionesGeneradas.chartOptions" :data="totalComisionesGeneradas.series" type="pie" :height="320">
-                    </apex-chart>
+                    :chartOptions="totalComisionesGeneradas.chartOptions" :data="totalComisionesGeneradas.series" type="pie" :height="320" v-if="$can('read', 'Tablero total comisiones generadas pagadas y por pagar')">
+                  </apex-chart>
               </b-col>
          </b-row>
+
+
+         <template v-if="usuario.rol.nombre == 'Promotor'">
+
+          <b-row>
+            <b-col cols="12" >
+              <movimientos />
+            </b-col>
+          </b-row>
+        </template>
 
       </b-container>
 
@@ -220,7 +242,9 @@ export default {
     BFormGroup,
     flatPickr,
     MapChart:() => import('components/highcharts/MapChart.vue'),
-    TarjetasAgrupadasStaticas:() => import('components/dashboard/TarjetasAgrupadasStaticas.vue')
+    TarjetasAgrupadasStaticas:() => import('components/dashboard/TarjetasAgrupadasStaticas.vue'),
+    MedalCard:() => import('components/dashboard/MedalCard.vue'),
+    movimientos: () => import('views/socio/perfil/cuenta.vue')
   },
   
   setup(props){  
@@ -240,8 +264,10 @@ export default {
       operacionesTravel
      } 
     = toRefs(store.state.dashboard)
+    const viajeros_referidos = ref(0)
     const siteTraffic = ref({});
-
+     const rolUser = computed(() => store.getters['usuario/rolUser'])
+     const {usuario} = toRefs(store.state.usuario)
      const filtro_gastos_turisticos = ref({
       pais_id: null,
       rango_fecha: null,
@@ -335,6 +361,12 @@ export default {
       store.dispatch('dashboard/fetchTotalComisionesGeneradas');
       store.dispatch('dashboard/getTotalOperacionesTravel');
 
+      if(rolUser.value == 'Promotor'){
+        store.dispatch('usuario/getStatusPromotor').then((data) => {
+          viajeros_referidos.value = data.ultimo_trimestre;
+        })
+      }
+
       fetchGastosTuristicos()
       fetchTiendaRegalos()
     
@@ -352,9 +384,6 @@ export default {
 
     watch([() => filtro.value.rango_fecha],() => cargarDashboard());
     cargarDashboard();
-
-
-   
 
     const cargarGastosTuristicos = () => {
       fetchGastosTuristicos()
@@ -389,7 +418,16 @@ export default {
       totalPromotores,
       totalCoordinadores,
       totalComisionesGeneradas,
-      operacionesTravel
+      operacionesTravel,
+      rolUser,
+      viajeros_referidos,
+      usuario,
+      getLegendaStatusPromotor:(status) => {
+        let legenda = ['Activo, con al menos un Viajero al mes','En peligro, no registra nuevos viajeros en los ultimos 30 días','Inactivo, no registra nuevos viajeros en los ultimos 90 días'];
+
+        return legenda[status - 1];
+
+      }
     };
 
   }

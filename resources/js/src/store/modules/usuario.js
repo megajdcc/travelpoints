@@ -1,3 +1,4 @@
+import axios from "axios";
 import store from "..";
 
 export default {
@@ -41,7 +42,8 @@ export default {
 				likes:[],
 				negocios:[],
 				cupones:[],
-				carrito_compra:[]
+				carrito_compra:[],
+				status:3,
 
 
 			},
@@ -262,6 +264,7 @@ export default {
 				referidos: [],
 				referidor: [],
 				likes:[],
+				status:3,
 			}
 			
 		},
@@ -322,7 +325,19 @@ export default {
 
 		setLikesUser(state,likes){
 			state.usuario.likes = likes
+		},
+
+		
+		setStatusPromotor(state,{ultimo_mes,ultimo_trimestre}){
+			if(ultimo_mes > 0){
+				state.usuario.status = 1;
+			}else if(ultimo_trimestre > 0){
+				state.usuario.status = 2;
+			}else{
+				state.usuario.status = 3
+			}
 		}
+
 	},
 
 	getters:{
@@ -449,12 +464,9 @@ export default {
 			}
 		},
 
-		
-
-
-
-		
-
+		rolUser(state){
+			return state.usuario.rol.nombre
+		}
 	
 
 	},
@@ -636,14 +648,11 @@ export default {
 
 		async crearLinkReferido({commit},data) {
 			return await new Promise((resolve, reject) => {
-				commit('toggleLoading',null,{root:true})
 				axios.put(`/api/usuarios/${data.id}/crear/link/referidor`,data).then(({data:datos}) => {
 					commit('updatePerfil',datos.usuario)
 					resolve(datos)
 				}).catch(e => reject(e))
-				.then(() => {
-					commit('toggleLoading', null, { root: true })
-				})
+				
 
 			})
 		},
@@ -663,13 +672,12 @@ export default {
 		async nuevoUsuario({commit},data){
 
 			return await new Promise((resolve, reject) => {
-				commit('toggleLoading',null,{root:true})
 
 				axios.post('/api/auth/nuevo/usuario',data).then(({data:datos}) => {
 					resolve(datos)
 				}).catch(e => {
 					reject(e)
-				}).then(() => commit('toggleLoading',null,{root:true}))
+				})
 
 			})
 
@@ -751,6 +759,18 @@ export default {
 			return new Promise((resolve, reject) => {
 				
 				axios.post(`/api/users/search`,{q:query}).then(({data}) => resolve(data)).catch(e => reject(e))
+			})
+		},
+
+
+		getStatusPromotor({commit}){
+
+			return new Promise((resolve, reject) => {
+				axios.get(`/api/dashboard/tablero/promotor/get-status`).then(({data}) => {
+					commit('setStatusPromotor',data)
+					resolve(data)
+				}).catch(e => reject(e))
+
 			})
 		}
 

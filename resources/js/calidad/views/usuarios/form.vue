@@ -132,7 +132,7 @@
                                        
                                        <v-select v-model="form.rol_id"
                                           :dir="$store.state.appConfig.isRTL ? 'rtl' : 'ltr'" :options="getRols"
-                                          :reduce="val => val.value" :clearable="false" input-id="user-role" />
+                                          :reduce="val => val.value" :clearable="false" input-id="user-role" :selectable="verificarRol"  />
 
                                        <b-form-invalid-feedback :state="errors.length ? false : null">
                                           {{ errors[0] }}
@@ -471,11 +471,12 @@ export default {
 
    setup(props, { emit }) {
       
+      const {usuario} = toRefs(store.state.usuario)
+
       const { resolveUserRoleVariant } = useUsersList()
       const getRols = computed(() => store.getters['rol/getRols'])
       const { refFormObserver, getValidationState, resetForm } = formValidation(resetuserData)
       const profileFile = ref(null)
-      // const {usuario:form} = toRefs(store.state.usuario)
       const form = computed(() => store.state.usuario.user)
 
       const cargarform = () => {
@@ -590,7 +591,15 @@ export default {
 
          agregarTelefono,
          quitarTelefono,
-         guardarTelefono
+         guardarTelefono,
+         verificarRol:(option) => {
+            if(option.label == 'Usuario' && usuario.value.rol.nombre == 'Promotor'){
+               return true;
+            }else if(usuario.value.rol.nombre != 'Promotor'){
+               return true
+            }
+            return false;
+         }
          
       }
   }

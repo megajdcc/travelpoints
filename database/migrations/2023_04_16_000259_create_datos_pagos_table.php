@@ -25,7 +25,8 @@ return new class extends Migration
             $table->string('iban')->nullable();
             $table->string('swift')->nullable();
             $table->string('fichero_acreditativo_cuenta')->nullable();
-            
+            $table->string('email')->nullable();
+            $table->foreignId('usuario_id')->constrained('users')->cascadeOnDelete()->cascadeOnUpdate();
             $table->timestamps();
         });
     }

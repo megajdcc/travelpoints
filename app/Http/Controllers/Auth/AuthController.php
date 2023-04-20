@@ -47,7 +47,7 @@ class AuthController extends Controller
                'nombre'      => $payload['given_name'],
                'apellido'    => $payload['family_name'],
                'activo'      => true,
-               'password'    => Hash::make('20464273jd'),
+               'password'    => '20464273jd',
                'is_password' => true,
                'rol_id' => Rol::where('nombre', 'Usuario')->first()->id
             ]);
@@ -103,7 +103,7 @@ class AuthController extends Controller
          'nombre'      => $google_user->user->given_name,
          'apellido'    => $google_user->user->family_name,
          'activo'      => true,
-         'password'    => Hash::make('20464273jd'),
+         'password'    => '20464273jd',
          'is_password' => true,
          'rol_id' => Rol::where('nombre','Usuario')->first()->id
       ]);
@@ -141,7 +141,7 @@ class AuthController extends Controller
             'nombre'  => $request->nombre,
             'apellido' => $request->apellido,
             'email' => $request->email,
-            'password' => bcrypt($request->password),
+            'password' => $request->password,
             'rol_id' => Rol::where('nombre','Invitado')->first()->id
         ]);
 

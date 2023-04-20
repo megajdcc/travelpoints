@@ -6,11 +6,11 @@
                <h2 class="font-weight-bolder">Mi código de referidor</h2>
             </header>
          </template>
-         <h2>Gana puntos ($Tp) envíando tu código de referidor a tus amigos.</h2>
-         <p class="text-justify">Aumenta tus puntos ($Tp) por cada Amigo que se haya registrado con tu código de
+         <h2>Gana puntos (Tp$) envíando tu código de referidor a tus amigos.</h2>
+         <p class="text-justify">Aumenta tus puntos (Tp$) por cada Amigo que se haya registrado con tu código de
             referidor
             y haya consumado una
-         reserva. <br> Por cada reserva consumada de tus referidos tu ganarás saldo ($Tp) que luego podrás usar en
+         reserva. <br> Por cada reserva consumada de tus referidos tu ganarás saldo (Tp$) que luego podrás usar en
             nuestras tiendas de destinos que tenemos para Tí.</p>
 
          <validation-observer ref="formValidate" #default="{ handleSubmit }">

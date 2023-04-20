@@ -264,6 +264,12 @@ class User extends Authenticatable
         return $this->belongsToMany(Producto::class, 'carrito_productos', 'cliente_id', 'producto_id')->withPivot(['cantidad', 'precio_unitario', 'monto','tienda_id']);
     }
 
+    public function datosPago(){
+        return $this->hasOne(DatosPagos::class,'usuario_id','id');
+    }
+
+
+
     public function cargar(): User{
 
         
@@ -288,6 +294,7 @@ class User extends Authenticatable
         $this->seguidos;
         $this->cupones;
         $this->carritoCompra;
+        $this->datosPago;
 
         return $this;
     }

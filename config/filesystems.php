@@ -133,6 +133,13 @@ return [
             'visibility' => 'public',
         ],
 
+        'archivos_comprobante' => [
+            'driver' => 'local',
+            'root' => storage_path('app/public/comprobantes/archivo_acreditativo'),
+            'url' => env('APP_URL') . '/storage/comprobantes/archivo_acreditativo',
+            'visibility' => 'public',
+        ],
+
 
 
 

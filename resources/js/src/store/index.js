@@ -143,7 +143,8 @@ import sucursal from './modules/sucursal.js'
 
 import comision from './modules/comision.js'
 
-
+// Datos Pago 
+import datosPago from './modules/datosPago.js';
 
 Vue.use(Vuex)
 
@@ -290,6 +291,7 @@ export default new Vuex.Store({
     carrito,
     sucursal,
     comision,
+    datosPago
   },
 
   strict: process.env.DEV,

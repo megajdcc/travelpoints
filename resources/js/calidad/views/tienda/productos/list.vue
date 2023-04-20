@@ -25,7 +25,13 @@
             
                     <div>
                       <h2 class="item-price">
-                        {{ producto.precio | currency(producto.divisa ? producto.divisa.iso : 'MXN') }}
+                        <template v-if="producto.divisa.iso.toUpperCase() == 'TP'">
+                          Tp{{ producto.precio | currency }}
+                        </template>
+                        <template v-else>
+                          {{ producto.precio | currency(producto.divisa ? producto.divisa.iso : 'MXN') }}
+                        </template>
+                        
                       </h2>
 
                       <b-badge variant="primary">{{ producto.categoria.nombre }}</b-badge>

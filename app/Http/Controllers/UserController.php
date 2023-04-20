@@ -28,9 +28,7 @@ class UserController extends Controller
 
     public function getUsuario(User $usuario){
         $usuario->cargar();
-
         return response()->json($usuario);
-
     }
 
 
@@ -87,15 +85,12 @@ class UserController extends Controller
 
             $usuario->notify(new WelcomeUsuario($usuario));
             DB::commit();
-
-
             $usuario->cargar();
             
             $result = true;
 
         }catch(Exception $e){
             
-            dd($e->getMessage());
 
             DB::rollBack();
             $result = false;

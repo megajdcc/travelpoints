@@ -1,7 +1,7 @@
 <?php
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\{AuthController};
-use App\Http\Controllers\{AmenidadController, ApplicationController, CargoController, CategoriaFaqController, CategoriaProductoController, ComisionController, ConsumoController, CuponController, DashboardController, DestinoController, DivisaController, EmpleadoController, EventoController, FaqController, FormaPagoController, HomeController, HorarioController, HorarioReservacionController, IataController, MovimientoController, NegocioCategoriaController, NegocioController, UserController,NotificacionController,RolController,PermisoController, SolicitudController, TelefonoController,OpinionController, PanelController, ProductoController, PublicacionController, ReservacionController, SistemaController, SucursalController, TiendaController, VentaController};
+use App\Http\Controllers\{AmenidadController, ApplicationController, CargoController, CategoriaFaqController, CategoriaProductoController, ComisionController, ConsumoController, CuponController, DashboardController, DatosPagosController, DestinoController, DivisaController, EmpleadoController, EventoController, FaqController, FormaPagoController, HomeController, HorarioController, HorarioReservacionController, IataController, MovimientoController, NegocioCategoriaController, NegocioController, UserController,NotificacionController,RolController,PermisoController, SolicitudController, TelefonoController,OpinionController, PanelController, ProductoController, PublicacionController, ReservacionController, SistemaController, SucursalController, TiendaController, VentaController};
 use App\Http\Middleware\convertirNull;
 use Laravel\Socialite\Facades\Socialite;
 use App\Models\{CategoriaFaq, CategoriaProducto, Pais,Estado,Ciudad,};
@@ -507,6 +507,16 @@ Route::get('negocios/{negocio}/recomendacions/toggle/user/{usuario}',[NegocioCon
     Route::get('dashboard/total/comisiones/generadas',[DashboardController::class,'fetchComisionesGeneradas']);
     Route::get('dashboard/total/operaciones/travel',[DashboardController::class,'getTotalOperacionesTravel']);
     Route::get('dashboard/tablero/promotor/get-status',[UserController::class,'getStatus']);
+    
+
+    /*****************************/
+    /* Datos de pagos
+    /*****************************/ 
+
+    Route::get('datos-pago/fetch/{usuario}',[DatosPagosController::class,'fetch']);
+    Route::resource('datos-pago',DatosPagosController::class);
+    
+
 
 
 

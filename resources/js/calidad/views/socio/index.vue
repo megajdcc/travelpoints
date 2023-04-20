@@ -109,6 +109,10 @@
                      Editar Información
                   </b-nav-item>
 
+                  <b-nav-item :to="{ name: 'perfil.datos_pago' }" exact active-class="active" v-if="$can('write','Datos de pago')">
+                     <font-awesome-icon icon="fas fa-money-check-dollar"/>
+                     Datos de información de pago
+                  </b-nav-item>
 
                   <b-nav-item :to="{ name: 'perfil.password' }" exact active-class="active">
                      <span class="fas fa-key"></span>

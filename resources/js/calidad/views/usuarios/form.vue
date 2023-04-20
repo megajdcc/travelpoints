@@ -593,11 +593,13 @@ export default {
          quitarTelefono,
          guardarTelefono,
          verificarRol:(option) => {
-            if(option.label == 'Usuario' && usuario.value.rol.nombre == 'Promotor'){
+
+            if(option.label == 'Viajero' && usuario.value.rol.nombre == 'Promotor'){
                return true;
             }else if(usuario.value.rol.nombre != 'Promotor'){
                return true
             }
+            
             return false;
          }
          

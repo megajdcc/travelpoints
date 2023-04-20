@@ -13,8 +13,10 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('datos_pagos', function (Blueprint $table) {
+        Schema::create('datos_pagos', function (Blueprint $table){
+
             $table->id();
+            $table->engine = 'MyISAM';
             $table->tinyInteger('metodo_pago')->default(1);
             $table->foreignId('divisa_id')->nullable()->constrained('divisas')->cascadeOnUpdate()->onDelete('set null');
             $table->foreignId('pais_id')->nullable()->constrained('pais')->cascadeOnUpdate()->onDelete('set null');
@@ -24,10 +26,12 @@ return new class extends Migration
             $table->string('titular');
             $table->string('iban')->nullable();
             $table->string('swift')->nullable();
+            $table->string('numero_cuenta')->nullable();
             $table->string('fichero_acreditativo_cuenta')->nullable();
             $table->string('email')->nullable();
             $table->foreignId('usuario_id')->constrained('users')->cascadeOnDelete()->cascadeOnUpdate();
             $table->timestamps();
+            
         });
     }
 

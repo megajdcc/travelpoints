@@ -73,6 +73,17 @@ export default [
                    //  navActiveLink: 'socio'
                 },
              },
+
+             {
+                path: 'datos-pago',
+                name: 'perfil.datos_pago',
+                component: () => import('views/socio/perfil/datosPago.vue'),
+                meta: {
+                   name: 'perfil',
+                   layout: 'travel'
+                },
+             },
+
              {
                 path: 'contrasena',
                 name: 'perfil.password',

@@ -116,10 +116,6 @@ export default {
             }
 
         }
-        
-        
-      
-       
 
         return 'Sin definir';
 

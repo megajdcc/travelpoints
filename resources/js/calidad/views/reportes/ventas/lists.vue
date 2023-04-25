@@ -28,7 +28,7 @@
                   <b-input-group size="sm">
                      <b-form-input v-model="searchQuery" class="d-inline-block" placeholder="Buscar..."
                         size="sm" />
-                     <template #append is-text>
+                     <template #append >
                         <b-button @click="exportarData" variant="primary" size="sm">
                            <feather-icon icon="downloadIcon" />
                            Descargar

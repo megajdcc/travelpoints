@@ -63,7 +63,18 @@ class Venta extends Model
     public function cargar(){
         $this->reservacion;
         $this->divisa;
-        $this->empleado;
+        
+        if($this->empleado){
+            $this->empleado->usuario;
+            $this->empleado->usuario->avatar = $this->empleado->usuario->getAvatar();
+        }
+
+        $this->cliente->avatar = $this->cliente->getAvatar();
+
+        if($this->model->model_type == 'App\Models\Producto'){
+            $this->model?->tienda?->divisa;
+        }
+
         $this->cliente;
         $this->model;
         $this->opinions->load(['usuario','model'])->each(function($opinion) {

@@ -772,6 +772,18 @@ export default {
 				}).catch(e => reject(e))
 
 			})
+		},
+
+		cambiarDivisa({commit},dato){
+
+			return new Promise((resolve, reject) => {
+				axios.put(`/api/usuarios/${dato.usuario}/change-divisa`,dato).then(({data}) => {
+
+					commit('update',data.usuario)
+
+					resolve(data)
+				}).catch(e => reject(e))
+			})
 		}
 
 

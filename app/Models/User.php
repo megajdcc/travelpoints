@@ -27,23 +27,24 @@ use App\Models\Usuario\Permiso;
 
 class User extends Authenticatable
 {
+
     use HasApiTokens,HasFactory, Notifiable;
     use Has_roles;
     use hasCuenta,hasTelefonos,hasCarrito;
-
-
     public readonly string $model_type;
-
     public readonly int $divisa_id;
-
-
 
     public function __construct(
         string $model_type = 'App\Models\User')
     {
         $this->model_type = $model_type;
-        $this->divisa_id = Divisa::where('principal',true)->first()->id;
-        
+
+        $roles = collect(['Promotor','Lider','Coordinador']);
+
+        $this->divisa_id = Divisa::where('principal', true)->first()->id;
+
+       
+
     }
 
     /**
@@ -269,6 +270,9 @@ class User extends Authenticatable
     }
 
 
+    public function retiros(){
+        return $this->hasMany(Retiro::class,'usuario_id','id');
+    }
 
     public function cargar(): User{
 
@@ -295,6 +299,7 @@ class User extends Authenticatable
         $this->cupones;
         $this->carritoCompra;
         $this->datosPago;
+        $this->retiros;
 
         return $this;
     }

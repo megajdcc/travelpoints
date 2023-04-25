@@ -48,8 +48,6 @@ class MovimientoController extends Controller
                 break;
 
         }
-
-
         if(!$model->cuenta){
             $cuenta = $model->aperturarCuenta();
         }else{

@@ -110,19 +110,15 @@ export default {
 
       const cargarForm = () => {
          store.dispatch('negocio/datosHome').then(({ reservasMes }) => {
-
             total.value.reservas = reservasMes
          })
       }
 
       if(negocio.value.id){
          cargarForm();
-
       }
-      watch([negocio],() => cargarForm())
-      
-  
 
+      watch([negocio],() => cargarForm())
 
       return {
          total,

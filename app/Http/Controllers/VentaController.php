@@ -16,18 +16,21 @@ class VentaController extends Controller
     public function fetchData(Request $request){
         $datos = $request->all();
 
+       
         if(isset($datos['negocio_id']) ){
-
-            $paginator = Venta::where([
+          
+            $paginator = Venta::where('model_id',$datos['negocio_id'])
+            ->where('model_type', $datos['model_type'])
+            ->where([
                 ['monto','like',"%{$datos['q']}%",'or'],
                 ['comision', 'like', "%{$datos['q']}%", 'or'],
                 ['tps', 'like', "%{$datos['q']}%", 'or'],
                 ['tps_referente', 'like', "%{$datos['q']}%", 'or'],
                 ['certificado', 'like', "%{$datos['q']}%", 'or'],
             ])
-            ->orWhereHas('cliente',function(Builder $q) use($datos){
+            ->whereHas('cliente',function(Builder $q) use($datos){
 
-                $q->where([
+                $q->orWhere([
                     ['nombre','like',"%{$datos['q']}%",'or'],
                     ['apellido', 'like', "%{$datos['q']}%", 'or'],
                     ['email', 'like', "%{$datos['q']}%", 'or'],
@@ -35,24 +38,10 @@ class VentaController extends Controller
                 ]);
 
             })
-
-            ->orWhereHas('empleado', function (Builder $q) use ($datos) {
-
-                $q->whereHas('usuario',function(Builder $query) use($datos){
-                    $query->where([
-                        ['nombre', 'like', "%{$datos['q']}%", 'or'],
-                        ['apellido', 'like', "%{$datos['q']}%", 'or'],
-                        ['email', 'like', "%{$datos['q']}%", 'or'],
-                        ['username', 'like', "%{$datos['q']}%", 'or'],
-                    ]);
-                });
-
-            })
-            ->where('model_id',$datos['negocio_id'])
-            ->where('model_type', $datos['model_type'])
             ->with(['model','empleado','cliente','divisa'])
             ->orderBy($datos['sortBy'] ?: 'id',$datos['isSortDirDesc'] ? 'desc' : 'asc')
             ->paginate($datos['perPage'] ?: 10000);
+
         }else{
 
             $paginator = Venta::where([
@@ -62,7 +51,7 @@ class VentaController extends Controller
                 ['tps_referente', 'like', "%{$datos['q']}%", 'or'],
                 ['certificado', 'like', "%{$datos['q']}%", 'or'],
             ])
-            ->whereHas('cliente', function (Builder $q) use ($datos) {
+            ->whereHas('cliente', function (Builder $q) use ($datos){
                 $q->orWhere([
                     ['nombre', 'like', "%{$datos['q']}%", 'or'],
                     ['apellido', 'like', "%{$datos['q']}%", 'or'],
@@ -85,7 +74,7 @@ class VentaController extends Controller
             ->when($datos['model_type'],function($query) use($datos) {
                 $query->where('model_type',$datos['model_type']);
             })
-            ->when($datos['usuario_id'],function($q) use($datos){
+            ->when(isset($datos['usuario_id']) && $datos['usuario_id'],function($q) use($datos){
                 $q->where('cliente_id',$datos['usuario_id']);
             })
             ->with(['model', 'empleado', 'cliente', 'divisa'])
@@ -93,29 +82,12 @@ class VentaController extends Controller
             ->paginate($datos['perPage'] ?: 10000);
         }
 
+        $ventas = collect($paginator->items())->each(fn ($val) => $val->cargar());
 
-        $ventas = $paginator->items();
-
-        foreach($ventas as $venta){
-
-            if($venta->empleado){
-                $venta->empleado->usuario;
-                $venta->empleado->usuario->avatar = $venta->empleado->usuario->getAvatar();
-            }
-            
-           
-
-            $venta->cliente->avatar = $venta->cliente->getAvatar();
-
-            if($venta->model->model_type == 'App\Models\Producto'){
-                $venta->model?->tienda?->divisa;
-            }
-
-        }
-
-        return response()->json([
+        return response()
+        ->json([
             'total' => $paginator->total(),
-            'ventas' => $paginator->items()
+            'ventas' => $ventas
         ]);
 
 
@@ -173,9 +145,10 @@ class VentaController extends Controller
             $monto = number_format((float) $venta->monto,2,'.',',') .' '.$venta->divisa->iso;
 
 
-            $venta->cliente->generarMovimiento($datos['tps'],"Consumo en {$venta->model->nombre} por un monto de:{$monto}.");
-
-            // dd($monto);
+            // Comision Viajero Tps
+            if(in_array($venta->cliente->rol->nombre, ['Viajero'])){
+                $venta->cliente->generarMovimiento($datos['tps'], "Consumo en {$venta->model->nombre} por un monto de:{$monto}.");
+            }
 
             $venta->model->generarMovimiento($venta->model->divisa->convertir($venta->divisa, $datos['tps']), "Consumo de cliente {$venta->cliente->nombre} {$venta->cliente->apellido} por un monto de:{$monto}.",Movimiento::TIPO_EGRESO);
             

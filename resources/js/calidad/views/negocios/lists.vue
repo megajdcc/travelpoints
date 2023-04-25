@@ -27,11 +27,16 @@
                </template>
 
                <template #cell(saldo)="{item}">
-                  <b-button variant="dark" @click="mostrarBalances(item)" v-b-tooltip.hover title="Mostrar Billetera" size="sm">
+                  
+                  <b-button variant="dark" @click="mostrarBalances(item)" v-b-tooltip.hover title="Mostrar Billetera" size="sm" v-if="item.cuenta">
                            <span class="text-nowrap text-success" :class="{'text-danger': item.cuenta.saldo < 0}">
                               {{ item.cuenta.saldo | currency(item.cuenta.divisa.iso) }}
                            </span>
                   </b-button>
+
+                  <span v-else>
+                     Sin Cuenta 
+                  </span>
                 
                </template>
               

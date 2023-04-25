@@ -146,6 +146,10 @@ import comision from './modules/comision.js'
 // Datos Pago 
 import datosPago from './modules/datosPago.js';
 
+// Retiros 
+
+import retiro from './modules/retiro.js';
+
 Vue.use(Vuex)
 
 export default new Vuex.Store({
@@ -291,7 +295,8 @@ export default new Vuex.Store({
     carrito,
     sucursal,
     comision,
-    datosPago
+    datosPago,
+    retiro
   },
 
   strict: process.env.DEV,

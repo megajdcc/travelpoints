@@ -399,6 +399,23 @@ export default [
                resources:'movimientos',
                action:'read'
             }
+         },
+
+         {
+            
+            path:':id/user',
+            props:true,
+            component:() => import('views/socio/perfil/cuenta.vue'),
+            name:'movimientos.user',
+            meta:{
+               resources:'movimientos',
+               action:'read',
+               navActiveLink:'listar.usuarios',
+               breadcrumb:[
+                  {text:'Usuarios',active:false,to:{name:'listar.usuarios'}},
+                  {text:'Movimientos de Cuenta',active:true},
+               ]
+            }
          }
       ]
 
@@ -2484,6 +2501,63 @@ export default [
    },
 
 
+   /*****************************************/
+   /* Retiros comisiones
+   /****************************************/
+
+   {
+      path:'/retiros',
+      name:'retiros',
+      component:() => import('views/retiros/index.vue'),
+      children:[
+         {
+            path:'',
+            name:'retiro.list',
+            component:() => import('views/retiros/list.vue'),
+            meta:{
+               resource:'retiros',
+               action:'read',
+               pageTitle:'Retiros de comisiones',
+               breadcrumb:[
+                  {text:'Retiros',active:true}
+               ]
+            }
+         },
+         {
+            path:'create',
+            name:'retiro.create',
+            component:() => import('views/retiros/create.vue'),
+            meta:{
+               resource:'retiros',
+               action:'write',
+               pageTitle:'Crear Retiro',
+               navActiveLink:'retiro.list',
+               breadcrumb:[
+                  {text:'Retiros',active:false,to:{name:'retiro.list'}},
+                  {text:'Crear',active:true},
+               ]
+            }
+         },
+
+          {
+            path:':id/edit',
+            name:'retiro.edit',
+            props:true,
+            component:() => import('views/retiros/edit.vue'),
+            meta:{
+               resource:'retiros',
+               action:'update',
+               pageTitle:'Actualizar Retiro',
+               navActiveLink:'retiro.list',
+               breadcrumb:[
+                  {text:'Retiros',active:false,to:{name:'retiro.list'}},
+                  {text:'Actualizar',active:true},
+               ]
+            }
+         }
+
+      ]
+   },
 
    /*****************************************/
    /* PAGINA DE perfil de negocios

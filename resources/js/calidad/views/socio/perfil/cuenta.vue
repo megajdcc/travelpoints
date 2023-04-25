@@ -6,11 +6,11 @@
              <h3>Movimientos de Cuentas</h3>
          </template>
 
-         <template #contenido="{fetchData,tableColumns,isSortDirDesc,sortBy}">
+         <template #contenido="{fetchData,tableColumns,isSortDirDesc,sortBy,perPage}">
             <b-card>
-                <b-table ref="refTable" :items="fetchData" responsive :fields="tableColumns" primary-key="id"
-                     :sort-by="sortBy" empty-text="No se encontró ningún movimiento" :sort-desc="isSortDirDesc"
-                     sticky-header="700px" :no-border-collapse="false" borderless outlined small>
+                <b-table ref="refTable" :items="fetchData" responsive :fields="tableColumns" primary-key="id" :sort-by="sortBy"
+                   empty-text="No se encontró ningun movimiento... " :sort-desc="isSortDirDesc" sticky-header="700px"
+                   :no-border-collapse="false" borderless outlined :busy="loading" :perPage="perPage" showEmpty small stacked="md">
 
                      <template #cell(created_at)="{ item }">
                            {{ item.created_at | fecha('LLL') }}
@@ -73,15 +73,22 @@ export default {
 
    },
 
+   props:{
+      id:Number|String
+   },
+
    setup(props){
 
       const { usuario } = toRefs(store.state.usuario)
       const { sistema } = toRefs(store.state.sistema)
+
+      const {id} = toRefs(props)
+
       const route = useRoute();
 
       const actions =   useCuentaList({
-         model_id: computed(() => route.meta.layout == 'travel' ? usuario.value.id : sistema.value.id),
-         model_type: route.meta.layout == 'travel' ? 'User' : 'Sistema'
+         model_id: computed(() => route.meta.layout == 'travel' ? usuario.value.id : id.value ? id.value : sistema.value.id),
+         model_type: route.meta.layout == 'travel' ? 'User' : id.value ? 'User' : 'Sistema'
       });
      
 

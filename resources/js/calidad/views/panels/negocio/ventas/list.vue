@@ -110,6 +110,7 @@ export default {
 
 
    setup(props){
+      
       const {negocio} = toRefs(store.state.negocio)
 
       const actions = useVentasList(negocio)

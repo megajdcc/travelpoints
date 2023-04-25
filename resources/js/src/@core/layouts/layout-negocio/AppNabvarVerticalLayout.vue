@@ -13,7 +13,7 @@
     <!-- Left Col -->
     <b-navbar-nav class="nav align-items-center mr-auto d-none d-sm-flex">
       <!-- <search-bar /> -->
-      <v-select v-model="negocio_id" @option:selected="cambiarNegocio" :options="usuario.negocios" label="nombre" :reduce="(option) => option.id" :clearable="false" class="w-100 selector-negocio" style="min-width:200px;">
+      <v-select v-model="negocio_id" @option:selected="cambiarNegocio" :options="negociosList" label="nombre" :reduce="(option) => option.id" :clearable="false" class="w-100 selector-negocio" style="min-width:200px;">
       </v-select>
     </b-navbar-nav>
 
@@ -82,7 +82,7 @@ export default {
     const {usuario} = toRefs(store.state.usuario)
     const negocio_id = ref(store.state.negocio.negocio.id)
 
-    const {negocio} = toRefs(store.state.negocio)
+    const {negocio, negocios} = toRefs(store.state.negocio)
 
     const cambiarNegocio = ({id:id_negocio}) => {
 
@@ -102,10 +102,29 @@ export default {
       negocio_id.value = negocio.value.id
     })
 
+
+    const cargarForm = () => {
+      if (['Administrador', 'Desarrollador'].includes(usuario.value.rol.nombre)) {
+        store.dispatch('negocio/getNegocios')
+      }
+
+    }
+
+    cargarForm();
+
+
     return {
       usuario,
       negocio_id,
-      cambiarNegocio
+      cambiarNegocio,
+      negociosList:computed(() => {
+        
+        if(['Administrador','Desarrollador'].includes(usuario.value.rol.nombre)){
+          return negocios.value;
+        }
+        return usuario.value.negocios;
+        
+      })
     }
 
 

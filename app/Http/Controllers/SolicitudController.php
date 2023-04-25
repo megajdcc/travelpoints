@@ -299,7 +299,7 @@ class SolicitudController extends Controller
 
                 $sistema = Sistema::first();
                 $divisa_credito = Divisa::find($sistema->negocio['divisa_id']);
-                $saldo_apertura = $divisa_credito->convertir($negocio->divisa, $sistema->negocio->credito);
+                $saldo_apertura = $divisa_credito->convertir($negocio->divisa, $sistema['negocio']['credito']);
 
                 $negocio->aperturarCuenta($saldo_apertura);
 
@@ -317,8 +317,6 @@ class SolicitudController extends Controller
                 $negocio->asignarEmpleado($negocio->encargado,$negocio->primerCargo());
                 $permisos = Permiso::whereHas('panel', fn (Builder $q) => $q->where('panel', 'Negocio'))->get();
                 $negocio->encargado->asignarPermisos($permisos);
-             
-            
 
             }
             

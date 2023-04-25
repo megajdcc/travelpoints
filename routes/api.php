@@ -1,7 +1,7 @@
 <?php
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\{AuthController};
-use App\Http\Controllers\{AmenidadController, ApplicationController, CargoController, CategoriaFaqController, CategoriaProductoController, ComisionController, ConsumoController, CuponController, DashboardController, DatosPagosController, DestinoController, DivisaController, EmpleadoController, EventoController, FaqController, FormaPagoController, HomeController, HorarioController, HorarioReservacionController, IataController, MovimientoController, NegocioCategoriaController, NegocioController, UserController,NotificacionController,RolController,PermisoController, SolicitudController, TelefonoController,OpinionController, PanelController, ProductoController, PublicacionController, ReservacionController, SistemaController, SucursalController, TiendaController, VentaController};
+use App\Http\Controllers\{AmenidadController, ApplicationController, CargoController, CategoriaFaqController, CategoriaProductoController, ComisionController, ConsumoController, CuponController, DashboardController, DatosPagosController, DestinoController, DivisaController, EmpleadoController, EventoController, FaqController, FormaPagoController, HomeController, HorarioController, HorarioReservacionController, IataController, MovimientoController, NegocioCategoriaController, NegocioController, UserController,NotificacionController,RolController,PermisoController, SolicitudController, TelefonoController,OpinionController, PanelController, ProductoController, PublicacionController, ReservacionController, RetiroController, SistemaController, SucursalController, TiendaController, VentaController};
 use App\Http\Middleware\convertirNull;
 use Laravel\Socialite\Facades\Socialite;
 use App\Models\{CategoriaFaq, CategoriaProducto, Pais,Estado,Ciudad,};
@@ -123,6 +123,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::put('usuarios/{usuario}/toggle-like',[UserController::class,'toggleLike']);
 
     Route::post('users/search',[UserController::class,'searchUser']);
+    Route::put('usuarios/{usuario}/change-divisa',[UserController::class,'changeDivisa']);
 
     
     /*****************************/
@@ -517,11 +518,13 @@ Route::get('negocios/{negocio}/recomendacions/toggle/user/{usuario}',[NegocioCon
     Route::resource('datos-pago',DatosPagosController::class);
     
 
-
-
-
-
-
+    /*****************************/
+    /*  Retiros
+    /*****************************/ 
+    Route::get('retiros/get/all',[RetiroController::class,'getAll']);
+    Route::post('retiros/fetch/data',[RetiroController::class,'fetchData']);
+    Route::get('retiros/{retiro}/fetch/data',[RetiroController::class,'fetch']);
+    Route::resource('retiros',RetiroController::class);
 });
 
 Route::put('usuario/{usuario}/establecer/contrasena', [UserController::class, 'EstablecerContrasena'])->name('establecercontrasena');

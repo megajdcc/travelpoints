@@ -6,10 +6,25 @@ export default [
   
    {
       title: 'Usuarios',
-      route: 'listar.usuarios',
-      action: 'read',
-      resource: 'usuarios',
       icon: 'UsersIcon',
+      children:[
+         {
+            title: 'Usuarios',
+            route: 'listar.usuarios',
+            action: 'read',
+            resource: 'usuarios',
+            icon: 'UsersIcon',
+         },
+
+          {
+            title: 'Retiros',
+            route: 'retiro.list',
+            action: 'read',
+            resource: 'retiros',
+            fontAwesome:true,
+            icon: 'fa-money-bill-transfer',
+         }
+      ]
    },
 
    {
@@ -18,7 +33,7 @@ export default [
       fontAwesome:true,
       children:[
          {
-            title: 'negocios',
+            title: 'Negocios',
             route: 'negocio.lists',
             action: 'read',
             resource: 'negocios',

@@ -138,7 +138,7 @@ class Negocio extends Model
     public function cargar() : Negocio{
         $this->telefonos;
         $this->imagenes;
-        $this->cuenta;
+       
         $this->categoria;
         $this->solicitud;
         $this->encargado;
@@ -163,6 +163,18 @@ class Negocio extends Model
         $this->recomendaciones;
         $this->seguidores;
         // $this->precios = $this->precios ?: ['precio_minimo' => 0, 'precio_maximo' => 0];
+
+        if(!$this->cuenta){
+            
+            $sistema = Sistema::first();
+            $sistema->cargar();
+            
+            $divisa_credito = Divisa::find($sistema?->negocio['divisa_id']) ?: $this->divisa;
+            $saldo_apertura = $divisa_credito->convertir($this->divisa, ($sistema?->negocio['credito'] || 5));
+            $this->aperturarCuenta($saldo_apertura);
+            $this->cuenta;
+
+        }
         return $this;
     }
     

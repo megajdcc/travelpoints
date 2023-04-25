@@ -163,10 +163,7 @@
                            </h4>
                         </div>
 
-
-
                         <!-- Form: Informacion Personal -->
-
                         <b-row>
 
                            <!-- Field: Fecha Nacimiento -->
@@ -210,6 +207,33 @@
                            </b-col>
 
                         </b-row>
+
+                        <template v-if="form.id && form.cuenta.divisa_id">
+                             <!-- Header: Info de Datos de cuenta y Divisa del usuario-->
+                           <div class="d-flex mt-2">
+                              <font-awesome-icon icon="fas fa-money-check" />
+                              <h4 class="mb-0 ml-50">
+                                 Datos de cuenta y divisa
+                              </h4>
+                           </div>
+
+                           <b-row>
+                              <b-col cols="12" md="6">
+                                 <b-form-group label="Divisa de Cuenta" description="Es la divisa con la que se muestran la moneda en la billetera; Al cambiar la divisa, se generará un  movimiento de conversión de saldo a la nueva divisa">
+                                    <validation-provider name="cuenta.divisa_id" #default="{valid,errors}">
+                                       <v-select v-model="form.cuenta.divisa_id" :options="divisas" :reduce="option => option.id" label="nombre" @input="changeDivisa">
+                                       </v-select>
+
+                                       <b-form-invalid-feedback :starte="valid">
+                                          {{ errors[0]  }}
+                                       </b-form-invalid-feedback>
+                                    </validation-provider>
+
+                                 </b-form-group>
+                              </b-col>
+                           </b-row>
+                        </template>
+                       
                      </b-tab>
 
                      <b-tab>
@@ -472,6 +496,8 @@ export default {
    setup(props, { emit }) {
       
       const {usuario} = toRefs(store.state.usuario)
+      const {divisas} = toRefs(store.state.divisa)
+
 
       const { resolveUserRoleVariant } = useUsersList()
       const getRols = computed(() => store.getters['rol/getRols'])
@@ -483,6 +509,10 @@ export default {
 
          if(!getRols.value.length){
             store.dispatch('rol/cargarRoles')
+         }
+
+         if(!divisas.value.length){
+            store.dispatch('divisa/getDivisas')
          }
 
       }
@@ -565,6 +595,20 @@ export default {
       }
 
 
+      const changeDivisa = (divisa_id) => {
+         
+
+         store.dispatch('usuario/cambiarDivisa',{divisa:divisa_id,usuario:form.value.id}).then(({result}) => {
+            if(result){
+               toast.success('Se ha cambiado la divisa con éxito')
+            }else{
+               toast.info('No se pudo cambiar la divisa, inténte de nuevo')
+            }
+            
+         })
+
+
+      }
 
       return {
          refFormObserver,
@@ -592,6 +636,8 @@ export default {
          agregarTelefono,
          quitarTelefono,
          guardarTelefono,
+         divisas,
+         changeDivisa,
          verificarRol:(option) => {
 
             if(option.label == 'Viajero' && usuario.value.rol.nombre == 'Promotor'){

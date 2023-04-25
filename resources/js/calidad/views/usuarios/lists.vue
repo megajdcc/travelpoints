@@ -82,6 +82,11 @@
               <feather-icon icon="TrashIcon" />
               <span class="align-middle ml-50">Eliminar</span>
             </b-dropdown-item>
+
+             <b-dropdown-item :to="{name:'movimientos.user',params:{id:data.item.id}}">
+                <font-awesome-icon icon="fas fa-money-check"/>
+                <span class="align-middle ml-50">Movimientos de cuenta</span>
+              </b-dropdown-item>
           </b-dropdown>
         </template>
 

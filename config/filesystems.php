@@ -140,6 +140,13 @@ return [
             'visibility' => 'public',
         ],
 
+        'comprobante_retiro' => [
+            'driver' => 'local',
+            'root' => storage_path('app/public/comprobantes/retiros'),
+            'url' => env('APP_URL') . '/storage/comprobantes/retiros',
+            'visibility' => 'public',
+        ],
+
 
 
 

@@ -37,7 +37,6 @@ class EstadoCuenta extends Model
 
     public function movimientoApertura($monto_apertura = 3) : Movimiento{
     
-
       $movimiento = Movimiento::add(
         cuenta:$this,
         monto: $monto_apertura,

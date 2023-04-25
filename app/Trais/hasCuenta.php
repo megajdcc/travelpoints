@@ -3,6 +3,7 @@ namespace App\Trais;
 use App\Models\EstadoCuenta;
 use App\Models\Divisa;
 use App\Models\Movimiento;
+use App\Models\User;
 
 /**
  * 
@@ -14,13 +15,17 @@ trait hasCuenta
       return $this->morphOne(EstadoCuenta::class, 'model');
    }
 
-   public function aperturarCuenta($monto_apertura = null) : EstadoCuenta{
+   public function aperturarCuenta($monto_apertura = null, string $divisa_iso = null) : EstadoCuenta{
+
+      if($divisa_iso){
+         $div = Divisa::where('iso',$divisa_iso)->first()->id;
+      }
 
       $cuenta = EstadoCuenta::create([
          'saldo'      => 0,
          'model_type' => $this->model_type,
          'model_id'   => $this->id,
-         'divisa_id'  => $this->divisa_id
+         'divisa_id'  => isset($div) ? $div : $this->divisa_id
       ]);
 
       $movimiento = $cuenta->movimientoApertura($monto_apertura);
@@ -56,8 +61,30 @@ trait hasCuenta
 
    }
 
+   public function changeDivisa(Divisa $divisa = null) :Movimiento|User|bool|null{
 
-   
+      if(!is_null($divisa)){
+         $saldo  = $this->cuenta->saldo;
+         $new_saldo = $this->cuenta->divisa->convertir($divisa,$saldo);
+
+         $this->cuenta->divisa_id = $divisa->id;
+         $this->cuenta->save();
+
+         $movimiento = Movimiento::add(
+            cuenta: $this->cuenta,
+            monto: $new_saldo,
+            tipo_movimiento: Movimiento::TIPO_INGRESO,
+            concepto: 'Conversión de divisa',
+         );
+
+         $this->cuenta->saldo = $new_saldo;
+         $this->cuenta->save();
+
+         return $movimiento;
+      }
+
+      return false;
+   }
 
 }
 

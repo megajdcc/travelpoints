@@ -138,7 +138,7 @@ export default {
                axios.post(`/api/retiros/${datos.id}`,formData,headers).then(({data}) => {
                   
                   if(data.result){
-                     commit('update',data.sucursal)
+                     commit('update',data.retiro)
                   }
                   
                   resolve(data)

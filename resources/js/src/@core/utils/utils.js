@@ -122,9 +122,6 @@ export const optionsCurrency = ref({
             autoDecimalDigits:true,
          })
 
-
-
-
 export const dateOption = { dateFormat: 'Y-m-d H:i', enableTime: true }
 export const optionsEditor = {
     selector: 'textarea#premiumskinsandicons-snow',

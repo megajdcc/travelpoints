@@ -56,6 +56,18 @@ export default function useRetirosList(){
 
   }
 
+  const eliminar = (retiro_id) => {
+
+    store.dispatch('retiro/eliminar',retiro_id).then(({result}) => {
+      if(result){
+        toast.info('Se ha eliminado con éxito la solicitud de retiro')
+        refetchData();
+      }else{
+        toast.info('No se pudo eliminar esta solicitud de retiro')
+      }
+    })
+  } 
+
   return {
       perPageOptions,
       currentPage,
@@ -69,6 +81,7 @@ export default function useRetirosList(){
       refetchData,
       tableColumns,
       getStatus,
-      fetchData
+      fetchData,
+      eliminar
   }
 } 

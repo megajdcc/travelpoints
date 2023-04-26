@@ -172,7 +172,7 @@ class UserController extends Controller
         if(in_array($usuario->rol->nombre,['Promotor', 'Lider', 'Coordinador'])){
             $usuario->aperturarCuenta(0,'USD');
         }else{
-             $usuario->aperturarCuenta();
+            $usuario->aperturarCuenta();
         }
 
         $usuario->cargar();
@@ -788,18 +788,17 @@ class UserController extends Controller
         try {
             DB::beginTransaction();
 
-
             $usuario->changeDivisa(Divisa::find($request->get('divisa')));
             DB::commit();
             $result = true;
+            
         } catch (\Throwable $th) {
             DB::rollBack();
             $result = false;
 
             dd($th->getMessage());
-
-
         }
+
         $usuario->fresh();
         $usuario->cargar();
 

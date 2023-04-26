@@ -23,15 +23,16 @@
                 
                 <template #cell(monto)="{item}">
                   <span style="color:black" class="font-weight-bolder text-nowrap" >
-                    {{ item.tipo_movimiento == 1 ? '' : '-' }}{{ item.monto |
-                    currency({symbol:item.cuenta.divisa.simbolo}) }} {{ item.cuenta.divisa.iso.toUpperCase() }}
+                    {{ item.tipo_movimiento == 1 ? '' : '-' }}
+                    {{ item.monto | currency({symbol:item.divisa_id ? item.divisa.iso : item.cuenta.divisa.iso}) }} {{ item.divisa_id ? item.divisa.iso : item.cuenta.divisa.iso.toUpperCase() }}
                   </span>
                 </template>
                 
                 <template #cell(balance)="{item}">
                   <span style="color:black" class="font-weight-bolder text-nowrap">
                     {{ item.tipo_movimiento == 1 ? '' : '' }}{{ item.balance |
-                    currency({symbol:item.cuenta.divisa.simbolo}) }} {{ item.cuenta.divisa.iso.toUpperCase() }}
+                    currency({symbol:item.divisa_id ? item.divisa.simbolo : item.cuenta.divisa.simbolo}) }} 
+                    {{ item.divisa_id ? item.divisa.iso : item.cuenta.divisa.iso.toUpperCase() }}
                   </span>
                 </template>
 

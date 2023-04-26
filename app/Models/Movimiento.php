@@ -54,6 +54,13 @@ class Movimiento extends Model
 
     }
 
+    public function cargar(){
+        $this->cuenta->model;
+        $this->cuenta->divisa;
+        $this->divisa;
+        $this->_cellVariants =  ['monto' => $this->tipo_movimiento == 1 ? 'success' : 'danger', "balance" => $this->tipo_movimiento == 1 ? 'success' : 'danger'];
+    }
+
 
 
 }

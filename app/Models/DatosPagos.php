@@ -46,6 +46,14 @@ class DatosPagos extends Model
     public function usuario(){
         return $this->belongsTo(User::class,'usuario_id','id');
     }
+
+    public function cargar(){
+        $this->divisa;
+        $this->ciudad;
+        $this->pais;
+        $this->usuario;
+        
+    }
     
 
 }

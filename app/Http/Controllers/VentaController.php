@@ -171,9 +171,9 @@ class VentaController extends Controller
             DB::commit();
             $result = true;
         } catch (\Throwable $th) {
+
             DB::rollBack();
             $result = false;
-
             dd($th->getMessage());
 
         }

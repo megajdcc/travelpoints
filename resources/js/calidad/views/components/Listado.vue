@@ -59,8 +59,7 @@
                      <slot name="botonera-footer">
 
                      </slot>
-                     
-                     <b-button @click="regresar" size="sm">Regresar</b-button>
+                  
                   </b-button-group>
                  
                </b-col>

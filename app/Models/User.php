@@ -275,8 +275,6 @@ class User extends Authenticatable
     }
 
     public function cargar(): User{
-
-        
         $this->tokens;
         $this->rol?->permisos;
         $this->habilidades = $this->getHabilidades();
@@ -298,7 +296,7 @@ class User extends Authenticatable
         $this->seguidos;
         $this->cupones;
         $this->carritoCompra;
-        $this->datosPago;
+        $this->datosPago?->cargar();
         $this->retiros;
 
         return $this;

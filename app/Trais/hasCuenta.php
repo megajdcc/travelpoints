@@ -51,7 +51,7 @@ trait hasCuenta
          cuenta: $this->cuenta,
          monto: $monto,
          concepto:$concepto,
-         tipo_movimiento: $tipo_movimiento
+         tipo_movimiento: $tipo_movimiento,
       );
 
       $this->cuenta->save();

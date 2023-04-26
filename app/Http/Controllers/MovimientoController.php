@@ -65,18 +65,7 @@ class MovimientoController extends Controller
                             ->paginate($datos['perPage']?: 1000, pageName:'currentPage');
 
         
-                            $movimientos = $pagination->items();
-
-                        foreach($movimientos as $movimiento){
-                            
-                            $movimiento->cuenta->model;
-                            $movimiento->cuenta->divisa;
-                            $movimiento->_cellVariants =  ['monto' => $movimiento->tipo_movimiento == 1 ? 'success' : 'danger' , "balance" => $movimiento->tipo_movimiento == 1 ? 'success' : 'danger' ];
-                           
-
-
-                        }
-
+                    $movimientos = collect($pagination->items())->each(fn($val) => $val->cargar());
 
                     return response()->json([
                         'total' => $pagination->total(),

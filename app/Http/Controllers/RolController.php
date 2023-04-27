@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\{Auth,DB};
@@ -222,12 +223,10 @@ class RolController extends Controller
 
                     
                 }
-
                 
-               foreach(\App\Models\User::where('rol_id', $role->id)->get() as $usuario){
-                $usuario->asignarPermisosPorRol();
+               foreach(User::where('rol_id', $role->id)->get() as $usuario){
+                    $usuario->asignarPermisosPorRol();
                }
-
 
                 $role->permisos;
 

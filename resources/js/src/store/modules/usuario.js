@@ -466,6 +466,16 @@ export default {
 
 		rolUser(state){
 			return state.usuario.rol.nombre
+		},
+
+		miSaldo(state){
+			return state.usuario ? state.usuario.cuenta.saldo : 0;
+		},
+		miDivisa(state){
+			if(state.usuario){
+				return state.usuario.cuenta.divisa ? state.usuario.cuenta.divisa.iso : 'USD';
+			}
+			return 'USD';
 		}
 	
 

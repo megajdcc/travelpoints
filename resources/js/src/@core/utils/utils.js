@@ -209,8 +209,8 @@ export const regresar = () => {
 
 }
 
-export const getFecha = (fecha) => {
-  return moment(fecha).format('LLL');
+export const getFecha = (fecha = Date(), format = 'LLL') => {
+  return moment(fecha).format(format);
 } 
 
 export const getDay = (dia) => {

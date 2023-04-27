@@ -23,7 +23,7 @@ export const getUserData = () => JSON.parse(localStorage.getItem('userData'))
 
 export const getHomeRouteForLoggedInUser = userRole => {
   
-  if(['Desarrollador','Administrador'].find(val => val === userRole)){
+  if(['Desarrollador','Administrador','Lider','Promotor','Coordinador'].find(val => val === userRole)){
     return {name:'home'}
   }else{
     return {name:'inicio'}

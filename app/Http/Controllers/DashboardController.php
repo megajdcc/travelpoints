@@ -112,6 +112,8 @@ class DashboardController extends Controller
 
     public function viajerosActivos(Request $request){
 
+
+        $rol_user = $request->user()->rol->nombre;
         $data = $request->all();
         $rango_fecha = false;
         $rango_fecha = preg_replace('/ +/', ' ', $data['rango_fecha']);
@@ -129,6 +131,11 @@ class DashboardController extends Controller
                         ->whereRaw('v.created_at >= DATE_SUB(NOW(), INTERVAL 1 YEAR)')
                         ->when(is_iterable($rango_fecha) && count($rango_fecha) > 1 , function($q) use($rango_fecha) {
                             $q->whereBetween('v.created_at',$rango_fecha);
+                        })
+                        ->when(in_array($rol_user,['Promotor','Coordinador','Lider']), function($q) use($data,$request){
+                                $q->join('users as u','v.cliente_id','u.id')
+                                ->join('usuario_referencia as ur','u.id','ur.referido_id')
+                                ->where('ur.usuario_id', $request->user()->id);
                         })
                         ->first('porcentaje');
 
@@ -514,6 +521,81 @@ class DashboardController extends Controller
 
         return response()->json($total_operaciones);
         
+
+
+    }
+
+    public function getTotalReferidosRegistradoAnual(Request $request){
+
+        $usuarios_registrados = DB::table("users" ,'u')
+        ->selectRaw('count(u.id) as usuarios,month(u.created_at) as mes')
+        ->join('usuario_referencia as ur','u.id','ur.referido_id')
+        ->whereRaw("ur.usuario_id = :usuario && year(u.created_at) = year(now())",[':usuario' => $request->user()->id])
+        ->groupBy('mes')
+        ->orderBy('mes','asc')
+        ->get();
+
+
+        $usuarios_con_consumos =
+        DB::table("users", 'u')
+        ->selectRaw('count(distinct(u.id)) as usuarios,month(u.created_at) as mes')
+        ->join('usuario_referencia as ur', 'u.id', 'ur.referido_id')
+        ->join('ventas as v', 'u.id','v.cliente_id')
+        ->whereRaw("ur.usuario_id = :usuario && year(v.created_at) = year(now())", [':usuario' => $request->user()->id])
+        ->groupBy('mes')
+        ->orderBy('mes', 'asc')
+        ->get();
+
+        $categorias = collect([
+            'Enero',
+            'Febrero',
+            'Marzo',
+            'Abril',
+            'Mayo',
+            'Junio',
+            'Julio',
+            'Agosto',
+            'Septiembre',
+            'Octubre',
+            'Noviembre',
+            'Diciembre'
+        ]);
+
+        $data = \collect([
+            [
+                'name' => 'Registros nuevos',
+                'data' => collect([])
+            ],
+            [
+                'name' => 'Viajeros con consumo',
+                'data' => collect([])
+            ],
+
+
+        ]);
+       foreach ($categorias as $key => $mes) {
+
+            if($val = $usuarios_registrados->where('mes' ,($key + 1))->first()){
+                $data[0]['data']->push($val->usuarios);
+            }else{
+                $data[0]['data']->push(0);
+            }
+
+            if ($val = $usuarios_con_consumos->where('mes', ($key + 1))->first()) {
+                $data[1]['data']->push($val->usuarios);
+            } else {
+                $data[1]['data']->push(0);
+            }
+
+
+       }
+
+       $total_viajeros_consumos = $usuarios_con_consumos->sum('usuarios');
+       $total_usuarios_registrados = $usuarios_registrados->sum('usuarios');
+
+
+
+      return response()->json(['categorias' => $categorias,'data' => $data,...\compact('total_viajeros_consumos','total_usuarios_registrados')]);
 
 
     }

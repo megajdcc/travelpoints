@@ -24,6 +24,19 @@
           </statistic-card-horizontal>
 
           <statistic-card-horizontal 
+            icon="fa-money-bill" 
+            statisticTitle="Mi saldo" 
+            color="success"
+            colorIcon="dark"
+            colorText="text-white" 
+            v-if="['Promotor','Coordinador','Lider'].includes(usuario.rol ? usuario.rol.nombre : '')" >
+
+            {{  miSaldo | currency({currency:miDivisa})  }}
+          
+          </statistic-card-horizontal>
+
+
+          <statistic-card-horizontal 
             icon="fa-percent" 
             statisticTitle="Viajeros Activos" 
             color="dark"
@@ -67,6 +80,47 @@
 
           <b-col cols="12" md="8">
              <map-chart title="Total Paises activos" subtitulo="Con almenos un destino activo" :series="paisesActivos" v-if="$can('read', 'Tablero total paises activos')" ></map-chart>
+
+              <apex-chart titulo="Total viajeros registrados " :subtitulo="`Mensuales del año ${getFecha(new Date(),'YYYY')}` " 
+                  :chartOptions="viajerosTotalesAnual.chartOptions" :data="viajerosTotalesAnual.series" type="line" :height="320" v-if="$can('read','Total viajeros registrados promotor') && ['Promotor'].includes(usuario.rol ? usuario.rol.nombre : '')" >
+
+                  <template #filtro>
+                    <b-container fluid>
+                      <b-row>
+                        <b-col cols="12" md="6">
+                           <statistic-card-horizontal 
+                          icon="fa-chart-line" 
+                          statisticTitle="Total Viajeros registrados" 
+                          color="primary"
+                          colorIcon="white"
+                          colorText="text-white" 
+                       
+                           >
+
+                          {{ totalViajerosRegistrados }}
+                  
+                        </statistic-card-horizontal>
+                        </b-col>
+                        <b-col cols="12" md="6">
+                          <statistic-card-horizontal 
+                            icon="fa-chart-line" 
+                            statisticTitle="Total Viajeros con consumos" 
+                            color="danger"
+                            colorIcon="white"
+                            colorText="text-white" 
+                          
+                             >
+
+                            {{ totalViajerosConsumos }}
+                  
+                            </statistic-card-horizontal>
+                        </b-col>
+                      </b-row>
+                    </b-container>
+           
+                  </template>
+
+              </apex-chart>
           </b-col>
         </b-row>
 
@@ -229,6 +283,8 @@ import useDireccion from '@core/utils/useDireccion.js'
 import flatPickr from 'vue-flatpickr-component';
 import 'flatpickr/dist/flatpickr.css';
 
+import {getFecha} from '@core/utils/utils';
+
 export default {
   
   components: {
@@ -261,7 +317,10 @@ export default {
       totalPromotores,
       totalCoordinadores,
       totalComisionesGeneradas,
-      operacionesTravel
+      operacionesTravel,
+      viajerosTotalesAnual,
+      totalViajerosRegistrados,
+      totalViajerosConsumos
      } 
     = toRefs(store.state.dashboard)
     const viajeros_referidos = ref(0)
@@ -360,6 +419,7 @@ export default {
       store.dispatch('dashboard/fetchTotalCoordinadores');
       store.dispatch('dashboard/fetchTotalComisionesGeneradas');
       store.dispatch('dashboard/getTotalOperacionesTravel');
+      store.dispatch('dashboard/getTotalViajerosRegistradoAnual');
 
       if(rolUser.value == 'Promotor'){
         store.dispatch('usuario/getStatusPromotor').then((data) => {
@@ -406,6 +466,7 @@ export default {
       totalDestinosActivos,
       configRangoFecha,
       viajerosActivos,
+      viajerosTotalesAnual,
       destinosActivos,
       paisesActivos,
       negociosAfiliados,
@@ -422,12 +483,18 @@ export default {
       rolUser,
       viajeros_referidos,
       usuario,
+      miSaldo:computed(() => store.getters['usuario/miSaldo']),
+      miDivisa:computed(() => store.getters['usuario/miDivisa']),
       getLegendaStatusPromotor:(status) => {
         let legenda = ['Activo, con al menos un Viajero al mes','En peligro, no registra nuevos viajeros en los ultimos 30 días','Inactivo, no registra nuevos viajeros en los ultimos 90 días'];
 
         return legenda[status - 1];
 
-      }
+      },
+      getFecha,
+      totalViajerosRegistrados,
+
+      totalViajerosConsumos
     };
 
   }

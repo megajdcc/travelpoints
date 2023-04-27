@@ -212,6 +212,40 @@ export default{
                ]
             }],
 
+            viajerosTotalesAnual:{
+               series: [],
+               chartOptions: {
+                  chart: {
+                  height: 350,
+                  type: 'line',
+                  zoom: {
+                     enabled: false
+                  }
+                  },
+                  dataLabels: {
+                     enabled: false
+                  },
+                  stroke: {
+                     curve: 'straight'
+                  },
+                  
+                  grid: {
+                  row: {
+                     colors: ['#f3f3f3', 'transparent'], 
+                     opacity: 0.5
+                  },
+                  },
+                  xaxis: {
+                     categories: [],
+                     labels: {
+                           style: {
+                           transform: "rotate(45deg)"
+                           }
+                        }
+                  }
+               },
+            },
+
 
             negociosAfiliados:{
                series:[],
@@ -306,7 +340,9 @@ export default{
 
                },
             },
-            operacionesTravel:0
+            operacionesTravel:0,
+            totalViajerosRegistrados:0,
+            totalViajerosConsumos:0
 
       }
    },
@@ -384,8 +420,19 @@ export default{
 
       setTotalOperaciones(state,data){
          state.operacionesTravel = data
-      }
+      },
 
+      setViejerosTotalesAnuales(state,{categorias,data}){
+         state.viajerosTotalesAnual.chartOptions.xaxis.categories = categorias
+         state.viajerosTotalesAnual.series = data
+      },
+
+      setTotalViajerosRegistrados(state,total){
+         state.totalViajerosRegistrados = total
+      },
+      setTotalViajerosConsumo(state,total){
+         state.totalViajerosConsumos = total
+      }
 
    },
 
@@ -550,6 +597,21 @@ export default{
                resolve(data)
             }).catch(e => reject(e))
 
+         })
+      },
+
+      getTotalViajerosRegistradoAnual({commit}){
+
+         return new Promise((resolve, reject) => {
+            axios.get(`/api/dashboard/total/viajeros/anual`).then(({data}) => {
+               
+               commit('setViejerosTotalesAnuales',data)
+               commit('setTotalViajerosRegistrados',data.total_usuarios_registrados)
+               commit('setTotalViajerosConsumo',data.total_viajeros_consumos)
+
+               resolve(data)
+
+            }).catch(e => reject(e))
          })
       }
 

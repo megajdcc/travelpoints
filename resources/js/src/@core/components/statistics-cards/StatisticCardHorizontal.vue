@@ -5,7 +5,7 @@
         <h2 class="mb-25 font-weight-bolder">
           {{ statistic }}
         </h2>
-        <span>{{ statisticTitle }}</span>
+        <span class="text-wrap">{{ statisticTitle }}</span>
       </div>
       <b-avatar
         :variant="`light-${color}`"

@@ -24,7 +24,7 @@
               <b-form-input v-model="searchQuery" placeholder="Buscar..." />
               <template #append>
                 <b-button variant="primary" @click="$router.push({name:'create.usuario'})" v-if="$can('write','usuarios')">
-                  <span class="text-nowrap">Agregar usuario</span>
+                  <span class="text-nowrap">Agregar Viajero</span>
                 </b-button>
               </template>
             </b-input-group>
@@ -52,6 +52,13 @@
             </b-link>
             <small class="text-muted" v-if="item.username">{{ item.username }}</small>
           </b-media>
+        </template>
+        
+        
+        <template #cell(activo)="{item}">
+          <b-form-checkbox v-model="item.activo" switch @change="cambiarEstado(item.id)">
+            {{ item.activo ? 'Activo (¿Desactivar?)' : 'Desactivo (¿Activar?)' }}
+          </b-form-checkbox>
         </template>
 
         <!-- Column: Rol -->
@@ -116,6 +123,7 @@ import {
   BDropdownItem,
   BDropdownItemButton,
   BPagination,
+  BFormCheckbox
 } from 'bootstrap-vue'
 
 import vSelect from 'vue-select'
@@ -153,7 +161,8 @@ export default {
     PaginateTable:() => import('components/PaginateTable'),
     vSelect,
     PerPage:() => import('components/PerPage'),
-    BInputGroup
+    BInputGroup,
+    BFormCheckbox
   },
 
   computed:{
@@ -171,6 +180,20 @@ export default {
   setup() {
     const { usuario } = toRefs(store.state.usuario)
 
+    const cambiarEstado = (user_id) => {
+
+      store.dispatch('usuario/cambiarEstado',user_id).then(({result}) => {
+
+        if(result){
+          toast.success('Se ha cambiado con éxito el estado del usuario')
+          refetchData()
+        }else{
+          toast.info('No se pudo cambiar el Estado del usuario')
+          refetchData();
+        }
+      }).catch(e => console.log(e))
+      
+    }
 
 
     const {
@@ -200,7 +223,7 @@ export default {
 
     return {
 
-
+      cambiarEstado,
       fetchUsers,
       tableColumns,
       perPage,
@@ -255,6 +278,9 @@ export default {
 
 
   },
+
+
+ 
 
   
 }

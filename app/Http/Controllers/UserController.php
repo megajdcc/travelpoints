@@ -787,24 +787,47 @@ class UserController extends Controller
 
         try {
             DB::beginTransaction();
-
             $usuario->changeDivisa(Divisa::find($request->get('divisa')));
             DB::commit();
             $result = true;
-            
         } catch (\Throwable $th) {
             DB::rollBack();
             $result = false;
-
             dd($th->getMessage());
         }
 
         $usuario->fresh();
         $usuario->cargar();
 
-
         return response()->json(['result' => $result,'usuario' => $usuario]);
 
+    }
+
+    public function cambiarStatus(User $usuario){
+
+        try {
+            DB::beginTransaction();
+            $usuario->activo = !$usuario->activo;
+            $usuario->save();
+
+            DB::commit();
+            $result =true;
+
+            // Quitar saldo y ponerselo al sistema Travel, solo si el usuario es Promotor, Lider o Coordinador;
+            if(in_array($usuario->rol->nombre,['Promotor','Lider','Coordinador']) && !$usuario->activo){
+                
+                $usuario->removerSaldo("Consignación de saldo por cuenta desactivada a {$usuario->rol->nombre} - {$usuario->getNombreCompleto()}");
+            }
+
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            $result = false;
+
+            dd($th->getMessage());
+        }
+        $usuario->cargar();
+
+        return response()->json(['result' => $result,'usuario' => $usuario]);
     }
 
 

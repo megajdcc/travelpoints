@@ -13,6 +13,7 @@ export default function useUsersList() {
    // Table Handlers
    const tableColumns = [
       { key: 'username', sortable: true,label:'Usuario' },
+      { key: 'activo',label:'Estado',sortable:true},
       { key: 'email', sortable: true,label:"Email" },
       { key: 'rol', sortable: true,label:'rol',sortKey:'rol_id' },
       { key: 'actions',sortable:true, sortKey:'id',sortBy:'id' },

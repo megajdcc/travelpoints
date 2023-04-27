@@ -784,6 +784,16 @@ export default {
 					resolve(data)
 				}).catch(e => reject(e))
 			})
+		},
+
+		cambiarEstado({commit},usuario_id){
+			
+			return new Promise((resolve, reject) => {
+				axios.get(`/api/usuarios/${usuario_id}/cambiar/estado`).then(({data}) => {
+					resolve(data)
+				}).catch(e => reject(e))
+
+			})
 		}
 
 

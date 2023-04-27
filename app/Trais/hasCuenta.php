@@ -3,6 +3,7 @@ namespace App\Trais;
 use App\Models\EstadoCuenta;
 use App\Models\Divisa;
 use App\Models\Movimiento;
+use App\Models\Sistema;
 use App\Models\User;
 
 /**
@@ -85,6 +86,25 @@ trait hasCuenta
 
       return false;
    }
+
+   public function removerSaldo(string $concepto = 'Consignación de saldo por cuenta desactivada' )
+   {
+      
+      $saldo =  $this->cuenta->saldo;
+
+      if ($saldo > 0) {
+
+         $movimiento = $this->generarMovimiento($saldo, 'Remoción de saldo, desactivación de cuenta.', Movimiento::TIPO_EGRESO);
+         // Cuenta Sistema | adjudicar saldo removido a usuario;
+         $sistema = Sistema::first();
+         $sistema->generarMovimiento($saldo, $concepto, Movimiento::TIPO_INGRESO);
+
+      }
+
+   }
+
+
+   
 
 }
 

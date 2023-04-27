@@ -124,7 +124,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
 
     Route::post('users/search',[UserController::class,'searchUser']);
     Route::put('usuarios/{usuario}/change-divisa',[UserController::class,'changeDivisa']);
-
+    Route::get('usuarios/{usuario}/cambiar/estado',[UserController::class, 'cambiarStatus']);
     
     /*****************************/
     /* TELEFONOS

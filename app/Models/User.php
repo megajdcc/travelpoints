@@ -274,6 +274,10 @@ class User extends Authenticatable
         return $this->hasMany(Retiro::class,'usuario_id','id');
     }
 
+    
+   
+  
+
     public function cargar(): User{
         $this->tokens;
         $this->rol?->permisos;

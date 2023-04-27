@@ -9,6 +9,7 @@
       <!-- Left Text-->
       <b-col lg="8" class="d-none d-lg-flex align-items-center p-5">
         <div class="w-100 d-lg-flex align-items-center justify-content-center px-5">
+          <!-- Cambiar a imagen nueva de travelpoints esperando por Mario -->
           <b-img fluid :src="imgUrl" alt="Login V2" />
         </div>
       </b-col>
@@ -191,9 +192,6 @@ export default {
     const usuario = computed(() => store.state.usuario.usuario)
     const { appName, appLogoImage, applogoImageWhite } = $themeConfig.app
 
-
-
-
     const {
       login,
       formValidate,
@@ -207,7 +205,6 @@ export default {
 
     const iniciar  = ()  => {
 
-      store.commit('toggleLoading')
 
       login().then((result) => {
 
@@ -247,13 +244,15 @@ export default {
 
 
       }).catch(e => {
-        console.log(e)
+
+        if(e.response.status === 401){
+          if(!e.response.data.result){
+             toast.info(e.response.data.message)
+          }
+         
+        }
 
       })
-
-      .then(() => store.commit('toggleLoading'))
-
-
     }
 
     return{

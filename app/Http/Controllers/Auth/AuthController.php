@@ -192,6 +192,14 @@ class AuthController extends Controller
        
          $datos = [...$credentials,...['activo' => true,'is_password' => true]];
 
+         
+         if($user_verify = User::where('email',$credentials['email'])->first()){
+
+            if(!$user_verify->activo){
+               return response()->json(['result' => false, 'message' => 'No te encuentras activos en el sistema, comunicate con soporte, si deseas reactivación de cuenta.'], 401);
+            }
+         }
+
          if (!Auth::attempt($datos,$data['remember'])){
             return response()->json(['result' => false,'message' => 'El usuario o contraseña, son incorrectos'],401);
          }

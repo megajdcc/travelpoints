@@ -73,6 +73,12 @@
             </template>
 
 
+            <template #cell(status)="{item}">
+              <span class="text-nowrap">
+                {{ getStatusLegendPromotor(item.status) }}
+              </span>
+            </template>
+            
             <!-- Column: Actions -->
             <template #cell(actions)>
               <b-dropdown variant="link" no-caret :right="$store.state.appConfig.isRTL">
@@ -163,8 +169,6 @@
                       </b-form-invalid-feedback>
                        </validation-provider>
                   </b-form-group>
-               
-
 
 
                 
@@ -228,6 +232,8 @@ import usePromotoresList from './usePromotoresList.js'
 
 import {resolveUserRoleVariant, resolveUserRoleIcon } from '@core/utils/utils'
 import {required,email} from '@validations'
+
+import { getStatusLegendPromotor } from '@core/utils/utils'
 
 import {
   BCard,
@@ -442,7 +448,8 @@ export default {
       showFormularioPromotor,
       guardarPromotor,
       formValidatePromotor,
-      cargarUsers
+      cargarUsers,
+      getStatusLegendPromotor
     }
   }
 

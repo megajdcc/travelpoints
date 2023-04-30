@@ -13,6 +13,7 @@ export default function usePromotoresList(lider){
       { key: 'email', sortable: true,label:"Email" },
       { key: 'rol', sortable: true,label:'rol',sortKey:'rol_id' },
       { key: 'lider_id', sortable: true,label:'Lider',sortKey:'lider_id' },
+      { key: 'status', sortable: true,label:'Status',sortKey:'username' },
       { key: 'actions',sortable:true, sortKey:'id',sortBy:'id' },
    ]
 

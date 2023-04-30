@@ -300,6 +300,18 @@ export const getImage = (archivo) => {
 
       return 'UserIcon'
    }
+   
+export const getStatusLegendPromotor = (status ) => {
+
+  const legend = [
+    'Activo',
+    'En peligro',
+    'Inactivo'
+  ];
+
+  return legend[status - 1];
+  
+}
 
 
 export const getExt = (archivo,separator = '.') => {

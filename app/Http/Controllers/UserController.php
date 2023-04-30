@@ -24,6 +24,7 @@ use App\Models\Like;
 use App\Models\Producto;
 use App\Notifications\NuevaAsignacionLider;
 use Illuminate\Database\Query\Builder as QueryBuilder;
+use Illuminate\Support\Collection;
 
 class UserController extends Controller
 {
@@ -761,6 +762,13 @@ class UserController extends Controller
 
         $user = $request->user();
         
+        $resultado = $this->getStatusUser($user);
+        
+        return response()->json($resultado);
+
+    }
+
+    private function getStatusUser(User $usuario) : array{
         $referidos = [
             'ultimo_mes' => 0,
             'ultimo_trimestre' => 0,
@@ -773,46 +781,44 @@ class UserController extends Controller
             'data' => 0
         ];
 
-        if($user->rol->nombre == 'Promotor'){
-           $referidos_ultimo_mes =  DB::table('users','u')
-            ->join('usuario_referencia as ur','u.id','ur.usuario_id')
-            ->whereRaw('u.id = :usuario && ur.created_at >= DATE_SUB(CURDATE(), INTERVAL 30 DAY)',[':usuario' => $user->id])
-            ->selectRaw('count(ur.referido_id) as referidos')
-            ->first('referidos');
+        if ($usuario->rol->nombre == 'Promotor') {
+            $referidos_ultimo_mes =  DB::table('users', 'u')
+                ->join('usuario_referencia as ur', 'u.id', 'ur.usuario_id')
+                ->whereRaw('u.id = :usuario && ur.created_at >= DATE_SUB(CURDATE(), INTERVAL 30 DAY)', [':usuario' => $usuario->id])
+                ->selectRaw('count(ur.referido_id) as referidos')
+                ->first('referidos');
 
             $referidos_ultimo_trimestre =  DB::table('users', 'u')
                 ->join('usuario_referencia as ur', 'u.id', 'ur.usuario_id')
-                ->whereRaw('u.id = :usuario && ur.created_at >= DATE_SUB(CURDATE(), INTERVAL 89 DAY)', [':usuario' => $user->id])
+                ->whereRaw('u.id = :usuario && ur.created_at >= DATE_SUB(CURDATE(), INTERVAL 89 DAY)', [':usuario' => $usuario->id])
                 ->selectRaw('count(ur.referido_id) as referidos')
                 ->first('referidos');
 
             $referidos['ultimo_mes'] = $referidos_ultimo_mes->referidos;
             $referidos['ultimo_trimestre'] = $referidos_ultimo_trimestre->referidos;
-           
-
-        } else if($user->rol->nombre == 'Lider') {
+        } else if ($usuario->rol->nombre == 'Lider') {
 
             $activos_ultimo_mes =  DB::table('users', 'u')
                 ->join('usuario_referencia as ur', 'u.id', 'ur.usuario_id')
-                ->whereRaw('u.lider_id = :usuario && ur.created_at >= DATE_SUB(CURDATE(), INTERVAL 30 DAY)', [':usuario' => $user->id])
+                ->whereRaw('u.lider_id = :usuario && ur.created_at >= DATE_SUB(CURDATE(), INTERVAL 30 DAY)', [':usuario' => $usuario->id])
                 ->selectRaw('count(distinct(ur.usuario_id)) as promotores')
                 ->first('referidos');
 
             $activos_ultimo_trimestre =  DB::table('users', 'u')
                 ->join('usuario_referencia as ur', 'u.id', 'ur.usuario_id')
-                ->whereRaw('u.lider_id = :usuario && ur.created_at >= DATE_SUB(CURDATE(), INTERVAL 89 DAY)', [':usuario' => $user->id])
+                ->whereRaw('u.lider_id = :usuario && ur.created_at >= DATE_SUB(CURDATE(), INTERVAL 89 DAY)', [':usuario' => $usuario->id])
                 ->selectRaw('count(distinct(ur.usuario_id)) as promotores')
                 ->first('referidos');
 
             $promotores_activos['ultimo_mes'] = $activos_ultimo_mes->promotores;
             $promotores_activos['ultimo_trimestre'] = $activos_ultimo_trimestre->promotores;
-        }
+        }   
 
-        return response()->json(\compact('referidos', 'promotores_activos'));
+
+        return ['referidos' => $referidos,'promotores_activos' => $promotores_activos];
+
 
     }
-
-    
 
     public function changeDivisa(Request $request, User $usuario){
 
@@ -889,6 +895,20 @@ class UserController extends Controller
 
 
         $promotores = collect($pagination->items())->each(fn($val) => $val->cargar());
+
+        foreach($promotores as $promotor){
+
+            // dd($promotor);
+            $status_user = $this->getStatusUser($promotor);
+   
+			if($status_user['referidos']['ultimo_mes'] > 0){
+				$promotor->status = 1;
+			}else if($status_user['referidos']['ultimo_trimestre'] > 0){
+				$promotor->status = 2;
+            }else{
+                $promotor->status = 3;
+			}
+        }
 
         return response()->json([
             'total' => $pagination->total(),

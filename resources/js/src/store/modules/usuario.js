@@ -334,7 +334,20 @@ export default {
 		},
 
 		
-		setStatusPromotor(state,{ultimo_mes,ultimo_trimestre}){
+		setStatusPromotor(state,{referidos}){
+			const {ultimo_mes,ultimo_trimestre } = referidos
+			if(ultimo_mes > 0){
+				state.usuario.status = 1;
+			}else if(ultimo_trimestre > 0){
+				state.usuario.status = 2;
+			}else{
+				state.usuario.status = 3
+			}
+		},
+
+		setStatusLider(state,{promotores_activos}){
+			const {ultimo_mes,ultimo_trimestre } = promotores_activos
+
 			if(ultimo_mes > 0){
 				state.usuario.status = 1;
 			}else if(ultimo_trimestre > 0){
@@ -801,6 +814,17 @@ export default {
 			return new Promise((resolve, reject) => {
 				axios.get(`/api/dashboard/tablero/promotor/get-status`).then(({data}) => {
 					commit('setStatusPromotor',data)
+					resolve(data)
+				}).catch(e => reject(e))
+
+			})
+		},
+
+		getStatusLider({commit}){
+
+			return new Promise((resolve, reject) => {
+				axios.get(`/api/dashboard/tablero/lider/get-status`).then(({data}) => {
+					commit('setStatusLider',data)
 					resolve(data)
 				}).catch(e => reject(e))
 

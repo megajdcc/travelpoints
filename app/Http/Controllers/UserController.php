@@ -767,6 +767,12 @@ class UserController extends Controller
             'data' => 0
         ];
 
+        $promotores_activos = [
+            'ultimo_mes' => 0,
+            'ultimo_trimestre' => 0,
+            'data' => 0
+        ];
+
         if($user->rol->nombre == 'Promotor'){
            $referidos_ultimo_mes =  DB::table('users','u')
             ->join('usuario_referencia as ur','u.id','ur.usuario_id')
@@ -784,14 +790,29 @@ class UserController extends Controller
             $referidos['ultimo_trimestre'] = $referidos_ultimo_trimestre->referidos;
            
 
+        } else if($user->rol->nombre == 'Lider') {
+
+            $activos_ultimo_mes =  DB::table('users', 'u')
+                ->join('usuario_referencia as ur', 'u.id', 'ur.usuario_id')
+                ->whereRaw('u.lider_id = :usuario && ur.created_at >= DATE_SUB(CURDATE(), INTERVAL 30 DAY)', [':usuario' => $user->id])
+                ->selectRaw('count(distinct(ur.usuario_id)) as promotores')
+                ->first('referidos');
+
+            $activos_ultimo_trimestre =  DB::table('users', 'u')
+                ->join('usuario_referencia as ur', 'u.id', 'ur.usuario_id')
+                ->whereRaw('u.lider_id = :usuario && ur.created_at >= DATE_SUB(CURDATE(), INTERVAL 89 DAY)', [':usuario' => $user->id])
+                ->selectRaw('count(distinct(ur.usuario_id)) as promotores')
+                ->first('referidos');
+
+            $promotores_activos['ultimo_mes'] = $activos_ultimo_mes->promotores;
+            $promotores_activos['ultimo_trimestre'] = $activos_ultimo_trimestre->promotores;
         }
 
-        
-
-        return response()->json($referidos);
-
+        return response()->json(\compact('referidos', 'promotores_activos'));
 
     }
+
+    
 
     public function changeDivisa(Request $request, User $usuario){
 

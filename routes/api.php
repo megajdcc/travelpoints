@@ -514,6 +514,8 @@ Route::get('negocios/{negocio}/recomendacions/toggle/user/{usuario}',[NegocioCon
     Route::get('dashboard/total/comisiones/generadas',[DashboardController::class,'fetchComisionesGeneradas']);
     Route::get('dashboard/total/operaciones/travel',[DashboardController::class,'getTotalOperacionesTravel']);
     Route::get('dashboard/tablero/promotor/get-status',[UserController::class,'getStatus']);
+    Route::get('dashboard/tablero/lider/get-status', [UserController::class, 'getStatus']);
+
     Route::get('dashboard/total/viajeros/anual',[DashboardController::class, 'getTotalReferidosRegistradoAnual']);
     Route::post('dashboard/total/comisiones/promotor',[DashboardController::class, 'comisiones']);
 

@@ -10,6 +10,10 @@
           <medal-card title="Estatus del Promotor" subtitle="Por Registros de viajeros" :data="viajeros_referidos" 
           v-if="$can('read','Tablero medal card promotor') && rolUser == 'Promotor'" :medal="usuario.status" 
           :legendTooltip="getLegendaStatusPromotor(usuario.status)" :text-footer="getLegendaStatusPromotor(usuario.status)" />
+
+          <medal-card title="Estatus del Lider" subtitle="Por promotores activos" :data="promotores_activos" 
+          v-if="$can('read','Tablero medal card lider') && rolUser == 'Lider'" :medal="usuario.status" 
+          :legendTooltip="getLegendaStatusLider(usuario.status)" :text-footer="getLegendaStatusLider(usuario.status)" legend="Promotores" />
             
           <statistic-card-horizontal 
             icon="fa-money-bill" 
@@ -363,6 +367,8 @@ export default {
      } 
     = toRefs(store.state.dashboard)
     const viajeros_referidos = ref(0)
+    const promotores_activos = ref(0)
+
     const siteTraffic = ref({});
      const rolUser = computed(() => store.getters['usuario/rolUser'])
      const {usuario} = toRefs(store.state.usuario)
@@ -463,10 +469,17 @@ export default {
       store.dispatch('dashboard/getTotalComisiones',filtro.value);
 
       if(rolUser.value == 'Promotor'){
-        store.dispatch('usuario/getStatusPromotor').then((data) => {
-          viajeros_referidos.value = data.ultimo_trimestre;
+        store.dispatch('usuario/getStatusPromotor').then(({referidos }) => {
+          viajeros_referidos.value = referidos.ultimo_trimestre;
         })
       }
+
+      if(rolUser.value == 'Lider'){
+        store.dispatch('usuario/getStatusLider').then(({  promotores_activos:val }) => {
+          promotores_activos.value = val.ultimo_trimestre;
+        })
+      }
+
 
       fetchGastosTuristicos()
       fetchTiendaRegalos()
@@ -524,11 +537,23 @@ export default {
       operacionesTravel,
       rolUser,
       viajeros_referidos,
+      promotores_activos,
       usuario,
       miSaldo:computed(() => store.getters['usuario/miSaldo']),
       miDivisa:computed(() => store.getters['usuario/miDivisa']),
       getLegendaStatusPromotor:(status) => {
         let legenda = ['Activo, con al menos un Viajero al mes','En peligro, no registra nuevos viajeros en los ultimos 30 días','Inactivo, no registra nuevos viajeros en los ultimos 90 días'];
+
+        return legenda[status - 1];
+
+      },
+
+      getLegendaStatusLider: (status) => {
+        let legenda = [
+          'Activo, con al menos un promotor activo', 
+          'En peligro, no tienes promotores activos en los ultimos 30 días', 
+          'Inactivo, no Tienes promotores activos en los ultimos 90 días, has perdido tu red de Promotores'
+        ];
 
         return legenda[status - 1];
 

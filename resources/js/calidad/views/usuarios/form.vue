@@ -505,6 +505,8 @@ export default {
       const profileFile = ref(null)
       const form = computed(() => store.state.usuario.user)
 
+      
+
       const cargarform = () => {
 
          if(!getRols.value.length){
@@ -638,6 +640,7 @@ export default {
          guardarTelefono,
          divisas,
          changeDivisa,
+         form,
          verificarRol:(option) => {
 
             if(option.label == 'Viajero' && usuario.value.rol.nombre == 'Promotor'){

@@ -20,8 +20,6 @@
   <!-- Favicon -->
   <link rel="shortcut icon" href="{{ asset('favicons/favicon-8x8.png') }}">
   <script src="https://accounts.google.com/gsi/client" async defer ></script>
-
-
  
 
 </head>
@@ -30,7 +28,7 @@
 
   <div id="loading-bg">
     <div class="loading-logo">
-      <img src="{{ asset('/storage/logotipov.png') }}" alt="Logo" />
+      <img src="{{ asset('/storage/logotipo.png') }}" alt="Logo" />
     </div>
     <div class="loading">
       <div class="effect-1 effects"></div>

@@ -76,6 +76,43 @@
                 {{ operacionesTravel }} 
             </statistic-card-horizontal>
 
+            <statistic-card-horizontal 
+              icon="fa-sack-dollar" 
+              statisticTitle="Comisiones" 
+              color="warning"
+              colorIcon="dark"
+              colorText="text-white"
+              v-if="$can('read','comisiones promotor') && ['Promotor'].includes(usuario.rol ? usuario.rol.nombre : '')"
+              >
+
+              <section class="d-flex flex-wrap">
+                <strong class="d-flex flex-column">
+                  {{ comisiones_cobradas | currency }} 
+                  <span>Cobradas</span>
+
+                </strong>
+               
+                <strong class="ml-1 d-flex flex-column">
+                   {{ comisiones_por_cobrar | currency }} 
+                    <span>Por cobrar</span>
+                </strong>
+               
+              </section>
+             
+
+              <template #filtro>
+               <flat-pickr v-model="filtro.fecha" :config="{
+                    dateFormat: 'Y-m',
+                    mode: 'single',
+                    enableTime: false,
+               }" 
+               class="form-control form-control-sm mt-2"
+               placeholder="Fecha Mes y Año" />
+
+              </template>
+          
+            </statistic-card-horizontal>
+
           </b-col>
 
           <b-col cols="12" md="8">
@@ -320,7 +357,9 @@ export default {
       operacionesTravel,
       viajerosTotalesAnual,
       totalViajerosRegistrados,
-      totalViajerosConsumos
+      totalViajerosConsumos,
+      comisiones_cobradas,
+      comisiones_por_cobrar
      } 
     = toRefs(store.state.dashboard)
     const viajeros_referidos = ref(0)
@@ -346,7 +385,8 @@ export default {
       pais:null,
       edades:null,
       genero:null,
-      rango_fecha:null
+      rango_fecha:null,
+      fecha:null
     })  
 
     const edades = ref([
@@ -420,6 +460,7 @@ export default {
       store.dispatch('dashboard/fetchTotalComisionesGeneradas');
       store.dispatch('dashboard/getTotalOperacionesTravel');
       store.dispatch('dashboard/getTotalViajerosRegistradoAnual');
+      store.dispatch('dashboard/getTotalComisiones',filtro.value);
 
       if(rolUser.value == 'Promotor'){
         store.dispatch('usuario/getStatusPromotor').then((data) => {
@@ -453,6 +494,7 @@ export default {
       fetchTiendaRegalos();
     }
 
+    watch([() => filtro.value.fecha],() => store.dispatch('dashboard/getTotalComisiones', filtro.value))
 
     return {
       siteTraffic,
@@ -494,7 +536,9 @@ export default {
       getFecha,
       totalViajerosRegistrados,
 
-      totalViajerosConsumos
+      totalViajerosConsumos,
+      comisiones_cobradas,
+      comisiones_por_cobrar
     };
 
   }

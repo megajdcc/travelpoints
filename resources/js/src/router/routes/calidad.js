@@ -382,6 +382,31 @@ export default [
       ]
    },
 
+
+   /*****************************************/
+   /* Promotores
+   /*************************************** */
+   {
+      path:'/promotores',
+      name:'promotores',
+      component:() => import('views/promotores/index.vue'),
+      children:[
+         {
+            path:'',
+            name:'promotores.list',
+            component:() => import('views/promotores/list.vue'),
+            meta:{
+               pageTitle:'Promotores',
+               resource:'promotores',
+               action:'read',
+               breadcrumb:[
+                  {text:'Listado',active:true}
+               ]
+            }
+         }
+      ]
+   },
+
    /*****************************************/
    /* Movimientos de Cuenta del sistema
    /*************************************** */

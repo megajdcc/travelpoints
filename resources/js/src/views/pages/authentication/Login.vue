@@ -162,7 +162,7 @@ export default {
     ValidationProvider,
     ValidationObserver,
     BFormInvalidFeedback,
-    Logo:() => import('components/Logo')
+  Logo:() => import('components/Logo')
   },
   mixins: [togglePasswordVisibility],
   data() {

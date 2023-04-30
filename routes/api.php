@@ -107,6 +107,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     /* USUARIOS
     /*****************************/
     Route::get('/usuarios/all', [UserController::class, 'getUsuarios']);
+    Route::get('usuarios/get/lideres',[UserController::class,'getLideres']);
     Route::resource('usuarios', UserController::class)->middleware('format_telefono');
     Route::get('listar/usuarios', [UserController::class, 'listar'])->name('listar_usuarios');
     Route::get('usuarios/{usuario}/get',[UserController::class,'getUsuario']);
@@ -125,7 +126,12 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::post('users/search',[UserController::class,'searchUser']);
     Route::put('usuarios/{usuario}/change-divisa',[UserController::class,'changeDivisa']);
     Route::get('usuarios/{usuario}/cambiar/estado',[UserController::class, 'cambiarStatus']);
-    
+
+    Route::post('usuarios/promotores/fetch/data',[UserController::class,'fetchDataPromotores']);
+    Route::post('usuarios/promotor/asignar/lider',[UserController::class,'asignarLiderPromotor']);
+    Route::get('usuarios/promotor/{promotor}/quitar/lider',[UserController::class,'quitarLiderPromotor']);
+    Route::post('usuarios/promotor/save',[UserController::class,'guardarPromotor']);
+
     /*****************************/
     /* TELEFONOS
     /*****************************/
@@ -509,6 +515,7 @@ Route::get('negocios/{negocio}/recomendacions/toggle/user/{usuario}',[NegocioCon
     Route::get('dashboard/total/operaciones/travel',[DashboardController::class,'getTotalOperacionesTravel']);
     Route::get('dashboard/tablero/promotor/get-status',[UserController::class,'getStatus']);
     Route::get('dashboard/total/viajeros/anual',[DashboardController::class, 'getTotalReferidosRegistradoAnual']);
+    Route::post('dashboard/total/comisiones/promotor',[DashboardController::class, 'comisiones']);
 
     /*****************************/
     /* Datos de pagos

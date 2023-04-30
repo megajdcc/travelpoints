@@ -342,7 +342,9 @@ export default{
             },
             operacionesTravel:0,
             totalViajerosRegistrados:0,
-            totalViajerosConsumos:0
+            totalViajerosConsumos:0,
+            comisiones_cobradas:0,
+            comisiones_por_cobrar:0,
 
       }
    },
@@ -432,6 +434,11 @@ export default{
       },
       setTotalViajerosConsumo(state,total){
          state.totalViajerosConsumos = total
+      },
+
+      setComisionesPromotor(state,{comisiones_cobradas,comisiones_por_cobrar}){
+         state.comisiones_cobradas = comisiones_cobradas
+         state.comisiones_por_cobrar = comisiones_por_cobrar
       }
 
    },
@@ -613,7 +620,21 @@ export default{
 
             }).catch(e => reject(e))
          })
+      },
+
+
+      getTotalComisiones({commit},filtro){
+         
+         return new Promise((resolve, reject) => {
+            
+            axios.post(`/api/dashboard/total/comisiones/promotor`,filtro).then(({data}) => {
+               commit('setComisionesPromotor',data)
+               resolve(data)
+            }).catch(e => reject(e))
+
+         })
       }
+
 
 
 

@@ -17,6 +17,16 @@ export default [
          },
 
           {
+            title: 'Promotores',
+            route: 'promotores.list',
+            action: 'read',
+            resource: 'promotores',
+            icon: 'fa-user-tie',
+            fontAwesome:true
+         },
+
+
+          {
             title: 'Retiros',
             route: 'retiro.list',
             action: 'read',

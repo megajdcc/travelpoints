@@ -64,9 +64,9 @@
         <!-- Column: Rol -->
         <template #cell(rol)="{item}">
           <div class="text-nowrap">
-            <feather-icon :icon="resolveUserRoleIcon(item.rol.nombre)" size="18" class="mr-50"
-              :class="`text-${resolveUserRoleVariant(item.rol.nombre)}`" />
-            <span class="align-text-top text-capitalize">{{ item.rol.nombre }}</span>
+            <feather-icon :icon="resolveUserRoleIcon(item.rol ? item.rol.nombre : '')" size="18" class="mr-50"
+              :class="`text-${resolveUserRoleVariant(item.rol ? item.rol.nombre : '')}`" />
+            <span class="align-text-top text-capitalize">{{ item.rol ? item.rol.nombre : 'Sin definir' }}</span>
           </div>
         </template>
 
@@ -93,6 +93,11 @@
              <b-dropdown-item :to="{name:'movimientos.user',params:{id:data.item.id}}">
                 <font-awesome-icon icon="fas fa-money-check"/>
                 <span class="align-middle ml-50">Movimientos de cuenta</span>
+              </b-dropdown-item>
+
+              <b-dropdown-item :to="{name:'promotores.list',params:{id:data.item.id}}" v-if="$can('read','promotores')">
+                <font-awesome-icon icon="fas fa-user-tie"/>
+                <span class="align-middle ml-50">Promotores</span>
               </b-dropdown-item>
           </b-dropdown>
         </template>

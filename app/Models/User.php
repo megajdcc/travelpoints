@@ -76,6 +76,7 @@ class User extends Authenticatable
         'ultimo_login',
         'ciudad_id' ,
         'codigo_referidor',
+        'lider_id'
     ];
 
     /**
@@ -274,9 +275,15 @@ class User extends Authenticatable
         return $this->hasMany(Retiro::class,'usuario_id','id');
     }
 
-    
-   
-  
+    public function lider(){
+        return $this->belongsTo(User::class,'lider_id','id');
+
+    }
+
+    public function promotores(){
+        return $this->hasMany(User::class,'lider_id','id');
+        
+    }
 
     public function cargar(): User{
         $this->tokens;
@@ -302,6 +309,8 @@ class User extends Authenticatable
         $this->carritoCompra;
         $this->datosPago?->cargar();
         $this->retiros;
+        $this->lider?->cargar();
+        $this->promotores;
 
         return $this;
     }

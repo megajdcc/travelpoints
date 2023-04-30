@@ -9,6 +9,7 @@ use App\Models\Producto;
 use App\Models\Sistema;
 use App\Models\User;
 use App\Models\Venta;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -596,6 +597,33 @@ class DashboardController extends Controller
 
 
       return response()->json(['categorias' => $categorias,'data' => $data,...\compact('total_viajeros_consumos','total_usuarios_registrados')]);
+
+
+    }
+
+
+    public function comisiones(Request $request){
+
+        
+        $fech = $request->get('fecha');
+
+        
+        $comisiones_cobradas = DB::table('retiros','r')
+            ->select('r.monto')
+            ->join('users as u','r.usuario_id','u.id')
+            ->where('u.id',$request->user()->id)
+            ->where('r.status',3)
+            ->when($fech,function($q) use($fech){
+                $fecha = new Carbon($fech);
+                $mes = $fecha->month;
+                $ano = $fecha->year;
+                $q->whereRaw("year(r.created_at) = {$ano} && month(r.created_at) = {$mes}");
+            })
+
+            ->get()->sum('monto');
+
+            $comisiones_por_cobrar =  (float) $request->user()->cuenta->saldo;
+            return response()->json(['comisiones_cobradas' => $comisiones_cobradas,'comisiones_por_cobrar' => $comisiones_por_cobrar]);
 
 
     }

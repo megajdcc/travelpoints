@@ -44,7 +44,9 @@ export default {
 				cupones:[],
 				carrito_compra:[],
 				status:3,
-
+				lider:null,
+				promotores:[]
+			
 
 			},
 
@@ -82,7 +84,9 @@ export default {
 				referidor: [],
 				negocios: [],
 				cupones: [],
-				carrito_compra: []
+				carrito_compra: [],
+				lider:null,
+				promotores:[]
 
 
 
@@ -112,8 +116,6 @@ export default {
 
 
 		setUsuarios(state,usuarios){
-		
-			
 			state.usuarios = usuarios;
 		},
 
@@ -164,7 +166,9 @@ export default {
 				referidor: [],
 				negocios: [],
 				cupones: [],
-				carrito_compra: []
+				carrito_compra: [],
+				lider:null,
+				promotores:[]
 
 
 			}
@@ -265,6 +269,8 @@ export default {
 				referidor: [],
 				likes:[],
 				status:3,
+				lider:null,
+				promotores:[]
 			}
 			
 		},
@@ -497,6 +503,21 @@ export default {
 
 			return result;
 		},
+
+		cargarLideres({state,commit}){
+
+			return new Promise((resolve, reject) => {
+					axios.get('/api/usuarios/get/lideres').then(({data}) => {
+						commit('setUsuarios',data);
+						resolve(data)
+					}).catch(e => {
+						reject(e)
+					})
+			})
+		
+
+		},
+
 
 		async cargarUsuario({state,commit,dispatch}){
 
@@ -758,7 +779,9 @@ export default {
 						commit('setLikesUser',data.likes)
 						commit('updatePerfil',state.usuario)
 					} 
+
 					resolve(data)
+				
 				}).catch(e => reject(e))
 
 			})
@@ -804,6 +827,46 @@ export default {
 				}).catch(e => reject(e))
 
 			})
+		},
+
+
+		fetchPromotores({commit},filtro){
+			return new Promise((resolve, reject) => {
+				
+				axios.post(`/api/usuarios/promotores/fetch/data`,filtro).then(({data}) => {
+					commit('setUsuarios',data.promotores)
+					resolve(data)
+				}).catch(e => reject(e))
+			})
+		},
+
+		asignarLiderPromotor({commit},dato) {
+			return new Promise((resolve, reject) => {
+				axios.post(`/api/usuarios/promotor/asignar/lider`,dato).then(({data}) => {
+					resolve(data)
+
+				}).catch(e => reject(e))
+			})
+		},
+
+
+		quitarLider({commit},promotor){
+			return new Promise((resolve, reject) => {
+				axios.get(`/api/usuarios/promotor/${promotor}/quitar/lider`).then(({data}) => resolve(data)).catch(e => reject(e))
+				
+			})
+		},
+
+
+		guardarPromotor({commit},datos){
+			return new Promise((resolve, reject) => {
+				axios.post('/api/usuarios/promotor/save',datos).then(({data}) => {
+
+					resolve(data)
+
+				}).catch(e => reject(e))
+
+			})
 		}
 
 
@@ -812,4 +875,6 @@ export default {
 
 
 	}
+
+
 } 

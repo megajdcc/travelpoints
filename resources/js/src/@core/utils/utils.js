@@ -279,6 +279,29 @@ export const getImage = (archivo) => {
 
 }
 
+// *===============================================---*
+   // *--------- UI ---------------------------------------*
+   // *===============================================---*
+
+  export  const resolveUserRoleVariant = role => {
+      if (role === 'Administrador') return 'primary'
+      if (role === 'Super administrador') return 'warning'
+      if (role === 'Desarrollador') return 'warning'
+      if (role === 'Invitado') return 'success'
+      if (role === 'Coordinador') return 'danger'
+      if (role === 'Lider') return 'primary'
+      if (role === 'Promotor') return 'warning'
+      return 'primary'
+   }
+
+  export const resolveUserRoleIcon = role => {
+      if(['Administrador','Super administrador','Desarrollador'].includes(role)) return 'ServerIcon'
+      if(['Lider','Coordinador','Promotor','Invitado'].includes(role)) return 'Usericon'
+
+      return 'UserIcon'
+   }
+
+
 export const getExt = (archivo,separator = '.') => {
   
   let archive =  archivo.split(separator)

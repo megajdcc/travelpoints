@@ -86,7 +86,7 @@
               color="warning"
               colorIcon="dark"
               colorText="text-white"
-              v-if="$can('read','comisiones promotor') && ['Promotor'].includes(usuario.rol ? usuario.rol.nombre : '')"
+              v-if="$can('read','Comisiones cobradas y por cobrar') && ['Promotor','Lider'].includes(usuario.rol ? usuario.rol.nombre : '')"
               >
 
               <section class="d-flex flex-wrap">
@@ -121,7 +121,7 @@
             <statistic-card-horizontal 
                 icon="fa-user-check" 
                 statisticTitle="Promotores Activos e Inactivos" 
-                color="warning"
+                color="primary"
                 colorIcon="dark"
                 colorText="text-white"
                 v-if="$can('read', 'Status de promotores') && ['Lider'].includes(usuario.rol ? usuario.rol.nombre : '')"

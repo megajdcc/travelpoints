@@ -67,9 +67,10 @@ class Sistema extends Model
         // Comision Promotor
         if($promotor = $venta?->reservacion?->operador){
 
-            $rol = (Rol::where('nombre','Promotor')->first());
-            $comision_promotor = $rol->comision;
-        
+            $rol_promotor = (Rol::where('nombre','Promotor')->first());
+            $comision_promotor = $rol_promotor->comision;
+            
+
             if($comision_promotor){   
                 $monto_comision = $movimiento->monto * $comision_promotor->comision / 100;
 
@@ -81,6 +82,27 @@ class Sistema extends Model
 
 
             }
+
+            // Comision Lider
+            if($lider = $promotor->lider){
+                $rol_lider = (Rol::where('nombre', 'Lider')->first());
+                $comision_lider = $rol_lider->comision;
+
+                if($comision_lider){
+                    $monto_comision = $movimiento->monto * $comision_lider->comision / 100;
+
+                    $lider->generarMovimiento(
+                        $monto_comision,
+                        "Comisión por consumo de cliente {$venta->cliente->getNombreCompleto()} en el negocio {$venta->model->nombre} por un monto de: {$monto}. El promotor quien realizó la reserva fue {$promotor->getNombreCompleto()}",
+                        Movimiento::TIPO_INGRESO
+                    );
+
+                    $this->generarMovimiento($monto_comision, "Comision adjudicada a lider {$lider->getNombreCompleto()}, por consumo de cliente {$venta->cliente->getNombreCompleto()} en el negocio {$venta->model->nombre} por un monto de: {$monto}.", Movimiento::TIPO_EGRESO);
+
+                }
+               
+            }
+
          
         }
 

@@ -60,6 +60,8 @@ class MovimientoController extends Controller
                                 ['monto','LIKE',"%{$datos['q']}%",'OR'],
                                 ['balance', 'LIKE', "%{$datos['q']}%", 'OR'],
                                 ['created_at', 'LIKE', "%{$datos['q']}%", 'OR'],
+                                ['concepto', 'LIKE', "%{$datos['q']}%", 'OR'],
+
                             ])
                             ->orderBy($datos['sortBy'],$datos['isSortDirDesc'] ? 'desc' : 'asc')
                             ->paginate($datos['perPage']?: 1000, pageName:'currentPage');

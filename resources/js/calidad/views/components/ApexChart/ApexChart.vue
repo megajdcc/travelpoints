@@ -155,11 +155,18 @@ export default {
       const { data } = toRefs(props);
       const  value = ref(null)
 
+
+     
+
       onMounted(() => {
-         // console.log(chartRef.value)  
+         //  console.log(chartRef.value)
+         
       })
 
-      watch([data],() => chartRef.value.refresh());
+      watch([data],() => {
+         // console.log(chartRef.value)
+         chartRef.value.refresh()
+      });
 
       return {
          $themeColors,

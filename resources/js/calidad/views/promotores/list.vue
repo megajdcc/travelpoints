@@ -298,7 +298,7 @@ export default {
 
   },
 
-  setup(props){
+  setup(props,{emit}){
     const {usuario,usuarios} = toRefs(store.state.usuario)
     const actions = usePromotoresList(usuario);
     const showUsersLiders = ref(false)
@@ -340,9 +340,12 @@ export default {
         if(result){
           toast.success('Se ha cambiado con éxito el estado del promotor')
           actions.refetchData()
+          emit('change')
         }else{
           toast.info('No se pudo cambiar el Estado del promotor')
           actions.refetchData();
+          emit('change')
+
         }
       }).catch(e => console.log(e))
       
@@ -359,6 +362,8 @@ export default {
 
           toast.success('Se ha asignado con éxito al lider')
           actions.refetchData();
+          emit('change')
+
 
           formulario.value = {
               lider_id: null,
@@ -398,6 +403,7 @@ export default {
         if(result){
           toast.success('Se ha agregado con éxito al promotor')
           actions.refetchData();
+          emit('change')
 
           form.value = {
             username: '',

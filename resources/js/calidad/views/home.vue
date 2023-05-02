@@ -70,15 +70,15 @@
           </statistic-card-horizontal>
 
 
-           <statistic-card-horizontal 
-                icon="fa-users-gear" 
-                statisticTitle="Total operaciones TravelPoints" 
-                color="danger"
-                colorIcon="dark"
-                colorText="text-white" 
-                v-if="$can('read', 'Tablero total operaciones travelpoints')">
-                {{ operacionesTravel }} 
-            </statistic-card-horizontal>
+          <statistic-card-horizontal 
+              icon="fa-users-gear" 
+              statisticTitle="Total operaciones TravelPoints" 
+              color="danger"
+              colorIcon="dark"
+              colorText="text-white" 
+              v-if="$can('read', 'Tablero total operaciones travelpoints')">
+              {{ operacionesTravel }} 
+        </statistic-card-horizontal>
 
             <statistic-card-horizontal 
               icon="fa-sack-dollar" 
@@ -116,6 +116,40 @@
               </template>
           
             </statistic-card-horizontal>
+
+
+            <statistic-card-horizontal 
+                icon="fa-user-check" 
+                statisticTitle="Promotores Activos e Inactivos" 
+                color="warning"
+                colorIcon="dark"
+                colorText="text-white"
+                v-if="$can('read', 'Status de promotores') && ['Lider'].includes(usuario.rol ? usuario.rol.nombre : '')"
+                >
+
+                <section class="d-flex flex-wrap">
+                
+                  <strong class="d-flex flex-column">
+                    {{ promotores_status.activos }} 
+                    <span>Activos</span>
+
+                  </strong>
+              
+                  <strong class="ml-1 d-flex flex-column">
+                      {{ promotores_status.inactivos }} 
+                      <span>Inactivos</span>
+                  </strong>
+              
+                </section>
+        
+            </statistic-card-horizontal>
+
+          <!-- Eficacia del mes -->
+              <apex-chart titulo="Eficacia" subtitulo="Lo que va del mes" 
+              :chartOptions="porcentajeEficacia.chartOptions" :data="porcentajeEficacia.series" type="radialBar" :height="320"    
+              v-if="$can('read', 'Tablero eficacia lider') && ['Lider'].includes(usuario.rol ? usuario.rol.nombre : '') " >
+            
+              </apex-chart>
 
           </b-col>
 
@@ -162,6 +196,76 @@
                   </template>
 
               </apex-chart>
+
+               <apex-chart titulo="Total viajeros registrados " :subtitulo="`Mensuales del año ${getFecha(new Date(), 'YYYY')}`" 
+                    :chartOptions="viajerosTotalesAnual.chartOptions" :data="viajerosTotalesAnual.series" type="line" :height="320" v-if="$can('read', 'Total viajeros registrados promotor') && ['Promotor'].includes(usuario.rol ? usuario.rol.nombre : '')" >
+
+                    <template #filtro>
+                      <b-container fluid>
+                        <b-row>
+                          <b-col cols="12" md="6">
+                             <statistic-card-horizontal 
+                            icon="fa-chart-line" 
+                            statisticTitle="Total Viajeros registrados" 
+                            color="primary"
+                            colorIcon="white"
+                            colorText="text-white" 
+                       
+                             >
+
+                            {{ totalViajerosRegistrados }}
+                  
+                          </statistic-card-horizontal>
+                          </b-col>
+                          <b-col cols="12" md="6">
+                            <statistic-card-horizontal 
+                              icon="fa-chart-line" 
+                              statisticTitle="Total Viajeros con consumos" 
+                              color="danger"
+                              colorIcon="white"
+                              colorText="text-white" 
+                          
+                               >
+
+                              {{ totalViajerosConsumos }}
+                  
+                              </statistic-card-horizontal>
+                          </b-col>
+                        </b-row>
+                      </b-container>
+           
+                    </template>
+
+                </apex-chart>
+
+                 <!-- Eficacia de Promotores -->
+                  <apex-chart titulo="Eficacia de Promotores" subtitulo="Totales / Activos" 
+                  :chartOptions="eficaciaPromotores.chartOptions" :data="eficaciaPromotores.series" type="line" :height="320"    
+                  v-if="$can('read', 'Tablero eficacia promotores') && ['Lider'].includes(usuario.rol ? usuario.rol.nombre : '') " >
+                
+                  </apex-chart>
+
+                  <!-- Viajeros Totales -->
+                  <apex-chart titulo="Viajeros totales" subtitulo="Ultimos tres meses" 
+                  :chartOptions="viajerosTotales.chartOptions" :data="viajerosTotales.series" type="line" :height="320"    
+                  v-if="$can('read', 'Tablero viajeros totales') && ['Lider'].includes(usuario.rol ? usuario.rol.nombre : '') " >
+
+                  <template #filtro>
+                      <b-container fluid>
+                        <b-row>
+                          <b-col cols="12" md="6">
+                              <b-form-group label="Promotor" description="Seleccione un promotor, si gusta filtrar">
+                                <v-select v-model="filtro.promotor_id" :options="misPromotores" :reduce="option => option.id" label="nombre">
+                                </v-select>
+                              </b-form-group>
+                          </b-col>
+                         
+                        </b-row>
+                      </b-container>
+           
+                    </template>
+                
+                  </apex-chart>
           </b-col>
         </b-row>
 
@@ -178,44 +282,7 @@
               </apex-chart>
           </b-col>
 
-          <b-col cols="12" md="6">
-              <!-- TOtal Viajeros -->
-              <apex-chart titulo="Total Viajeros" subtitulo="Por Paises, Rango de Edad y Género" 
-              :chartOptions="totalViajeros.chartOptions" :data="totalViajeros.series" type="pie" :height="320"    v-if="$can('read', 'Tablero total viajeros')" >
-                <template #filtro>
-                  <b-container fluid class="mx-0 px-0">
-
-                    <b-row>
-                      <b-col cols="12" md="4">
-                        <b-form-group label="Pais">
-                          <v-select v-model="filtro.pais" :options="paises" :reduce="option => option.id" 
-                            label="pais" @input="cargarDashboard">
-                          </v-select>
-                        </b-form-group>
-                      </b-col>
-
-                      <b-col cols="12" md="4">
-                          <b-form-group label="Edades">
-                            <v-select v-model="filtro.edades" :options="edades" :reduce="option => option.value" 
-                              label="label" @input="cargarDashboard">
-                            </v-select>
-                          </b-form-group>
-                      </b-col>
-
-                        <b-col cols="12" md="4">
-                          <b-form-group label="Genero">
-                            <v-select v-model="filtro.genero" :options="generos" :reduce="option => option.value" 
-                              label="label" @input="cargarDashboard">
-                            </v-select>
-                          </b-form-group>
-                      </b-col>
-
-                    </b-row>
-                  
-                  </b-container>
-                </template>
-              </apex-chart>
-          </b-col>
+        
         </b-row>
 
         <el-divider content-position="left" v-if="$can('read', 'Tablero total negocios afiliados') || $can('read', 'Tablero porcentaje negocios con operaciones registradas')" >Negocios Turísticos</el-divider>
@@ -286,6 +353,16 @@
           </b-row>
         </template>
 
+        <template v-if="usuario.rol.nombre == 'Lider'">
+
+            <b-row>
+              <b-col cols="12" >
+                <PromotorListado @change="cargarDashboard()" />
+              </b-col>
+            </b-row>
+
+        </template>
+
       </b-container>
 
   </section>
@@ -303,7 +380,7 @@ import {
 
 import vSelect from 'vue-select'
 
-import { ref, onMounted, watch, toRefs, computed } from 'vue';
+import { ref, onMounted, watch, toRefs, computed, onActivated } from 'vue';
 
 // import StatisticCardWithLineChart from 'components/dashboard/StaticCardWithLineChart.vue'
 // import TarjetasAgrupadasStaticas from 'components/dashboard/TarjetasAgrupadasStaticas.vue';
@@ -341,7 +418,8 @@ export default {
     MapChart:() => import('components/highcharts/MapChart.vue'),
     TarjetasAgrupadasStaticas:() => import('components/dashboard/TarjetasAgrupadasStaticas.vue'),
     MedalCard:() => import('components/dashboard/MedalCard.vue'),
-    movimientos: () => import('views/socio/perfil/cuenta.vue')
+    movimientos: () => import('views/socio/perfil/cuenta.vue'),
+    PromotorListado :() => import('views/promotores/list.vue')
   },
   
   setup(props){  
@@ -363,13 +441,18 @@ export default {
       totalViajerosRegistrados,
       totalViajerosConsumos,
       comisiones_cobradas,
-      comisiones_por_cobrar
+      comisiones_por_cobrar,
+      promotores_status,
+      eficaciaPromotores,
+      viajerosTotales,
+      misPromotores,
+      porcentajeEficacia
      } 
     = toRefs(store.state.dashboard)
     const viajeros_referidos = ref(0)
     const promotores_activos = ref(0)
 
-    const siteTraffic = ref({});
+      const siteTraffic = ref({});
      const rolUser = computed(() => store.getters['usuario/rolUser'])
      const {usuario} = toRefs(store.state.usuario)
      const filtro_gastos_turisticos = ref({
@@ -378,6 +461,8 @@ export default {
       destino_id: null,
       negocio_id: null
     })
+
+
     
     const configRangoFecha = ref({
       mode: "range",
@@ -392,7 +477,8 @@ export default {
       edades:null,
       genero:null,
       rango_fecha:null,
-      fecha:null
+      fecha:null,
+      promotor_id:null
     })  
 
     const edades = ref([
@@ -468,6 +554,10 @@ export default {
       store.dispatch('dashboard/getTotalViajerosRegistradoAnual');
       store.dispatch('dashboard/getTotalComisiones',filtro.value);
 
+      if(['Lider'].includes(usuario.value.rol ? usuario.value.rol.nombre : '')){
+        store.dispatch('dashboard/promotoresStatus')
+      }
+      
       if(rolUser.value == 'Promotor'){
         store.dispatch('usuario/getStatusPromotor').then(({referidos }) => {
           viajeros_referidos.value = referidos.ultimo_trimestre;
@@ -478,6 +568,12 @@ export default {
         store.dispatch('usuario/getStatusLider').then(({  promotores_activos:val }) => {
           promotores_activos.value = val.ultimo_trimestre;
         })
+
+        store.dispatch('dashboard/getEficaciaPromotores')
+        store.dispatch('dashboard/getTotalesViajeros',filtro.value)
+
+        store.dispatch('dashboard/getMisPromotores')
+        store.dispatch('dashboard/getEficaciaMes')
       }
 
 
@@ -507,7 +603,11 @@ export default {
       fetchTiendaRegalos();
     }
 
+    watch(() => filtro.value.promotor_id,() => store.dispatch('dashboard/getTotalesViajeros',filtro.value))
+
     watch([() => filtro.value.fecha],() => store.dispatch('dashboard/getTotalComisiones', filtro.value))
+
+    onActivated(() => cargarDashboard());
 
     return {
       siteTraffic,
@@ -563,7 +663,12 @@ export default {
 
       totalViajerosConsumos,
       comisiones_cobradas,
-      comisiones_por_cobrar
+      comisiones_por_cobrar,
+      promotores_status,
+      eficaciaPromotores,
+      viajerosTotales,
+      misPromotores,
+      porcentajeEficacia
     };
 
   }

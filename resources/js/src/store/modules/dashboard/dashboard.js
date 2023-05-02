@@ -216,11 +216,85 @@ export default{
                series: [],
                chartOptions: {
                   chart: {
-                  height: 350,
-                  type: 'line',
-                  zoom: {
+                     height: 350,
+                     type: 'line',
+                     zoom: {
+                        enabled: false
+                     },
+                     id:'viajeros-totales-anuales'
+                  },
+                  dataLabels: {
                      enabled: false
+                  },
+                  stroke: {
+                     curve: 'straight'
+                  },
+                  
+                  grid: {
+                  row: {
+                     colors: ['#f3f3f3', 'transparent'], 
+                     opacity: 0.5
+                  },
+                  },
+                  xaxis: {
+                     categories: [],
+                     labels: {
+                           style: {
+                           transform: "rotate(45deg)"
+                           }
+                        }
                   }
+               },
+            },
+
+            eficaciaPromotores:{
+               series: [{
+                     name: 'Vue Chart',
+                     data: [30, 40, 45, 50, 49, 60, 70, 81]
+                     }],
+               chartOptions: {
+                  chart: {
+                     height: 350,
+                     type: 'line',
+                     zoom: {
+                        enabled: false
+                     },
+                     id:'eficacia-promotores'
+                  },
+                  dataLabels: {
+                     enabled: false
+                  },
+                  stroke: {
+                     curve: 'straight'
+                  },
+                  
+                  grid: {
+                  row: {
+                     colors: ['#f3f3f3', 'transparent'], 
+                     opacity: 0.5
+                  },
+                  },
+                  xaxis: {
+                     categories: ['prueba'],
+                     labels: {
+                           style: {
+                           transform: "rotate(45deg)"
+                           }
+                        }
+                  }
+               },
+            },
+
+            viajerosTotales:{
+                series: [],
+               chartOptions: {
+                  chart: {
+                     height: 350,
+                     type: 'line',
+                     zoom: {
+                        enabled: false
+                     },
+                     id:'viajeros-totales'
                   },
                   dataLabels: {
                      enabled: false
@@ -345,6 +419,62 @@ export default{
             totalViajerosConsumos:0,
             comisiones_cobradas:0,
             comisiones_por_cobrar:0,
+            promotores_status:{
+               activos:0,
+               inactivos:0
+            },
+            misPromotores:[],
+
+            porcentajeEficacia:{
+               series: [],
+               chartOptions: {
+                  chart: {
+                     height: 350,
+                     type: 'radialBar',
+                  },
+                  
+                 
+                  plotOptions: {
+                     radialBar: {
+                        // ...
+                        dataLabels: {
+                           enabled:true,
+                           textAnchor: 'middle',
+                           distributed: false,
+                           offsetX: 0,
+                           offsetY: 0,
+
+                           style: {
+                                 fontSize: '12px',
+                                 fontFamily: 'Helvetica, Arial, sans-serif',
+                                 fontWeight: 'bold',
+                                 colors: undefined
+                           }
+                        },
+                     }
+                  },
+
+                  dataLabels: {
+                        enabled:true,
+                        textAnchor: 'middle',
+                        distributed: false,
+                        offsetX: 0,
+                        offsetY: 0,
+
+                        style: {
+                              fontSize: '12px',
+                              fontFamily: 'Helvetica, Arial, sans-serif',
+                              fontWeight: 'bold',
+                              colors: undefined
+                        }
+                  },
+                  
+                  labels: ['Sobre el Total de Viajeros'],
+                  
+               },
+               
+               
+            }
 
       }
    },
@@ -439,6 +569,30 @@ export default{
       setComisionesPromotor(state,{comisiones_cobradas,comisiones_por_cobrar}){
          state.comisiones_cobradas = comisiones_cobradas
          state.comisiones_por_cobrar = comisiones_por_cobrar
+      },
+
+      setStatusPromotores(state,{promotores_activos,promotores_inactivos}){
+
+         state.promotores_status.activos = promotores_activos
+         state.promotores_status.inactivos = promotores_inactivos
+
+      },
+
+      setEficaciaPromotores(state,{promotores,data}){
+         state.eficaciaPromotores.chartOptions.xaxis.categories = promotores
+         state.eficaciaPromotores.series = data
+      },
+
+      setViajerosTotales(state,{categorias,data}){
+         state.viajerosTotales.chartOptions.xaxis.categories = categorias
+         state.viajerosTotales.series = data
+      },
+
+      setMisPromotores(state,promotores){
+         state.misPromotores = promotores
+      },
+      setEficaciaMes(state,val) {
+         state.porcentajeEficacia.series = [val];
       }
 
    },
@@ -450,11 +604,7 @@ export default{
          
          commit('toggleLoading', null, { root: true })
          axios.get('/api/get/data/dashboard').then(({data}) => {
-
             commit('setViajerosActivos',data.viajerosActivos)
-
-            
-
          }).catch(e => {
             console.log(e);
 
@@ -632,6 +782,64 @@ export default{
                resolve(data)
             }).catch(e => reject(e))
 
+         })
+      },
+
+      promotoresStatus({commit}){
+         return new Promise((resolve, reject) => {
+            axios.get(`/api/dashboard/promotores/status`).then(({data}) => {
+
+               commit('setStatusPromotores',data)
+               resolve(data)
+
+            }).catch(e => reject(e))
+
+         })
+      },
+
+
+      getEficaciaPromotores({commit}){
+         return new Promise((resolve, reject) => {
+            axios.get('/api/dashboard/promotores/get/eficacia').then(({data}) => {
+
+               commit('setEficaciaPromotores',data)
+               resolve(data)
+            }).catch(e => reject(e))
+         })
+      },
+
+      getTotalesViajeros({commit},filtro){
+         return new Promise((resolve, reject) => {
+            axios.post(`/api/dashboard/lider/viajeros-totales`,filtro).then(({data}) => {
+
+               commit('setViajerosTotales',data)
+               resolve(data)
+
+            }).catch(e => reject(e))
+
+
+         })
+      },
+
+      getMisPromotores({commit}){
+
+         return new Promise((resolve, reject) => {
+            axios.get(`/api/dashboard/lider/mis-promotores`).then(({data}) => {
+
+               commit('setMisPromotores',data)
+               resolve(data)
+            }).catch(e => reject(e))
+
+         })
+      },
+
+
+      getEficaciaMes({commit}){
+         return new Promise((resolve, reject) => {
+            axios.get(`/api/dashboard/lider/eficacia-mes`).then(({data}) => {
+               commit('setEficaciaMes',data)
+               resolve(data)
+            }).catch(e  => reject(e))
          })
       }
 

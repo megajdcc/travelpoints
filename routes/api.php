@@ -518,7 +518,12 @@ Route::get('negocios/{negocio}/recomendacions/toggle/user/{usuario}',[NegocioCon
 
     Route::get('dashboard/total/viajeros/anual',[DashboardController::class, 'getTotalReferidosRegistradoAnual']);
     Route::post('dashboard/total/comisiones/promotor',[DashboardController::class, 'comisiones']);
-
+    Route::get('dashboard/promotores/status',[DashboardController::class,'getStatusPromotores']);
+    Route::get('dashboard/promotores/get/eficacia',[DashboardController::class, 'getEficaciaPromotores']);
+    Route::post('dashboard/lider/viajeros-totales',[DashboardController::class, 'totalesViajeros']);
+    Route::get('dashboard/lider/mis-promotores',[UserController::class,'misPromotores']);
+    Route::get('dashboard/lider/eficacia-mes',[DashboardController::class, 'porcentajeEficacia']);
+    
     /*****************************/
     /* Datos de pagos
     /*****************************/ 

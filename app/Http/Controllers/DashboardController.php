@@ -628,4 +628,90 @@ class DashboardController extends Controller
 
     }
 
+
+
+    public function getStatusPromotores(Request $request){
+
+        return response()->json($request->user()->totalPromotores());
+
+    }
+
+    public function getEficaciaPromotores(Request $request){
+        $eficacias = $request->user()->eficaciaPromotores();
+
+      
+        foreach ($eficacias as $key => $eficacia) {
+            if($key == 'data'){
+                $eficacia->each(fn($val) => $val['data']->each(fn($v) => \settype($v, 'integer')));
+            }
+        }
+        return response()->json($eficacias);
+
+    }
+
+
+    public function totalesViajeros(Request $request){
+
+       if($request->offsetExists('promotor_id')){
+        $promotor_id = $request->get('promotor_id');
+       }
+        $categorias = collect([]);
+
+       $request->user()->promotores
+       ->when(isset($promotor_id),fn($q) => $q->where('id',$promotor_id))
+       ->map(fn($val) => $val->getNombreCompleto())->each(fn($val) => $categorias->push($val));
+
+    //    dd($categorias);
+       $mes_actual = strtoupper(now()->isoFormat('MMMM'));
+       $mes_anterior = strtoupper(now()->subMonth()->isoFormat('MMMM'));
+        $penultimo_mes = strtoupper(now()->subMonths(2)->isoFormat('MMMM'));
+
+        $data = collect([
+            [
+                'name' => "Este mes ({$mes_actual})",
+                'data' => collect([])
+            ],
+            [
+                'name' => "Ultimo mes ({$mes_anterior})",
+                'data' => collect([])
+            ],
+            [
+                'name' => "Penultimo mes ({$penultimo_mes})",
+                'data' => collect([])
+            ]
+        ]);
+
+
+        $request->user()->promotores
+        ->when(isset($promotor_id), fn ($q) => $q->where('id', $promotor_id))
+        ->each(function($promotor) use($data){
+            $viajeros_ultimos_mes = $promotor->viajerosUltimoMes();
+            $viajeros_penultimo_mes = $promotor->viajerosPenultimoMes();
+            $viajeros_mes_presente = $promotor->viajerosMesPresente();
+
+            $data[0]['data']->push($viajeros_mes_presente);
+            $data[1]['data']->push($viajeros_ultimos_mes);
+            $data[2]['data']->push($viajeros_penultimo_mes);
+
+        });
+        
+
+        return response()->json([
+            'categorias' => $categorias,
+            'data' => $data
+        ]);
+      
+       
+    }
+
+    public function porcentajeEficacia(Request $request){
+
+        $lider = $request->user();
+
+        $porcentaje = (float) $lider->porcentajeEficacia();
+
+        return response()->json($porcentaje);
+
+    }
+
 }

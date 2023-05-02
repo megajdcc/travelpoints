@@ -304,6 +304,7 @@ export const getImage = (archivo) => {
 export const getStatusLegendPromotor = (status ) => {
 
   const legend = [
+    
     'Activo',
     'En peligro',
     'Inactivo'

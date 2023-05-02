@@ -16,7 +16,7 @@ use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Broadcasting\Channel;
 
 use Illuminate\Database\Eloquent\Casts\Attribute;
-use Illuminate\Support\Facades\{Hash};
+use Illuminate\Support\Facades\{DB, Hash};
 use App\Trais\{hasCuenta, Has_roles, hasTelefonos,hasCarrito};
 
 use App\Models\Divisa;
@@ -24,6 +24,7 @@ use App\Models\Negocio\Cupon;
 use App\Models\Negocio\Negocio;
 use App\Models\Negocio\Reservacion;
 use App\Models\Usuario\Permiso;
+use Illuminate\Support\Collection;
 
 class User extends Authenticatable
 {
@@ -285,6 +286,194 @@ class User extends Authenticatable
         
     }
 
+    public function getStatusUser(): array
+    {
+        $referidos = [
+            'ultimo_mes' => 0,
+            'ultimo_trimestre' => 0,
+            'data' => 0
+        ];
+
+        $promotores_activos = [
+            'ultimo_mes' => 0,
+            'ultimo_trimestre' => 0,
+            'data' => 0
+        ];
+
+        if ($this->rol->nombre == 'Promotor') {
+            $referidos_ultimo_mes =  DB::table('users', 'u')
+                ->join('usuario_referencia as ur', 'u.id', 'ur.usuario_id')
+                ->whereRaw('u.id = :usuario && ur.created_at >= DATE_SUB(CURDATE(), INTERVAL 30 DAY)', [':usuario' => $this->id])
+                ->selectRaw('count(ur.referido_id) as referidos')
+                ->first('referidos');
+
+            $referidos_ultimo_trimestre =  DB::table('users', 'u')
+                ->join('usuario_referencia as ur', 'u.id', 'ur.usuario_id')
+                ->whereRaw('u.id = :usuario && ur.created_at >= DATE_SUB(CURDATE(), INTERVAL 89 DAY)', [':usuario' => $this->id])
+                ->selectRaw('count(ur.referido_id) as referidos')
+                ->first('referidos');
+
+            $referidos['ultimo_mes'] = $referidos_ultimo_mes->referidos;
+            $referidos['ultimo_trimestre'] = $referidos_ultimo_trimestre->referidos;
+        } else if ($this->rol->nombre == 'Lider') {
+
+            $activos_ultimo_mes =  DB::table('users', 'u')
+                ->join('usuario_referencia as ur', 'u.id', 'ur.usuario_id')
+                ->whereRaw('u.lider_id = :usuario && ur.created_at >= DATE_SUB(CURDATE(), INTERVAL 30 DAY)', [':usuario' => $this->id])
+                ->selectRaw('count(distinct(ur.usuario_id)) as promotores')
+                ->first('referidos');
+
+            $activos_ultimo_trimestre =  DB::table('users', 'u')
+                ->join('usuario_referencia as ur', 'u.id', 'ur.usuario_id')
+                ->whereRaw('u.lider_id = :usuario && ur.created_at >= DATE_SUB(CURDATE(), INTERVAL 89 DAY)', [':usuario' => $this->id])
+                ->selectRaw('count(distinct(ur.usuario_id)) as promotores')
+                ->first('referidos');
+
+            $promotores_activos['ultimo_mes'] = $activos_ultimo_mes->promotores;
+            $promotores_activos['ultimo_trimestre'] = $activos_ultimo_trimestre->promotores;
+        }
+
+
+        return ['referidos' => $referidos, 'promotores_activos' => $promotores_activos];
+    }
+
+    function totalPromotores(){
+        
+        $promotores_activos = DB::table('users','u')
+                                ->selectRaw('count(*) as promotores')
+                                ->where('u.lider_id',$this->id)
+                                ->where('u.activo',true)
+                                ->get('promotores')->first();
+
+
+        $promotores_inactivos = DB::table('users', 'u')
+        ->selectRaw('count(*) as promotores')
+        ->where('u.lider_id', $this->id)
+            ->where('u.activo', false)
+            ->get('promotores')
+            ->first();
+            
+            return ['promotores_activos' => $promotores_activos->promotores,'promotores_inactivos' => $promotores_inactivos->promotores];
+    }
+
+    public function eficaciaPromotores() : Array|Null{
+
+        $promotores = collect([]);
+
+        $data = collect([
+            [
+                'name' => 'Viajeros',
+                'data' => collect([])
+            ],
+            [
+                'name' => 'Viajeros Activos',
+                'data' => collect([])
+            ]
+        ]);
+        
+        $this->promotores->each(function($val) use($promotores,$data){
+            $promotores->push($val->getNombreCompleto());
+
+            $viajeros_promotor = DB::table('users', 'u')
+                ->selectRaw('count(*) as viajeros')
+                ->join('usuario_referencia as ur', 'u.id', 'ur.referido_id')
+                ->where('ur.usuario_id', $val->id)->get('viajeros')->first()->viajeros;
+
+                
+            $viajeros_activos = 
+            DB::table('users', 'u')
+                ->selectRaw('count(distinct(u.id)) as viajeros')
+                ->join('usuario_referencia as ur', 'u.id', 'ur.referido_id')
+                ->join('ventas as v','u.id','v.cliente_id')
+                ->where('ur.usuario_id', $val->id)->get('viajeros')->first()->viajeros;
+
+            $data[0]['data']->push($viajeros_promotor);
+            $data[1]['data']->push($viajeros_activos);
+
+        });
+
+
+        return [
+            'promotores' => $promotores,
+            'data' => $data
+        ];
+        
+    }
+
+
+    public function viajerosUltimoMes() : int{
+        $result = 0;
+
+        $result = DB::table('users', 'u')
+        ->selectRaw('count(distinct(u.id)) as viajeros_ultimo_mes')
+        ->join('usuario_referencia as ur', 'u.id', 'ur.referido_id')
+        ->where('ur.usuario_id', $this->id)
+        ->whereRaw('u.created_at between DATE_SUB(LAST_DAY(CURDATE()), INTERVAL 2 MONTH) + interval 1 day AND DATE_SUB(LAST_DAY(CURDATE()), INTERVAL 1 MONTH)')
+        ->get('viajeros_ultimo_mes')->first()->viajeros_ultimo_mes;
+
+
+        return $result;
+    }
+
+    public function viajerosPenultimoMes(): int
+    {
+        $result = 0;
+
+        $result = DB::table('users', 'u')
+        ->selectRaw('count(distinct(u.id)) as penultimo_mes')
+        ->join('usuario_referencia as ur', 'u.id', 'ur.referido_id')
+        ->where('ur.usuario_id', $this->id)
+        ->whereRaw('u.created_at between DATE_SUB(LAST_DAY(CURDATE()), INTERVAL 3 MONTH) + interval 1 day AND DATE_SUB(LAST_DAY(CURDATE()), INTERVAL 2 MONTH)')
+        ->get('penultimo_mes')
+        ->first()->penultimo_mes;
+
+
+        return $result;
+    }
+
+    public function viajerosMesPresente(): int
+    {
+        $result = 0;
+
+        $result = DB::table('users', 'u')
+        ->selectRaw('count(distinct(u.id)) as mes_presente')
+        ->join('usuario_referencia as ur', 'u.id', 'ur.referido_id')
+        ->where('ur.usuario_id', $this->id)
+        ->whereRaw('u.created_at between DATE_SUB(LAST_DAY(CURDATE()), INTERVAL 1 MONTH) + interval 1 day AND LAST_DAY(CURDATE())')
+        ->get('mes_presente')
+        ->first()->mes_presente;
+
+        return $result;
+    }
+
+
+
+    public function porcentajeEficacia(){
+        $referidos = DB::table('usuario_referencia as ur')
+        ->selectRaw('COUNT(DISTINCT ur.referido_id) AS total_referidos, 
+                            COUNT(DISTINCT v.cliente_id) AS total_clientes,
+                            COUNT(DISTINCT v.cliente_id) / COUNT(DISTINCT ur.referido_id) * 100 AS porcentaje_clientes')
+        ->join('users as u', 'ur.usuario_id', '=', 'u.id')
+            ->leftJoin('users as lider', 'u.lider_id', '=', 'lider.id')
+            ->leftJoin('ventas as v', function ($join) {
+                $join->on('ur.referido_id', '=', 'v.cliente_id')
+                ->whereBetween('v.created_at', [now()->startOfMonth(), now()]);
+            })
+            ->where('lider.id', $this->id)
+            ->groupBy('lider.id')
+            ->first();
+
+        if ($referidos) {
+            $porcentaje = $referidos->porcentaje_clientes;
+        } else {
+            $porcentaje = 0;
+        }
+
+
+        return $porcentaje;
+
+    }
+    
     public function cargar(): User{
         $this->tokens;
         $this->rol?->permisos;

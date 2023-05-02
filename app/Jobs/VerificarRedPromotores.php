@@ -37,6 +37,11 @@ class VerificarRedPromotores implements ShouldQueue
             $q->where('nombre','Promotor');
         })->get();
 
+        $lideres = User::whereHas('rol', function (Builder $q) {
+            $q->where('nombre', 'Lider');
+        })->get();
+
+
         foreach ($promotores as $key => $promotor) {
 
             $referidos_ultimo_trimestre =  DB::table('users', 'u')
@@ -50,6 +55,20 @@ class VerificarRedPromotores implements ShouldQueue
                 $promotor->referidos()->detach();
             }
 
+        }
+
+        foreach ($lideres as $key => $lider) {
+
+            $status_user = $lider->getStatusUser();
+
+            if ($status_user['referidos']['ultimo_trimestre'] < 1) {
+                $lider->promotores->each(function($val){
+                    $val->lider_id = null;
+                    $val->save();
+                });
+                $lider->referidos()->detach();
+
+            }
         }
     }
 }

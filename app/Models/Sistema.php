@@ -75,10 +75,10 @@ class Sistema extends Model
                 $monto_comision = $movimiento->monto * $comision_promotor->comision / 100;
 
                 $promotor->generarMovimiento($monto_comision,
-                "Comisión por consumo de cliente {$venta->cliente->getNombreCompleto()} en el negocio {$venta->model->nombre} por un monto de: {$monto}.",Movimiento::TIPO_INGRESO);
+                "Comisión por consumo de cliente {$venta->cliente->getNombreCompleto()} en el negocio {$venta->model->nombre}.",Movimiento::TIPO_INGRESO);
 
 
-                $this->generarMovimiento($monto_comision,"Comision adjudicada a promotor {$promotor->getNombreCompleto()}, por consumo de cliente {$venta->cliente->getNombreCompleto()} en el negocio {$venta->model->nombre} por un monto de: {$monto}.",Movimiento::TIPO_EGRESO);
+                $this->generarMovimiento($monto_comision,"Comisión adjudicada a promotor {$promotor->getNombreCompleto()}, por consumo de cliente {$venta->cliente->getNombreCompleto()} en el negocio {$venta->model->nombre} por un monto de: {$monto}.",Movimiento::TIPO_EGRESO);
 
 
             }
@@ -93,11 +93,11 @@ class Sistema extends Model
 
                     $lider->generarMovimiento(
                         $monto_comision,
-                        "Comisión por consumo de cliente {$venta->cliente->getNombreCompleto()} en el negocio {$venta->model->nombre} por un monto de: {$monto}. El promotor quien realizó la reserva fue {$promotor->getNombreCompleto()}",
+                        "Comisión por consumo de cliente {$venta->cliente->getNombreCompleto()} en el negocio {$venta->model->nombre}. El promotor quien realizó la reserva fue {$promotor->getNombreCompleto()}",
                         Movimiento::TIPO_INGRESO
                     );
 
-                    $this->generarMovimiento($monto_comision, "Comision adjudicada a lider {$lider->getNombreCompleto()}, por consumo de cliente {$venta->cliente->getNombreCompleto()} en el negocio {$venta->model->nombre} por un monto de: {$monto}.", Movimiento::TIPO_EGRESO);
+                    $this->generarMovimiento($monto_comision, "Comisión adjudicada a lider {$lider->getNombreCompleto()}, por consumo de cliente {$venta->cliente->getNombreCompleto()} en el negocio {$venta->model->nombre} por un monto de: {$monto}.", Movimiento::TIPO_EGRESO);
 
                 }
                

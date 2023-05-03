@@ -150,10 +150,10 @@ class VentaController extends Controller
                 $venta->cliente->generarMovimiento($datos['tps'], "Consumo en {$venta->model->nombre} por un monto de:{$monto}.");
             }
 
+            // descontamos al negocio El monto correspondiente por haber realizado la venta
             $venta->model->generarMovimiento($venta->model->divisa->convertir($venta->divisa, $datos['tps']), "Consumo de cliente {$venta->cliente->nombre} {$venta->cliente->apellido} por un monto de:{$monto}.",Movimiento::TIPO_EGRESO);
             
             // generar movimiento para el sistema... 
-
             $sistema = Sistema::first();
             $sistema->adjudicarComisiones($datos['tps'],$venta);
             

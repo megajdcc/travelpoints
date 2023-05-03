@@ -150,6 +150,13 @@ import datosPago from './modules/datosPago.js';
 
 import retiro from './modules/retiro.js';
 
+
+// Pais , Estados y Municipios
+
+import pais from './modules/pais.js'
+import estado from './modules/estado.js'
+import ciudad from './modules/ciudad.js'
+
 Vue.use(Vuex)
 
 export default new Vuex.Store({
@@ -296,7 +303,11 @@ export default new Vuex.Store({
     sucursal,
     comision,
     datosPago,
-    retiro
+    retiro,
+
+    pais,
+    estado,
+    ciudad
   },
 
   strict: process.env.DEV,

@@ -474,7 +474,93 @@ export default{
                },
                
                
+            },
+            porcentajeEficaciaPromotores:{
+               series: [10],
+               chartOptions: {
+                  chart: {
+                     height: 350,
+                     type: 'radialBar',
+                     toolbar: {
+                        show: true,
+                        offsetX: 0,
+                        offsetY: 0,
+                        tools: {
+                        download: false,
+                        selection: true,
+                        zoom: false,
+                        zoomin: true,
+                        zoomout: true,
+                        pan: true,
+                        reset: true,
+                        },
+                     },
+                  },
+                  
+                 
+                  plotOptions: {
+                     radialBar: {
+                        // ...
+                        
+                        dataLabels: {
+                           show: true,
+                           name: {
+                              show: true,
+                              fontSize: '24px',
+                              fontFamily: 'Miriad, Arial, sans-serif',
+                              fontWeight: 600,
+                              color: '#FFFFFF',
+                              offsetY: -10,
+                           },
+                           value: {
+                              show: true,
+                              fontSize: '30px',
+                              fontFamily: 'Miriad, Arial, sans-serif',
+                              fontWeight: 600,
+                              color: '#FFFFFF',
+                              offsetY: 0,
+                              formatter: function (val) {
+                                 return val + '%'
+                              },
+                           },
+                           total: {
+                              show: true,
+                              label: 'Eficacia', // Aquí se establece la etiqueta por defecto
+                              formatter: function () {
+                                 return ''
+                              },
+                           },
+                        },
+                     }
+                  },
+
+                  dataLabels: {
+                        hideWhenZero: false,
+                        enabled:true,
+                        textAnchor: 'middle',
+                        distributed: false,
+                        offsetX: 0,
+                        offsetY: 0,
+
+                        style: {
+                              fontSize: '12px',
+                              fontFamily: 'Helvetica, Arial, sans-serif',
+                              fontWeight: 'bold',
+                              colors: undefined
+                        }
+                  },
+                  
+                  labels: ['Prueba'],
+                  activeIndex:0,
+
+                  legend: {
+                     show: true,
+                     position: 'bottom',
+                  },
+                  
+               },
             }
+
 
       }
    },
@@ -593,6 +679,13 @@ export default{
       },
       setEficaciaMes(state,val) {
          state.porcentajeEficacia.series = [val];
+      },
+
+      setEficaciaMesPromotores(state,{promotores,data}){
+
+         state.porcentajeEficaciaPromotores.chartOptions.labels = promotores
+         state.porcentajeEficaciaPromotores.series = data
+         
       }
 
    },
@@ -838,6 +931,14 @@ export default{
          return new Promise((resolve, reject) => {
             axios.get(`/api/dashboard/lider/eficacia-mes`).then(({data}) => {
                commit('setEficaciaMes',data)
+               resolve(data)
+            }).catch(e  => reject(e))
+         })
+      },
+      getEficaciaMesPromotores({commit}){
+         return new Promise((resolve, reject) => {
+            axios.get(`/api/dashboard/lider/eficacia-mes/promotores`).then(({data}) => {
+               commit('setEficaciaMesPromotores',data)
                resolve(data)
             }).catch(e  => reject(e))
          })

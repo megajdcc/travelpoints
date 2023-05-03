@@ -2584,6 +2584,302 @@ export default [
       ]
    },
 
+
+   /*****************************************/
+   /* Pais
+   /****************************************/
+
+   {
+      path:'/pais',
+      component:() => import('views/pais/index.vue'),
+      name:'pais',
+
+      children:[
+         {
+            path:'',
+            component:() => import('views/pais/list.vue'),
+            name:'listar.paises',
+            meta:{
+               resource:'pais',
+               action:'read',
+               pageTitle:'Paises',
+
+               breadcrumb:[
+                  {
+                     text:'Home',
+                     to:{name:'home'},
+                     active:false
+                  },
+                  {
+                     text: 'Listado',
+                     active: true
+                  }
+               ]
+            }
+         },
+         {
+            path:'create',
+            component: () => import('views/pais/create.vue'),
+            name:'create.pais',
+
+            meta: {
+               resource: 'pais',
+               action: 'write',
+               pageTitle: 'Registrar Pais',
+               navActiveLink:'listar.paises',
+               breadcrumb: [
+                  {
+                     text: 'Home',
+                     to: { name: 'home' },
+                     active: false
+                  },
+
+                  {
+                     text: 'Paises',
+                     to: { name: 'listar.paises' },
+                     active: false
+                  },
+                  {
+                     text: 'create',
+                     active: true
+                  }
+               ]
+            }
+
+         },
+
+         {
+            path: ':id/edit',
+            props:true,
+            component: () => import('views/pais/edit.vue'),
+            name: 'edit.pais',
+
+            meta: {
+               resource: 'pais',
+               action: 'update',
+               pageTitle: 'Actualizad Pais',
+               navActiveLink: 'listar.paises',
+               breadcrumb: [
+                  {
+                     text: 'Home',
+                     to: { name: 'home' },
+                     active: false
+                  },
+
+                  {
+                     text: 'Paises',
+                     to: { name: 'listar.paises' },
+                     active: false
+                  },
+                  {
+                     text: 'edit',
+                     active: true
+                  }
+               ]
+            }
+
+         }
+
+      ]
+   },
+
+   /*****************************************/
+   /* Estado
+   /*************************************** */
+
+   {
+      path: '/estado',
+      component: () => import('views/estado/index.vue'),
+      name: 'estado',
+
+      children: [
+         {
+            path: '',
+            component: () => import('views/estado/list.vue'),
+            name: 'listar.estados',
+            meta: {
+               resource: 'estado',
+               action: 'read',
+               pageTitle: 'Estados',
+
+               breadcrumb: [
+                  {
+                     text: 'Home',
+                     to: { name: 'home' },
+                     active: false
+                  },
+                  {
+                     text: 'Listado',
+                     active: true
+                  }
+               ]
+            }
+         },
+         {
+            path: 'create',
+            component: () => import('views/estado/create.vue'),
+            name: 'create.estado',
+
+            meta: {
+               resource: 'estado',
+               action: 'write',
+               pageTitle: 'Registrar Estado',
+               navActiveLink: 'listar.estados',
+               breadcrumb: [
+                  {
+                     text: 'Home',
+                     to: { name: 'home' },
+                     active: false
+                  },
+
+                  {
+                     text: 'Estados',
+                     to: { name: 'listar.estados' },
+                     active: false
+                  },
+                  {
+                     text: 'create',
+                     active: true
+                  }
+               ]
+            }
+
+         },
+
+         {
+            path: ':id/edit',
+            props: true,
+            component: () => import('views/estado/edit.vue'),
+            name: 'edit.estado',
+
+            meta: {
+               resource: 'estado',
+               action: 'update',
+               pageTitle: 'Actualizad Estado',
+               navActiveLink: 'listar.estados',
+               breadcrumb: [
+                  {
+                     text: 'Home',
+                     to: { name: 'home' },
+                     active: false
+                  },
+
+                  {
+                     text: 'Estados',
+                     to: { name: 'listar.estados' },
+                     active: false
+                  },
+                  {
+                     text: 'edit',
+                     active: true
+                  }
+               ]
+            }
+
+         }
+
+      ]
+   },
+
+
+   /*****************************************/
+   /* Ciudad
+   /*************************************** */
+   {
+      path: '/ciudad',
+      component: () => import('views/estado/index.vue'),
+      name: 'ciudad',
+
+      children: [
+         {
+            path: '',
+            component: () => import('views/ciudad/list.vue'),
+            name: 'listar.ciudades',
+            meta: {
+               resource: 'ciudad',
+               action: 'read',
+               pageTitle: 'Ciudades',
+
+               breadcrumb: [
+                  {
+                     text: 'Home',
+                     to: { name: 'home' },
+                     active: false
+                  },
+                  {
+                     text: 'Listado',
+                     active: true
+                  }
+               ]
+            }
+         },
+         {
+            path: 'create',
+            component: () => import('views/ciudad/create.vue'),
+            name: 'create.ciudad',
+
+            meta: {
+               resource: 'ciudad',
+               action: 'write',
+               pageTitle: 'Registrar Ciudad',
+               navActiveLink: 'listar.ciudades',
+               breadcrumb: [
+                  {
+                     text: 'Home',
+                     to: { name: 'home' },
+                     active: false
+                  },
+
+                  {
+                     text: 'Ciudades',
+                     to: { name: 'listar.ciudades' },
+                     active: false
+                  },
+                  {
+                     text: 'create',
+                     active: true
+                  }
+               ]
+            }
+
+         },
+
+         {
+            path: ':id/edit',
+            props: true,
+            component: () => import('views/ciudad/edit.vue'),
+            name: 'edit.ciudad',
+
+            meta: {
+               resource: 'ciudad',
+               action: 'update',
+               pageTitle: 'Actualizad Ciudad',
+               navActiveLink: 'listar.ciudades',
+               breadcrumb: [
+                  {
+                     text: 'Home',
+                     to: { name: 'home' },
+                     active: false
+                  },
+
+                  {
+                     text: 'Ciudades',
+                     to: { name: 'listar.ciudades' },
+                     active: false
+                  },
+                  {
+                     text: 'edit',
+                     active: true
+                  }
+               ]
+            }
+
+         }
+
+      ]
+   },
+
+
    /*****************************************/
    /* PAGINA DE perfil de negocios
    /*************************************** */

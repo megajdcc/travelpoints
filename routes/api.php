@@ -10,6 +10,8 @@ use App\Models\Divisa;
 use App\Http\Controllers\ImagenController;
 use App\Models\Negocio\HorarioReservacion;
 
+use App\Http\Controllers\{PaisController,CiudadController,EstadoController};
+
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -523,6 +525,8 @@ Route::get('negocios/{negocio}/recomendacions/toggle/user/{usuario}',[NegocioCon
     Route::post('dashboard/lider/viajeros-totales',[DashboardController::class, 'totalesViajeros']);
     Route::get('dashboard/lider/mis-promotores',[UserController::class,'misPromotores']);
     Route::get('dashboard/lider/eficacia-mes',[DashboardController::class, 'porcentajeEficacia']);
+
+    Route::get('dashboard/lider/eficacia-mes/promotores',[DashboardController::class,'porcentajeEficaciaPromotores']);
     
     /*****************************/
     /* Datos de pagos
@@ -539,6 +543,39 @@ Route::get('negocios/{negocio}/recomendacions/toggle/user/{usuario}',[NegocioCon
     Route::post('retiros/fetch/data',[RetiroController::class,'fetchData']);
     Route::get('retiros/{retiro}/fetch/data',[RetiroController::class,'fetch']);
     Route::resource('retiros',RetiroController::class);
+
+
+    /**************************/
+    /* Pais
+    /**************************/
+
+
+    Route::get('get/paises',[PaisController::class,'getPaises']);
+    Route::post('fetch/paises',[PaisController::class,'fetchData']);
+    Route::resource('pais',PaisController::class);
+    Route::get('fetch/pais/{pais}',[PaisController::class,'fetchPais']);
+
+
+    /**************************/
+    /* Estado
+    /**************************/
+
+
+    Route::get('get/estados', [EstadoController::class, 'getEstados']);
+    Route::post('fetch/estados', [EstadoController::class, 'fetchData']);
+    Route::resource('estados', EstadoController::class);
+    Route::get('fetch/estado/{estado}', [EstadoController::class, 'fetchEstado']);
+
+    /**************************/
+    /* Ciudad
+    /**************************/
+
+
+    Route::get('get/ciudades', [CiudadController::class, 'getCiudades']);
+    Route::post('fetch/ciudades', [CiudadController::class, 'fetchData']);
+    Route::resource('ciudads', CiudadController::class);
+    Route::get('fetch/ciudad/{ciudad}', [CiudadController::class, 'fetchCiudad']);
+
 });
 
 Route::put('usuario/{usuario}/establecer/contrasena', [UserController::class, 'EstablecerContrasena'])->name('establecercontrasena');

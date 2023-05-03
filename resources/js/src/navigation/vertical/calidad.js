@@ -105,6 +105,24 @@ export default [
             fontAwesome:true,
             action:'read',
             resource:'iatas'
+         },
+         {
+            title: 'Paises',
+            route: 'listar.paises',
+            action: 'read',
+            resource: 'pais'
+         },
+         {
+            title: 'Estados',
+            route: 'listar.estados',
+            action: 'read',
+            resource: 'estado'
+         },
+         {
+            title: 'Ciudades',
+            route: 'listar.ciudades',
+            action: 'read',
+            resource: 'ciudad'
          }
       ]
    },
@@ -240,7 +258,8 @@ export default [
             route: 'formasPago.list',
             action: 'read',
             resource: 'formas de pago'
-         }
+         },
+         
 
 
       ]

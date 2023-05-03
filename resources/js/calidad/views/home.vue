@@ -145,11 +145,19 @@
             </statistic-card-horizontal>
 
           <!-- Eficacia del mes -->
-              <apex-chart titulo="Eficacia" subtitulo="Lo que va del mes" 
+              <apex-chart titulo="Eficacia de viajeros" subtitulo="% de viajeros con consumos registrados" 
               :chartOptions="porcentajeEficacia.chartOptions" :data="porcentajeEficacia.series" type="radialBar" :height="320"    
               v-if="$can('read', 'Tablero eficacia lider') && ['Lider'].includes(usuario.rol ? usuario.rol.nombre : '') " >
             
               </apex-chart>
+
+
+            <!-- Eficacia del mes por promotores -->
+            <apex-chart titulo="Eficacia de promotores" subtitulo="% de promotores con viajeros con registro de consumos" 
+                :chartOptions="porcentajeEficaciaPromotores.chartOptions" :data="porcentajeEficaciaPromotores.series" type="radialBar" :height="320"    
+                v-if="$can('read', 'Tablero eficacia lider') && ['Lider'].includes(usuario.rol ? usuario.rol.nombre : '')" >
+            
+            </apex-chart>
 
           </b-col>
 
@@ -446,7 +454,8 @@ export default {
       eficaciaPromotores,
       viajerosTotales,
       misPromotores,
-      porcentajeEficacia
+      porcentajeEficacia,
+      porcentajeEficaciaPromotores
      } 
     = toRefs(store.state.dashboard)
     const viajeros_referidos = ref(0)
@@ -574,6 +583,7 @@ export default {
 
         store.dispatch('dashboard/getMisPromotores')
         store.dispatch('dashboard/getEficaciaMes')
+        store.dispatch('dashboard/getEficaciaMesPromotores')
       }
 
 
@@ -668,7 +678,8 @@ export default {
       eficaciaPromotores,
       viajerosTotales,
       misPromotores,
-      porcentajeEficacia
+      porcentajeEficacia,
+      porcentajeEficaciaPromotores
     };
 
   }

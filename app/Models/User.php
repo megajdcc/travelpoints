@@ -24,6 +24,7 @@ use App\Models\Negocio\Cupon;
 use App\Models\Negocio\Negocio;
 use App\Models\Negocio\Reservacion;
 use App\Models\Usuario\Permiso;
+use Carbon\Carbon;
 use Illuminate\Support\Collection;
 
 class User extends Authenticatable
@@ -472,6 +473,37 @@ class User extends Authenticatable
 
         return $porcentaje;
 
+    }
+
+    public function porcentajeEficaciaPromotores(){
+
+       $porcentajes =  DB::table('users as u')
+            ->leftJoin('usuario_referencia as ur', 'ur.usuario_id', '=', 'u.id')
+            ->leftJoin('ventas as v', function($join) {
+                    $join->on('v.cliente_id', '=', 'ur.referido_id')
+                        ->whereBetween('v.created_at', [Carbon::now()->startOfMonth(), Carbon::now()]);
+            })
+            ->select('u.id as promotor_id', DB::raw('COUNT(DISTINCT ur.referido_id) as total_referidos'))
+            ->selectRaw('COUNT(DISTINCT v.cliente_id) as total_clientes')
+            ->selectRaw('IFNULL(COUNT(DISTINCT v.cliente_id) / COUNT(DISTINCT ur.referido_id) * 100, 0) as porcentaje_clientes')
+            ->where('u.lider_id', $this->id)
+            ->groupBy('u.id')
+            ->get();
+
+        $promotores =collect([]);
+
+
+        $data = collect([]);
+        
+        foreach($this->promotores  as $promotor){
+            $promotores->push($promotor->getNombreCompleto());
+
+            $porcentaje = $porcentajes->where('promotor_id',$promotor->id)->first()->porcentaje_clientes;
+
+            $data->push((float) $porcentaje);
+        }
+
+        return ['promotores' => $promotores,'data' => $data];
     }
     
     public function cargar(): User{

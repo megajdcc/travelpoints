@@ -714,4 +714,14 @@ class DashboardController extends Controller
 
     }
 
+    public function porcentajeEficaciaPromotores(Request $request){
+
+        $lider  = $request->user();
+
+        $porcentajes = $lider->porcentajeEficaciaPromotores();
+
+        return response()->json($porcentajes);
+
+    }
+
 }

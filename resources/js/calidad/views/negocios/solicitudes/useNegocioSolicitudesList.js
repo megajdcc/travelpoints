@@ -32,7 +32,7 @@ export default function useNegocioSolicitudesList(){
 
    const fetchData = (ctx,next) => {
 
-      store.dispatch('solicitud/fetchData',{
+      store.dispatch('solicitud/fetchDataAdmin',{
          currentPage:currentPage.value,
          sortBy:sortBy.value,
          q:searchQuery.value,

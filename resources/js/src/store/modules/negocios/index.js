@@ -50,6 +50,7 @@ export default{
          modelType:'App\\Models\\Negocio\\Negocio',
          recomendaciones:[],
          seguidores:[],
+         tps_referido:0,
 
 
 
@@ -156,6 +157,8 @@ export default{
             modelType: 'App\\Models\\Negocio\\Negocio',
             recomendaciones: [],
             seguidores: [],
+            tps_referido:0,
+
 
          }
       },

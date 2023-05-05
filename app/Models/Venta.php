@@ -205,4 +205,16 @@ class Venta extends Model
         return Consumo::sum('total');
     }
 
+    public function getComisionTravel(){
+
+        $negocio = $this->model;
+        $comision_travel = 0;
+        if($negocio->tipo_comision == 1){
+            $comision_travel = $this->monto * $negocio->comision / 100;
+        }else{
+            $comision_travel = $negocio->comision * $this->personas;
+        }
+        return $comision_travel;
+    }
+
 }

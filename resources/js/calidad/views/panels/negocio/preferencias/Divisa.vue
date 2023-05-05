@@ -65,6 +65,26 @@
                               </validation-provider>
                            </b-form-group>
                      </b-col>
+
+                     <b-col md="4">
+                           <b-form-group description="Por Persona">
+                              <template #label>
+                                Compra promedio:
+                              </template>
+                           
+                              <validation-provider name="compra_promedio" #default="{valid,errors}">
+                           
+                                 <currency-input v-model="formulario.precios.compra_promedio"
+                                    :options="{ ...optionsCurrency,...{currency:getCurrency.iso} }" input-class="form-control" />
+                           
+                                 <b-form-invalid-feedback :state="valid">
+                                    {{ errors[0] }}
+                                 </b-form-invalid-feedback>
+                           
+                              </validation-provider>
+                           </b-form-group>
+                     </b-col>
+
                   </b-row>
                </b-container>
 

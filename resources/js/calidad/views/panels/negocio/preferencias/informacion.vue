@@ -63,7 +63,7 @@
                      </b-form-group>
 
                      <b-form-group v-b-tooltip.hover.v-warning
-                        title="Elija entre pagar una comisión o un monto fijo por persona">
+                        title="Elija entre pagar una comisión o un cantidad fija por persona">
                         <template #label>
                            Tipo de pago: <span class="text-danger">*</span>
                            <feather-icon icon="HelpCircleIcon" class="text-warning" />
@@ -72,7 +72,7 @@
                         <validation-provider name="tipo_comision" rules="required" #default="{ errors }">
 
                            <b-form-radio-group v-model="formulario.tipo_comision"
-                              :options="[{ text: 'Comisión', value: 1 }, { text: 'Monto Fíjo', value: 2 }]"
+                              :options="[{ text: 'Comisión', value: 1 }, { text: 'Cantidad Fija', value: 2 }]"
                               button-variant="outline-primary" buttons size="md" :state="errors.length ? false : null"
                               class="w-100" @change="formulario.comision = 10">
 

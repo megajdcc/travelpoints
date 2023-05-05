@@ -204,6 +204,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     /*****************************/
 
     Route::post('negocio/solicituds/fetch/data',[SolicitudController::class,'fetchData']);
+    Route::post('negocio/solicituds/fetch/data/admin',[SolicitudController::class,'fetchDataAdmin']);
     Route::get('negocio/solicituds/sinaceptar', [SolicitudController::class, 'solicitudesSinAceptar']);
     Route::resource('negocio/solicituds',SolicitudController::class)->middleware(convertirNull::class);
     Route::get('negocio/solicituds/get/all',[SolicitudController::class,'getAll']);

@@ -67,7 +67,7 @@
                      </b-form-group>
 
                      <b-form-group v-b-tooltip.hover.v-warning
-                        title="Elija entre pagar una comisión o un monto fijo por persona">
+                        title="Elija entre pagar una comisión o una cantidad fija por persona">
                         <template #label>
                            Tipo de pago: <span class="text-danger">*</span>
                            <feather-icon icon="HelpCircleIcon" class="text-warning" />
@@ -398,7 +398,7 @@
                   <b-col cols="12" md="4">
                      <b-form-group>
                         <template #label>
-                           Estado: <span class="text-danger">*</span>
+                           Provincia/Estado: <span class="text-danger">*</span>
                         </template>
 
                         <validation-provider name="estado_id" rules="required" #default="{errors}">
@@ -422,7 +422,7 @@
                   <b-col cols="12" md="4">
                      <b-form-group>
                         <template #label>
-                           Ciudad:
+                           Ciudad/Municipio:
                         </template>
 
                         <validation-provider name="ciudad_id" #default="{errors}">
@@ -584,6 +584,10 @@
 
 
                      </b-form-group>
+
+                     <small class="text-justify">
+                           Este logo aparecerá en el perfil de negocio, se recomienda una imagen cuadrada de mínimo 300x300 px y un peso inferior a 2mb. La imagen debe estar en formato jpg o png
+                     </small>
                   </b-col>
                   <b-col cols="12" md="6">
 
@@ -612,6 +616,10 @@
                         </validation-provider>
 
                      </b-form-group>
+
+                      <small class="text-justify">
+                           Esta será la imagen de portada de tu negocio. Se recomienda una imagen horizontal panoramica y un peso inferior a 2mb, la imagen debe estar en formato jgg o png.
+                        </small>
 
                   </b-col>
 

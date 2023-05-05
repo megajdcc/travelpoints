@@ -10,7 +10,15 @@
       <b-col lg="8" class="d-none d-lg-flex align-items-center p-5">
         <div class="w-100 d-lg-flex align-items-center justify-content-center px-5">
           <!-- Cambiar a imagen nueva de travelpoints esperando por Mario -->
-          <b-img fluid :src="imgUrl" alt="Login V2" />
+          <!-- <b-img fluid :src="imgUrl" alt="Login V2" />
+           -->
+           <section class="video-travel">
+              <video loop muted autoplay controls="false">
+                  <source src="/storage/animation_travel.webm" type="video/webm">
+                
+              </video>
+            </section>
+
         </div>
       </b-col>
       <!-- /Left Text-->
@@ -82,6 +90,10 @@
 
               <b-button @click="authenticarGoogle(optionsAuth)"  variant="primary" block  v-loading="loading">
                 Google Auth
+              </b-button>
+
+              <b-button :to="{ name: 'register' }" variant="warning" v-loading="loading" block >
+                  Registrate
               </b-button>
               
             </b-form>
@@ -283,5 +295,28 @@ export default {
   width: auto;
   height: auto;
 }
+
+.video-travel{
+  width:auto;
+  height:450px;
+
+  video{
+    height:100%;
+    width:100%;
+  }
+}
+
+video::-webkit-media-controls {
+  display: none !important;
+}
+
+video::-webkit-media-controls-enclosure {
+  display: none !important;
+}
+
+video::-webkit-media-controls-panel {
+  display: none !important;
+}
+
 
 </style>

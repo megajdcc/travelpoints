@@ -48,14 +48,13 @@
         
                       <b-badge class="card-simple-price" variant="success" v-if="item.tipo_comision == 2"
                         v-b-tooltip.hover="'Monto por Persona'">
-                        {{ Math.round(item.comision) | currency('tp') }}
+                        {{ item.tps_referido | currency('tp') }}
                       </b-badge>
         
                       <b-badge class="card-simple-price" variant="success" v-else
                         v-b-tooltip.hover="'Porcentaje por lo que consumas'">
                         {{ Math.round(item.comision) }} %
                       </b-badge>
-        
         
                     </div><!-- /.card-simple-background -->
                   </div><!-- /.card-simple -->

@@ -59,9 +59,9 @@
 
         </b-card>
 
-        <h2 class="display-4">Sobre <span class="text-warning">{{ negocio.nombre }}</span></h2>
+        <h2 class="display-4 d-none d-md-flex">Sobre <span class="text-warning">{{ negocio.nombre }}</span></h2>
 
-        <b-card body-class="d-flex flex-column justify-content-center">
+        <b-card body-class="flex-column justify-content-center d-none d-md-flex">
 
           <section class="d-flex align-items-center">
             <!-- Logo -->
@@ -122,15 +122,12 @@
                     </td>
                   </tr>
 
-                   <tr class="" v-if="negocio.tipo_menu == 1">
-                      <td>
-                        <font-awesome-icon icon="fas fa-globe" />
-                      </td>
-
-                      <td>
-                        <b-link :href="negocio.menu" target="_blank" style="text-decoration:none;">
+                    <tr class="" v-if="negocio.tipo_menu == 1" >
+                      <td colspan="2">
+                        <b-button :href="negocio.menu" target="_blank" style="text-decoration:none;" block variant="warning">
+                          <font-awesome-icon icon="fas fa-book-open"/>
                           Ver menú
-                        </b-link>
+                        </b-button>
                       </td>
                     </tr>
 
@@ -164,17 +161,19 @@
           <el-divider></el-divider>
 
           <table class="table table-hover table-sm table-responsive" border="0" v-if="negocio.precios">
-            <tr>
-              <td>
-                <strong>Rango de precios</strong>
-              </td>
-              <td>
-                Min: {{ negocio.precios.precio_minimo | currency(negocio.divisa.iso) }} - Max: {{
-                  negocio.precios.precio_maximo | currency(negocio.divisa.iso)
-                }}
-              </td>
-            </tr>
-          </table>
+              <tr v-if="negocio.precios.compra_promedio">
+                <td>
+                  <strong>Compra promedio por persona</strong>
+                </td>
+                <td>
+                  <!-- Min: {{ negocio.precios.precio_minimo | currency(negocio.divisa.iso) }} - Max: {{
+                    negocio.precios.precio_maximo | currency(negocio.divisa.iso)
+                  }} -->
+
+                  {{  negocio.precios.compra_promedio | currency(negocio.divisa.iso)  }}
+                </td>
+              </tr>
+            </table>
 
           <el-divider></el-divider>
 
@@ -320,10 +319,14 @@
             
         </section>
 
-        
-          
-        
+        <h2 class="d-flex d-md-none mt-2" >Opiniones sobre este <strong class="text-warning">negocio</strong></h2>
 
+        <section class="d-flex d-md-none flex-column ">
+          <reviews-opinion :promedioCalificacion="promedioCalificacion" :cantidad="negocio.opinions.length"
+            :porcentajeOpinions="porcentajeOpinions" :model="{ model_id: negocio.id, model_type: negocio.modelType }"
+            class="mt-1 px-0 mx-0" />
+
+        </section>
 
       </b-col>
 
@@ -387,6 +390,8 @@ export default {
     BNavItem,
     BFormCheckboxGroup,
     BannerNegocio:() => import('components/BannerNegocio.vue'),
+    ReviewsOpinion: () => import('components/ReviewsOpinion.vue'),
+
 
 
   },

@@ -44,19 +44,14 @@ class Divisa extends Model
      */
     public function convertir(Divisa $divisa, $monto) : int|float{
 
-        // 10 $ dolares convertir a pesos mexicanos 
-        // tasa peso mexicano es de 18 por dolar 
-        // 10 * 18 = 180 Pesos mexicos 
-
-        
-        
+       
         if($divisa->id === $this->id){
             return $monto;
         }
 
-        $monto_dolar = $monto / $divisa->tasa;
+        $monto_convertir = $monto / $divisa->tasa;
 
-        return $monto_dolar *  $this->tasa;
+        return $monto_convertir *  $this->tasa;
 
 
     }
@@ -81,6 +76,12 @@ class Divisa extends Model
 
         // Devolver el monto convertido con la moneda de destino
         return $montoConvertido;
+    }
+
+    public static function convertirToTravel($monto, Divisa $divisa){
+        
+        return  $monto / $divisa->tasa;
+
     }
 
     public function sistema(){

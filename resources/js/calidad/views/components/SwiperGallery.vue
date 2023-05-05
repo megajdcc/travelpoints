@@ -35,7 +35,7 @@ import {
   BButton
 } from 'bootstrap-vue';
 
-import { Navigation, Pagination } from 'swiper'
+import { Navigation, Pagination, FreeMode, Thumbs } from 'swiper'
 
 import { ref, toRefs, computed, onMounted } from 'vue'
 
@@ -87,17 +87,31 @@ export default {
     });
 
     const swiperOptionThumbs = ref({
-      'space-between': 10,
-      'slides-per-view': 1,
+      'space-between': 0,
+      'slides-per-view': 4,
       'free-mode': true,
       'watch-slides-progress': true,
+      modules: [FreeMode, Navigation, Thumbs],
       breakpoints: {
         320: {
           slidesPerView: 2,
 
         },
-        640: {
+        450: {
+          slidesPerView: 3,
+
+        },
+        550: {
           slidesPerView: 4,
+
+        },
+
+        640: {
+          slidesPerView: 6,
+        },
+        
+        1024: {
+          slidesPerView: 8,
         }
       }
 

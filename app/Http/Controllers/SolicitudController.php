@@ -26,7 +26,6 @@ class SolicitudController extends Controller
 
         foreach ($solicitudes as $key => $solicitud) {
 
-
             $solicitud->categoria;
             $solicitud->usuario;
             $solicitud->usuario->avatar = $solicitud->usuario->getUrlAvatar();
@@ -34,8 +33,6 @@ class SolicitudController extends Controller
             $solicitud->estado->pais;
             $solicitud->divisa;
             $solicitud->iata;
-
-
             
         }
 
@@ -58,44 +55,56 @@ class SolicitudController extends Controller
 
     }
 
-
-    public function fetchData(Request $request){
-
+    public function fetchDataAdmin(Request $request){
         $datos = $request->all();
-
         $paginator = Solicitud::where([
-            ['nombre','LIKE',"%{$datos['q']}%",'OR'],
+            ['nombre', 'LIKE', "%{$datos['q']}%", 'OR'],
             ['descripcion', 'LIKE', "%{$datos['q']}%", 'OR'],
             ['breve', 'LIKE', "%{$datos['q']}%", 'OR'],
             ['codigo_postal', 'LIKE', "%{$datos['q']}%", 'OR'],
             ['email', 'LIKE', "%{$datos['q']}%", 'OR'],
             ['telefono', 'LIKE', "%{$datos['q']}%", 'OR'],
             ['direccion', 'LIKE', "%{$datos['q']}%", 'OR'],
-        ])->orWhereHas('categoria',function(Builder $q) use($datos) {
-                $q->where([
-                    ['categoria', 'LIKE', "%{$datos['q']}%", 'OR'],
-                ]);
+        ])->whereHas('categoria', function (Builder $q) use ($datos) {
+            $q->orWhere([
+                ['categoria', 'LIKE', "%{$datos['q']}%", 'OR'],
+            ]);
         })
-        ->orderBy($datos['sortBy'],$datos['sortDirDesc'] ? 'desc' : 'asc')
-        ->paginate($datos['perPage'] == 0 ? 10000 : $datos['perPage']);
+            ->orderBy($datos['sortBy'], $datos['sortDirDesc'] ? 'desc' : 'asc')
+            ->paginate($datos['perPage'] == 0 ? 10000 : $datos['perPage']);
 
-        $solicitudes = $paginator->items();
+        $solicitudes = collect($paginator->items())->each(fn($val) => $val->cargar());
+        
+        return response()->json([
+            'solicitudes' => $solicitudes,
+            'total' => $paginator->total()
+        ]);
 
-        foreach ($solicitudes as $solicitud) {
-            $solicitud->categoria;
-            
-            if($solicitud->usuario){
-                $solicitud->usuario->avatar = $solicitud->usuario->getAvatar();
-            }
-            
-            $solicitud->ciudad;
-            $solicitud->estado->pais;
-            $solicitud->divisa;
-            $solicitud->iata;
+    }
 
+    public function fetchData(Request $request){
 
-        }
+        $datos = $request->all();
+        $paginator = Solicitud::where([
+            ['nombre', 'LIKE', "%{$datos['q']}%", 'OR'],
+            ['descripcion', 'LIKE', "%{$datos['q']}%", 'OR'],
+            ['breve', 'LIKE', "%{$datos['q']}%", 'OR'],
+            ['codigo_postal', 'LIKE', "%{$datos['q']}%", 'OR'],
+            ['email', 'LIKE', "%{$datos['q']}%", 'OR'],
+            ['telefono', 'LIKE', "%{$datos['q']}%", 'OR'],
+            ['direccion', 'LIKE', "%{$datos['q']}%", 'OR'],
+        ])->whereHas('categoria', function (Builder $q) use ($datos) {
+            $q->orWhere([
+                ['categoria', 'LIKE', "%{$datos['q']}%", 'OR'],
+            ]);
+        })
+            ->where('usuario_id', $request->user()->id)
+            ->orderBy($datos['sortBy'], $datos['sortDirDesc'] ? 'desc' : 'asc')
+            ->paginate($datos['perPage'] == 0 ? 10000 : $datos['perPage']);
+        
 
+        $solicitudes = collect($paginator->items())->each(fn($val) => $val->cargar());
+        
         return response()->json([
             'solicitudes' => $solicitudes,
             'total' => $paginator->total()
@@ -288,7 +297,6 @@ class SolicitudController extends Controller
             if($solicitud->situacion == 3){
 
                 // Crear negocio
-               
                 $negocio = Negocio::create([
                     ...[
                         'status' => true,
@@ -299,6 +307,11 @@ class SolicitudController extends Controller
 
                 $sistema = Sistema::first();
                 $divisa_credito = Divisa::find($sistema->negocio['divisa_id']);
+                $tps_referido = Divisa::convertirToTravel($negocio->comision, $negocio->divisa);
+
+                $negocio->tps_referido = $tps_referido;
+                $negocio->save();
+
                 $saldo_apertura = $divisa_credito->convertir($negocio->divisa, $sistema['negocio']['credito']);
 
                 $negocio->aperturarCuenta($saldo_apertura);

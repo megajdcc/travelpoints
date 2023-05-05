@@ -24,7 +24,7 @@
               <b-form-input v-model="searchQuery" placeholder="Buscar..." />
               <template #append>
                 <b-button variant="primary" @click="$router.push({name:'create.usuario'})" v-if="$can('write','usuarios')">
-                  <span class="text-nowrap">Agregar Viajero</span>
+                  <span class="text-nowrap">{{ legendBtn  }}</span>
                 </b-button>
               </template>
             </b-input-group>
@@ -133,7 +133,7 @@ import {
 
 import vSelect from 'vue-select'
 import store from '@/store'
-import { ref, onUnmounted,onMounted} from 'vue'
+import { ref, onUnmounted,onMounted,computed} from 'vue'
 import { avatarText } from '@core/utils/filter'
 import UsersListFilters from './UsersListFilters.vue'
 import useUsersList from './useUsersList'
@@ -251,7 +251,15 @@ export default {
 
       // Extra Filters
       roleFilter,
-      usuario
+      usuario,
+      legendBtn:computed(() => {
+
+        if(!['Lider','Coordinador','Promotor'].includes(usuario.value.rol ? usuario.value.rol.nombre : '')){
+          return 'Agregar Usuario'
+        }
+
+        return 'Agregar Viajero'
+      })
     }
   },
 

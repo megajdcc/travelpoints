@@ -60,7 +60,7 @@
       </b-row>
 
       <b-row class="clearfix border-top">
-         <b-col cols="12" :md="sistema.redes.length ? 8 : 12" class="d-flex mt-1 mb-0 flex-column  " style="position:relative">
+         <!-- <b-col cols="12" :md="sistema.redes.length ? 8 : 12" class="d-flex mt-1 mb-0 flex-column  " style="position:relative">
             <strong>{{ sistema.sucursales.length > 1 ? 'SUCURSALES' : 'SUCURSAL' }}</strong>
              <swiper-container  v-bind="swiperOptions" ref="swiperRef" :autoplay-delay="5000" autoplay-disable-on-interaction="false" >
 
@@ -77,13 +77,8 @@
                         </div>
                   </swiper-slide>
             </swiper-container>
-
-            <!-- <p class="text-center">
-               Marina Vallarta Business Center, Oficina 204, Plaza Marina. <br>
-               Puerto Vallarta, México. <br>
-               01 800 400 INFO (4636), (322) 225 9635.
-            </p> -->
-         </b-col>
+          
+         </b-col> -->
 
           <b-col cols="12" :md="sistema.redes.length ? 4 : 12" class="mb-0 d-flex align-items-center flex-column mt-1" v-if="sistema.redes.length">
             <strong class="mb-1"> REDES SOCIALES</strong>

@@ -144,18 +144,20 @@ class VentaController extends Controller
         
             $monto = number_format((float) $venta->monto,2,'.',',') .' '.$venta->divisa->iso;
 
-
             // Comision Viajero Tps
             if(in_array($venta->cliente->rol->nombre, ['Viajero'])){
                 $venta->cliente->generarMovimiento($datos['tps'], "Consumo en {$venta->model->nombre} por un monto de:{$monto}.");
             }
+            
 
             // descontamos al negocio El monto correspondiente por haber realizado la venta
-            $venta->model->generarMovimiento($venta->model->divisa->convertir($venta->divisa, $datos['tps']), "Consumo de cliente {$venta->cliente->nombre} {$venta->cliente->apellido} por un monto de:{$monto}.",Movimiento::TIPO_EGRESO);
+            $comision_travel = $venta->getComisionTravel();
+
+            $venta->model->generarMovimiento($venta->model->divisa->convertir($venta->divisa, $comision_travel), "Consumo de cliente {$venta->cliente->nombre} {$venta->cliente->apellido} por un monto de:{$monto}.",Movimiento::TIPO_EGRESO);
             
             // generar movimiento para el sistema... 
             $sistema = Sistema::first();
-            $sistema->adjudicarComisiones($datos['tps'],$venta);
+            $sistema->adjudicarComisiones($comision_travel,$venta);
             
             // $sistema->refresh();
 
@@ -167,14 +169,12 @@ class VentaController extends Controller
             }
 
             // Falta Notificar Venta al usuario y a los operadores si los Hubiera...
-
             DB::commit();
             $result = true;
         } catch (\Throwable $th) {
 
             DB::rollBack();
             $result = false;
-            dd($th->getMessage());
 
         }
 

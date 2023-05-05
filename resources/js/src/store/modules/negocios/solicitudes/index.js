@@ -151,6 +151,17 @@ export default {
          })
       },
 
+
+      fetchDataAdmin({commit},filtro){
+         return new Promise((resolve, reject) => {
+            axios.post(`/api/negocio/solicituds/fetch/data/admin`,filtro).then(({data}) => {
+               commit('setSolicitudes',data)
+               resolve(data)
+            }).catch(e => reject(e))
+         })
+      },
+
+
       guardar({ commit }, data) {
 
 

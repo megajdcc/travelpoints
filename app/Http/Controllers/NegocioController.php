@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Atraccion;
+use App\Models\Divisa;
 use App\Models\Negocio\Negocio;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\{DB,Storage,File};
@@ -126,6 +127,14 @@ class NegocioController extends Controller
             DB::beginTransaction();
 
             $negocio->update($datos);
+
+            if(!$negocio->tps_referido){
+
+                $tps_referido = Divisa::convertirToTravel($negocio->comision,$negocio->divisa);
+
+                $negocio->tps_referido = $tps_referido;
+                $negocio->save();
+            }
 
             foreach($datos['telefonos'] as $telefono){
                 $negocio->actualizarTelefono($telefono);

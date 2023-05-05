@@ -124,10 +124,10 @@
                                  <b-form-group 
                                  description="Si el evento es recurrente y no desea que tenga fecha de finalización deje este campo en blanco">
                                     <template #label>
-                                       Fecha de Culminación: <span class="text-danger">*</span>
+                                       Fecha de Culminación: <span class="text-danger" v-if="!formulario.recurrente">*</span>
                                     </template>
                               
-                                    <validation-provider name="fecha_fin" #default="{valid,errors}">
+                                    <validation-provider name="fecha_fin" :rules="!formulario.recurrente ? 'required' : ''" #default="{valid,errors}">
                               
                                        <flat-pickr v-model="formulario.fecha_fin" class="form-control"
                                           :config="{...dateOption,...{minDate:formulario.fecha_inicio}}" />

@@ -130,17 +130,22 @@ class UserController extends Controller
                     'email'       => $datos['email'],
                     'password'    => $datos['password'],
                     'is_password' => true,
-                    'rol_id' => Rol::where('nombre','Usuario')->first()->id
+                    'rol_id' => Rol::where('nombre','Viajero')->first()->id
                 ]);
 
                 $usuario->asignarPermisosPorRol();
 
 
                 if($datos['referidor'] && $datos['referidor'] != 'null'){
-                    $usuario->referidor()->attach(User::where('codigo_referidor',$datos['referidor'])->first()->id,[
-                        'codigo' => $datos['referidor'],
-                        'created_at' => now()
-                    ]);
+
+                    $usuario_referidor = User::where('codigo_referidor', $datos['referidor'])->first();
+                        if($usuario_referidor){
+                            $usuario->referidor()->attach($usuario_referidor->id,[
+                            'codigo' => $datos['referidor'],
+                            'created_at' => now()
+                        ]);
+                    }
+                  
                 }
 
                 $usuario->cargar();
@@ -155,6 +160,8 @@ class UserController extends Controller
         }catch(\Exception $e){
             DB::rollback();
             $result = false;
+
+            dd($e->getMessage());
         }
 
         return response()->json(['result' => $result, 'usuario' => $result ? $usuario : null ]);

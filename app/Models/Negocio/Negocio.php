@@ -38,7 +38,7 @@ class Negocio extends Model
         'descripcion',
         'breve',
         'categoria_id',
-        'comision',
+        'comision', // Comision que paga el negocio a Travelpoints
         'tipo_comision', // 1 Porcentaje por venta, 2 Monto por Venta 
         'url',
         'sitio_web',
@@ -61,7 +61,8 @@ class Negocio extends Model
         'divisa_id',
         'precios', // [precio_minimo => 0,precio_maximo => 0]
         'tipo_menu', // 1 => URL , 2=> PDF 3 => image
-        'menu'
+        'menu',
+        'tps_referido' // Comision en tps que se paga a los usuarios viajeros por consumir, es una propiedad se calcula convirtiendo la comision en su divisa a la divisa principal tps 
     ];
 
     public $casts = [
@@ -132,8 +133,8 @@ class Negocio extends Model
         ]);
 
         return $cargo;
+        
     }
-
 
     public function cargar() : Negocio{
         $this->telefonos;
@@ -177,7 +178,6 @@ class Negocio extends Model
         }
         return $this;
     }
-    
 
     /**
      * @param App\Models\User $empleado;

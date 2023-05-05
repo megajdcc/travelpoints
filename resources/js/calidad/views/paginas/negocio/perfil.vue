@@ -3,6 +3,140 @@
 
     <swiper-gallery :imagenes="negocio.imagenes" path="/storage/negocios/fotos/" class="mt-1" :heightGallery="400" :coverImg="false" />
   
+      <h2 class="display-4 d-flex d-md-none">Sobre <span class="text-warning">{{ negocio.nombre }}</span></h2>
+      <b-card body-class="d-flex flex-column justify-content-center d-flex d-md-none">
+
+            <section class="d-flex align-items-center">
+              <!-- Logo -->
+              <section class="w-25">
+                <b-img style="width:100%; height:60px; object-fit:contain"
+                  :src="`/storage/negocios/logos/${negocio.logo}`" />
+              </section>
+
+              <!-- Otros -->
+              <section class="w-75">
+                <table class="table table-sm table-hover" border="0">
+                  <tr class="" v-if="negocio.emails.length">
+                    <td>
+                      <font-awesome-icon icon="fas fa-envelope" />
+                    </td>
+
+                    <td>
+                      <b-link :href="`mailto:${negocio.emails[0].email}`" target="_blank">
+                        {{ negocio.emails[0].email }}
+                      </b-link>
+                    </td>
+                  </tr>
+
+                  <tr class="" v-if="negocio.telefonos.length">
+                    <td>
+                      <font-awesome-icon icon="fas fa-phone" />
+                    </td>
+
+                    <td>
+                      <b-link :href="`tel:${negocio.telefonos[0].telefono}`" target="_blank">
+                        {{ negocio.telefonos[0].telefono }}
+                      </b-link>
+                    </td>
+                  </tr>
+
+
+                  <tr class="" v-if="negocio.sitio_web">
+                    <td>
+                      <font-awesome-icon icon="fas fa-globe" />
+                    </td>
+
+                    <td>
+                      <b-link :href="negocio.sitio_web" target="_blank" style="overflow-wrap:anywhere ;">
+                        {{ negocio.sitio_web }}
+                      </b-link>
+                    </td>
+                  </tr>
+
+               
+                
+                   <tr class="" >
+                      <td>
+                        <font-awesome-icon icon="fas fa-map" />
+                      </td>
+
+                      <td>
+                        {{ negocio.direccion }}
+                      </td>
+                    </tr>
+
+                     <tr class="" v-if="negocio.tipo_menu == 1" >
+
+                        <td colspan="2">
+                          <b-button :href="negocio.menu" target="_blank" style="text-decoration:none;" block variant="warning">
+                            <font-awesome-icon icon="fas fa-book-open"/>
+                            Ver menú
+                          </b-button>
+                        </td>
+                      </tr>
+
+                </table>
+              </section>
+
+            </section>
+            <el-divider></el-divider>
+
+            <!-- Perfil Negocio Mapa -->
+              <GmapMap :center="{ lat: Number(negocio.lat), lng: Number(negocio.lng) }" :zoom="17" map-type-id="terrain" style="width: 100%; height: 300px">
+              
+                <GmapMarker :key="0" :position="{
+                    lat: Number(negocio.lat),
+                    lng: Number(negocio.lng)
+                  }" :visible="true" :draggable="false" :clickable="false">
+
+                        <GmapInfoWindow :options="optionsPlace">
+                        </GmapInfoWindow>
+              
+                </GmapMarker>
+              
+              </GmapMap>
+
+
+            <el-divider></el-divider>
+
+            <table class="table table-hover table-sm table-responsive" border="0" v-if="negocio.precios">
+              <tr v-if="negocio.precios.compra_promedio">
+                <td>
+                  <strong>Compra promedio por persona</strong>
+                </td>
+                <td>
+                  <!-- Min: {{ negocio.precios.precio_minimo | currency(negocio.divisa.iso) }} - Max: {{
+                    negocio.precios.precio_maximo | currency(negocio.divisa.iso)
+                  }} -->
+
+                  {{  negocio.precios.compra_promedio | currency(negocio.divisa.iso)  }}
+                </td>
+              </tr>
+            </table>
+
+            <el-divider></el-divider>
+
+            <table class="table table-hover table-sm " border="0" v-if="negocio.redes.length">
+              <tr>
+                <td>
+                  <strong>Seguir</strong>
+                </td>
+                <td>
+
+                  <section class="d-flex justify-content-around">
+
+                    <b-avatar v-for="({ icono, nombre, url }, i) in negocio.redes" :key="i" :href="url" target="_blank"
+                      v-b-tooltip.hover="nombre" :variant="getColorRed(nombre)">
+                      <font-awesome-icon :icon="['fab', icono]" />
+                    </b-avatar>
+
+                  </section>
+
+                </td>
+              </tr>
+            </table>
+
+          </b-card>
 
       <b-card>
         <b-card-body v-html="negocio.descripcion">
@@ -35,9 +169,8 @@
   </template>
 
   <!-- Opiniones del negocio -->
-  <h2 >Opiniones sobre este <strong class="text-warning">negocio</strong></h2>
-
-  <section class="d-flex flex-column ">
+  <h2 class="d-none d-md-flex" >Opiniones sobre este <strong class="text-warning">negocio</strong></h2>
+  <section class="d-none d-md-flex flex-column ">
     <reviews-opinion :promedioCalificacion="promedioCalificacion" :cantidad="negocio.opinions.length"
       :porcentajeOpinions="porcentajeOpinions" :model="{model_id:negocio.id,model_type:negocio.modelType}"
       class="mt-1 px-0 mx-0" />
@@ -56,7 +189,8 @@ import {
   BImg,
   BButton,
   BCardBody,
-  VBTooltip
+  VBTooltip,
+  BLink
 } from 'bootstrap-vue'
 
 
@@ -72,7 +206,8 @@ export default {
     BButton,
     ReviewsOpinion: () => import('components/ReviewsOpinion.vue'),
     MiPdf:() => import('components/MiPdf.vue'),
-    SwiperGallery:() => import('components/SwiperGallery.vue')
+    SwiperGallery:() => import('components/SwiperGallery.vue'),
+    BLink
 
   },
 
@@ -103,6 +238,17 @@ export default {
       promedioCalificacion: computed(() => store.getters['negocio/promedioCalificacion'](negocio.value)),
       porcentajeOpinions: (cal) => store.getters['negocio/porcentajeOpinions'](cal),
       optionsPlace: computed(() => ({ content:`<strong>${negocio.value.nombre}</strong>`})),
+      getColorRed: (red) => {
+        switch (red) {
+          case 'Facebook':
+            return 'primary'
+            break;
+
+          default:
+            return 'dark'
+            break;
+        }
+      }
 
     }
   }

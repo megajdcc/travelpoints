@@ -22,6 +22,7 @@ use App\Models\Telefono;
 
 use App\Models\Like;
 use App\Models\Producto;
+use App\Notifications\NuevaAsignacionCoordinador;
 use App\Notifications\NuevaAsignacionLider;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 use Illuminate\Support\Collection;
@@ -294,6 +295,15 @@ class UserController extends Controller
 
     }
 
+    public function getCoordinadores()
+    {
+
+        $coordinadores = User::whereHas('rol', fn (Builder $q) => $q->where('nombre', 'Coordinador'))->get();
+
+        $coordinadores->each(fn ($val) => $val->cargar());
+        return response()->json($coordinadores);
+    }
+
     public function EstablecerContrasena(Request $request,User $usuario){
 
         $datos = $request->validate([
@@ -548,6 +558,8 @@ class UserController extends Controller
             });
 
             $usuario->removerSaldo("Consignación de saldo por cuenta desactivada a {$usuario->rol->nombre} - {$usuario->getNombreCompleto()}");
+
+
         }
         
         return response()->json(['result' => $result]);
@@ -857,7 +869,7 @@ class UserController extends Controller
             $q->where('nombre','Promotor');
         })
 
-        ->when(isset($filtro['lider']) && !is_null($filtro['lider']) && $rol_user == 'Lider',function($q) use($filtro){
+        ->when(isset($filtro['lider']) && !is_null($filtro['lider']) && in_array($rol_user,['Lider','Coordinador']),function($q) use($filtro){
             $q->where('lider_id',$filtro['lider']);
         })
         ->orderBy($filtro['sortBy'] ?: 'id', $filtro['isSortDirDesc'] ? 'desc' : 'asc')
@@ -886,6 +898,59 @@ class UserController extends Controller
         ]);
 
     }
+
+    public function fetchDataLideres(Request $request)
+    {
+
+        $filtro = $request->all();
+        $rol_user = $request->user()->rol->nombre;
+
+        $pagination = User::where([
+            ['username', 'LIKE', "%{$filtro['q']}%", 'OR'],
+            ['email', 'LIKE', "%{$filtro['q']}%", 'OR'],
+            ['nombre', 'LIKE', "%{$filtro['q']}%", 'OR'],
+            ['apellido', 'LIKE', "%{$filtro['q']}%", 'OR'],
+            ['direccion', 'LIKE', "%{$filtro['q']}%", 'OR'],
+            ['fecha_nacimiento', 'LIKE', "%{$filtro['q']}%", 'OR'],
+            ['codigo_postal', 'LIKE', "%{$filtro['q']}%", 'OR'],
+            ['bio', 'LIKE', "%{$filtro['q']}%", 'OR'],
+        ])
+            ->whereHas('rol', function (Builder $q) {
+                $q->where('nombre', 'Lider');
+            })
+
+            ->when(isset($filtro['coordinador']) && !is_null($filtro['coordinador']) && $rol_user == 'Coordinador', function ($q) use ($filtro) {
+                $q->where('coordinador_id', $filtro['coordinador']);
+            })
+            ->orderBy($filtro['sortBy'] ?: 'id', $filtro['isSortDirDesc'] ? 'desc' : 'asc')
+            ->paginate($filtro['perPage'] ?: 1000);
+
+
+        $lideres = collect($pagination->items())->each(fn ($val) => $val->cargar());
+
+        foreach ($lideres as $lider) {
+
+            $lider->coordinador?->cargar();
+
+            // dd($promotor);
+            $status_user = $lider->getStatusUser();
+
+            if ($status_user['referidos']['ultimo_mes'] > 0) {
+                $lider->status = 1;
+            } else if ($status_user['referidos']['ultimo_trimestre'] > 0) {
+                $lider->status = 2;
+            } else {
+                $lider->status = 3;
+            }
+        
+        }
+
+        return response()->json([
+            'total' => $pagination->total(),
+            'lideres' => $lideres
+        ]);
+    }
+
 
 
     public function asignarLiderPromotor(Request $request){
@@ -926,6 +991,43 @@ class UserController extends Controller
 
     }
 
+    public function asignarCoordinadorLider(Request $request)
+    {
+
+        $datos = $request->validate([
+            'lider_id' => 'required',
+            'coordinador_id' => 'required'
+        ]);
+
+        try {
+            DB::beginTransaction();
+            $lider = User::find($datos['lider_id']);
+            $lider->coordinador_id = $datos['coordinador_id'];
+            $lider->save();
+            $lider->cargar();
+
+            // Notificar al lider y el promotor de la nueva asignación
+
+            $users_notification = collect([
+                $lider,
+                $lider->coordinador
+            ]);
+
+            Notification::sendNow($users_notification, new NuevaAsignacionCoordinador($lider));
+
+            DB::commit();
+            $result = true;
+        } catch (\Exception $e) {
+            DB::rollBack();
+            $result = false;
+
+            dd($e->getMessage());
+        }
+
+        return response()->json(['result' => $result, 'lider' => $result ? $lider : null]);
+    }
+
+
 
     public function quitarLiderPromotor(User $promotor){
 
@@ -948,13 +1050,85 @@ class UserController extends Controller
 
     }
 
+    public function quitarCoordinadorLider(User $lider)
+    {
+
+        try {
+            DB::beginTransaction();
+
+            $lider->coordinador_id = null;
+            $lider->save();
+            $lider->cargar();
+
+            DB::commit();
+            $result = true;
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            $result = false;
+        }
+
+        return response()->json(['result' => $result]);
+    }
+
+
+    public function guardarLider(Request $request){
+
+        $datos  = $request->validate([
+            'username'       => 'required|unique:users,username',
+            'nombre'         => 'required',
+            'apellido'       => 'required',
+            'email'          => 'required|email|unique:users,email',
+            'lider_id'       => 'nullable',
+            'coordinador_id' => 'nullable',
+            'tipo_usuario'   => 'nullable'
+        ], [
+            'username.unique' => 'El nombre de usuario ya está siendo usado, intente con otro',
+            'email.unique' => 'El email ya está siendo usado, intente con otro',
+        ]);
+
+        try {
+            DB::beginTransaction();
+
+            $lider = User::create(
+                [
+                    ...$datos,
+                    ...[
+                        'password' => '20464273jd',
+                        'rol_id' => Rol::where('nombre','Lider')->first()->id,
+                    ]
+                ]
+            );
+
+            $lider->asignarPermisosPorRol();
+
+            if(in_array($lider->rol->nombre, ['Promotor', 'Lider', 'Coordinador'])) {
+                $lider->aperturarCuenta(0, 'USD');
+            } else {
+                $lider->aperturarCuenta();
+            }
+
+            $lider->cargar();
+            $lider->notify(new WelcomeUsuario($lider));
+
+            DB::commit();
+            $result = true;
+            
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            $result = false;
+
+        }
+
+
+        return response()->json(['result' => $result, 'lider' => $result ? $lider : null]);
+    }
     public function guardarPromotor(Request $request){
 
         $datos  = $request->validate([
             'username' => 'required|unique:users,username',
-            'nombre' => 'required',
+            'nombre'   => 'required',
             'apellido' => 'required',
-            'email' => 'required|email|unique:users,email',
+            'email'    => 'required|email|unique:users,email',
             'lider_id' => 'nullable'
         ],[
             'username.unique' => 'El nombre de usuario ya está siendo usado, intente con otro',

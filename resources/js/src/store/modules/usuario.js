@@ -86,9 +86,9 @@ export default {
 				cupones: [],
 				carrito_compra: [],
 				lider:null,
-				promotores:[]
-
-
+				promotores:[],
+				coordinador:null,
+				lideres:[]
 
 
 			},
@@ -531,6 +531,20 @@ export default {
 
 		},
 
+		cargarCoordinadores({state,commit}){
+
+			return new Promise((resolve, reject) => {
+					axios.get('/api/usuarios/get/coordinadores').then(({data}) => {
+						commit('setUsuarios',data);
+						resolve(data)
+					}).catch(e => {
+						reject(e)
+					})
+			})
+		
+
+		},
+
 
 		async cargarUsuario({state,commit,dispatch}){
 
@@ -864,6 +878,16 @@ export default {
 			})
 		},
 
+		fetchLideres({commit},filtro){
+			return new Promise((resolve, reject) => {
+				
+				axios.post(`/api/usuarios/lideres/fetch/data`,filtro).then(({data}) => {
+					commit('setUsuarios',data.lideres)
+					resolve(data)
+				}).catch(e => reject(e))
+			})
+		},
+
 		asignarLiderPromotor({commit},dato) {
 			return new Promise((resolve, reject) => {
 				axios.post(`/api/usuarios/promotor/asignar/lider`,dato).then(({data}) => {
@@ -871,6 +895,17 @@ export default {
 
 				}).catch(e => reject(e))
 			})
+		},
+
+		asignarCoordinadorLider({commit},dato) {
+
+			return new Promise((resolve, reject) => {
+				axios.post(`/api/usuarios/lider/asignar/coordinador`,dato).then(({data}) => {
+					resolve(data)
+
+				}).catch(e => reject(e))
+			})
+
 		},
 
 
@@ -881,10 +916,28 @@ export default {
 			})
 		},
 
+		quitarCoordinador({commit},lider){
+			return new Promise((resolve, reject) => {
+				axios.get(`/api/usuarios/lider/${lider}/quitar/coordinador`).then(({data}) => resolve(data)).catch(e => reject(e))
+				
+			})
+		},
+
 
 		guardarPromotor({commit},datos){
 			return new Promise((resolve, reject) => {
 				axios.post('/api/usuarios/promotor/save',datos).then(({data}) => {
+
+					resolve(data)
+
+				}).catch(e => reject(e))
+
+			})
+		},
+		
+		guardarLider({commit},datos){
+			return new Promise((resolve, reject) => {
+				axios.post('/api/usuarios/lider/save',datos).then(({data}) => {
 
 					resolve(data)
 

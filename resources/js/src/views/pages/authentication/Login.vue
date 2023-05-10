@@ -13,10 +13,10 @@
           <!-- <b-img fluid :src="imgUrl" alt="Login V2" />
            -->
            <section class="video-travel">
-              <video loop muted autoplay controls="false">
+              <!-- <video loop muted autoplay controls="false">
                   <source src="/storage/animation_travel.webm" type="video/webm">
                 
-              </video>
+              </video> -->
             </section>
 
         </div>
@@ -297,8 +297,13 @@ export default {
 }
 
 .video-travel{
-  width:auto;
-  height:450px;
+  
+  width: 100%;
+  height: 500px;
+  background-image:url('/storage/animation_travel.gif');
+  background-repeat:no-repeat;
+  background-position:center center;
+  background-size:contain;
 
   video{
     height:100%;

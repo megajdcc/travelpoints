@@ -47,7 +47,7 @@ class NuevaAsignacionLider extends Notification implements ShouldQueue
                 ->subject('Te hemos asignado un promotor a tu red de promotores')
                 ->greeting("Hola {$notifiable->getNombreCompleto()}! ")
                 ->line("Tienes a un nuevo promotor en tu red de promotores; El nuevo promotor es {$this->promotor->getNombreCompleto()}, Ayudalo y guialo a cumplir sus metas dentro de travelpoints, y tienes a tu disposición la posibilidad de banearlo si ves que no cumples con las normas dentro de la asociación")
-                ->line("El nuevo lider ya te aparece en tu listado de promotores, puedes ir a verlo cuando gustes, por aca de doy el link directo")
+                ->line("El nuevo promotor ya te aparece en tu listado de promotores, puedes ir a verlo cuando gustes, por aca de doy el link directo")
                 ->action('Ir a mis promotores', url('/promotores'))
                 ->salutation('Gracias por usar TravelPoints!');
         }else{

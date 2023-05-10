@@ -25,8 +25,17 @@ export default [
             fontAwesome:true
          },
 
+         {
+            title: 'Lideres',
+            route: 'lideres.list',
+            action: 'read',
+            resource: 'lideres',
+            icon: 'fa-users-rays',
+            fontAwesome:true
+         },
 
-          {
+
+         {
             title: 'Retiros',
             route: 'retiro.list',
             action: 'read',
@@ -34,6 +43,7 @@ export default [
             fontAwesome:true,
             icon: 'fa-money-bill-transfer',
          }
+
       ]
    },
 

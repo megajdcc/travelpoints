@@ -35,7 +35,7 @@ export default {
       return {
          appName,
          logo: computed(() => {
-            return skin.value == 'dark' || skin.value == 'semi-dark' ? applogoImageWhite : appLogoImage;
+            return skin.value == 'dark' || skin.value == 'semi-dark' ? require('storage/logotipowhite.svg') : require('storage/logotipo.svg');
          })
 
       }

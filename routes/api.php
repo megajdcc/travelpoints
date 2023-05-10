@@ -110,6 +110,8 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     /*****************************/
     Route::get('/usuarios/all', [UserController::class, 'getUsuarios']);
     Route::get('usuarios/get/lideres',[UserController::class,'getLideres']);
+    Route::get('usuarios/get/coordinadores', [UserController::class, 'getCoordinadores']);
+
     Route::resource('usuarios', UserController::class)->middleware('format_telefono');
     Route::get('listar/usuarios', [UserController::class, 'listar'])->name('listar_usuarios');
     Route::get('usuarios/{usuario}/get',[UserController::class,'getUsuario']);
@@ -130,9 +132,16 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::get('usuarios/{usuario}/cambiar/estado',[UserController::class, 'cambiarStatus']);
 
     Route::post('usuarios/promotores/fetch/data',[UserController::class,'fetchDataPromotores']);
+    Route::post('usuarios/lideres/fetch/data', [UserController::class, 'fetchDataLideres']);
     Route::post('usuarios/promotor/asignar/lider',[UserController::class,'asignarLiderPromotor']);
+    Route::post('usuarios/lider/asignar/coordinador',[UserController::class,'asignarCoordinadorLider']);
+
     Route::get('usuarios/promotor/{promotor}/quitar/lider',[UserController::class,'quitarLiderPromotor']);
+    Route::get('usuarios/lider/{lider}/quitar/coordinador', [UserController::class, 'quitarCoordinadorLider']);
+
     Route::post('usuarios/promotor/save',[UserController::class,'guardarPromotor']);
+    Route::post('usuarios/lider/save',[UserController::class,'guardarLider']);
+
 
     /*****************************/
     /* TELEFONOS

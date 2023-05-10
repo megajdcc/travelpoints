@@ -78,7 +78,8 @@ class User extends Authenticatable
         'ultimo_login',
         'ciudad_id' ,
         'codigo_referidor',
-        'lider_id'
+        'lider_id',
+        'coordinador_id'
     ];
 
     /**
@@ -505,6 +506,20 @@ class User extends Authenticatable
 
         return ['promotores' => $promotores,'data' => $data];
     }
+
+    /*
+        Un lider puede tener o no un coordinador...
+    */
+    public function coordinador(){
+        return $this->belongsTo(User::class,'coordinador_id','id');
+    }
+
+    /*
+    Un Usuario con el rol de Coordinador, puede tener muchos o ningunos lideres en red 
+    */
+    public function lideres(){
+        return $this->hasMany(User::class,'coordinador_id','id');
+    }
     
     public function cargar(): User{
         $this->tokens;
@@ -532,6 +547,8 @@ class User extends Authenticatable
         $this->retiros;
         $this->lider?->cargar();
         $this->promotores;
+        $this->coordinador;
+        $this->lideres;
 
         return $this;
     }

@@ -58,66 +58,70 @@
                            <b-row class="mt-1">
                               <!-- username -->
                                <b-col cols="12" md="4">
-                                 <validation-provider #default="{errors}" name="username" rules="required">
+                                
                                     <b-form-group label="Username" label-for="username">
-                                       <b-form-input id="username" v-model="form.username" autofocus
-                                          :state="errors.length ? false : null" trim placeholder="" />
+                                       <validation-provider #default="{errors,valid}" name="username" rules="required">
+                                          <b-form-input id="username" v-model="form.username" autofocus
+                                             :state="errors.length ? false : null" trim placeholder="" />
 
-                                       <b-form-invalid-feedback>
-                                          {{ errors[0] }}
-                                       </b-form-invalid-feedback>
-
+                                          <b-form-invalid-feedback :state="valid">
+                                             {{ errors[0] }}
+                                          </b-form-invalid-feedback>
+                                       </validation-provider>
                                     </b-form-group>
-                                 </validation-provider>
+                               
 
                               </b-col>
 
 
                               <!-- Field: nombre -->
                               <b-col cols="12" md="4">
-                                 <validation-provider #default="{errors}" name="Nombre" rules="required">
-                                    <b-form-group label="Nombre" label-for="nombre">
+                                
+                                 <b-form-group label="Nombre" label-for="nombre">
+                                    <validation-provider #default="{errors,valid}" name="nombre" rules="required">
                                        <b-form-input id="nombre" v-model="form.nombre" autofocus
-                                          :state="errors.length ? false : null" trim placeholder="" />
+                                       trim placeholder=""  :state="valid" />
 
-                                       <b-form-invalid-feedback>
+                                       <b-form-invalid-feedback :state="valid">
                                           {{ errors[0] }}
                                        </b-form-invalid-feedback>
 
-                                    </b-form-group>
-                                 </validation-provider>
+                                    </validation-provider>
+                                 </b-form-group>
 
                               </b-col>
 
                               <!-- Field: Apellido -->
                               <b-col cols="12" md="4">
                                  <!-- Apellido -->
-                                 <validation-provider #default="{errors}" name="apellido" rules="required">
+                                
                                     <b-form-group label="Apellido" label-for="apellido">
-                                       <b-form-input id="apellido" v-model="form.apellido" autofocus
-                                          :state="errors.length ? false : null" trim placeholder="Crespo" />
-
-                                       <b-form-invalid-feedback>
-                                          {{ errors[0] }}
-                                       </b-form-invalid-feedback>
+                                       <validation-provider #default="{ errors, valid }" name="apellido" rules="required">
+                                          <b-form-input id="apellido" v-model="form.apellido" autofocus trim placeholder="Crespo" :state="valid" />
+                                          <b-form-invalid-feedback :state="valid">
+                                             {{ errors[0] }}
+                                          </b-form-invalid-feedback>
+                                        </validation-provider>
                                     </b-form-group>
-                                 </validation-provider>
+                                
                               </b-col>
 
 
                               <!-- Field: Email -->
                               <b-col cols="12" md="4">
                                  <!-- Email -->
-                                 <validation-provider #default="{errors}" name="Email" rules="required|email">
+                                
                                     <b-form-group label="Email" label-for="email">
-                                       <b-form-input id="email" v-model="form.email"
-                                          :state="errors.length ? false : null" trim />
+                                        <validation-provider #default="{ errors,valid }" name="email" rules="required|email">
+                                          <b-form-input id="email" v-model="form.email"
+                                             :state="valid" trim />
 
-                                       <b-form-invalid-feedback>
-                                          {{ errors[0] }}
-                                       </b-form-invalid-feedback>
+                                          <b-form-invalid-feedback :state="valid">
+                                             {{ errors[0] }}
+                                          </b-form-invalid-feedback>
+                                       </validation-provider>
                                     </b-form-group>
-                                 </validation-provider>
+                                 
 
                               </b-col>
 
@@ -125,21 +129,23 @@
                               <!-- Field: Rol de usuario -->
                               <b-col cols="12" md="4">
                                  <!-- User Role -->
-                                 <validation-provider #default="{errors}" name="rol_id" rules="required">
+                               
                                     
-                                    <b-form-group label="Rol de usuario" label-for="user-role"
-                                       :state="errors.length ? false : null">
+                                    <b-form-group label="Rol de usuario" label-for="user-role">
+
+                                         <validation-provider #default="{ errors,valid }" name="rol_id" rules="required">
                                        
-                                       <v-select v-model="form.rol_id"
-                                          :dir="$store.state.appConfig.isRTL ? 'rtl' : 'ltr'" :options="getRols"
-                                          :reduce="val => val.value" :clearable="false" input-id="user-role" :selectable="verificarRol"  />
+                                          <v-select v-model="form.rol_id"
+                                             :dir="$store.state.appConfig.isRTL ? 'rtl' : 'ltr'" :options="getRols"
+                                             :reduce="val => val.value" :clearable="false" input-id="user-role" :selectable="verificarRol"  />
 
-                                       <b-form-invalid-feedback :state="errors.length ? false : null">
-                                          {{ errors[0] }}
-                                       </b-form-invalid-feedback>
+                                             <b-form-invalid-feedback :state="valid">
+                                                {{ errors[0] }}
+                                             </b-form-invalid-feedback>
+                                          </validation-provider>
 
-                                    </b-form-group>
-                                 </validation-provider>
+                                       </b-form-group>
+                                
                               </b-col>
 
                            </b-row>
@@ -504,8 +510,6 @@ export default {
       const { refFormObserver, getValidationState, resetForm } = formValidation(resetuserData)
       const profileFile = ref(null)
       const form = computed(() => store.state.usuario.user)
-
-      
 
       const cargarform = () => {
 

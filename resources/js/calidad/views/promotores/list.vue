@@ -298,12 +298,28 @@ export default {
 
   },
 
+
+  props:{
+    'liderId':{
+      type:Number|String,
+      required:false
+    }
+  },
+
+
   setup(props,{emit}){
+    
     const {usuario,usuarios} = toRefs(store.state.usuario)
-    const actions = usePromotoresList(usuario);
+    const { liderId:lider_id } = toRefs(props)
+    const lider = ref({
+      id:computed(() => lider_id.value)
+    })
+
+    const actions = usePromotoresList(lider.value.id ? lider : usuario);
     const showUsersLiders = ref(false)
     const formValidate =ref(null)
     const formValidatePromotor = ref(null)
+    
 
     const showFormularioPromotor = ref(false)
 
@@ -332,6 +348,7 @@ export default {
 
     onMounted(() => cargarForm())
 
+    watch(lider_id,() => actions.reftchData())
 
     const cambiarEstado = (user_id) => {
 

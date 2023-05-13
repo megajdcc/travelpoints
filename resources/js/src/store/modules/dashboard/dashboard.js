@@ -69,7 +69,7 @@ export default{
           
             },
 
-             totalPromotores:{
+            totalPromotores:{
 
                series: [],
                chartOptions: {
@@ -414,6 +414,252 @@ export default{
 
                },
             },
+
+            totalPromotoresPorLider:{
+                series: [
+                     {
+                     name: "High - 2013",
+                     data: [28, 29, 33, 36, 32, 32, 33]
+                     },
+                     {
+                     name: "Low - 2013",
+                     data: [12, 11, 14, 18, 17, 13, 13]
+                     }
+                  ],
+                  chartOptions: {
+                     chart: {
+                        height: 350,
+                        type: 'line',
+                        dropShadow: {
+                           enabled: true,
+                           color: '#000',
+                           top: 18,
+                           left: 7,
+                           blur: 10,
+                           opacity: 0.2
+                        },
+                        toolbar: {
+                           show: false
+                        }
+                     },
+                     colors: ['#77B6EA', '#545454'],
+                     dataLabels: {
+                        enabled: true,
+                     },
+                     stroke: {
+                        curve: 'smooth'
+                     },
+                    
+                     grid: {
+                        borderColor: '#e7e7e7',
+                        row: {
+                           colors: ['#f3f3f3', 'transparent'], // takes an array which will be repeated on columns
+                           opacity: 0.5
+                        },
+                     },
+                     markers: {
+                      size: 1
+                     },
+                     xaxis: {
+                        categories: [],
+                        title: {
+                           text: 'Lideres'
+                        }
+                     },
+                     yaxis: {
+                        title: {
+                           text: 'Cant Promotores'
+                        },
+                        min: 0,
+                        max: 40
+                     },
+                     legend: {
+                        position: 'bottom',
+                        horizontalAlign: 'center',
+                        floating: true,
+                        offsetY: -25,
+                        offsetX: -5,
+                        style:{
+                           marginTop:'3rem'
+                        }
+                     }
+                  },
+            },
+
+            totalEficaciaPromotoresCoordinador:{
+                  series: [44, 55, 41, 17, 15],
+                  chartOptions: {
+                     chart: {
+                     width: 380,
+                     type: 'donut',
+                     },
+                     plotOptions: {
+                     pie: {
+                        startAngle: -90,
+                        endAngle: 270
+                     }
+                     },
+                     dataLabels: {
+                     enabled: false
+                     },
+                     fill: {
+                     type: 'gradient',
+                     },
+                     legend: {
+                     formatter: function(val, opts) {
+                        return `Promotor: ${val} - ${opts.w.globals.series[opts.seriesIndex]} %`
+                     }
+                     },
+                     labels:[],
+                     responsive: [{
+                     breakpoint: 480,
+                     options: {
+                        chart: {
+                           width: 200
+                        },
+                        legend: {
+                           position: 'bottom'
+                        }
+                     }
+                     }]
+                  },
+            },
+
+            totalViajerosPorCoordinador:{
+                  series: [],
+                  chartOptions: {
+                     chart: {
+                        height: 350,
+                        type: 'line',
+                        dropShadow: {
+                           enabled: true,
+                           color: '#000',
+                           top: 18,
+                           left: 7,
+                           blur: 10,
+                           opacity: 0.2
+                        },
+                        toolbar: {
+                           show: false
+                        }
+                     },
+                     colors: [
+                         '#397DAD',
+                        '#4D616C',
+                        // '#D02412',
+                        '#CD960E',
+                        '#348022',
+                        '#17B6AA',
+                        '#5F2626',
+                        '#00AEFF',
+                        '#6574cd',
+                        '#9561e2',
+                        '#f66d9b',
+                        // '#e3342f',
+                        // '#f6993f',
+                        // '#ffed4a',
+                        '#38c172',
+                        '#4dc0b5',
+                        '#6cb2eb',
+                        '#444444',
+                        '#00c0ef',
+                     ],
+                     
+                     dataLabels: {
+                        enabled: true,
+                        style:{
+                           fontSize:'16pt',
+                           color:['#ffffff']
+                        }
+                     },
+
+                     stroke: {
+                        curve: 'smooth'
+                     },
+                    
+                     grid: {
+                        borderColor: '#e7e7e7',
+                        row: {
+                           colors: ['#f3f3f3', 'transparent'], // takes an array which will be repeated on columns
+                           opacity: 0.5
+                        },
+                     },
+                     markers: {
+                      size: 1
+                     },
+                     xaxis: {
+                        categories: [],
+                        title: {
+                           text: 'Promotores'
+                        }
+                     },
+                     yaxis: {
+                        title: {
+                           text: 'Cant Viajeros'
+                        },
+                        min: 0,
+                        max: 40
+                     },
+                     legend: {
+                        position: 'bottom',
+                        horizontalAlign: 'center',
+                        floating: true,
+                        offsetY: -25,
+                        offsetX: -5,
+                        style:{
+                           marginTop:'3rem'
+                        }
+                     }
+                  },
+            },
+
+            porcentajeUsoViajeros:{
+               series: [67],
+               chartOptions: {
+                  chart: {
+                  height: 350,
+                  type: 'radialBar',
+                  offsetY: -10
+                  },
+                  plotOptions: {
+                  radialBar: {
+                     startAngle: -135,
+                     endAngle: 135,
+                     dataLabels: {
+                        name: {
+                        fontSize: '16px',
+                        color: undefined,
+                        offsetY: 120
+                        },
+                        value: {
+                        offsetY: 76,
+                        fontSize: '22px',
+                        color: undefined,
+                        formatter: function (val) {
+                           return val + "%";
+                        }
+                        }
+                     }
+                  }
+                  },
+                  fill: {
+                  type: 'gradient',
+                  gradient: {
+                        shade: 'dark',
+                        shadeIntensity: 0.15,
+                        inverseColors: false,
+                        opacityFrom: 1,
+                        opacityTo: 1,
+                        stops: [0, 50, 65, 91]
+                  },
+                  },
+                  stroke: {
+                  dashArray: 4
+                  },
+                  labels: ['Porcentaje Uso'],
+               },
+            },
+
             operacionesTravel:0,
             totalViajerosRegistrados:0,
             totalViajerosConsumos:0,
@@ -423,6 +669,12 @@ export default{
                activos:0,
                inactivos:0
             },
+
+            lideres_status:{
+               activos:0,
+               inactivos:0
+            },
+            
             misPromotores:[],
 
             porcentajeEficacia:{
@@ -664,6 +916,13 @@ export default{
 
       },
 
+      setStatusCoordinadores(state,{lideres_activos,lideres_inactivos}){
+
+         state.lideres_status.activos = lideres_activos
+         state.lideres_status.inactivos = lideres_inactivos
+
+      },
+
       setEficaciaPromotores(state,{promotores,data}){
          state.eficaciaPromotores.chartOptions.xaxis.categories = promotores
          state.eficaciaPromotores.series = data
@@ -686,7 +945,29 @@ export default{
          state.porcentajeEficaciaPromotores.chartOptions.labels = promotores
          state.porcentajeEficaciaPromotores.series = data
          
+      },
+
+      setTotalPromotoresPorLider(state,{data,categorias}){
+
+         state.totalPromotoresPorLider.series = data
+         state.totalPromotoresPorLider.chartOptions.xaxis.categories = categorias
+      },
+      
+      setTotalEficaciaPromotoresCoordinador(state,{data,categorias}){
+         state.totalEficaciaPromotoresCoordinador.series = data
+         state.totalEficaciaPromotoresCoordinador.chartOptions.labels = categorias
+      },
+
+      setTotalViajerosPorCoordinador(state,{data,categorias}){
+         state.totalViajerosPorCoordinador.series = data
+         state.totalViajerosPorCoordinador.chartOptions.labels = categorias
+      },
+
+      setPorcentajeUsoViajeros(state,{porcentaje,total_viajeros}){
+         state.porcentajeUsoViajeros.series = [porcentaje];
+         state.porcentajeUsoViajeros.chartOptions.labels = [`Sobre ${total_viajeros} (Total Viajeros)`]
       }
+
 
    },
 
@@ -890,6 +1171,17 @@ export default{
          })
       },
 
+      coordinadoresStatus({commit}){
+         return new Promise((resolve, reject) => {
+            axios.get(`/api/dashboard/coordinadores/status`).then(({data}) => {
+
+               commit('setStatusCoordinadores',data)
+               resolve(data)
+
+            }).catch(e => reject(e))
+
+         })
+      },
 
       getEficaciaPromotores({commit}){
          return new Promise((resolve, reject) => {
@@ -935,6 +1227,7 @@ export default{
             }).catch(e  => reject(e))
          })
       },
+
       getEficaciaMesPromotores({commit}){
          return new Promise((resolve, reject) => {
             axios.get(`/api/dashboard/lider/eficacia-mes/promotores`).then(({data}) => {
@@ -942,11 +1235,57 @@ export default{
                resolve(data)
             }).catch(e  => reject(e))
          })
+      },
+
+      getTotalPromotoresPorLider({state,commit}){
+
+         return new Promise((resolve,reject) => {
+
+            axios.get(`/api/dashboard/total/promotores/por-lider`).then(({data}) => {
+
+               commit('setTotalPromotoresPorLider',data)
+               resolve(data)
+
+            }).catch( e => reject(e))
+
+         })
+      },
+
+      getEficaciaPromotoresCoordinador({state,commit},filtro){
+         return new Promise((resolve, reject) => {
+            axios.post(`/api/dashboard/eficacia/promotor/coordinador`,filtro).then(({data}) => {
+               commit('setTotalEficaciaPromotoresCoordinador',data)
+               resolve(data)
+            }).catch(e => reject(e))
+         })
+      },
+
+
+      getTotalViajerosPorCoordinador({commit},filtro){
+
+         return new Promise((resolve, reject) => {
+            axios.post('/api/dashboard/total/viajeros/por-coordinador',filtro).then(({data}) => {
+              
+               commit('setTotalViajerosPorCoordinador',data)
+               resolve(data)
+
+            }).catch(e => reject(e))
+         })
+      },
+
+      getPorcentajeUsoViajeros({commit}){
+         
+         return new Promise((resolve,reject) => {
+            axios.get('/api/dashboard/porcentaje-uso/viajeros').then(({data}) => {
+
+               commit('setPorcentajeUsoViajeros',data)
+               resolve(data)
+
+            }).catch(e => reject(e))
+
+         })
+
       }
-
-
-
-
 
    }
 

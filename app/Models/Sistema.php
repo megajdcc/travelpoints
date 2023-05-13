@@ -56,20 +56,30 @@ class Sistema extends Model
     }
 
 
-    public function adjudicarComisiones($tps, Venta $venta){
-        $monto = number_format((float) $venta->monto, 2, '.', ',') . ' ' . $venta->divisa->iso;
-        
-        $movimiento = $this->generarMovimiento(
-            $this->divisa->convertir($venta->divisa, $tps),
-            "Consumo de cliente {$venta->cliente->nombre} {$venta->cliente->apellido} por un monto de:{$monto}.", 
-            Movimiento::TIPO_INGRESO);
-        
-        // Comision Promotor
-        if($promotor = $venta?->reservacion?->operador){
+    private function asignarComisionPerfiles(Venta $venta,Movimiento $movimiento){
 
-            $rol_promotor = (Rol::where('nombre','Promotor')->first());
-            $comision_promotor = $rol_promotor->comision;
-            
+        $cliente = $venta->cliente;
+        
+        if($referidor = $cliente->referidor){
+
+            if(\in_array($referidor->rol->nombre,['Promotor'])){
+                $this->asignarComisionPromotor($referidor,$venta,$movimiento);
+            }
+
+        }else if($operador = $venta->reservacion->operador){
+            if(\in_array($operador->rol->nombre, ['Promotor'])) {
+                $this->asignarComisionPromotor($operador, $venta, $movimiento);
+            }
+        }
+
+    }
+
+
+    private function asignarComisionPromotor(User $promotor, Venta $venta,Movimiento $movimiento){
+        $monto = number_format((float) $venta->monto, 2, '.', ',') . ' ' . $venta->divisa->iso;
+        $rol_promotor = (Rol::where('nombre', 'Promotor')->first());
+        $comision_promotor = $rol_promotor->comision;
+
 
             if($comision_promotor){   
                 $monto_comision = $movimiento->monto * $comision_promotor->comision / 100;
@@ -81,30 +91,68 @@ class Sistema extends Model
                 $this->generarMovimiento($monto_comision,"Comisión adjudicada a promotor {$promotor->getNombreCompleto()}, por consumo de cliente {$venta->cliente->getNombreCompleto()} en el negocio {$venta->model->nombre} por un monto de: {$monto}.",Movimiento::TIPO_EGRESO);
 
 
-            }
-
-            // Comision Lider
-            if($lider = $promotor->lider){
-                $rol_lider = (Rol::where('nombre', 'Lider')->first());
-                $comision_lider = $rol_lider->comision;
-
-                if($comision_lider){
-                    $monto_comision = $movimiento->monto * $comision_lider->comision / 100;
-
-                    $lider->generarMovimiento(
-                        $monto_comision,
-                        "Comisión por consumo de cliente {$venta->cliente->getNombreCompleto()} en el negocio {$venta->model->nombre}. El promotor quien realizó la reserva fue {$promotor->getNombreCompleto()}",
-                        Movimiento::TIPO_INGRESO
-                    );
-
-                    $this->generarMovimiento($monto_comision, "Comisión adjudicada a lider {$lider->getNombreCompleto()}, por consumo de cliente {$venta->cliente->getNombreCompleto()} en el negocio {$venta->model->nombre} por un monto de: {$monto}.", Movimiento::TIPO_EGRESO);
-
+                if( $lider = $promotor->lider){
+                    $this->asginarComisionLider($lider,$venta, $movimiento,$promotor);
                 }
-               
+
             }
 
-         
+
+    }
+
+    private function asginarComisionLider(User $lider,Venta $venta, Movimiento $movimiento,User $promotor = null){
+        $monto = number_format((float) $venta->monto, 2, '.', ',') . ' ' . $venta->divisa->iso;
+        $rol_lider = (Rol::where('nombre', 'Lider')->first());
+        $comision_lider = $rol_lider->comision;
+
+        if ($comision_lider) {
+            $monto_comision = $movimiento->monto * $comision_lider->comision / 100;
+
+            $lider->generarMovimiento(
+                $monto_comision,
+                "Comisión por consumo de cliente {$venta->cliente->getNombreCompleto()} en el negocio {$venta->model->nombre}. El promotor quien realizó la reserva fue {$promotor->getNombreCompleto()}",
+                Movimiento::TIPO_INGRESO
+            );
+
+            $this->generarMovimiento($monto_comision, "Comisión adjudicada a lider {$lider->getNombreCompleto()}, por consumo de cliente {$venta->cliente->getNombreCompleto()} en el negocio {$venta->model->nombre} por un monto de: {$monto}.", Movimiento::TIPO_EGRESO);
         }
+
+        if($coordinador = $lider->coordinador){
+            
+            $this->asginarComisionCoordinador($coordinador,$venta,$movimiento,$promotor);
+        }
+    }
+
+    private function asginarComisionCoordinador(User $coordinador,Venta $venta,Movimiento $movimiento,User $promotor = null){
+        $monto = number_format((float) $venta->monto, 2, '.', ',') . ' ' . $venta->divisa->iso;
+
+        $rol_coordinador = (Rol::where('nombre', 'Coordinador')->first());
+
+        if ($comision_coordinador = $rol_coordinador->comision) {
+            $monto_comision = $movimiento->monto * $comision_coordinador->comision / 100;
+
+            $coordinador->generarMovimiento(
+                $monto_comision,
+                "Comisión por consumo de cliente {$venta->cliente->getNombreCompleto()} en el negocio {$venta->model->nombre}. El promotor quien realizó la reserva fue {$promotor->getNombreCompleto()}, del lider {$promotor->lider->getNombreCompleto()}",
+                Movimiento::TIPO_INGRESO
+            );
+
+            $this->generarMovimiento($monto_comision, "Comisión adjudicada a coordinador {$coordinador->getNombreCompleto()}, por consumo de cliente {$venta->cliente->getNombreCompleto()} en el negocio {$venta->model->nombre} por un monto de: {$monto}.", Movimiento::TIPO_EGRESO);
+        }
+    }
+
+
+    
+    public function adjudicarComisiones($tps, Venta $venta){
+        $monto = number_format((float) $venta->monto, 2, '.', ',') . ' ' . $venta->divisa->iso;
+        
+        $movimiento = $this->generarMovimiento(
+            $this->divisa->convertir($venta->divisa, $tps),
+            "Consumo de cliente {$venta->cliente->nombre} {$venta->cliente->apellido} por un monto de:{$monto}.", 
+            Movimiento::TIPO_INGRESO);
+        
+        // Adjudicar Comisiones a perfiles
+        $this->asignarComisionPerfiles($venta,$movimiento);
 
         
     }

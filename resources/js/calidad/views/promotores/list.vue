@@ -316,6 +316,7 @@ export default {
     })
 
     const actions = usePromotoresList(lider.value.id ? lider : usuario);
+    
     const showUsersLiders = ref(false)
     const formValidate =ref(null)
     const formValidatePromotor = ref(null)

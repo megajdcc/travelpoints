@@ -6,14 +6,17 @@ export const $themeColors = {}
 // Initially this will be blank. Later on when app is initialized we will assign bootstrap breakpoints to this object from CSS variables.
 export const $themeBreakpoints = {}
 
+import logotipo from '@images/logos/logotipo.png'
+import logotipowhite from '@images/logos/logotipowhite.png'
+
 // APP CONFIG
 export const $themeConfig = {
   
   app: {
     appName: 'TravelPoints', // Will update name in navigation menu (Branding)
     // eslint-disable-next-line global-require
-    appLogoImage: require('storage/logotipo.svg'), // Will update logo in navigation menu (Branding)
-    applogoImageWhite:require('storage/logotipowhite.svg')
+    appLogoImage:logotipo, // Will update logo in navigation menu (Branding)
+    applogoImageWhite:logotipowhite
   },
   
   layout: {

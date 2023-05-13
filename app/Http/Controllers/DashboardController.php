@@ -636,6 +636,12 @@ class DashboardController extends Controller
 
     }
 
+    public function getStatusCoordinadores(Request $request)
+    {
+
+        return response()->json($request->user()->totalLideres());
+    }
+
     public function getEficaciaPromotores(Request $request){
         $eficacias = $request->user()->eficaciaPromotores();
 

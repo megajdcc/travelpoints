@@ -355,6 +355,19 @@ export default {
 			}else{
 				state.usuario.status = 3
 			}
+		},
+
+
+		setStatusCoordinador(state,{lideres_activos}){
+				const {ultimo_mes,ultimo_trimestre } = lideres_activos
+
+				if(ultimo_mes > 0){
+					state.usuario.status = 1;
+				}else if(ultimo_trimestre > 0){
+					state.usuario.status = 2;
+				}else{
+					state.usuario.status = 3
+				}
 		}
 
 	},
@@ -845,6 +858,17 @@ export default {
 			})
 		},
 
+		getStatusCoordinador({commit}){
+
+			return new Promise((resolve, reject) => {
+				axios.get(`/api/dashboard/tablero/coordinador/get-status`).then(({data}) => {
+					commit('setStatusCoordinador',data)
+					resolve(data)
+				}).catch(e => reject(e))
+
+			})
+		},
+
 		cambiarDivisa({commit},dato){
 
 			return new Promise((resolve, reject) => {
@@ -939,6 +963,18 @@ export default {
 			return new Promise((resolve, reject) => {
 				axios.post('/api/usuarios/lider/save',datos).then(({data}) => {
 
+					resolve(data)
+
+				}).catch(e => reject(e))
+
+			})
+		},
+
+
+		getPromotores({commit}){
+
+			return new Promise((resolve, reject) => {
+				axios.get('/api/usuarios/get/all/promotores').then(({data}) => {
 					resolve(data)
 
 				}).catch(e => reject(e))

@@ -14,6 +14,10 @@
           <medal-card title="Estatus del Lider" subtitle="Por promotores activos" :data="promotores_activos" 
           v-if="$can('read','Tablero medal card lider') && rolUser == 'Lider'" :medal="usuario.status" 
           :legendTooltip="getLegendaStatusLider(usuario.status)" :text-footer="getLegendaStatusLider(usuario.status)" legend="Promotores" />
+
+          <medal-card title="Estatus del Coordinador" subtitle="Por lideres activos" :data="lideres_activos" 
+            v-if="$can('read', 'Tablero medal card coordinador') && rolUser == 'Coordinador'" :medal="usuario.status" 
+            :legendTooltip="getLegendaStatusCoordinador(usuario.status)" :text-footer="getLegendaStatusCoordinador(usuario.status)" legend="Lideres" />
             
           <statistic-card-horizontal 
             icon="fa-money-bill" 
@@ -144,6 +148,33 @@
         
             </statistic-card-horizontal>
 
+
+            <statistic-card-horizontal 
+                  icon="fa-user-check" 
+                  statisticTitle="Lideres Activos e Inactivos" 
+                  color="primary"
+                  colorIcon="dark"
+                  colorText="text-white"
+                  v-if="$can('read', 'Status de coordinadores') && ['Coordinador'].includes(usuario.rol ? usuario.rol.nombre : '')"
+                  >
+
+                  <section class="d-flex flex-wrap">
+                
+                    <strong class="d-flex flex-column">
+                      {{ lideres_status.activos }} 
+                      <span>Activos</span>
+
+                    </strong>
+              
+                    <strong class="ml-1 d-flex flex-column">
+                        {{ lideres_status.inactivos }} 
+                        <span>Inactivos</span>
+                    </strong>
+              
+                  </section>
+        
+              </statistic-card-horizontal>
+
           <!-- Eficacia del mes -->
               <apex-chart titulo="Eficacia de viajeros" subtitulo="% de viajeros con consumos registrados" 
               :chartOptions="porcentajeEficacia.chartOptions" :data="porcentajeEficacia.series" type="radialBar" :height="320"    
@@ -157,6 +188,13 @@
                 :chartOptions="porcentajeEficaciaPromotores.chartOptions" :data="porcentajeEficaciaPromotores.series" type="radialBar" :height="320"    
                 v-if="$can('read', 'Tablero eficacia lider') && ['Lider'].includes(usuario.rol ? usuario.rol.nombre : '')" >
             
+            </apex-chart>
+
+             <!-- Porcentaje de uso del sistema viajeros -->
+            <apex-chart titulo="Porcentaje de uso del sistema" subtitulo="Sobre el total de viajeros activos en el mes" 
+              :chartOptions="porcentajeUsoViajeros.chartOptions" :data="porcentajeUsoViajeros.series" type="radialBar" :height="320"    
+              v-if="['Coordinador'].includes(usuario.rol ? usuario.rol.nombre : '')" >
+             
             </apex-chart>
 
           </b-col>
@@ -274,6 +312,37 @@
                     </template>
                 
                   </apex-chart>
+
+
+                  <!-- Total Promotores por Lider del Coordinador -->
+                  <apex-chart titulo="Total Promotores" subtitulo="Por lider Activos / Inactivos" 
+                  :chartOptions="totalPromotoresPorLider.chartOptions" :data="totalPromotoresPorLider.series" type="line" :height="320"    
+                  v-if="['Coordinador'].includes(usuario.rol ? usuario.rol.nombre : '')" >
+                  </apex-chart>
+
+                  <!-- Total eficacia de Promotores por coordinador -->
+                  <apex-chart titulo="Total Eficacia" subtitulo="De promotores" 
+                  :chartOptions="totalEficaciaPromotoresCoordinador.chartOptions" :data="totalEficaciaPromotoresCoordinador.series" type="donut" :height="320"    
+                  v-if="['Coordinador'].includes(usuario.rol ? usuario.rol.nombre : '')" >
+
+                    <template #filtro>
+                        <b-form-group description="Filtre por promotor">
+                          <v-select v-model="filtro.promotor_id" :options="promotores" :reduce="option => option.id" label="nombre" placeholer="Filtre por promotor"/>
+                        </b-form-group>
+                    </template>
+                  </apex-chart>
+
+                  <!-- Total viajeros de promotores por coordinador -->
+                    <apex-chart titulo="Total Viajeros" subtitulo="De promotores" 
+                    :chartOptions="totalViajerosPorCoordinador.chartOptions" :data="totalViajerosPorCoordinador.series" type="line" :height="320"    
+                    v-if="['Coordinador'].includes(usuario.rol ? usuario.rol.nombre : '')" >
+
+                      <template #filtro>
+                          <b-form-group description="Filtre por promotor">
+                            <v-select v-model="filtro.promotor_id" :options="promotores" :reduce="option => option.id" label="nombre" placeholer="Filtre por promotor"/>
+                          </b-form-group>
+                      </template>
+                    </apex-chart>
           </b-col>
         </b-row>
 
@@ -371,6 +440,16 @@
 
         </template>
 
+        <template v-if="usuario.rol.nombre == 'Coordinador'">
+
+            <b-row>
+              <b-col cols="12" >
+                <LideresListado @change="cargarDashboard()" />
+              </b-col>
+            </b-row>
+
+        </template>
+
       </b-container>
 
   </section>
@@ -427,7 +506,8 @@ export default {
     TarjetasAgrupadasStaticas:() => import('components/dashboard/TarjetasAgrupadasStaticas.vue'),
     MedalCard:() => import('components/dashboard/MedalCard.vue'),
     movimientos: () => import('views/socio/perfil/cuenta.vue'),
-    PromotorListado :() => import('views/promotores/list.vue')
+    PromotorListado :() => import('views/promotores/list.vue'),
+    LideresListado:() => import('views/lideres/list.vue')
   },
   
   setup(props){  
@@ -451,20 +531,29 @@ export default {
       comisiones_cobradas,
       comisiones_por_cobrar,
       promotores_status,
+      lideres_status,
       eficaciaPromotores,
       viajerosTotales,
       misPromotores,
       porcentajeEficacia,
-      porcentajeEficaciaPromotores
+      porcentajeEficaciaPromotores,
+      totalPromotoresPorLider,
+      totalEficaciaPromotoresCoordinador,
+      totalViajerosPorCoordinador,
+      porcentajeUsoViajeros
+      
      } 
     = toRefs(store.state.dashboard)
     const viajeros_referidos = ref(0)
     const promotores_activos = ref(0)
+    const lideres_activos = ref(0)
 
-      const siteTraffic = ref({});
-     const rolUser = computed(() => store.getters['usuario/rolUser'])
-     const {usuario} = toRefs(store.state.usuario)
-     const filtro_gastos_turisticos = ref({
+    const promotores = ref([])
+
+    const siteTraffic = ref({});
+    const rolUser = computed(() => store.getters['usuario/rolUser'])
+    const {usuario} = toRefs(store.state.usuario)
+    const filtro_gastos_turisticos = ref({
       pais_id: null,
       rango_fecha: null,
       destino_id: null,
@@ -586,6 +675,25 @@ export default {
         store.dispatch('dashboard/getEficaciaMesPromotores')
       }
 
+       if(rolUser.value == 'Coordinador'){
+        store.dispatch('usuario/getStatusCoordinador').then(({  lideres_activos:val }) => {
+          lideres_activos.value = val.ultimo_trimestre;
+        })
+
+        store.dispatch('dashboard/coordinadoresStatus')
+        store.dispatch('dashboard/getTotalPromotoresPorLider');
+
+        store.dispatch('dashboard/getEficaciaPromotoresCoordinador',filtro.value);
+
+        store.dispatch('usuario/getPromotores').then((data) => {
+          promotores.value = data
+        })
+
+        store.dispatch('dashboard/getTotalViajerosPorCoordinador',filtro.value)
+
+        store.dispatch('dashboard/getPorcentajeUsoViajeros')
+      }
+
 
       fetchGastosTuristicos()
       fetchTiendaRegalos()
@@ -613,9 +721,23 @@ export default {
       fetchTiendaRegalos();
     }
 
-    watch(() => filtro.value.promotor_id,() => store.dispatch('dashboard/getTotalesViajeros',filtro.value))
+    watch(() => filtro.value.promotor_id,() => {
+
+      if (rolUser.value == 'Lider') {
+        store.dispatch('dashboard/getTotalesViajeros',filtro.value)
+      }
+      
+      if (rolUser.value == 'Coordinador'){
+         store.dispatch('dashboard/getEficaciaPromotoresCoordinador', filtro.value)
+         store.dispatch('dashboard/getTotalViajerosPorCoordinador', filtro.value)
+      }
+     
+    })
 
     watch([() => filtro.value.fecha],() => store.dispatch('dashboard/getTotalComisiones', filtro.value))
+    
+
+
 
     onActivated(() => cargarDashboard());
 
@@ -668,6 +790,16 @@ export default {
         return legenda[status - 1];
 
       },
+
+       getLegendaStatusCoordinador: (status) => {
+        let legenda = [
+          'Activo, con al menos dos lideres activo',
+          'En peligro, no tienes lideres activos en los ultimos 30 días',
+          'Inactivo, no Tienes lideres activos en los ultimos 90 días, has perdido tu red de Lideres'
+        ];
+        return legenda[status - 1];
+      },
+
       getFecha,
       totalViajerosRegistrados,
 
@@ -679,7 +811,14 @@ export default {
       viajerosTotales,
       misPromotores,
       porcentajeEficacia,
-      porcentajeEficaciaPromotores
+      porcentajeEficaciaPromotores,
+      lideres_activos,
+      lideres_status,
+      totalPromotoresPorLider,
+      totalEficaciaPromotoresCoordinador,
+      promotores,
+      totalViajerosPorCoordinador,
+      porcentajeUsoViajeros
     };
 
   }
@@ -691,4 +830,6 @@ export default {
 <style lang="scss">
 @import '~@core/scss/vue/pages/dashboard-ecommerce.scss';
 @import '~@core/scss/vue/libs/chart-apex.scss';
+
+
 </style>

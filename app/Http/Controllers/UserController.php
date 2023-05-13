@@ -869,7 +869,7 @@ class UserController extends Controller
             $q->where('nombre','Promotor');
         })
 
-        ->when(isset($filtro['lider']) && !is_null($filtro['lider']) && in_array($rol_user,['Lider','Coordinador']),function($q) use($filtro){
+        ->when((isset($filtro['lider']) && !is_null($filtro['lider']) && in_array($rol_user,['Lider','Coordinador'])),function($q) use($filtro,$rol_user, $request){
             $q->where('lider_id',$filtro['lider']);
         })
         ->orderBy($filtro['sortBy'] ?: 'id', $filtro['isSortDirDesc'] ? 'desc' : 'asc')
@@ -935,9 +935,9 @@ class UserController extends Controller
             // dd($promotor);
             $status_user = $lider->getStatusUser();
 
-            if ($status_user['referidos']['ultimo_mes'] > 0) {
+            if ($status_user['promotores_activos']['ultimo_mes'] > 0) {
                 $lider->status = 1;
-            } else if ($status_user['referidos']['ultimo_trimestre'] > 0) {
+            } else if ($status_user['promotores_activos']['ultimo_trimestre'] > 0) {
                 $lider->status = 2;
             } else {
                 $lider->status = 3;
@@ -1186,9 +1186,40 @@ class UserController extends Controller
 
     }
 
+    public function getTotalPromotoresPorLider(Request $request){
+        return response()->json($request->user()->totalPromotoresPorLider());
+    }
 
-    
 
+    public function getEficaciaViajerosPorPromotor(Request $request){
+        return response()->json($request->user()->eficaciaViajerosPorPromotor($request->get('promotor_id')));
+    }
+
+    public function getPromotores(Request $request){
+
+        $promotores = DB::table('users as u')
+        ->join('users as l', 'u.lider_id', '=', 'l.id')
+        ->join('users as c', 'l.coordinador_id', '=', 'c.id')
+        ->where('c.id', '=', $request->user()->id)
+        ->select('u.*')
+        ->get();
+
+
+        return response()->json($promotores);
+    }
+
+
+    public function totalViajerosCoordinador(Request $request){
+
+        return response()->json($request->user()->totalViajerosCoordinador($request->get('promotor_id')));
+
+    }
+
+    public function getPorcentajeUsoViajeros(Request $request){
+
+        return response()->json($request->user()->porcentajeViajerosLogin());
+
+    }
 
 
 }

@@ -4,11 +4,9 @@
       <li class="nav-item">
         <b-link class="navbar-brand" to="/">
           <span class="brand-logo">
-            <b-img :src="logo" alt="logo" />
+            <b-img-lazy :src="logo" alt="logo" height="60" show />
           </span>
-          <!-- <h2 class="brand-text mb-0">
-            {{ appName }}
-          </h2> -->
+          
         </b-link>
       </li>
     </ul>
@@ -16,7 +14,7 @@
 </template>
 
 <script>
-import { BLink, BImg } from 'bootstrap-vue'
+import { BLink, BImg, BImgLazy } from 'bootstrap-vue'
 import { $themeConfig } from '@themeConfig'
 import {computed,toRefs,onMounted} from 'vue'
 import store from '@/store'
@@ -26,23 +24,19 @@ export default {
   components: {
     BLink,
     BImg,
+    BImgLazy
   },
   setup() {
     // App Name
     const { appName, appLogoImage, applogoImageWhite } = $themeConfig.app
     const { skin } = toRefs(store.state.appConfig.layout)
 
-    onMounted(() => {
-      console.log(skin.value)
+    const logo = computed(() => {
+      return skin.value == 'dark' || skin.value == 'semi-dark' ? applogoImageWhite : appLogoImage
     })
-
-
     return {
       appName,
-      logo:computed(() => {
-        return skin.value == 'dark' || skin.value == 'semi-dark' ? applogoImageWhite : appLogoImage;
-      })
-
+      logo 
     }
   },
 }

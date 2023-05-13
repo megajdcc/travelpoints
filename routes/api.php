@@ -527,17 +527,26 @@ Route::get('negocios/{negocio}/recomendacions/toggle/user/{usuario}',[NegocioCon
     Route::get('dashboard/total/operaciones/travel',[DashboardController::class,'getTotalOperacionesTravel']);
     Route::get('dashboard/tablero/promotor/get-status',[UserController::class,'getStatus']);
     Route::get('dashboard/tablero/lider/get-status', [UserController::class, 'getStatus']);
+    Route::get('dashboard/tablero/coordinador/get-status', [UserController::class, 'getStatus']);
 
     Route::get('dashboard/total/viajeros/anual',[DashboardController::class, 'getTotalReferidosRegistradoAnual']);
     Route::post('dashboard/total/comisiones/promotor',[DashboardController::class, 'comisiones']);
     Route::get('dashboard/promotores/status',[DashboardController::class,'getStatusPromotores']);
+    Route::get('dashboard/coordinadores/status', [DashboardController::class, 'getStatusCoordinadores']);
+
     Route::get('dashboard/promotores/get/eficacia',[DashboardController::class, 'getEficaciaPromotores']);
     Route::post('dashboard/lider/viajeros-totales',[DashboardController::class, 'totalesViajeros']);
     Route::get('dashboard/lider/mis-promotores',[UserController::class,'misPromotores']);
     Route::get('dashboard/lider/eficacia-mes',[DashboardController::class, 'porcentajeEficacia']);
 
     Route::get('dashboard/lider/eficacia-mes/promotores',[DashboardController::class,'porcentajeEficaciaPromotores']);
-    
+
+    Route::get('dashboard/total/promotores/por-lider',[UserController::class,'getTotalPromotoresPorLider']);
+    Route::post('dashboard/eficacia/promotor/coordinador',[UserController::class, 'getEficaciaViajerosPorPromotor']);
+    Route::get('usuarios/get/all/promotores',[UserController::class, 'getPromotores']);
+    Route::post('dashboard/total/viajeros/por-coordinador',[UserController::class, 'totalViajerosCoordinador']);
+    Route::get('dashboard/porcentaje-uso/viajeros',[UserController::class, 'getPorcentajeUsoViajeros']);
+
     /*****************************/
     /* Datos de pagos
     /*****************************/ 

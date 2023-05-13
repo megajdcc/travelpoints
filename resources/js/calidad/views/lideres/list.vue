@@ -5,7 +5,7 @@
 
       <template #btn-action>
 
-        <b-button variant="primary" @click="agregarUsuario('lider')" v-if="$can('write', 'Gestion de coordinador')"
+        <b-button variant="primary" @click="agregarUsuario('lider')" v-if="$can('write', 'Gestion de coordinador') && ['Coordinador'].includes(usuario.rol ? usuario.rol.nombre : '')"
           class="d-flex flex-column justify-content-center">
           Agregar Lider
         </b-button>
@@ -423,7 +423,7 @@ export default {
       })
     }
 
-    const agregarUsuario = (tip = 'lider',lider_id = nul) => {
+    const agregarUsuario = (tip = 'lider',lider_id = null) => {
     
       if(tip == 'promotor'){
         tipo.value = 2
@@ -532,7 +532,8 @@ export default {
       cargarUsers,
       getStatusLegendLider,
       tipo,
-      clearForm
+      clearForm,
+      usuario:computed(() => store.state.usuario.usuario)
     }
 
   }

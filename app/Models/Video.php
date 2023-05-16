@@ -26,6 +26,12 @@ class Video extends Model
     }
 
 
+    public function academia()
+    {
+        return $this->belongsToMany(AcademiaVideo::class, 'vav', 'video_id', 'video_academia_id');
+    }
+
+
 
 
 }

@@ -172,6 +172,15 @@ export default [
    },
 
    {
+      title:'Academia',
+      icon:'fa-play',
+      fontAwesome:true,
+      route:'academia.list',
+      resource:'academias',
+      action:'read'
+   },
+
+   {
       title:'Configuraciones',
       icon:'SettingsIcon',
       children:[

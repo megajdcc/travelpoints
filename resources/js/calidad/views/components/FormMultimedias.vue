@@ -8,35 +8,36 @@
             style="height:450px">
             <b-container fluid>
               <b-row>
+
+                 <template v-if="!hideImagenes">
                 <!-- Imagenes -->
-                <el-divider content-position="left">Imagenes</el-divider>
-                <b-col cols="12" md="4" v-for="(imagen, i) in imagenes" :key="imagen.id" class="my-1">
+                  <el-divider content-position="left">Imagenes</el-divider>
+                  <b-col cols="12" md="4" v-for="(imagen, i) in imagenes" :key="imagen.id" class="my-1">
 
-                  <b-card body-class="p-0 m-0" footer-class="p-0 m-0"
-                    header-class="p-0 m-0 d-flex justify-content-center">
-                    <template #header>
-                      <b-img :src="`${pathArchivos}${imagen.imagen}`"
-                        style="width:220px; height:220px; object-fit:cover; cursor:pointer; margin:auto 0px"
-                        @click="index = i" thumbnail fluid lazy />
-                    </template>
+                    <b-card body-class="p-0 m-0" footer-class="p-0 m-0"
+                      header-class="p-0 m-0 d-flex justify-content-center">
+                      <template #header>
+                        <b-img :src="`${pathArchivos}${imagen.imagen}`"
+                          style="width:220px; height:220px; object-fit:cover; cursor:pointer; margin:auto 0px"
+                          @click="index = i" thumbnail fluid lazy />
+                      </template>
 
-                    <template #footer>
-                      <b-button-group size="sm">
-                        <b-button variant="danger" @click="eliminar(imagen,'imagen')" size="sm" title="Eliminar"
-                          v-b-tooltip.hover="'Eliminar'">
-                          <feather-icon icon="TrashIcon" />
-                        </b-button>
-                        <b-form-checkbox v-model="seleccionados" switch v-if="seleccionable"  :value="imagen.id"/>
-                      </b-button-group>
-                    </template>
-                  </b-card>
-
-
-                </b-col>
+                      <template #footer>
+                        <b-button-group size="sm">
+                          <b-button variant="danger" @click="eliminar(imagen,'imagen')" size="sm" title="Eliminar"
+                            v-b-tooltip.hover="'Eliminar'">
+                            <feather-icon icon="TrashIcon" />
+                          </b-button>
+                          <b-form-checkbox v-model="seleccionados" switch v-if="seleccionable"  :value="imagen.id"/>
+                        </b-button-group>
+                      </template>
+                    </b-card>
+                  </b-col>
+                </template>
 
                 <template v-if="!hideVideos">
                    <el-divider content-position="left">Videos</el-divider>
-                    <b-col cols="12" md="4" v-for="(video, i) in videos" :key="video.id" class="my-1">
+                    <b-col cols="12" md="4" v-for="(video) in videos" :key="video.id" class="my-1">
 
                       <b-card body-class="p-0 m-0" footer-class="p-0 m-0"
                         header-class="p-0 m-0 d-flex justify-content-center">
@@ -50,6 +51,9 @@
                               v-b-tooltip.hover="'Eliminar'">
                               <feather-icon icon="TrashIcon" />
                             </b-button>
+
+                            <b-form-checkbox v-model="seleccionados" switch v-if="seleccionable"  :value="video.id"/>
+
                           </b-button-group>
                         </template>
                       </b-card>
@@ -125,6 +129,7 @@ import {
   BButton,
   BFormInvalidFeedback,
   BFormCheckbox,
+  BFormRadio
 
 } from 'bootstrap-vue'
 
@@ -180,7 +185,8 @@ export default {
     BButtonGroup,
     BButton,
     VuePerfectScrollbar,
-    BFormCheckbox
+    BFormCheckbox,
+    BFormRadio
 
   },
 

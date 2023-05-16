@@ -2905,6 +2905,63 @@ export default [
 
 
    /*****************************************/
+   /* Academia
+   /*************************************** */
+   {
+      path:'/academia',
+      name:'academia',
+      component:() => import('views/academia/index.vue'),
+      children:[
+         {
+            path:'',
+            name:'academia.list',
+            component:() => import('views/academia/list.vue'),
+            meta:{
+               pageTitle:'Academia',
+               resource:'academias',
+               action:'read',
+               breadcrumb:[
+                  {text:'Listado',active:true}
+               ]
+            }
+         },
+
+         {
+            path:'create',
+            name:'academia.create',
+            component:() => import('views/academia/create.vue'),
+            meta:{
+               pageTitle:'Academia',
+               resource:'academias',
+               action:'write',
+               navActiveLink:'academia.list',
+               breadcrumb:[
+                  {text:'Listado',active:false,to:{name:'academia.list'}},
+                  {text:'Crear',active:true}
+               ]
+            }
+         },
+
+         {
+            path:':id/edit',
+            name:'academia.edit',
+            props:true,
+            component:() => import('views/academia/edit.vue'),
+            meta:{
+               pageTitle:'Academia',
+               resource:'academias',
+               action:'update',
+               navActiveLink:'academia.list',
+               breadcrumb:[
+                  {text:'Listado',active:false,to:{name:'academia.list'}},
+                   {text:'Editar',active:true}
+               ]
+            }
+         }
+      ]
+   },
+
+   /*****************************************/
    /* PAGINA DE perfil de negocios
    /*************************************** */
    {

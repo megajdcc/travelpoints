@@ -20,6 +20,7 @@ export default {
       type:Boolean,
       default:false,
     },
+    
      hideImagenes: {
       type: Boolean,
       default: false,
@@ -94,9 +95,7 @@ export default {
     return {
       imagenes:computed(() => [...sistema.value.imagenes]),
       videos: computed(() => [...sistema.value.videos]),
-
       actions,
-
     }
   }
 }

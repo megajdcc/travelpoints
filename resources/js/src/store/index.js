@@ -157,6 +157,9 @@ import pais from './modules/pais.js'
 import estado from './modules/estado.js'
 import ciudad from './modules/ciudad.js'
 
+// Academias
+import academiaVideos from './modules/academiaVideos.js'
+
 Vue.use(Vuex)
 
 export default new Vuex.Store({
@@ -304,10 +307,10 @@ export default new Vuex.Store({
     comision,
     datosPago,
     retiro,
-
     pais,
     estado,
-    ciudad
+    ciudad,
+    academiaVideos
   },
 
   strict: process.env.DEV,

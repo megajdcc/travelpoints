@@ -246,15 +246,15 @@
                         </b-col>
                      </b-row>
 
-                        <template v-if="!formulario.id">
-                              <el-divider content-position="left">Asociar imagenes al destino</el-divider>
-                              <b-row>
-                              <b-col cols="12">
-                                 <multimedia hideVideos seleccionable />
+                     <template v-if="!formulario.id">
+                           <el-divider content-position="left">Asociar imagenes al destino</el-divider>
+                           <b-row>
+                           <b-col cols="12">
+                              <multimedia hideVideos seleccionable />
 
-                              </b-col>
-                              </b-row>
-                           </template>
+                           </b-col>
+                           </b-row>
+                        </template>
 
                      <b-row>
                         <b-button-group size="sm">

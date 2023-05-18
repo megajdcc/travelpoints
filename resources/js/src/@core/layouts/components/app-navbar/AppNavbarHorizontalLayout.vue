@@ -31,6 +31,8 @@
       <!-- <search-bar /> -->
       <!-- <cart-dropdown /> -->
       <notification-dropdown />
+      <academia  v-if="is_loggin && usuario.rol.academia.length"/>
+
       <!-- <observation-dropdown class="d-none d-sm-flex"/> -->
       <user-dropdown />
     </b-navbar-nav>
@@ -50,11 +52,14 @@ import NotificationDropdown from '@/components/notifications.vue'
 import ObservationDropdown from './components/ObservationDropdown.vue'
 import UserDropdown from './components/UserDropdown.vue'
 
+import useAuth from '@core/utils/useAuth.js'
+
+import store from '@/store'
+import { toRefs } from 'vue'
 
 export default {
   components: {
     BLink,
-
     // Navbar Components
     BNavbarNav,
     Bookmarks,
@@ -66,6 +71,8 @@ export default {
     ObservationDropdown,
     UserDropdown,
     BNavItem,
+    Academia: () => import('components/Academia.vue')
+
   },
   props: {
     toggleVerticalMenuActive: {
@@ -77,12 +84,17 @@ export default {
 
   setup(){
 
+    const { usuario } = toRefs(store.state.usuario)
+
+    const {
+      is_loggin
+    } = useAuth();
     
     return {
+      is_loggin,
+      usuario
     }
-
   }
-
 
 }
 </script>

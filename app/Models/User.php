@@ -777,6 +777,7 @@ class User extends Authenticatable
     public function cargar(): User{
         $this->tokens;
         $this->rol?->permisos;
+        $this->rol?->academia->load('videos');
         $this->habilidades = $this->getHabilidades();
         $this->avatar = $this->getAvatar();
         $this->ciudad?->estado?->pais;

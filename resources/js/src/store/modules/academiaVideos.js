@@ -152,6 +152,15 @@ export default {
         }).catch(e => reject(e))
 
       })
+    },
+
+
+    cargarVideosNegocio({state,commit}){
+
+      return new Promise((resolve, reject) => {
+        axios.get(`/api/academia-videos/get/panel/negocio`).then(({data}) => resolve(data)).catch(e => reject(e))
+      })
+      
     }
   }
 

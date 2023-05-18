@@ -32,7 +32,11 @@
       <dark-Toggler class="d-none d-lg-block" />
       <!-- <cart-dropdown /> -->
       <notification-dropdown />
+
+      <academia v-if="is_loggin" is-negocio />
+      
       <user-dropdown panel="negocio" :negocioId="negocio_id"/>
+
     </b-navbar-nav>
   </div>
 </template>
@@ -58,7 +62,10 @@ import vSelect from 'vue-select'
 import store from '@/store'
 import {toRefs,ref,toRef,computed,watch} from 'vue'
 
+import useAuth from '@core/utils/useAuth.js'
+
 export default {
+
   components: {
     BLink,
     BNavbarNav,
@@ -67,8 +74,10 @@ export default {
     NotificationDropdown,
     UserDropdown,
     BNavItem,
-    vSelect
+    vSelect,
+    Academia:() => import('components/Academia.vue')
   },
+
   props: {
     toggleVerticalMenuActive: {
       type: Function,
@@ -103,6 +112,10 @@ export default {
     })
 
 
+    const {
+      is_loggin
+    } = useAuth();
+
     const cargarForm = () => {
       if (['Administrador', 'Desarrollador'].includes(usuario.value.rol.nombre)) {
         store.dispatch('negocio/getNegocios')
@@ -117,11 +130,13 @@ export default {
       usuario,
       negocio_id,
       cambiarNegocio,
+      is_loggin,
       negociosList:computed(() => {
         
         if(['Administrador','Desarrollador'].includes(usuario.value.rol.nombre)){
           return negocios.value;
         }
+
         return usuario.value.negocios;
         
       })

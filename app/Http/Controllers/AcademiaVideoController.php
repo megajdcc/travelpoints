@@ -167,4 +167,16 @@ class AcademiaVideoController extends Controller
         return response()->json(['result' => $result]);
 
     }
+
+
+    public function getPanelNegocio(){
+
+        $academia = AcademiaVideo::whereHas('roles',function(Builder $q) {
+            $q->where('nombre','Negocio');
+        })->get()->load(['roles','videos']);
+
+
+        return response()->json(['videos' => $academia]);
+
+    }
 }

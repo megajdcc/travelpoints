@@ -605,6 +605,9 @@ Route::get('negocios/{negocio}/recomendacions/toggle/user/{usuario}',[NegocioCon
     Route::post('/academias/videos/fetch-data', [AcademiaVideoController::class, 'fetchData']);
     Route::resource('academia-videos',AcademiaVideoController::class);
     Route::get('academia-videos/{video}/fetch-data',[AcademiaVideoController::class,'fetch']);
+
+    Route::get('academia-videos/get/panel/negocio',[AcademiaVideoController::class,'getPanelNegocio']);
+
     
 
 });

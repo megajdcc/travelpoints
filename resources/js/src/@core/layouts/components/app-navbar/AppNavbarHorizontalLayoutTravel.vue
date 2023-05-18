@@ -32,6 +32,7 @@
          <dark-Toggler class="d-none d-lg-block" />
 
          <notification-dropdown v-if="is_loggin" />
+         <academia v-if="is_loggin && usuario.rol.academia.length" />
          <user-dropdown />
       </b-navbar-nav>
    </div>
@@ -62,6 +63,8 @@ export default {
       UserDropdown,
       BNavItem,
       carritoCompra:() => import('components/carritoCompra.vue'),
+    Academia: () => import('components/Academia.vue')
+
    },
    directives:{
       'b-tooltip':VBTooltip
@@ -97,7 +100,8 @@ export default {
 
       return {
          carrito,
-         is_loggin
+         is_loggin,
+         usuario
       }
    }
 

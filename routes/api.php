@@ -608,7 +608,14 @@ Route::get('negocios/{negocio}/recomendacions/toggle/user/{usuario}',[NegocioCon
 
     Route::get('academia-videos/get/panel/negocio',[AcademiaVideoController::class,'getPanelNegocio']);
 
-    
+
+    /**************************/
+    /* CJDropShipping
+    /**************************/
+    Route::get('dropshipping/obtener-token',[SistemaController::class, 'obtenerTokenDropshipping']);
+    Route::get('dropshipping/refresh-token', [SistemaController::class, 'refreshTokenDropshipping']);
+    Route::get('dropshipping/caducar-token', [SistemaController::class, 'caducarTokenDropshipping']);
+
 
 });
 

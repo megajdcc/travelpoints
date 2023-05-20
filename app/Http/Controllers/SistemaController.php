@@ -8,8 +8,10 @@ use App\Models\Sistema;
 use App\Models\Video;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\{DB,File,Storage};
+use Illuminate\Support\Facades\{DB,File, Http, Storage};
 use ParagonIE\Sodium\Compat;
+use App\Jobs\regenerate_token_cjdropshipping;
+use Carbon\Carbon;
 
 use function PHPUnit\Framework\isNull;
 
@@ -243,6 +245,92 @@ class SistemaController extends Controller
         $sistema->cargar();
 
         return response()->json(['result' => $result,'sistema' => $sistema]);
+
+    }
+
+
+    public function obtenerTokenDropshipping(Request $request){
+
+        $response = Http::acceptJson()
+        ->post('https://developers.cjdropshipping.com/api2.0/v1/authentication/getAccessToken',[
+            'email' => 'info@infochannel.si',
+            'password' => 'dfc64a407ffb4e9eb805fc1ac45bba78',
+        ]);
+        $sistema = Sistema::first();
+        $result = false;
+        if($response->ok()){
+            $result = true;
+            $data = $response->object();
+
+            $sistema->cjdropshipping = [
+                'accessToken'            => $data->data->accessToken,
+                'accessTokenExpiryDate'  => $data->data->accessTokenExpiryDate,
+                'refreshToken'           => $data->data->refreshToken,
+                'refreshTokenExpiryDate' => $data->data->refreshTokenExpiryDate,
+                'createDate'             => $data->data->createDate
+            ];
+
+            regenerate_token_cjdropshipping::dispatch()->delay(Carbon::now()->addDays(15));
+
+            $sistema->save();
+
+        }
+
+        $sistema->cargar();
+
+        return response()->json(['result' => $result,'sistema' => $sistema]);
+
+    }
+
+    public function refreshTokenDropshipping(Request $request){
+
+        $sistema = Sistema::first();
+        $response = Http::acceptJson()
+        ->post('https://developers.cjdropshipping.com/api2.0/v1/authentication/refreshAccessToken', [
+            'refreshToken' => $sistema->cjdropshipping['refreshToken'],
+        ]);
+       
+        $result = false;
+        if ($response->ok()) {
+            $result = true;
+            $data = $response->object();
+
+            $sistema->cjdropshipping = [
+                'accessToken'            => $data->data->accessToken,
+                'accessTokenExpiryDate'  => $data->data->accessTokenExpiryDate,
+                'refreshToken'           => $data->data->refreshToken,
+                'refreshTokenExpiryDate' => $data->data->refreshTokenExpiryDate,
+                'createDate'             => $data->data->createDate
+            ];
+
+            $sistema->save();
+        }
+
+        $sistema->cargar();
+
+        return response()->json(['result' => $result, 'sistema' => $sistema]);
+    }
+
+    public function caducarTokenDropshipping(Request $request){
+        $sistema = Sistema::first();
+        $response = Http::acceptJson()
+            ->withHeaders([
+            'CJ-Access-Token' => $sistema->cjdropshipping['accessToken']
+            ])
+            ->post('https://developers.cjdropshipping.com/api2.0/v1/authentication/logout');
+
+        $result = false;
+        if ($response->ok()) {
+            $result = true;
+
+            $sistema->cjdropshipping = null;
+
+            $sistema->save();
+        }
+
+        $sistema->cargar();
+
+        return response()->json(['result' => $result, 'sistema' => $sistema]);
     }
 
 }

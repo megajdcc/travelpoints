@@ -28,14 +28,16 @@ class Sistema extends Model
         'divisa_id',
         'banner_principal',
         'empresa_digital',
-        'negocio'
+        'negocio',
+        'cjdropshipping'
     ];
 
     protected $casts = [
-        'paypal' => 'boolean',
+        'paypal'            => 'boolean',
         'production_paypal' => 'boolean',
-        'empresa_digital' => 'boolean',
-        'negocio' => 'array'
+        'empresa_digital'   => 'boolean',
+        'negocio'           => 'array',
+        'cjdropshipping'    => 'array',
     ];
 
 

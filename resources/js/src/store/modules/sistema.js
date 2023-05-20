@@ -27,7 +27,8 @@ export default {
       imagenes:[],
       videos: [],
       sucursales:[],
-      redes:[]
+      redes:[],
+      cjdropshipping:null
     },
 
 
@@ -64,13 +65,11 @@ export default {
     update:(state,sistema) => state.sistema = sistema,
 
     agregarRedSocial(state){
-      
       state.sistema.redes.push({
         nombre:'',
         url:'',
         icono:'',
       });
-
     },
 
     eliminarRed:(state,idx) => {
@@ -233,7 +232,53 @@ export default {
         }).catch(e => reject(e))
 
        })
+    },
+
+    optenerTokenDropshipping({state,commit}){
+
+      return new Promise((resolve, reject) => {
+        axios.get('/api/dropshipping/obtener-token').then(({data}) => {
+          
+          if(data.result){
+            commit('update',data.sistema)
+          }
+
+          resolve(data)
+
+        }).catch(e => reject(e))
+      })
+    },
+
+
+    refreshTokenDropshipping({commit}){
+        return new Promise((resolve, reject) => {
+        axios.get('/api/dropshipping/refresh-token').then(({data}) => {
+          
+          if(data.result){
+            commit('update',data.sistema)
+          }
+
+          resolve(data)
+
+        }).catch(e => reject(e))
+      })
+    },
+
+    caducarTokenDropshipping({commit}){
+      return new Promise((resolve, reject) => {
+        axios.get('/api/dropshipping/caducar-token').then(({data}) => {
+          
+          if(data.result){
+            commit('update',data.sistema)
+          }
+
+          resolve(data)
+
+        }).catch(e => reject(e))
+      });
+
     }
+
 
 
   }

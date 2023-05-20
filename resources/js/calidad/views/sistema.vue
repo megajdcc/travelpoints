@@ -271,6 +271,57 @@
             </b-col>
           </b-row>
 
+          <el-divider content-position="left">CJ Dropshipping</el-divider>
+
+          <b-row>
+            <b-col cols="12">
+                <b-button-group size="sm">
+                  <b-button variant="primary" @click="ObtenerToken" title="Obtener Token" v-if="!formulario.cjdropshipping">
+                    Obtener Token
+                  </b-button>
+                  
+                  <b-button variant="warning" @click="refreshToken" title="Refresh Token" v-if="formulario.cjdropshipping">
+                    Actualizar Fecha de caducidad  
+                  </b-button>
+
+                   <b-button variant="danger" @click="caducarToken" title="Caducar Token" v-if="formulario.cjdropshipping">
+                      Caducar Token 
+                    </b-button>
+
+                </b-button-group>
+            </b-col>
+
+            <b-col cols="12" v-if="formulario.cjdropshipping" class="mt-1">
+                <p> <strong class="text-danger">NOTA:</strong> Una vez generado el token de acceso, no es necesario que vuelva regenerar el token de forma manual, ya que el sistema ha creado un servicio que hace esto por usted cada 15 días.</p>
+            </b-col>
+          </b-row>
+
+          <b-row v-if="formulario.cjdropshipping">
+              <b-col cols="12" md="6">
+                    <b-form-group label="Token de acceso">
+                      <b-form-textarea v-model="formulario.cjdropshipping.accessToken" readonly :rows="4" ></b-form-textarea>
+                    </b-form-group>
+                    <b-form-group label="Refresh Token" description="Ficha de actualización">
+                          <b-form-textarea v-model="formulario.cjdropshipping.refreshToken" readonly :rows="4"></b-form-textarea>
+                    </b-form-group>
+                   
+              </b-col>
+
+              <b-col cols="12" md="6">
+
+                   <b-form-group label="Access token expiry date" description="Tiempo de caducidad del token de acceso">
+                    <b-form-input v-model="formulario.cjdropshipping.accessTokenExpiryDate" readonly />
+                  </b-form-group>
+                  <b-form-group label="Refresh token expiry date" >
+                    <b-form-input v-model="formulario.cjdropshipping.refreshTokenExpiryDate" readonly />
+                  </b-form-group>
+
+                  <b-form-group label="Create date" description="Fecha de creación">
+                      <b-form-input v-model="formulario.cjdropshipping.createDate" readonly />
+                  </b-form-group>
+              </b-col>
+            </b-row>
+
           <el-divider content-position="left">
             Negocios
           </el-divider>
@@ -319,6 +370,8 @@
            
           </b-row>
 
+
+          
         </b-container>
 
         <template #footer>
@@ -490,6 +543,43 @@ export default {
 
       }
     }
+
+    const ObtenerToken = () => {
+
+      store.dispatch('sistema/optenerTokenDropshipping').then(({result}) => {
+          if (result) {
+          toast.success('Se ha generado el token de acceso con éxito')
+        } else {
+          toast.info('No se pudo generar el token, inténte de nuevo mas tarde')
+        }
+      }).catch(e => console.log(e))
+
+    }
+
+    const refreshToken = () => {
+      store.dispatch('sistema/refreshTokenDropshipping').then(({ result }) => {
+       
+        if(result){
+          toast.success('Se ha actualizado el token de acceso y la fecha de caducidad')
+        }else{
+            toast.info('No se pudo actualizar el token, inténte de nuevo mas tarde')
+        }
+
+      }).catch(e => console.log(e))
+    }
+
+    const caducarToken = () => {
+        store.dispatch('sistema/caducarTokenDropshipping').then(({ result }) => {
+
+        if (result) {
+          toast.success('Se ha caducado el token de acceso')
+        } else {
+          toast.info('No se pudo caducar el token, inténte de nuevo mas tarde')
+        }
+
+      }).catch(e => console.log(e))
+    }
+
     return {
       loading:computed(() => store.state.loading),
       formulario,
@@ -522,7 +612,11 @@ export default {
         return  divisa
         ? divisa.iso 
         : 'EUR'
-      })
+      }),
+
+      ObtenerToken,
+      refreshToken,
+      caducarToken
 
 
     }

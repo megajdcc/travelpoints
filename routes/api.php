@@ -450,6 +450,8 @@ Route::get('negocios/{negocio}/recomendacions/toggle/user/{usuario}',[NegocioCon
     /*****************************/
 
     Route::post('categoria-productos/fetch/data',[CategoriaProductoController::class,'fetchData']);
+    Route::get('/categoria-productos/categories-dropshipping',[CategoriaProductoController::class,'categoriesDropShipping']);
+
     Route::get('categoria-productos/{categoria}/fetch/data',[CategoriaProductoController::class,'fetch']);
     Route::resource('categoria-productos', CategoriaProductoController::class);
 
@@ -472,6 +474,10 @@ Route::get('negocios/{negocio}/recomendacions/toggle/user/{usuario}',[NegocioCon
     Route::put('productos/{producto}/cargar/imagen', [ProductoController::class, 'cargarImagen']);
     Route::delete('productos/{producto}/eliminar/imagen/{imagen}', [ProductoController::class, 'eliminarImagen']);
     Route::put('productos/{producto}/cargar/archivo',[ProductoController::class,'cargarArchivo']);
+    Route::post('productos/cj-dropshipping/fetch/data',[ProductoController::class,'fetchDataCjDropshipping']);
+
+    Route::get('productos/details/{pid}',[ProductoController::class,'getDetailsProductoCj']);
+    
 
     /*****************************/
     /* Consumos

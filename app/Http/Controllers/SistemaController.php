@@ -254,7 +254,7 @@ class SistemaController extends Controller
         $response = Http::acceptJson()
         ->post('https://developers.cjdropshipping.com/api2.0/v1/authentication/getAccessToken',[
             'email' => 'info@infochannel.si',
-            'password' => 'dfc64a407ffb4e9eb805fc1ac45bba78',
+            'password' =>  'dfc64a407ffb4e9eb805fc1ac45bba78' //'dfc64a407ffb4e9eb805fc1ac45bba78',
         ]);
         $sistema = Sistema::first();
         $result = false;
@@ -262,18 +262,19 @@ class SistemaController extends Controller
             $result = true;
             $data = $response->object();
 
-            $sistema->cjdropshipping = [
-                'accessToken'            => $data->data->accessToken,
-                'accessTokenExpiryDate'  => $data->data->accessTokenExpiryDate,
-                'refreshToken'           => $data->data->refreshToken,
-                'refreshTokenExpiryDate' => $data->data->refreshTokenExpiryDate,
-                'createDate'             => $data->data->createDate
-            ];
-
-            regenerate_token_cjdropshipping::dispatch()->delay(Carbon::now()->addDays(15));
-
-            $sistema->save();
-
+            if($data->result){
+                
+                $sistema->cjdropshipping = [
+                    'accessToken'            => $data->data->accessToken,
+                    'accessTokenExpiryDate'  => $data->data->accessTokenExpiryDate,
+                    'refreshToken'           => $data->data->refreshToken,
+                    'refreshTokenExpiryDate' => $data->data->refreshTokenExpiryDate,
+                    'createDate'             => $data->data->createDate
+                ];
+                regenerate_token_cjdropshipping::dispatch()->delay(Carbon::now()->addDays(15));
+                $sistema->save();
+                $this->datosCuentaCj($sistema,$data->data->accessToken);
+            }
         }
 
         $sistema->cargar();
@@ -281,6 +282,60 @@ class SistemaController extends Controller
         return response()->json(['result' => $result,'sistema' => $sistema]);
 
     }
+
+
+    public function datosCuentaCj(Sistema $sistema,$token){
+
+        $response = Http::acceptJson()
+            ->withHeaders([
+            'CJ-Access-Token' => $token
+            ])
+            ->get('https://developers.cjdropshipping.com/api2.0/v1/setting/get');
+
+            if($response->ok()){
+                $data = $response->object();
+
+                if($data->result){
+
+                    $sistema->cjdropshipping = [
+                        ...$sistema->cjdropshipping,
+                        ...[
+                            'cuenta' => $data->data
+                        ]
+                    ];
+                    $sistema->save();
+
+                    $this->saldoCuentaCj($sistema,$token);
+
+                }
+
+            }
+
+    }
+
+    public function saldoCuentaCj(Sistema $sistema, $token){
+        $response = Http::acceptJson()
+            ->withHeaders([
+                'CJ-Access-Token' => $token
+            ])
+            ->get('https://developers.cjdropshipping.com/api2.0/v1/shopping/pay/getBalance');
+
+        if ($response->ok()) {
+            $data = $response->object();
+
+            if ($data->result) {
+
+                $sistema->cjdropshipping = [
+                    ...$sistema->cjdropshipping,
+                    ...[
+                        'saldo' => $data->data
+                    ]
+                ];
+                $sistema->save();
+            }
+        }
+    }
+
 
     public function refreshTokenDropshipping(Request $request){
 
@@ -295,15 +350,18 @@ class SistemaController extends Controller
             $result = true;
             $data = $response->object();
 
-            $sistema->cjdropshipping = [
-                'accessToken'            => $data->data->accessToken,
-                'accessTokenExpiryDate'  => $data->data->accessTokenExpiryDate,
-                'refreshToken'           => $data->data->refreshToken,
-                'refreshTokenExpiryDate' => $data->data->refreshTokenExpiryDate,
-                'createDate'             => $data->data->createDate
-            ];
-
-            $sistema->save();
+            if($data->result){
+                $sistema->cjdropshipping = [
+                    'accessToken'            => $data->data->accessToken,
+                    'accessTokenExpiryDate'  => $data->data->accessTokenExpiryDate,
+                    'refreshToken'           => $data->data->refreshToken,
+                    'refreshTokenExpiryDate' => $data->data->refreshTokenExpiryDate,
+                    'createDate'             => $data->data->createDate
+                ];
+                $sistema->save();
+                $this->datosCuentaCj($sistema,$data->data->accessToken);
+            }
+           
         }
 
         $sistema->cargar();

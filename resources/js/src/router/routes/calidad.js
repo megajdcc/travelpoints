@@ -2310,6 +2310,51 @@ export default [
       ]
    },
 
+    /*****************************************/
+   /* Productos CJDROPSHIPPING
+   /*************************************** */
+   {
+      path: '/productos/cj-dropshiping',
+      component: () => import('views/tienda/productos-cj/index.vue'),
+      children: [
+         {
+            path: '',
+            component: () => import('views/tienda/productos-cj/list.vue'),
+            name: 'producto.cj.list',
+            meta: {
+               resource: 'productos',
+               action: 'read',
+               pageTitle: 'Productos (CJDROPSHIPPING)',
+               breadcrumb: [
+                  { text: 'Home', to: { name: 'home' }, active: false },
+                  { text: 'Productos', active: true },
+               ]
+            }
+         },
+
+         {
+            path: ':id/show',
+            props: true,
+            component: () => import('views/tienda/productos-cj/perfil.vue'),
+            name: 'producto.show.cj',
+            meta: {
+               resource: 'productos',
+               action: 'read',
+               pageTitle: 'Producto',
+               navActiveLink: 'producto.cj.list',
+               breadcrumb: [
+                  { text: 'Home', to: { name: 'home' }, active: false },
+                  { text: 'Productos', active: false, to: { name: 'producto.cj.list' } },
+                  { text: 'Perfil', active: true },
+
+               ]
+            }
+         }
+
+      ]
+   },
+
+
    /*****************************************/
    /* Ventas de Productos
    /*************************************** */

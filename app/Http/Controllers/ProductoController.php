@@ -4,11 +4,13 @@ namespace App\Http\Controllers;
 
 use App\Models\Imagen;
 use App\Models\Producto;
+use App\Models\Sistema;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
 
 class ProductoController extends Controller
@@ -57,6 +59,47 @@ class ProductoController extends Controller
 
 
     }
+
+
+    public function fetchDataCjDropshipping(Request $request){
+    
+        $filtro = $request->all();
+
+        $sistema = Sistema::first();
+
+        $productos = collect([]);
+        $total = 0;
+        $response = Http::withHeaders([
+            'CJ-Access-Token' => $sistema->cjdropshipping['accessToken']
+        ])
+        ->get('https://developers.cjdropshipping.com/api2.0/v1/product/list',[
+            'pageNum'            => $filtro['page'],
+            'pageSize'        => $filtro['perPage'],
+            'categoryId'      => $filtro['categoria_id'] ?: '',
+            'categoryKeyword' => $filtro['q'] ?: '',
+            'productoSku' => $filtro['q'] ?: '',
+            'pid' => $filtro['q']? : ''
+        ]);
+
+        if($response->ok()){
+
+            $data  = $response->object();
+
+            if($data->result){
+                $productos = collect($data->data->list);
+                $total = $data->data->total;
+            }
+
+        }
+
+
+
+        return response()->json([
+            'productos' => $productos,
+            'total' => $total
+        ]);
+    }
+
 
     public function fetch(Producto $producto){
 
@@ -288,5 +331,31 @@ class ProductoController extends Controller
 
         return response()->json(['result' => $result, 'producto' => $producto]);
     }
+
+    public function getDetailsProductoCj(String $producto_id){
+
+        $sistema = Sistema::first();
+
+        $response = Http::withHeaders([
+            'CJ-Access-Token' => $sistema->cjdropshipping['accessToken'] 
+        ])->get('https://developers.cjdropshipping.com/api2.0/v1/product/query',[
+            'pid' => $producto_id
+        ]);
+
+        $producto = null;
+
+        if($response->ok()){
+
+            $data = $response->object();
+
+            if($data->result){
+                $producto = $data->data;
+            }
+        }
+
+        return response()->json(['producto' => $producto]);
+
+    }
+
     
 }

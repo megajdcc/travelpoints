@@ -297,6 +297,8 @@
           </b-row>
 
           <b-row v-if="formulario.cjdropshipping">
+
+              <el-divider content-position="left">Tokens de Acceso</el-divider>
               <b-col cols="12" md="6">
                     <b-form-group label="Token de acceso">
                       <b-form-textarea v-model="formulario.cjdropshipping.accessToken" readonly :rows="4" ></b-form-textarea>
@@ -320,6 +322,47 @@
                       <b-form-input v-model="formulario.cjdropshipping.createDate" readonly />
                   </b-form-group>
               </b-col>
+
+              <template v-if="formulario.cjdropshipping.cuenta">
+              <el-divider content-position="left">Datos de Cuenta</el-divider>
+
+
+               <b-col cols="12" md="6">
+                  <b-form-group label="Nombre de la cuenta" description="A nombre de quien fué aperturada">
+                    <b-form-input v-model="formulario.cjdropshipping.cuenta.openName" readonly />
+                  </b-form-group>
+                  <b-form-group label="Email de Apertura">
+                      <b-form-input v-model="formulario.cjdropshipping.cuenta.openEmail" readonly />
+                  </b-form-group>
+
+                  <b-form-group label="Root access" description="Acceso Root">
+                        <b-form-input v-model="formulario.cjdropshipping.cuenta.root" readonly />
+                  </b-form-group>
+
+                  <b-form-group label="Es cuenta de prueba?">
+                    <b-form-radio-group :options="optionsSandbox" v-model="formulario.cjdropshipping.cuenta.isSandbox" disabled>
+                    </b-form-radio-group>
+                  </b-form-group>
+                   
+              </b-col>
+
+              <b-col cols="12" md="6" v-if="formulario.cjdropshipping.saldo">
+
+                  <b-form-group label="Saldo en cuenta" >
+                    <b-form-input v-model="formulario.cjdropshipping.saldo.amount" readonly />
+                  </b-form-group>
+
+                   <b-form-group label="Saldo en cuenta (Retenido)" >
+                      <b-form-input v-model="formulario.cjdropshipping.saldo.freezeAmount" readonly />
+                    </b-form-group>
+
+                  <b-form-group label="Sin cantidad de retiro" >
+                    <b-form-input v-model="formulario.cjdropshipping.saldo.noWithdrawalAmount" readonly />
+                  </b-form-group>
+              </b-col>
+
+              </template>
+
             </b-row>
 
           <el-divider content-position="left">
@@ -424,7 +467,8 @@ import {
   BCol,
   BFormRadioGroup,
   BAlert,
-  BLink
+  BLink,
+  BFormRadio
 } from 'bootstrap-vue'
 
 import {computed,toRefs,ref,onMounted} from 'vue'
@@ -456,6 +500,7 @@ export default {
     BAlert,
     BLink,
     vSelect,
+    BFormRadio,
     currencyInput:() => import('components/CurrencyInput.vue')
 
   },
@@ -580,6 +625,18 @@ export default {
       }).catch(e => console.log(e))
     }
 
+
+    const optionsSandbox = ref([
+      {
+        value:true,
+        text:'Sí'
+      },
+       {
+        value: false,
+        text: 'No'
+      }
+    ]);
+
     return {
       loading:computed(() => store.state.loading),
       formulario,
@@ -616,7 +673,9 @@ export default {
 
       ObtenerToken,
       refreshToken,
-      caducarToken
+      caducarToken,
+
+      optionsSandbox
 
 
     }

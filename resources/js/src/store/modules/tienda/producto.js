@@ -227,6 +227,18 @@ export default {
 
     },
 
+    fetchDataProductoDropShipping({commit},filtro){
+        return new Promise((resolve, reject) => {
+        
+        axios.post(`/api/productos/cj-dropshipping/fetch/data`, filtro).then(({ data }) => {
+
+          resolve(data)
+        }).catch(e => reject(e))
+
+      })
+    },
+
+
     fetch({ state, commit }, producto_id) {
 
       return new Promise((resolve, reject) => {
@@ -379,6 +391,15 @@ export default {
          })
 
       },
+
+
+      productoDetailsCj({commit},producto_id){
+
+        return new Promise((resolve, reject) => {
+          axios.get(`/api/productos/details/${producto_id}`).then(({data}) => resolve(data)).catch(e => reject(e))
+          
+        })
+      }
 
 
   }

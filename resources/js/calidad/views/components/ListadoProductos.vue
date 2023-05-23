@@ -18,7 +18,7 @@
       <b-col cols="12" md="3">
         <b-card>
             <!-- Price Slider -->
-            <div class="price-slider">
+            <div class="price-slider" v-if="!hideSliderPrices">
               
               <h6 class="filter-title">
                 {{ $t('Rango de precios') }}
@@ -33,12 +33,23 @@
 
             <!-- Categorias -->
 
-           <b-form-group label="Categorías">
-            <b-form-checkbox-group v-model="categoria_id" :options="categorias" text-field="nombre" value-field="id" stacked >
+           <b-form-group label="Categorías" >
+            <b-form-checkbox-group  v-if="!cjDropShipping" v-model="categoria_id" :options="categorias" :text-field="cjDropShipping ? 'categoryFirstName' : 'nombre'" :value-field="cjDropShipping ? 'categoryFirstId' : 'id'" stacked >
             
             </b-form-checkbox-group>
 
+            <el-tree
+              v-else
+              :data="categories"
+              accordion
+              node-key="label"
+              @node-click="nodoSelected"
+              :props="defaultProps">
+            </el-tree>
+
            </b-form-group>
+
+           
         </b-card>
       </b-col>
 
@@ -61,7 +72,7 @@
                   <div class="view-options d-flex flex-wrap">
               
                     <!-- ordenar por -->
-                    <v-select v-model="sortBy" :options="sortByOptions" label="text" :reduce="option => option.value" style="min-width: 150px;">
+                    <v-select v-model="sortBy" :options="sortByOptions" label="text" :reduce="option => option.value" style="min-width: 150px;" v-if="!cjDropShipping">
                     </v-select>
               
                     <!-- Tipos de vistas a listar  -->
@@ -71,6 +82,10 @@
                         <feather-icon :icon="option.icon" size="18" />
                       </b-form-radio>
                     </b-form-radio-group>
+
+                    <b-button size="sm" variant="outline-primary" @click="refreshData" class="ml-1" v-if="cjDropShipping" v-loading="loading">
+                      <font-awesome-icon icon="fas fa-rotate-right"/>
+                    </b-button>
               
                     <slot name="btn-action">
                       
@@ -86,7 +101,7 @@
             <b-col cols="12" class="mt-1">
 
               <b-input-group class="input-group-merge">
-                <b-form-input v-model="searchQuery" placeholder="Buscar Productos" class="search-product" />
+                <b-form-input v-model="searchQuery" :placeholder="placeholderSearch" class="search-product" />
                 <b-input-group-append is-text>
                   <feather-icon icon="SearchIcon" class="text-muted" />
                 </b-input-group-append>
@@ -97,7 +112,7 @@
              <b-col cols="12">
               <section  class="w-100 mt-1" style="min-height:100px">
                 <slot name="contenido" :items="items" :eliminar="eliminar" :fetchData="fetchData" 
-                  :sortB="sortBy" :isSortDirDesc="isSortDirDesc" :perPage="perPage" :itemView="itemView">
+                  :sortBy="sortBy" :isSortDirDesc="isSortDirDesc" :perPage="perPage" :itemView="itemView">
 
                 </slot>
               </section>
@@ -191,13 +206,19 @@ export default {
     actions: Object | Function,
     isTable: Boolean,
     hideFooter: Boolean,
-    hideHeader: Boolean
+    hideHeader: Boolean,
+    hideSliderPrices:Boolean,
+    cjDropShipping:Boolean,
+    placeholderSearch:{
+      type:String,
+      default:'Buscar Productos'
+    }
   },
 
 
   setup(props,{emit}) {
 
-    const { actions } = toRefs(props)
+    const { actions, cjDropShipping } = toRefs(props)
     let range_precio = ref([0, 20000]);
 
     const itemView = ref('grid-view')
@@ -214,13 +235,12 @@ export default {
         refetchData()
     })
 
-
     const {
       perPageOptions,
       currentPage,
       perPage,
       searchQuery,
-      sortBy,
+      sortBy = 'id',
       isSortDirDesc,
       refTable,
       total,
@@ -231,7 +251,7 @@ export default {
       items,
       categorias,
       categoria_id,
-      precios,
+      precios = [0,100],
       sortByOptions
     } = actions.value;
 
@@ -240,12 +260,13 @@ export default {
 
     const cargar_rango_precio = () => {
 
-
-      axios.get('/api/productos/rango/precios').then(({ data }) => {
-       
-        range_precio.value = data
-         precios.value = data
-      })
+      if(!cjDropShipping.value){
+         axios.get('/api/productos/rango/precios').then(({ data }) => {
+          range_precio.value = data
+          precios.value = data
+        })
+      }
+     
 
     }
 
@@ -254,6 +275,48 @@ export default {
     })
 
    
+    const defaultProps = ref({
+      children: 'children',
+      label: 'label'
+    })
+
+    const  convertDataFormat = (data) => {
+      var convertedData = [];
+
+      data.forEach(function (item) {
+        var convertedItem = {
+          label: item.categoryFirstName,
+          children: []
+        };
+
+        item.categoryFirstList.forEach(function (categoryFirst) {
+          var categoryFirstItem = {
+            label: categoryFirst.categorySecondName,
+            children: []
+          };
+
+          categoryFirst.categorySecondList.forEach(function (categorySecond) {
+            var categorySecondItem = {
+              label: categorySecond.categoryName,
+              children: [],
+              categoryId: categorySecond.categoryId
+            };
+
+            categoryFirstItem.children.push(categorySecondItem);
+          });
+
+          convertedItem.children.push(categoryFirstItem);
+        });
+
+        convertedData.push(convertedItem);
+      });
+
+      return convertedData;
+    }
+
+    const categories = computed(() => {
+      return convertDataFormat(categorias.value)
+    })
 
     return {
       loading:computed(() => store.state.loading),
@@ -281,6 +344,27 @@ export default {
       sortByOptions,
       precio_minimo:computed(() => range_precio.value[0]),
       precio_maximo: computed(() => range_precio.value[1]),
+      defaultProps,
+      categories,
+      convertDataFormat,
+      refreshData:() => {
+        categoria_id.value = null
+        searchQuery.value = ''
+
+        actions.refetchData();
+
+      },
+
+      nodoSelected:(nod,opt) => {
+        console.log(opt)
+        console.log(nod)
+
+        if('categoryId' in nod){
+          categoria_id.value = nod.categoryId
+        }else{
+          categoria_id.value = null
+        }
+      }
 
     }
 

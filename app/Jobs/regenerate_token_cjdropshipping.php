@@ -11,12 +11,14 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Http;
+use App\Http\Controllers\SistemaController;
 
 class regenerate_token_cjdropshipping implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     protected Sistema $sistema;
+    protected SistemaController $sistemaController;
     /**
      * Create a new job instance.
      *
@@ -25,6 +27,8 @@ class regenerate_token_cjdropshipping implements ShouldQueue
     public function __construct()
     {
         $this->sistema = Sistema::first();
+        $this->sistemaController = new SistemaController();
+
     }
 
     /**
@@ -53,7 +57,11 @@ class regenerate_token_cjdropshipping implements ShouldQueue
                         'createDate'             => $data->data->createDate
                     ];
                     $this->sistema->save();
+
+
                     regenerate_token_cjdropshipping::dispatch()->delay(Carbon::now()->addDays(15));
+
+                    $this->sistemaController->datosCuentaCj($this->sistema,$data->data->accessToken);
 
                 }else{
                     $this->generarToken();
@@ -89,6 +97,8 @@ class regenerate_token_cjdropshipping implements ShouldQueue
             }
 
             regenerate_token_cjdropshipping::dispatch()->delay(Carbon::now()->addDays(15));
+            $this->sistemaController->datosCuentaCj($this->sistema, $data->data->accessToken);
+
 
             $this->sistema->save();
         }

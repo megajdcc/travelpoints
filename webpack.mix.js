@@ -1,11 +1,7 @@
 const mix = require('laravel-mix');
 require('laravel-mix-workbox');
-// const { VueLoaderPlugin } = require('vue-loader')
 
-const webpack = require('webpack');
-// import webpack from 'webpack';
-
-let path = require('path');
+const path = require('path');
 const ASSET_PATH = process.env.MIX_SENTRY_DSN_PUBLIC || 'public';
 
 /*
@@ -19,11 +15,9 @@ const ASSET_PATH = process.env.MIX_SENTRY_DSN_PUBLIC || 'public';
  |
  */
 
-//  mix.override((config) => {
-//   delete config.watchOptions;
-// });
-
 mix.webpackConfig({
+ 
+
   resolve: {
     alias: {
       '@': path.resolve(__dirname, 'resources/js/src/'),
@@ -39,7 +33,8 @@ mix.webpackConfig({
       'components': path.resolve(__dirname, 'resources/js/calidad/views/components'),
       '@fuentes':path.resolve(__dirname,'resources/js/src/assets/fonts/'),
       '@images':path.resolve(__dirname,'resources/js/src/assets/images/')
-    }
+    },
+
   },
   module: {
     rules: [
@@ -67,54 +62,11 @@ mix.webpackConfig({
         ]
       },
 
-     
-
-
-    //   {
-    //     test: /\.vue$/,
-    //     loader: 'vue-loader'
-    //   },
-
-    //   {
-    //   test: /\.css$/,
-    //   use: [
-    //     'vue-style-loader',
-    //     {
-    //       loader: 'css-loader',
-    //       options: { importLoaders: 1 }
-    //     },
-    //     'postcss-loader'
-    //   ]
-    // }
-
-
-
-      // {
-      //   test: /\.(otf|woff|woff2|eot|ttf)$/,
-      //   use:['url-loader','file-loader']
-      // },
-
-
-      // {
-      //   test: /(\.(png|jpe?g|gif|webp)$|^((?!font).)*\.svg$)/,
-      //   use:[
-      //     {
-      //       loader: 'file-loader',
-      //       options: {
-      //         name: 'images/[path][name].[ext]',
-      //         context:path.resolve(__dirname,'resources/js/src/assets/images')
-      //       }
-      //     }
-      //   ]
-      // }
-    ],
+  
+    ]
+    
   },
 
-  // plugins: [
-  //   new VueLoaderPlugin()
-  // ],
-
-  
   output: {
     asyncChunks:false,
     path:path.resolve(__dirname,'public'),
@@ -131,12 +83,11 @@ mix.webpackConfig({
     // path.resolve(__dirname, 'vendor'),
     // path.resolve(__dirname, 'public/storage')
     ]
-  }
+  },
 
-})
+});
 
-mix
-  .js('resources/js/app.js','js')
+mix.js('resources/js/app.js','js')
   .sass('resources/scss/app.scss','css')
   .vue({version:2})
   .options({
@@ -190,7 +141,4 @@ if (mix.inProduction()) {
 }
 
  mix.version();
-
-
-
 // mix.browserSync('https://byp.com')

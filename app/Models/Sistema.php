@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 use App\Trais\hasCuenta;
 use App\Trais\{hasImages, hasRedes, hasSucursal, hasVideos};
 use Illuminate\Database\Eloquent\Builder;
+use PhpParser\Node\Expr\Instanceof_;
 
 class Sistema extends Model
 {
@@ -61,14 +62,20 @@ class Sistema extends Model
     private function asignarComisionPerfiles(Venta $venta,Movimiento $movimiento){
 
         $cliente = $venta->cliente;
-        
-        if($referidor = $cliente->referidor){
-
-            if(\in_array($referidor->rol->nombre,['Promotor'])){
-                $this->asignarComisionPromotor($referidor,$venta,$movimiento);
+  
+        if(!($cliente->referidor instanceof \Illuminate\Database\Eloquent\Collection)){
+            
+            if($referidor = $cliente->referidor){
+                if (\in_array($referidor->rol->nombre, ['Promotor'])) {
+                    $this->asignarComisionPromotor($referidor, $venta, $movimiento);
+                }
+            } else if ($operador = $venta->reservacion->operador) {
+                if (\in_array($operador->rol->nombre, ['Promotor'])) {
+                    $this->asignarComisionPromotor($operador, $venta, $movimiento);
+                }
             }
 
-        }else if($operador = $venta->reservacion->operador){
+        }else if($operador = $venta?->reservacion?->operador){
             if(\in_array($operador->rol->nombre, ['Promotor'])) {
                 $this->asignarComisionPromotor($operador, $venta, $movimiento);
             }
@@ -146,6 +153,7 @@ class Sistema extends Model
 
     
     public function adjudicarComisiones($tps, Venta $venta){
+
         $monto = number_format((float) $venta->monto, 2, '.', ',') . ' ' . $venta->divisa->iso;
         
         $movimiento = $this->generarMovimiento(

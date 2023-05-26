@@ -375,11 +375,13 @@ export default {
 
         const imagen_principal = produc.imagenes.find(val => val.portada)
 
-        if (imagen_principal) {
-          return `/storage/productos/${imagen_principal.imagen}`
+        if (imagen_principal != undefined){
+            return `/storage/productos/${imagen_principal.imagen}`
         }
         return `/storage/productos/${produc.imagenes[0].imagen}`
+
       }
+        
 
     }
 

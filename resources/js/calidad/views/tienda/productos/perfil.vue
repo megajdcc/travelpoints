@@ -21,32 +21,63 @@
         <b-row class="my-2">
 
           <b-col cols="12" md="8" class="d-flex  justify-content-center mb-2 mb-md-0" >
-            <!-- Miniaturas -->
-            <b-row class="w-100">
+
+            <b-container fluid>
+              <!-- Miniaturas -->
+              <b-row class="w-100">
          
-               <b-col cols="12" md="2" class="px-0 h-md-100">
-                     <ul style="overflow-y: auto; padding-left: 5px; overflow-x: auto" class="d-flex d-md-block miniaturas-content">
+                 <b-col cols="12" md="2" class="px-0 h-md-100">
+                       <ul style="overflow-y: auto; padding-left: 5px; overflow-x: auto" class="d-flex d-md-block miniaturas-content">
                         
-                        <li v-for="(imagen,i ) in producto.imagenes" :key="i" :class="{'img-active' : imagen.active}" style="max-height: 80px; margin:5px 0px; height:80px;padding:.5px; border:.5px solid rgba(0,0,0,.3); border-radius: 3px;"  >
+                          <li v-for="(imagen, i ) in producto.imagenes" :key="i" :class="{ 'img-active': imagen.active }" style="max-height: 80px; margin:5px 0px; height:80px;padding:.5px; border:.5px solid rgba(0,0,0,.3); border-radius: 3px;"  >
 
-                           <img :src="`/storage/productos/${imagen.imagen}`"  @click="seleccionarFoto(imagen)" @mouseover="seleccionarFoto(imagen)"  :alt="imagen.imagen" class="img-miniatura" style="object-fit:contain; height:100%; width:100%;">
+                             <img :src="`/storage/productos/${imagen.imagen}`"  @click="seleccionarFoto(imagen)" @mouseover="seleccionarFoto(imagen)"  :alt="imagen.imagen" class="img-miniatura" style="object-fit:contain; height:100%; width:100%;">
 
-                        </li>
+                          </li>
 
-                     </ul>
-               </b-col>
+                       </ul>
+                 </b-col>
 
-               <b-col cols="12" md="10"  class="d-flex justify-content-center align-items-center">
+                 <b-col cols="12" md="10"  class="d-flex justify-content-center">
 
-                  <!-- <article class="img-central"> -->
-                     <vue-hover-zoom :imageUrl="`/storage/productos/${getImagenSeleccionada().imagen}`"  class="img-central d-flex justify-content-center" :alt="producto.nombre" style="width:100%;height:100%;position:relative; object-fit:contain; ">
+                    <!-- <article class="img-central"> -->
+                       <vue-hover-zoom :imageUrl="`/storage/productos/${getImagenSeleccionada().imagen}`"  class="img-central d-flex justify-content-center" :alt="producto.nombre" style="width:100%;height:100%;position:relative; object-fit:contain; ">
                     
-                    </vue-hover-zoom>
-                  <!-- </article> -->
+                      </vue-hover-zoom>
+                    <!-- </article> -->
 
-               </b-col>
+                 </b-col>
 
-            </b-row>
+              </b-row>
+
+              <b-row>
+                <b-col>
+                    <template v-if="producto.tiendas.length">
+                        <!-- ubicación -->
+                        <b-card-title>
+                            <h1>{{ $t('Disponibilidad en tiendas') }}</h1> 
+                        </b-card-title>
+
+                        <GmapMap :center="{ lat: promedioLatitud, lng: promedioLongitud }" :zoom="3" map-type-id="terrain"
+                          style="width: 100%; height: 300px" :options="{ styles: stylos }" ref="mapa">
+                
+                          <GmapMarker :visible="true" :draggable="false" :icon="iconMapa" :clickable="true" v-for="(tienda, i) in producto.tiendas.filter(val => val.fisica)" :key="i" :position="{
+                            lat: Number(tienda.lat),
+                            lng: Number(tienda.lng)
+                          }">
+                
+                            <GmapInfoWindow :options="optionsPlace(tienda)">
+                            </GmapInfoWindow>
+                
+                          </GmapMarker>
+                
+                        </GmapMap>
+
+                        </template>
+                </b-col>
+              </b-row>
+            </b-container>
+           
 
           </b-col>
 
@@ -171,35 +202,7 @@
 
            <b-col cols="12">
 
-            <b-container fluid class="px-0 mx-0">
-              <b-row>
-
-                <b-col cols="12" v-if="producto.tiendas.length">
-                  <!-- ubicación -->
-                  <b-card-title>
-                      <h1>{{ $t('Disponibilidad en tiendas') }}</h1> 
-                  </b-card-title>
- 
-                  <GmapMap :center="{ lat: promedioLatitud, lng: promedioLongitud}" :zoom="3" map-type-id="terrain"
-                    style="width: 100%; height: 300px" :options="{styles:stylos}" ref="mapa">
-                  
-                    <GmapMarker :visible="true" :draggable="false" :icon="iconMapa" :clickable="true" v-for="(tienda,i) in producto.tiendas.filter(val => val.fisica)" :key="i" :position="{
-                      lat: Number(tienda.lat),
-                      lng: Number(tienda.lng)
-                    }">
-                  
-                      <GmapInfoWindow :options="optionsPlace(tienda)">
-                      </GmapInfoWindow>
-                  
-                    </GmapMarker>
-                  
-                  </GmapMap>
-
-                </b-col>
-
-              </b-row>
-
-            </b-container>
+            
             <hr>
             <b-card-title>
               <h1>{{ $t('Descripción') }}</h1> 
@@ -840,6 +843,11 @@ export default {
     object-fit: contain;
     background-color: black;
 }
+
+.img-central{
+  max-height:470px !important;
+}
+
 
 
 </style>

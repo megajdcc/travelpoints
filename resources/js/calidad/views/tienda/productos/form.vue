@@ -208,7 +208,7 @@
             <b-col cols="12">
               <b-form-group label="¿ vas a realizar envíos ?">
 
-                <b-form-radio-group v-model="enviable" :options="[{text:'Sí',value:true},{text:'No',value:false}]" @change="$store.commit('producto/toggleEnvio',$event)">
+                <b-form-radio-group v-model="formulario.enviable" :options="[{text:'Sí',value:true},{text:'No',value:false}]" @change="$store.commit('producto/toggleEnvio',$event)">
 
                 </b-form-radio-group>
 
@@ -224,7 +224,7 @@
                         <template #label>
                           Precio: <span class="text-danger">*</span>
                         </template>
-                        <validation-provider name="precio" rules="required" #default="{errors,valid}">
+                        <validation-provider name="envio.precio" rules="required" #default="{errors,valid}">
 
                           <currency-input v-model="formulario.envio.precio" :options="{ ...optionsCurrency ,...{
                             currency:getCurrency == 'Tp' ? 'USD' : getCurrency, 

@@ -477,7 +477,7 @@ Route::get('negocios/{negocio}/recomendacions/toggle/user/{usuario}',[NegocioCon
     Route::post('productos/cj-dropshipping/fetch/data',[ProductoController::class,'fetchDataCjDropshipping']);
 
     Route::get('productos/details/{pid}',[ProductoController::class,'getDetailsProductoCj']);
-    
+    Route::get('productos/agregar-to-travel/producto-cj/{pid}',[ProductoController::class,'agregarToTravelProductCj']);
 
     /*****************************/
     /* Consumos

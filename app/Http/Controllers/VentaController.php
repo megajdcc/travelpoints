@@ -138,6 +138,7 @@ class VentaController extends Controller
             DB::beginTransaction();
             
             $venta = Venta::create([...$datos]);
+       
 
             if($venta->empleado_id = Empleado::where('negocio_id',$venta->model_id)->where('usuario_id', $request->user()->id)->first()?->id){
                 $venta->save();
@@ -147,21 +148,28 @@ class VentaController extends Controller
 
             // Comision Viajero Tps
             if(in_array($venta->cliente->rol->nombre, ['Viajero'])){
-                $venta->cliente->generarMovimiento($datos['tps'], "Consumo en {$venta->model->nombre} por un monto de:{$monto}.");
+                // multiplicamos el monto tps correspondido por la tasa de la divisa de la venta correspondiente a la divisa principal TP
+                $comision_cliente = $datos['tps'] / $venta->divisa->tasa; 
+                // GEneramos el movimiento en la billetera del cliente 
+                $venta->cliente->generarMovimiento($comision_cliente, "Consumo en {$venta->model->nombre} por un monto de:{$monto}.");
             }
             
+          
 
             // descontamos al negocio El monto correspondiente por haber realizado la venta
             $comision_travel = $venta->getComisionTravel();
-
-            $venta->model->generarMovimiento($venta->model->divisa->convertir($venta->divisa, $comision_travel), "Consumo de cliente {$venta->cliente->nombre} {$venta->cliente->apellido} por un monto de:{$monto}.",Movimiento::TIPO_EGRESO);
             
+            $venta->model->generarMovimiento($venta->model->divisa->convertir($venta->divisa, $comision_travel), "Consumo de cliente {$venta->cliente->nombre} {$venta->cliente->apellido} por un monto de:{$monto}.",Movimiento::TIPO_EGRESO);
+
+           
             // generar movimiento para el sistema... 
             $sistema = Sistema::first();
             $sistema->adjudicarComisiones($comision_travel,$venta);
-            
-            // $sistema->refresh();
+            // dd($venta);
+            $sistema->refresh();
 
+
+          
             $venta->cargar();
 
             if($reservacion = $venta->reservacion){
@@ -176,6 +184,8 @@ class VentaController extends Controller
 
             DB::rollBack();
             $result = false;
+
+            dd($th->getMessage());
 
         }
 

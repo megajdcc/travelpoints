@@ -23,7 +23,12 @@ export default {
       imagenes:[],
       consumos:[],
       divisa: null,
-      carritos: []
+      carritos: [],
+      isChino:false,
+      pid:null,
+      cj:[],
+      enviable:false,
+
     },
 
     productos: []
@@ -77,25 +82,28 @@ export default {
       state.producto = {
         id: null,
         nombre: '',
-        breve: '',
+        breve:'',
         categoria_id: null,
         tiendas: [],
         precio: null,
-        divisa_id: null,
         descripcion: null,
         disponibles: 1,
-        caracteristicas: [],
+        caracteristicas:[],
         envio: null,
-        tipo_producto: 1, // 1 => fisico, 2 => digital
-        archivo: null,
-        categoria: null,
-        producto: null,
-        opinions: [],
-        imagenes: [],
-        consumos: [],
-        divisa:null,
-        carritos:[]
-
+        divisa_id:null,
+        tipo_producto:1, // 1 => fisico, 2 => digital
+        archivo:null,
+        categoria:null,
+        producto:null,
+        opinions:[],
+        imagenes:[],
+        consumos:[],
+        divisa: null,
+        carritos: [],
+        isChino:false,
+        pid:null,
+        cj:[],
+        enviable:false,
       }
     },
 
@@ -398,6 +406,13 @@ export default {
         return new Promise((resolve, reject) => {
           axios.get(`/api/productos/details/${producto_id}`).then(({data}) => resolve(data)).catch(e => reject(e))
           
+        })
+      },
+
+      agregarToTravel({commit},pid){
+        return new Promise((resolve,reject) => {
+
+          return axios.get(`/api/productos/agregar-to-travel/producto-cj/${pid}`).then(({data}) => resolve(data)).catch(e => reject(e))
         })
       }
 

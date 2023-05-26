@@ -53,12 +53,12 @@
           <!-- Right: Producto Detalles -->
           <b-col cols="12" md="4" class="content-right p-1">
 
-             <b-container fluid class="px-0 mx-0">
+             <b-container fluid class="px-0 mx-0" style="overflow-x:hidden">
                 <b-row>
                    <b-col cols="12">
 
                        <!-- Condicion de la publicacion -->
-                        <b-badge variant="primary" class="mb-1" v-b-tooltip.hover="producto.categoryName">
+                        <b-badge variant="primary" class="mb-1 text-wrap" v-b-tooltip.hover="producto.categoryName">
                           {{ producto.categoryName }}
                         </b-badge>
 
@@ -67,7 +67,7 @@
                         </b-card-title>
 
                         <b-card-text class="item-company mb-0">
-                        <span>{{ $t('Tienda') }}</span>
+                        <span>{{ $t('Despacho') }}</span>
                        
                         </b-card-text>
 
@@ -75,10 +75,74 @@
                         <div class="ecommerce-details-price d-flex flex-wrap mt-1">
                           <h1 class="item-price mr-1">
                             <strong>
-                                {{ producto.sellPrice  | currency }}
+                                Costo USD: {{ producto.sellPrice  | currency }} 
                             </strong>
-                            
                           </h1>
+
+                          <table border="0" class="table table-sm table-borderless">
+
+                             <tr>
+                                <td>Color y Tamaño:</td>
+                                <td>
+                                 <!-- <b-form-radio-group v-model="formulario.vid" buttons size="sm" :options="variantColor" @change="variantSelect" class="flex-wrap" value-field="vid" text-field="variantNameEn">
+                                    
+                                  <b-form-radio v-for="(variant,i) in variantColor" :key="i" v-model="formulario.vid" :value="variant.vid" size="sm" class="flex-wrap" button :name="variant.variantNameEn" >
+                                      <b-img style="width:30px; height:30px" :src="variant.variantImage" :title="variant.variantNameEn" v-b-tooltip:hover />
+                                  </b-form-radio>
+
+                                 </b-form-radio-group> -->
+
+                                 <v-select v-model="formulario.vid"  :filter="filtrarVariant" :options="variantColor" style="width:230px" label="variantKey" @input="variantSelect">
+
+                                    <template #selected-option="{ variantImage, variantNameEn,variantKey }">
+                                      <b-avatar :src="variantImage" rounded="circle" class="mr-1" size="20pt" />
+                                      <small :title="variantNameEn" v-b-tooltip:hover> {{ variantKey }}</small>
+                                    </template>   
+
+                                    <template #option="{ variantImage, variantNameEn, variantKey }">
+                                      <b-avatar :src="variantImage" rounded="circle" size="20pt" />
+                                       <small :title="variantNameEn"> {{ variantKey }}</small>
+                                    </template>
+
+                                    <template #no-options>
+                                      Sin Variante
+                                    </template>
+
+                                </v-select>
+                                </td>
+                              </tr>
+
+                              <tr>
+                                <td>Cantidad:</td>
+                                <td>
+                                  <el-input-number v-model="formulario.cantidad" size="small" :min="1" :max="10"></el-input-number>
+                                </td>
+                              </tr>
+
+                               <tr>
+                                  <td>SPU:</td>
+                                  <td>
+                                    <p>{{ skuVariant }}</p>
+                                  </td>
+                                </tr>
+
+                              <tr>
+                                <td>Atributos:</td>
+                                <td>
+                                  <!-- <b-form-radio-group v-model="formulario.propiedad" :options="propiedadesProducto" size="sm" buttons>
+                                  </b-form-radio-group> -->
+
+                                  {{ producto.productProEnSet.toString() }}
+                                </td>
+                              </tr>
+
+                               <tr>
+                                  <td>Material:</td>
+                                  <td>
+                                    {{ producto.materialNameEnSet.toString() }}
+                                  </td>
+                                </tr>
+                          </table>
                         
                         </div>
 
@@ -123,14 +187,15 @@
                       <div class="d-flex flex-column pt-1">
                         
                        
-                        <b-button-group size="sm" class="w-100" v-if="!isStore">
-                        
-
-                        </b-button-group>
-
-                        <b-button-group size="lg" v-else>
+                        <b-button-group size="md" class="w-100" >
                           
+                          <b-button  @click="agregarToTravel" variant="primary" v-loading="loading">
+                            Agregar a productos Travel
+                          </b-button> 
+
                         </b-button-group>
+
+                       
 
                         <section class="w-100 mt-1">
                           <strong class="text-danger">Nota:</strong>
@@ -206,7 +271,10 @@ import {
   BFormGroup,
   BFormSpinbutton,
   BFormInvalidFeedback,
-    BSidebar
+  BSidebar,
+  BFormRadioGroup,
+  BFormRadio,
+
 
   
 } from 'bootstrap-vue'
@@ -276,7 +344,9 @@ export default {
     BFormInvalidFeedback,
     PayPal,
     vSelect,
-    BSidebar
+    BSidebar,
+    BFormRadioGroup,
+    BFormRadio
   },
 
   setup(props,{emit}) {
@@ -287,7 +357,11 @@ export default {
     const { is_loggin } = useAuth(); 
     const { sistema } = toRefs(store.state.sistema)
     const swal = inject('swal')
-
+    const formulario = ref({
+      cantidad:1,
+      variantSku:null,
+      vid:null,
+    })
     const seleccionarFoto = (imagen) => {
 
       producto.value.productImageSet.forEach((foto) => {
@@ -306,41 +380,43 @@ export default {
     }
 
     const getImagenSeleccionada = () => {
-         
+        
+
         let foto = producto.value.productImageSet.find(val => val.active);
 
         if(foto){
           return foto;
         }else{
-          return producto.value.productImageSet[0]
+          return producto.value.productImageSet.length ? producto.value.productImageSet[0] : {}
         }
         
     }
 
-   const cargarForm = () => {
+    const cargarForm = () => {
 
-      store.dispatch('producto/productoDetailsCj',id.value).then(({producto:product}) => {
-        producto.value = product
-        
-        producto.value.productImageSet = producto.value.productImageSet.map((val,i) => {
-          // console.log(i)
-          if(i == 0){
-            return {
-              active:true,
-              image:val
+        store.dispatch('producto/productoDetailsCj',id.value).then(({producto:product}) => {
+          producto.value = product
+          
+          producto.value.productImageSet = producto.value.productImageSet.map((val,i) => {
+            if(i == 0){
+              return {
+                active:true,
+                image:val
+              }
+            }else{
+              return {
+                active: false,
+                image: val
+              }
             }
-          }else{
-            return {
-              active: false,
-              image: val
-            }
-          }
-        })
+          })
 
-      }).catch(e => console.log(e))
+          // formulario.value.vid = producto.value.variants[0].vid
+
+        }).catch(e => console.log(e))
 
 
-   }
+    }
 
    cargarForm()
    
@@ -348,19 +424,85 @@ export default {
    watch([id],() => cargarForm())
 
     
+   const variantSelect = (vid) => {
+
+    let variant = producto.value.variants.find(val => val.vid == vid)
+
+    if(variant != undefined){
+
+      let img = producto.value.productImageSet.find(value => value.image == variant.variantImage);
+      
+      if(img != undefined){
+        
+        seleccionarFoto(img);
+      }
+
+    }
+  
+
+   }
+
+   const variantColor = computed(() => {
+      // return producto.value.variants.filter((variation, index, self) => {
+      //     return self.findIndex((v) => v.vid === variation.vid) === index;
+      //   })
+
+     return  producto.value.variants;
+   })
+
+   const agregarToTravel = () => {
+    
+    store.dispatch('producto/agregarToTravel',producto.value.pid).then(({result,mensaje}) => {
+      
+      if(result){
+        toast.info(mensaje)
+        router.push({name:'producto.list'})
+      }else{
+        toast.info(mensaje)
+      }
+
+    }).catch(e => console.log(e))
+
+
+   }
+
    return {
       producto,
+      agregarToTravel,
       usuario,
+      formulario,
       seleccionarFoto,
       loading:computed(() => store.state.loading),
       getImagenSeleccionada,
       required,
       sistema,
+      variantSelect,
+      variantColor,
+      filtrarVariant: ({ variantKey, variantImage, vid }, label, search) => {
+        return (variantKey || variantImage || vid || '').toLocaleLowerCase().indexOf(search.toLocaleLowerCase()) > -1
+      },
+      skuVariant:computed(() => {
+        
+        if(formulario.value.vid){
+          let variant_select =  producto.value.variants.find(val => val.vid = formulario.value.vid)
+          return variant_select ? variant_select.variantSku : producto.value.productSku
+        }
+
+        return producto.value.productSku
+      }),
 
       getImagenPrincipal: (produc) => {
-
         return produc.productImage;
-      }
+      },
+
+      propiedadesProducto:computed(() => {
+
+        return producto.value.productProEnSet.map(val => ({
+          value:val,
+          text:val
+        }))
+
+      })
 
     }
   },
@@ -425,13 +567,9 @@ export default {
 
 }
 
-
-
-</style>
-
-<style lang="scss">
-
+@import "@/assets/scss/variables/variables.scss";
 @import "@core/scss/base/pages/app-ecommerce-details.scss";
+
 .carousel-item img{
    // min-height: 290px;
    max-height: 450px;
@@ -456,6 +594,26 @@ export default {
     transition: all .3s linear;
     object-fit: contain;
     background-color: black;
+}
+
+</style>
+
+
+<style lang="scss" scoped>
+@import "@/assets/scss/variables/variables.scss";
+
+.img-central{
+  max-height:470px !important;
+}
+
+.btn-sm, 
+.btn-group-sm > .btn {
+    padding: 0.2rem 0.2rem;
+    border-radius: 0.358rem;
+}
+
+.btn-secondary.active {
+    background-color: $primary !important;
 }
 
 

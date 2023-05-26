@@ -26,15 +26,23 @@ class Producto extends Model
         'envio',
         'tipo_producto',
         'archivo',
-        'divisa_id'
+        'divisa_id',
+        'isChino',
+        'pid', // si es chino el producto, aqui almacenamos su pid
+        'cj', // si es chino el producto, aquí guardamos toda la data del producto capturado desde la Api
+        'variants',
+        'enviable'
     ];
 
 
     protected $casts = [
         'caracteristicas' => 'array',
-        'envio' => 'array',
+        'envio'           => 'array',
+        'cj'              => 'array',
+        'variants'        => 'array',
+        'isChino'         => 'boolean',
+        'enviable'        => 'boolean'
     ];
-
 
 
     public function __construct(){

@@ -139,7 +139,7 @@
                            Divisa: <span class="text-danger">*</span>
 
                            <validation-provider name="divisa_id" rules="required" #default="{valid,errors}">
-                              <v-select v-model="formulario.divisa_id" :reduce="(option) => option.id" :options="divisas" label="nombre" class="w-100" />
+                              <v-select v-model="formulario.divisa_id" :reduce="(option) => option.id" :options="divisas.filter(val => val.iso != 'Tp')" label="nombre" class="w-100" />
 
                                  <b-form-invalid-feedback :state="valid">
                                     {{ errors[0] }}

@@ -54,7 +54,10 @@ export default {
    mutations: {
 
       setSolicitudes(state, data) {
-         state.solicitudes = data
+
+         if(data.length){
+            state.solicitudes = data
+         }
       },
 
 
@@ -101,7 +104,18 @@ export default {
 
 
       push(state, data) {
-         state.solicitudes.push(data)
+         
+         if(data){
+            
+            if(typeof state.solicitudes === 'object'){
+                state.solicitudes.push(data)
+            }else{
+               state.solicitudes = [data]
+            }
+           
+         }
+
+         
       },
 
       put(state, data_id) {

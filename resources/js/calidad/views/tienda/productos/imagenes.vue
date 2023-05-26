@@ -1,5 +1,5 @@
 <template>
-  <form-imagen :imagenes="imagenes" path-imagenes="/storage/productos/" :actions="actions" />
+  <form-imagen :imagenes="imagenes" path-imagenes="/storage/productos/" :actions="actions"/>
 </template>
 
 <script>

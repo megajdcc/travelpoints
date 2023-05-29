@@ -63,10 +63,38 @@ trait cjProduct{
 
   }
 
+  public function obtenerLogistica(array $datos){
+    $result = [];
+    $sistema = Sistema::first();
+
+    // dd($data);
+
+    $response = Http::withHeaders([
+      'CJ-Access-Token' => $sistema->cjdropshipping['accessToken']
+    ])->post('https://developers.cjdropshipping.com/api2.0/v1/logistic/freightCalculate', $datos);
+
+
+    if ($response->ok()) {
+
+      $data = $response->object();
+
+      // dd($data);
+
+      if ($data->result) {
+        $result = $data->data;
+      }
+    }
+
+    return $result;
+  }
+
+
   public function obtenerLogistic(array $data) : array {
 
     $result = [];
     $sistema = Sistema::first();
+
+    // dd($data);
 
     $response = Http::withHeaders([
       'CJ-Access-Token' => $sistema->cjdropshipping['accessToken']
@@ -96,7 +124,7 @@ trait cjProduct{
       
     }
 
-
+   
     return $result;
 
   }
@@ -128,6 +156,163 @@ trait cjProduct{
     return $result;
 
   }
+
+
+  public function getVariant(string $vid){
+
+    $sistema = Sistema::first();
+    $result = [];
+
+    $response = Http::withHeaders([
+      'CJ-Access-Token' => $sistema->cjdropshipping['accessToken']
+    ])
+      ->get('https://developers.cjdropshipping.com/api2.0/v1/product/variant/queryByVid', [
+        'vid' => $vid,
+      ]);
+
+    if ($response->ok()) {
+
+      $data = $response->object();
+
+      if ($data->result) {
+        $result = $data->data;
+      }
+    }
+
+    return $result;
+
+  }
+
+  public function crearOrden(array $datos){
+    $sistema = Sistema::first();
+    $result = [];
+
+    $response = Http::withHeaders([
+      'CJ-Access-Token' => $sistema->cjdropshipping['accessToken']
+    ])
+      ->post('https://developers.cjdropshipping.com/api2.0/v1/shopping/order/createOrder', $datos);
+
+    if ($response->ok()) {
+
+      $data = $response->object();
+
+      if ($data->result) {
+        $result = $data->data;
+      }
+
+    }
+
+    return $result;
+  }
+
+
+  public function getOrden(string $orden_id){
+    $sistema = Sistema::first();
+    $result = [];
+
+    $response = Http::withHeaders([
+      'CJ-Access-Token' => $sistema->cjdropshipping['accessToken']
+    ])
+      ->get('https://developers.cjdropshipping.com/api2.0/v1/shopping/order/getOrderDetail', [
+        'orderId' => $orden_id
+      ]);
+
+    if ($response->ok()) {
+
+      $data = $response->object();
+
+      if ($data->result) {
+        $result = $data->data;
+      }
+    }
+
+    return $result;
+  }
+
+  public function confirmarOrden(string $orden_id){
+
+    $sistema = Sistema::first();
+    $result = [
+      'result' => false,
+      'data' => []
+    ];
+
+    $response = Http::withHeaders([
+      'CJ-Access-Token' => $sistema->cjdropshipping['accessToken']
+    ])
+      ->patch('https://developers.cjdropshipping.com/api2.0/v1/shopping/order/confirmOrder', [
+        'orderId' => $orden_id
+      ]);
+
+    if ($response->ok()) {
+
+      $data = $response->object();
+
+      if ($data->result) {
+        $result['result'] = true;
+        $result['data'] = $data->data;
+      }
+    }
+
+    return $result;
+
+  }
+
+
+  public function eliminarOrden(string $orden_id){
+    $sistema = Sistema::first();
+    $result = [
+      'result' => false,
+      'data' => []
+    ];
+
+    $response = Http::withHeaders([
+      'CJ-Access-Token' => $sistema->cjdropshipping['accessToken']
+    ])
+      ->delete("https://developers.cjdropshipping.com/api2.0/v1/shopping/order/deleteOrder?orderId={$orden_id}");
+
+    if ($response->ok()) {
+
+      $data = $response->object();
+
+      if ($data->result){
+        $result['result'] = true;
+        $result['data'] = $data->data;
+      }
+
+    }
+
+    return $result;
+  }
+
+  public function pagarOrden(string $orden_id)
+  {
+    $sistema = Sistema::first();
+    $result = [
+      'result' => false,
+      'data' => []
+    ];
+
+    $response = Http::withHeaders([
+      'CJ-Access-Token' => $sistema->cjdropshipping['accessToken']
+    ])
+      ->post("https://developers.cjdropshipping.com/api2.0/v1/shopping/pay/payBalance",[
+        'orderId' => $orden_id
+      ]);
+
+    if ($response->ok()) {
+
+      $data = $response->object();
+
+      if ($data->result) {
+        $result['result'] = true;
+        $result['data'] = $data->data;
+      }
+    }
+
+    return $result;
+  }
+
 
 
 }

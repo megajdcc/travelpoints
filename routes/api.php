@@ -478,7 +478,7 @@ Route::get('negocios/{negocio}/recomendacions/toggle/user/{usuario}',[NegocioCon
 
     Route::get('productos/details/{pid}',[ProductoController::class,'getDetailsProductoCj']);
     Route::get('productos/agregar-to-travel/producto-cj/{pid}',[ProductoController::class,'agregarToTravelProductCj']);
-
+    Route::get('productos-cj/vid/{vid}/stock',[ProductoController::class,'cjProductStock']);
     /*****************************/
     /* Consumos
     /*****************************/
@@ -487,7 +487,12 @@ Route::get('negocios/{negocio}/recomendacions/toggle/user/{usuario}',[NegocioCon
     Route::get('consumos/{consumo}/fetch/data', [ConsumoController::class, 'fetch']);
     Route::resource('consumos', ConsumoController::class);
     Route::get('consumos/{consumo}/marcar/comentada',[ConsumoController::class,'marcarComentada']);
+    Route::get('consumos/orden-details/orden/{orden}',[ConsumoController::class, 'getOrdenDetailsCj']);
+    Route::get('consumos/orden-details/confirmar-orden/{orden}',[ConsumoController::class, 'confirmarOrdenCj']);
+    Route::get('consumos/{consumo}/orden-details/eliminar-orden/{orden}',[ConsumoController::class, 'eliminarOrdenCj']);
+    Route::get('consumos/orden-details/pagar-orden/{orden}', [ConsumoController::class, 'pagarOrdenCj']);
 
+    
     /*****************************/
     /* Carrito Compra
     /*****************************/
@@ -497,6 +502,8 @@ Route::get('negocios/{negocio}/recomendacions/toggle/user/{usuario}',[NegocioCon
     Route::post('carrito/comprar/agregar/producto',[UserController::class,'addProductoCarrito']);
 
     Route::post('carrito/fetch/data',[UserController::class,'fetchDataCarrito']);
+
+    Route::post('carrito-compra/calcular-envio',[UserController::class,'calcularEnvioCarrito']);
 
     /*****************************/
     /* Sistema

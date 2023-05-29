@@ -32,12 +32,12 @@ export default function useVentasList(usuario = null){
   const fetchData = (ctx,next) => {
 
       store.dispatch('consumo/fetchData',{
-        perPage: perPage.value,
-        currentPage: currentPage.value,
-        sortBy: sortBy.value,
-        q: searchQuery.value,
+        perPage      : perPage.value,
+        currentPage  : currentPage.value,
+        sortBy       : sortBy.value,
+        q            : searchQuery.value,
         isSortDirDesc: isSortDirDesc.value,
-        usuario_id:usuario.value ? usuario.value.id : null
+        usuario_id   : usuario.value ? usuario.value.id: null
       }).then(({total:all,consumos}) => {
 
         total.value = all

@@ -337,7 +337,7 @@ class ProductoController extends Controller
             ],
             [
                 'nombre' => 'Peso',
-                'valor' => $producto->productWeight,
+                'valor' => $producto->productWeight.' G (Gramos)',
             ],
             [
                 'nombre' => 'Sku',
@@ -482,7 +482,17 @@ class ProductoController extends Controller
         
         
         return response()->json(['result' => $result, 'mensaje' => $mensaje, 'producto' => $result ? $new_product : null]);
+    }   
+
+    public function cjProductStock(string $vid){
+
+        $stock = $this->stockProduc($vid);
+
+        $divisa_producto = Divisa::where('iso','USD')->first();
+
+        return response()->json(['cantidad' => $stock,'tasa' => $divisa_producto->tasa]);
     }
+
 
     
 }

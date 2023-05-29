@@ -254,7 +254,7 @@ class SistemaController extends Controller
         $response = Http::acceptJson()
         ->post('https://developers.cjdropshipping.com/api2.0/v1/authentication/getAccessToken',[
             'email' => 'info@infochannel.si',
-            'password' =>  'dfc64a407ffb4e9eb805fc1ac45bba78' //'dfc64a407ffb4e9eb805fc1ac45bba78',
+            'password' =>  'dfc64a407ffb4e9eb805fc1ac45bba78' // infochannel 'dfc64a407ffb4e9eb805fc1ac45bba78', jhonatan 9f6c19d42096402c81e83bb3710fa3c7
         ]);
         $sistema = Sistema::first();
         $result = false;

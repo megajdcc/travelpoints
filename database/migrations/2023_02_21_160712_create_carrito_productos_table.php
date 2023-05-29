@@ -19,7 +19,7 @@ return new class extends Migration
             $table->integer('cantidad')->default(1);
             $table->decimal('precio_unitario');
             $table->decimal('monto');
-            $table->foreignId('tienda_id')->constrained('tiendas')->cascadeOnDelete()->cascadeOnUpdate();
+            $table->foreignId('tienda_id')->nullable()->constrained('tiendas')->onDelete('set null')->cascadeOnUpdate();
             $table->timestamps();
         });
     }

@@ -414,7 +414,14 @@ export default {
 
           return axios.get(`/api/productos/agregar-to-travel/producto-cj/${pid}`).then(({data}) => resolve(data)).catch(e => reject(e))
         })
+      },
+
+      cjProductStock({commit},vid){
+        return new Promise((resolve, reject) => {
+          axios.get(`/api/productos-cj/vid/${vid}/stock`).then(({data}) => resolve(data)).catch(e => reject(e))
+        })
       }
+
 
 
   }

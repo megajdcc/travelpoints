@@ -235,10 +235,10 @@
 
     <b-sidebar v-model="addCarrito" no-header-close >
                   <template #title>
-                    <h3>Elija la cantidad</h3>
+                    <h3>{{ producto.isChino ?  'Elija Variación del producto y cantidad' : 'Elija la cantidad' }}</h3>
                   </template>
 
-                  <b-container fluid class="px-0" >
+                  <b-container fluid >
                     <b-row>
                       <b-col>
                           <b-card class="ecommerce-card" no-body>
@@ -279,7 +279,7 @@
 
                           </b-card>
 
-                          <b-form-group>
+                          <b-form-group v-if="!producto.isChino">
                             <template #label>
                               Tienda que ofrece el producto y/o servicio.
                             </template>
@@ -297,12 +297,44 @@
 
                           </b-form-group>
 
-                            <b-form-group v-if="formulario.tienda_id">
+
+                          <b-form-group v-else description="Puede ser el color y el tamaño, elija el que desee">
+                              <template #label>
+                                Elija la variación deseada 
+                              </template>
+
+                              <validation-provider name="vid" rules="required" #default="{errors,valid}">
+
+                                  <v-select v-model="formulario.vid" :reduce="(option) => option.vid" :filter="filtrarVariant" :options="variantColor" style="width:230px" label="variantKey" @input="variantSelect">
+
+                                      <template #selected-option="{ variantImage, variantNameEn, variantKey }">
+                                        <b-avatar :src="variantImage" rounded="circle" class="mr-1" size="20pt" />
+                                        <small :title="variantNameEn" v-b-tooltip:hover> {{ variantKey }}</small>
+                                      </template>   
+
+                                      <template #option="{ variantImage, variantNameEn, variantKey }">
+                                        <b-avatar :src="variantImage" rounded="circle" size="20pt" />
+                                         <small :title="variantNameEn"> {{ variantKey }}</small>
+                                      </template>
+
+                                      <template #no-options>
+                                        Sin Variante
+                                      </template>
+
+                                  </v-select>
+
+                                  <b-form-invalid-feedback :state="valid">
+                                    {{ errors[0] }}
+                                  </b-form-invalid-feedback>
+                              </validation-provider>
+                          </b-form-group>
+
+                            <b-form-group v-if="formulario.tienda_id || formulario.vid">
                               <template #label>
                                 Cantidad de productos
                               </template>
 
-                              <validation-provider name="tienda_id" rules="required" #default="{ valid, errors }">
+                              <validation-provider name="cantidad" rules="required" #default="{ valid, errors }">
                                 <b-form-spinbutton v-model="formulario.cantidad" :min="0" :max="getMaxCantidad"></b-form-spinbutton>
                                 <b-form-invalid-feedback :state="valid">
                                   {{ errors[0] }}
@@ -464,8 +496,29 @@ export default {
     const { formulario,carrito } = toRefs(store.state.carrito)
     const swal = inject('swal')
 
-    
+    const stock = ref(0)
+    const tasaDivisa = ref(null)
 
+    const variantSelect = (vid) => {
+
+      let variant = producto.value.variants.find(val => val.vid == vid)
+
+      if (variant != undefined) {
+
+        let img = producto.value.cj.productImageSet.find(value => value.image == variant.variantImage);
+
+        if (img != undefined) {
+
+          seleccionarFoto(img);
+        }
+
+      }
+
+      store.dispatch('producto/cjProductStock',formulario.value.vid).then(({cantidad, tasa}) => {
+        stock.value = cantidad
+        tasaDivisa.value = tasa
+      })
+    }
 
     const seleccionarFoto = (imagen) => {
 
@@ -505,10 +558,6 @@ export default {
    })
 
    watch([id,productos],() => cargarForm())
-
- 
-
-
 
    const iconMap =  ref({
       path: "M531.6 103.8L474.3 13.1C469.2 5 460.1 0 450.4 0H93.6C83.9 0 74.8 5 69.7 13.1L12.3 103.8c-29.6 46.8-3.4 111.9 51.9 119.4c4 .5 8.1 .8 12.1 .8c26.1 0 49.3-11.4 65.2-29c15.9 17.6 39.1 29 65.2 29c26.1 0 49.3-11.4 65.2-29c15.9 17.6 39.1 29 65.2 29c26.2 0 49.3-11.4 65.2-29c16 17.6 39.1 29 65.2 29c4.1 0 8.1-.3 12.1-.8c55.5-7.4 81.8-72.5 52.1-119.4zM483.7 254.9l-.1 0c-5.3 .7-10.7 1.1-16.2 1.1c-12.4 0-24.3-1.9-35.4-5.3V384H112V250.6c-11.2 3.5-23.2 5.4-35.6 5.4c-5.5 0-11-.4-16.3-1.1l-.1 0c-4.1-.6-8.1-1.3-12-2.3V384v64c0 35.3 28.7 64 64 64H432c35.3 0 64-28.7 64-64V384 252.6c-4 1-8 1.8-12.3 2.3z",
@@ -555,13 +604,24 @@ export default {
 
     const guardarCarrito = () => {
 
-      if(verificarTiendas()){
-        formulario.value.producto_id = producto.value.id
-        formulario.value.precio_unitario = producto.value.precio
-        formulario.value.monto = producto.value.precio * formulario.value.cantidad
+      if(producto.value.isChino){
+          formulario.value.producto_id = producto.value.id
+
+          let variant = producto.value.variants.find(val => val.vid = formulario.value.vid);
+
+          if(variant != undefined){
+
+            formulario.value.precio_unitario = ((variant.variantSellPrice * 5) / tasaDivisa.value)
+            formulario.value.monto = formulario.value.precio_unitario * formulario.value.cantidad
 
 
-        store.dispatch('carrito/agregarCarrito', formulario.value).then(({ result }) => {
+
+          }else{
+            formulario.value.precio_unitario = producto.value.precio
+            formulario.value.monto = producto.value.precio * formulario.value.cantidad
+          }
+
+          store.dispatch('carrito/agregarCarrito', formulario.value).then(({ result }) => {
 
           if (result) {
             addCarrito.value = false
@@ -577,24 +637,61 @@ export default {
           } else {
             toast.info('No se pudo agregar al carrito el producto, inténte de nuevo .', { position: 'bottom-right' })
           }
+
         }).catch(e => {
           console.log(e)
         })
+
+
+
       }else{
-        swal({
-          title: "En el carrito de compra ya hay productos de otra Tienda",
-          text: "Finaliza la compra de tus productos que tienes en tu carrito primero",
-          icon: "info",
-          confirmButtonText: 'Ok!',
-          showCancelButton: false,
-        });
+         if (verificarTiendas()) {
+          formulario.value.producto_id = producto.value.id
+          formulario.value.precio_unitario = producto.value.precio
+          formulario.value.monto = producto.value.precio * formulario.value.cantidad
+
+
+          store.dispatch('carrito/agregarCarrito', formulario.value).then(({ result }) => {
+
+            if (result) {
+              addCarrito.value = false
+              // swal({
+              //   title: "Este producto se ha agregado al carrito de forma Automática.",
+              //   text: "Tiene 2 horas para finalizar la compra, de lo contrario, su carrito se vaciará de forma automática",
+              //   icon: "success",
+              //   confirmButtonText: 'Ok!',
+              //   showCancelButton: false,
+              // });
+              router.push({ name: 'caja' });
+
+            } else {
+              toast.info('No se pudo agregar al carrito el producto, inténte de nuevo .', { position: 'bottom-right' })
+            }
+          }).catch(e => {
+            console.log(e)
+          })
+        } else {
+          swal({
+            title: "En el carrito de compra ya hay productos de otra Tienda",
+            text: "Finaliza la compra de tus productos que tienes en tu carrito primero",
+            icon: "info",
+            confirmButtonText: 'Ok!',
+            showCancelButton: false,
+          });
+        }
       }
+     
       
     }
 
-    
+    const variantColor = computed(() => {
+     return  producto.value.variants;
+    })
+   
    return {
-    addCarrito,
+      addCarrito,
+      variantColor,
+      variantSelect,
       producto,
       usuario,
       seleccionarFoto,
@@ -637,6 +734,11 @@ export default {
       }),
 
       getMaxCantidad: computed(() => {
+
+        if(producto.value.isChino){
+          return stock.value;
+        }
+
         return producto.value.tiendas.find(val => val.id === formulario.value.tienda_id).pivot.cantidad || 0
       }),
 
@@ -746,7 +848,10 @@ export default {
           stylers: [{ color: "#17263c" }],
         },
       ] ,
-      mapa
+      mapa,
+      filtrarVariant: ({ variantKey, variantImage, vid }, label, search) => {
+        return (variantKey || variantImage || vid || '').toLocaleLowerCase().indexOf(search.toLocaleLowerCase()) > -1
+      },
 
     }
   },

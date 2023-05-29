@@ -2,6 +2,7 @@
 
 namespace App\Trais;
 
+use App\Http\Controllers\ProductoController;
 use App\Models\Producto;
 use Illuminate\Support\Facades\DB;
 use App\Jobs\LimpiarCarrito;
@@ -12,13 +13,14 @@ trait hasCarrito{
 
   public function limpiarCarrito(){
 
-    $this->carritoCompra->each(function ($product) {
-        
-      $product->tiendas()->updateExistingPivot($product->pivot->tienda_id, [
-          'cantidad' => $product->tiendas->where('id', $product->pivot->tienda_id)
-            ->reduce(fn ($a, $b)  => $a?->pivot?->cantidad + $b?->pivot?->cantidad) + $product->pivot->cantidad,
-        ]);
-
+      $this->carritoCompra->each(function ($product) {
+      
+        if(!$product->isChino){
+            $product->tiendas()->updateExistingPivot($product->pivot->tienda_id, [
+            'cantidad' => $product->tiendas->where('id', $product->pivot->tienda_id)
+              ->reduce(fn ($a, $b)  => $a?->pivot?->cantidad + $b?->pivot?->cantidad) + $product->pivot->cantidad,
+          ]);
+        }
       });
 
       $this->carritoCompra()->detach();
@@ -51,19 +53,22 @@ trait hasCarrito{
 
       $this->carritoCompra()
         ->attach($datos['producto_id'], [
-          'tienda_id' => $datos['tienda_id'],
-          'monto' => $datos['monto'],
+          'tienda_id'       => $datos['tienda_id'],
+          'monto'           => $datos['monto'],
           'precio_unitario' => $datos['precio_unitario'],
-          'cantidad' => $datos['cantidad']
+          'cantidad'        => $datos['cantidad'],
+          'vid'             => $datos['vid'],
+          'isChino'         => $datos['isChino']
         ]);
 
       $producto = Producto::find($datos['producto_id']);
 
-      $producto->tiendas()->updateExistingPivot($datos['tienda_id'], [
-        'cantidad' => $producto->tiendas->where('id', $datos['tienda_id'])
-          ->reduce(fn ($a, $b) => $a?->pivot?->cantidad + $b?->pivot?->cantidad) - $datos['cantidad']
-      ]);
-
+      if(!$producto->isChino){
+        $producto->tiendas()->updateExistingPivot($datos['tienda_id'], [
+          'cantidad' => $producto->tiendas->where('id', $datos['tienda_id'])
+            ->reduce(fn ($a, $b) => $a?->pivot?->cantidad + $b?->pivot?->cantidad) - $datos['cantidad']
+        ]);
+      }
 
       DB::commit();
 
@@ -97,7 +102,12 @@ trait hasCarrito{
 
       $productos->each(function($produc){
           $produc->producto->cargar();
-          $produc->monto = (integer) $produc->monto;
+          $produc->monto = (float) $produc->monto;
+
+          if($produc->vid){
+              $producto_controller = new ProductoController();
+              $produc->variant = $producto_controller->getVariant($produc->vid);
+          }
       });
 
       return [

@@ -11,6 +11,9 @@ use App\Notifications\NuevoConsumo;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\NuevoConsumo as newConsumo;
 use App\Models\Divisa;
+use App\Models\User;
+use App\Notifications\OrdenCancelada;
+use Illuminate\Support\Facades\Notification;
 
 class ConsumoController extends Controller
 {
@@ -94,6 +97,7 @@ class ConsumoController extends Controller
             'productos'   => 'required',
             'paypal'      => 'nullable',
             'tienda_id'   => 'nullable',
+            'monto_envio' => 'nullable'
         ]);
     }
 
@@ -118,17 +122,61 @@ class ConsumoController extends Controller
                 'paypal_id'   => $datos['paypal_id'],
                 'paypal'      => $datos['paypal'],
                 'comentado'   => false,
-                'divisa_id'   => Divisa::where('iso','Tp')->first()->id
+                'divisa_id'   => Divisa::where('iso','Tp')->first()->id,
+                'monto_envio' => $datos['monto_envio']
             ]);
 
-
             foreach($datos['productos'] as $producto){
-                
-                $consumo->productos()->attach($producto['producto_id'],['cantidad' => $producto['cantidad'],'monto' => $producto['monto']]); 
+                $consumo->productos()->attach($producto['producto_id'],['cantidad' => $producto['cantidad'],'monto' => $producto['monto'],
+                'vid' => $producto['vid']]); 
             }
+
+
+            $user = $request->user();
+
             $consumo->tienda_id = $datos['productos'][0]['tienda_id'];
             $consumo->tps = $this->getTpsConsumidos($consumo);
             $consumo->save();
+
+            $producto_controller = new ProductoController();
+
+            $logistic = $producto_controller->obtenerLogistica([
+                'startCountryCode' => 'CN',
+                'endCountryCode'   => $user->ciudad->estado->pais->codigo,
+                'products' => $consumo->productos
+                    ->filter(fn ($val) => $val->isChino)
+                    ->map(fn ($val) => [
+                        'vid' => $val->pivot['vid'],
+                        'quantity' => $val->pivot['cantidad']
+                    ])
+            ]);
+
+            $orden_id = $producto_controller->crearOrden([
+                'shippingZip'          => $user->codigo_postal,
+                'shippingCountryCode'  => $user->ciudad->estado->pais->codigo,
+                'shippingCountry'      => $user->ciudad->estado->pais->pais,
+                'shippingProvince'     => $user->ciudad->estado->estado,
+                'shippingCity'         => $user->ciudad->ciudad,
+                'shippingAddress'      => $user->direccion,
+                'shippingCustomerName' => $user->getNombreCompleto(),
+                'shippingPhone'        => $user->telefonos->where('principal',true)->first()->telefono,
+                'remark'               => '',
+                'fromCountryCode'      => 'CN',
+                'logisticName'         => count($logistic) > 0 ? $logistic[0]->logisticName : null,
+                'products' =>  $consumo->productos
+                    ->filter(fn ($val) => $val->isChino)
+                    ->map(fn ($val) => [
+                        'vid'          => $val->pivot['vid'],
+                        'quantity'     => $val->pivot['cantidad'],
+                        'shippingName' => $val->id
+                    ])
+            ]);
+            
+            if($orden_id){
+                $consumo->ordencj = $orden_id;
+                $consumo->save();
+            }
+           
 
             $consumo->cliente->avatar = $consumo->cliente->getAvatar();
            
@@ -151,14 +199,16 @@ class ConsumoController extends Controller
             $consumo->cliente->carritoCompra()->detach();
 
             // Descontamos los tps consumidos al usuario generando un movimiento a su billetera por la compra
-            $consumo->cliente->cargar();
-
-            $movimiento = Movimiento::add($consumo->cliente->cuenta,$consumo->tps,'Compra de productos en tienda Travel',2);
+            
+            $movimiento = Movimiento::add($consumo->cliente->cuenta,$consumo->tps,'Compra de productos en tienda Travel',Movimiento::TIPO_EGRESO);
 
             // Notificar al Cliente y TravelPoints de la Nueva Compra
 
             $consumo->cliente->notify(new NuevoConsumo($consumo));
             Mail::to($consumo->cliente)->send(new newConsumo($consumo));
+
+            $consumo->cliente->cargar();
+
 
         } catch (\Throwable $th) {
             DB::rollBack();
@@ -176,7 +226,7 @@ class ConsumoController extends Controller
         $cliente->cuenta;
 
         if($consumo->paypal_id){
-            $consumo->tps = $consumo->total - $consumo->paypal['transactions'][0]['amount']['total'];
+            $consumo->tps = $consumo->total - ($consumo->paypal['transactions'][0]['amount']['total'] - $consumo->monto_envio);
         }else{
             $consumo->tps = $consumo->total();
         }
@@ -194,6 +244,71 @@ class ConsumoController extends Controller
         return response()->json(['result' => $result]);
         
     }
+
+    public function getOrdenDetailsCj(string $orden_id){
+
+        $producto_controller = new ProductoController();
+
+        $orden_details  = $producto_controller->getOrden($orden_id);
+
+        return response()->json(['orden' => $orden_details]);
+
+    }
+
+    public function confirmarOrdenCj(string $orden_id)
+    {
+
+        $producto_controller = new ProductoController();
+
+        $result  = $producto_controller->confirmarOrden($orden_id);
+
+        return response()->json($result);
+
+    }
+
+    public function eliminarOrdenCj(Consumo $consumo,string $orden){
+
+        $producto_controller = new ProductoController();
+
+        $result  = $producto_controller->eliminarOrden($orden);
+
+        if($result['result']){
+
+          
+            $cliente = $consumo->cliente;
+
+            $movimiento = Movimiento::add($cliente->cuenta, $consumo->tps, "Devolución de compra por cancelación de Orden {$consumo->ordencj}", Movimiento::TIPO_INGRESO);
+
+            $usuarios = collect([
+                $cliente,
+                ...User::whereHas('rol', fn (Builder $q) => $q->whereIn('nombre', ['Administrador', 'Desarrollador']))->get()
+            ]);
+
+            
+            Notification::send(
+                $usuarios,
+                new OrdenCancelada($consumo)
+            );
+
+        }
+
+        return response()->json($result);
+    }
+
+    public function pagarOrdenCj(string $orden){
+        $producto_controller = new ProductoController();
+
+        $result  = $producto_controller->pagarOrden($orden);
+
+        if ($result['result']){
+            if ($consumo = Consumo::where('ordencj', $orden)->first()) {
+                
+            }
+        }
+
+        return response()->json($result);
+    }
+
 
 
 

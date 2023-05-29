@@ -1,5 +1,7 @@
 @component('mail::message')
-
+@php
+    
+@endphp
 # Hola  **{{ trim($cliente) }}**.   
 
 Gracias por tu compra de:  
@@ -14,6 +16,9 @@ Gracias por tu compra de:
 
 @if ($productos->first()->tipo_producto == 2)
 Puedes descargar el Archivo Adjunto 
+@elseif($consumo->ordencj)
+{{ $mensaje }}
+
 @else
 Puedes retirar en la tienda: **{{ strtoupper($tienda->nombre) }}**.  
  ## Dirección: **{{ strtoupper( $tienda->direccion()) }}**.

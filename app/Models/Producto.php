@@ -57,7 +57,8 @@ class Producto extends Model
     {
         return $this->belongsToMany(Consumo::class, 'consumo_productos', 'producto_id', 'consumo_id')->withPivot([
             'cantidad',
-            'monto'
+            'monto',
+            'vid'
         ]);
     }
 
@@ -74,7 +75,7 @@ class Producto extends Model
 
 
     public function carritos(){
-        return $this->belongsToMany(User::class,'carrito_productos','producto_id','cliente_id')->withPivot(['cantidad','precio_unitario','monto','tienda_id']);
+        return $this->belongsToMany(User::class,'carrito_productos','producto_id','cliente_id')->withPivot(['cantidad','precio_unitario','monto','tienda_id','vid']);
     }
 
     public function cargar(){

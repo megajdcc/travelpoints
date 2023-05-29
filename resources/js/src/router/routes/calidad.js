@@ -2324,7 +2324,7 @@ export default [
             meta: {
                resource: 'productos',
                action: 'read',
-               pageTitle: 'Productos (CJDROPSHIPPING)',
+               pageTitle: 'Productos (Almacen)',
                breadcrumb: [
                   { text: 'Home', to: { name: 'home' }, active: false },
                   { text: 'Productos', active: true },

@@ -266,7 +266,7 @@ class User extends Authenticatable
 
     public function carritoCompra()
     {
-        return $this->belongsToMany(Producto::class, 'carrito_productos', 'cliente_id', 'producto_id')->withPivot(['cantidad', 'precio_unitario', 'monto','tienda_id']);
+        return $this->belongsToMany(Producto::class, 'carrito_productos', 'cliente_id', 'producto_id')->withPivot(['cantidad', 'precio_unitario', 'monto','tienda_id','vid']);
     }
 
     public function datosPago(){

@@ -21,6 +21,7 @@ use Illuminate\Support\Str;
 use App\Models\Telefono;
 
 use App\Models\Like;
+use App\Models\Pais;
 use App\Models\Producto;
 use App\Notifications\NuevaAsignacionCoordinador;
 use App\Notifications\NuevaAsignacionLider;
@@ -765,12 +766,14 @@ class UserController extends Controller
         $result = $request->user()->addProducto(
 
             $request->validate([
-                'tienda_id'       => 'required',
+                'tienda_id'       => 'nullable',
                 'producto_id'     => 'required',
                 'monto'           => 'required',
                 'precio_unitario' => 'required',
                 'cantidad'        => 'required',
-                'cliente_id'      => 'nullable'
+                'cliente_id'      => 'nullable',
+                'vid'             => 'nullable',
+                'isChino'         => 'nullable'
                 ])
         );
 
@@ -1218,6 +1221,45 @@ class UserController extends Controller
     public function getPorcentajeUsoViajeros(Request $request){
 
         return response()->json($request->user()->porcentajeViajerosLogin());
+
+    }
+
+    public function calcularEnvioCarrito(Request $request){
+
+        $user = $request->user();
+        $datos = $request->all();
+        $producto_controller = new ProductoController();
+        
+        $monto = 0;
+        $result = true;
+        $mensaje = '';
+        $pais = Pais::find($datos['pais_id']);
+
+
+        $logistic = $producto_controller->obtenerLogistica([
+            'startCountryCode' => 'CN',
+            'endCountryCode'   => $pais->codigo,
+            'products' => $user->carritoCompra
+            ->filter(fn($val) => $val->isChino)
+            ->map(fn($val) => [
+                'vid' => $val->pivot['vid'],
+                'quantity' => $val->pivot['cantidad']
+            ])
+        ]);
+
+
+        $monto += $user->carritoCompra->filter(fn ($val) => !$val->isChino)->sum('envio.precio');
+
+        if(count($logistic) > 0){
+            $monto += $logistic[0]->logisticPrice;
+        }
+        
+
+        if($monto > 0){
+            $mensaje = 'Se ha cargado con éxito el costo del envío.';
+        }
+
+        return response()->json(['result' => $result,'monto' => $monto,'mensaje' => $mensaje]);
 
     }
 

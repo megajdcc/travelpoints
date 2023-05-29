@@ -20,6 +20,8 @@ class Consumo extends Model
         'divisa_id',
         'paypal',
         'tienda_id',
+        'ordencj',
+        'monto_envio'
     ];
 
     protected $casts = [
@@ -49,7 +51,8 @@ class Consumo extends Model
 
         return $this->belongsToMany(Producto::class,'consumo_productos','consumo_id','producto_id')->withPivot([
             'cantidad',
-            'monto'
+            'monto',
+            'vid'
         ]);
         
     }

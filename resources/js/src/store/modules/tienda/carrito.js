@@ -1,3 +1,4 @@
+
 export default {
 
   namespaced:true,
@@ -10,7 +11,9 @@ export default {
       producto_id:null,
       monto:0,
       precio_unitario:0,
-      cliente_id:null
+      cliente_id:null,
+      vid:null,
+      isChino:false,
 
     }
   }),
@@ -26,7 +29,10 @@ export default {
         producto_id: null,
         monto: 0,
         precio_unitario: 0,
-        cliente_id: null
+        cliente_id: null,
+        vid:null,
+        isChino:false,
+
       }
 
     },
@@ -102,6 +108,14 @@ export default {
         }).catch(e => reject(e))
 
 
+      })
+    },
+
+    calcularEnvio({commit},datos){
+
+      return new Promise((resolve, reject) => {
+        axios.post(`/api/carrito-compra/calcular-envio`,datos).then(({data}) => resolve(data)).catch(e => reject(e))
+        
       })
     }
 

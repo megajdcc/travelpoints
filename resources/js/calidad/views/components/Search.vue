@@ -10,9 +10,6 @@
             <b-form-input v-model="search" @input="remoteMethod" placeholder="¿ A Donde ?" ref="refInput">
             </b-form-input>
          </b-input-group>
-        
-         
-      
       
          <b-list-group class="collapseSearch d-flex flex-column align-items-center" ref="refToggle" v-if="search">
             <!-- <b-spinner v-show="loading" variant="primary" class="my-1"></b-spinner> -->
@@ -30,7 +27,7 @@
               
             </b-list-group-item>
 
-            <b-list-group-item v-for="({nombre,id,ruta,tipo,imagen},i) in resultados" :key="i" class="cursor-pointer" button :to="ruta" >
+            <b-list-group-item v-for="({nombre,ruta,tipo,imagen},i) in resultados" :key="i" class="cursor-pointer" button :to="ruta" >
 
                <article class="d-flex" @click="() => $router.push(ruta)">
                   <b-img :src="imagen" thumbnail style="height:70px; width:70px;object-fit:fill" class="mr-1" />
@@ -106,13 +103,18 @@ export default {
       'b-toggle':VBToggle
    },
 
+   props:{
+      destino:Number|String
+   },
+
    setup(props){
 
       const search = ref('')
       const refInput = ref(null);
       const resultados = ref([])
       const collapseSearch = ref(null)
-      
+      const {destino} = toRefs(props)
+
       const inputSearch = ref(false)
       const listenToggle = ref(false)
 
@@ -162,7 +164,7 @@ export default {
          if(query !== ''){
             setTimeout(() => {
                  
-               store.dispatch('searchPublic',query).then((data) => {
+               store.dispatch('searchPublic',{query:query,destino:destino.value }).then((data) => {
                   resultados.value = data
                  
                }).catch(e => console.log(e))

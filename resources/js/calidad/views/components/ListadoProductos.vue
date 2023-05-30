@@ -57,7 +57,7 @@
         <b-container fluid>
           <b-row>
             
-            <b-col cols="12">
+            <b-col cols="12" class="px-0">
               <section id="ecommerce-header">
                 <div class="ecommerce-header-items d-flex justify-content-between align-items-center flex-wrap">
               
@@ -98,7 +98,7 @@
 
             </b-col>
 
-            <b-col cols="12" class="mt-1">
+            <b-col cols="12" class="mt-1 px-0">
 
               <b-input-group class="input-group-merge">
                 <b-form-input v-model="searchQuery" :placeholder="placeholderSearch" class="search-product" />
@@ -109,7 +109,7 @@
 
             </b-col>
 
-             <b-col cols="12">
+             <b-col cols="12" class="px-0">
               <section  class="w-100 mt-1" style="min-height:100px">
                 <slot name="contenido" :items="items" :eliminar="eliminar" :fetchData="fetchData" 
                   :sortBy="sortBy" :isSortDirDesc="isSortDirDesc" :perPage="perPage" :itemView="itemView">
@@ -117,7 +117,7 @@
                 </slot>
               </section>
              </b-col>
-             <b-col cols="12">
+             <b-col cols="12" class="px-0">
                 <paginate-table :dataMeta="dataMeta" :currentPage.sync="currentPage" :perPage="perPage" :total="total" class="mt-1" />
              </b-col>
           </b-row>

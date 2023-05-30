@@ -213,7 +213,7 @@ export default {
       optionsAuth
     } = useAuth();
 
-    // onMounted(() => authGoogle())
+     onMounted(() => localStorage.removeItem('destino_id'))
 
     const iniciar  = ()  => {
 

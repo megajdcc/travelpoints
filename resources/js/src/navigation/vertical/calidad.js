@@ -144,7 +144,7 @@ export default [
       children:[
          { title:'Tiendas',route:'tienda.list',icon:'fa-store',resource:'tiendas',action:'read',fontAwesome:true},
          { title: 'Productos', route: 'producto.list', icon: 'fa-gifts', resource: 'productos', action: 'read', fontAwesome: true, iconFa:'fas'},
-         { title: 'Productos (CJDROPshipping)', route: 'producto.cj.list', icon: 'fa-gifts', resource: 'productos', action: 'read', fontAwesome: true, iconFa:'fas'},
+         { title: 'Productos (Almacén)', route: 'producto.cj.list', icon: 'fa-gifts', resource: 'productos', action: 'read', fontAwesome: true, iconFa:'fas'},
 
          {
             title: 'Categorías',

@@ -1,5 +1,5 @@
 <template>
-   <b-container fluid class="px-0 mx-0">
+   <b-container fluid class="mx-0 px-0">
 
       <slot name="titulo" :total="total">
          

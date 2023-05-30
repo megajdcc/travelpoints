@@ -12,7 +12,7 @@
                   <swiper-slide v-for="(atraccion, i) in atracciones" :key="i" class="rounded ">
          
                      <b-card class="cursor-pointer" header-class="p-0 header-card" body-class="mt-1 px-1 contenido-card"
-                      @click="$router.push(atraccion.ruta)" style="height:370px !important; "> 
+                      @click="$router.push(atraccion.ruta)" style="height:370px !important; max-width:350px"> 
          
                         <template #header>
          
@@ -94,7 +94,7 @@ import {
 
 } from 'bootstrap-vue'
 
-import {ref,computed,onMounted} from 'vue'
+import {ref,computed,onMounted,toRefs} from 'vue'
 import useAuth from '@core/utils/useAuth'
 import store from '@/store'
 import {optionsSwiper} from '@core/utils/utils'
@@ -111,7 +111,9 @@ export default {
          type:String,
          required:false,
          default:'Las experiencias que te recomendamos',
-      }
+      },
+
+    
    },
 
    components:{
@@ -135,6 +137,7 @@ export default {
    setup(props){
       
       const swiperRef = ref(null)
+      
       const {
          is_loggin
       } = useAuth();

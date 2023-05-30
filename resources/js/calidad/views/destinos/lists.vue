@@ -37,11 +37,17 @@
                      <template #header>
                         <b-carousel :id="`carousel-${i}`"  indicators controls  background="#ababab" :intervals="3000" >
                            <b-carousel-slide v-for="(imagen,e) in destino.imagenes" :key="e" img-width="320px" img-height="auto" :img-src="`/storage/destinos/imagenes/${imagen.imagen}`" style="max-height:182px; height:182px; object-fit:cover" >
-                               
                            </b-carousel-slide>
-
                         </b-carousel>
                      </template>
+
+                     <!-- <b-form-checkbox-group v-model="destino.activo" :options="optionsActive" switches @change="destinoActiveToggle($event,destino.id)">
+                        
+                     </b-form-checkbox-group> -->
+
+                     <b-form-checkbox v-model="destino.activo" switch @change="destinoActiveToggle($event, destino.id)">
+                           {{ destino.activo ? 'Activo, ¿Desactivar?' : 'Inactivo, ¿Activar?' }}
+                     </b-form-checkbox>
 
                      <h4 v-b-popover.hover="destino.descripcion.substring(0,150)" :title="destino.titulo">
                         {{ destino.nombre }}
@@ -114,7 +120,10 @@ import {
    BCarousel,
    BCarouselSlide,
    BImg,
-   VBPopover
+   VBPopover,
+   BBadge,
+   BFormCheckboxGroup,
+   BFormCheckbox,
 
 } from 'bootstrap-vue'
 
@@ -140,8 +149,12 @@ export default {
       BCarouselSlide,
       BInputGroupAppend,
       BImg,
+      BBadge,
       perPage: () => import('components/PerPage.vue'),
-      paginateTable: () => import('components/PaginateTable.vue')
+      paginateTable: () => import('components/PaginateTable.vue'),
+      BFormCheckboxGroup,
+   BFormCheckbox,
+
 
    },
 
@@ -169,6 +182,26 @@ export default {
 
       onActivated(() => refetchData())
 
+      const optionsActive = ref([
+         
+         {
+            value:true,
+            text:'¿ Activo ?'
+         },
+      ])
+
+      const destinoActiveToggle = (value, destino_id) => {
+       
+
+         store.dispatch('destino/toggleActive',{destino:destino_id,activo:value}).then(({result}) => {
+               if(result){
+                  toast.success('Se ha guardado con éxito el cambio')
+               }else{
+                  toast.info('No se pudo guardar, inténtelo de nuevo')
+               }
+         })
+      }
+
       return {
          items,
          isSortDirDesc,
@@ -184,7 +217,9 @@ export default {
          fetchData, 
          loading: computed(() => store.state.loading),
          regresar,
-         eliminar
+         eliminar,
+         optionsActive,
+         destinoActiveToggle
       }
 
    }

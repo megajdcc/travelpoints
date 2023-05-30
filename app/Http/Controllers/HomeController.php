@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\{Atraccion, Destino, User};
 use App\Models\Negocio\Negocio;
+use Illuminate\Database\Eloquent\Builder;
 
 class HomeController extends Controller
 {
@@ -78,12 +79,16 @@ class HomeController extends Controller
     public function searchPublic(request $request){
        
         $q = $request->get('q');
-        
+        $destino = $request->get('destino');
+
         $destinos = Destino::where([
             ['nombre','LIKE',"%{$q}%","OR"],
             ['descripcion', 'LIKE', "%{$q}%", "OR"],
             ['titulo', 'LIKE', "%{$q}%", "OR"],
-        ])->get();
+        ])->where('activo',true)->when($destino,function($query) use($destino){
+                $query->where('id', $destino);
+        })
+        ->get();
 
         foreach ($destinos as $key => $destino) {
             $destino->ruta ="/Destinos?q={$destino->nombre}";
@@ -97,7 +102,10 @@ class HomeController extends Controller
             ['nombre', 'LIKE', "%{$q}%", "OR"],
             ['descripcion', 'LIKE', "%{$q}%", "OR"],
             ['incluye', 'LIKE', "%{$q}%", "OR"],
-        ])->get();
+        ])->
+        when($destino, function ($query) use ($destino) {
+            $query->where('destino_id', $destino);
+        })->get();
 
         foreach ($atracciones as $key => $atraccion) {
             $atraccion->ruta = "/Atraccions?q={$atraccion->nombre}";
@@ -107,12 +115,17 @@ class HomeController extends Controller
             $atraccion->imagen = $atraccion->imagenes[0] ? "/storage/atracciones/imagenes/{$atraccion->imagenes[0]->imagen}" : '';
         }
 
-
         $negocios = Negocio::where([
             ['nombre', 'LIKE', "%{$q}%", "OR"],
             ['descripcion', 'LIKE', "%{$q}%", "OR"],
             ['breve', 'LIKE', "%{$q}%", "OR"],
-        ])->get();
+        ])->when($destino && !empty($destino), function ($query) use ($destino) {
+            $query->whereHas('iata', function (Builder $q) use ($destino) {
+                $q->whereHas('destinos', function (Builder $query) use ($destino) {
+                    $query->where('id', $destino);
+                });
+            });
+        })->get();
 
         foreach ($negocios as $key => $negocio) {
             $negocio->ruta = "/{$negocio->url}";

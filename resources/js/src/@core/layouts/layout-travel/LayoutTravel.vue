@@ -8,9 +8,11 @@
       }" :toggleable="false" class="header-navbar navbar-shadow align-items-center navbar-brand-center navbar-fixed"
          :class="{ 'fixed-top': $store.getters['app/currentBreakPoint'] !== 'xl' }">
          <slot name="navbar" :toggleVerticalMenuActive="toggleVerticalMenuActive">
-            <!-- Logo -->
-            <app-navbar-horizontal-layout-travel-brand />
+             <!-- Logo -->
+            <app-navbar-horizontal-layout-travel-brand :toggle-vertical-menu-active="toggleVerticalMenuActive" />
             <app-navbar-horizontal-layout-travel :toggle-vertical-menu-active="toggleVerticalMenuActive" />
+           
+            
 
          </slot>
 
@@ -94,9 +96,6 @@ import useLayoutTravel from './useLayoutTravel'
 import HorizontalNavMenu from './components/horizontal-nav-menu/HorizontalNavMenu.vue'
 
 import verticalNavMenuItems from '@/navigation/vertical/travel'
-
-
-
 
 
 import {

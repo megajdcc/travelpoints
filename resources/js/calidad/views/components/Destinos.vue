@@ -1,6 +1,6 @@
 <template>
          <b-row>
-            <b-col cols="12">
+            <b-col cols="12" v-if="destinos.length">
          
                <h3>{{ titulo }}</h3>
                <p>Descubre los negocios que regalan Travel Points en estos destinos</p>
@@ -17,7 +17,7 @@
                   <swiper-slide v-for="(destino, i) in destinos" :key="i" >
          
                      <b-card class="cursor-pointer" header-class="p-0 header-card" body-class="mt-1 px-1 contenido-card"
-                        @click="$router.push(destino.ruta)" style="height:370px !important; ">
+                        @click="seleccionarDestino(destino.id,destino.ruta)" style="height:370px !important; ">
          
                         <template #header>
                            <b-img  v-if="destino.imagenes.length" :src="`/storage/destinos/imagenes/${destino.imagenes[0].imagen}`" 
@@ -28,14 +28,14 @@
                         </template>
          
          
-                        <b-link :to="destino.ruta">
+                        <b-button @click="seleccionarDestino(destino.id,destino.ruta)" variant="text">
          
                            <h4 class="title-card mt-1 mb-0">
                               {{ destino.nombre }}
                            </h4>
          
          
-                        </b-link>
+                        </b-button>
                         <!-- <section class="section-rate d-flex mt-0 p-0">
                            <b-form-rating id="rating-sm-no-border" :value="5" no-border variant="warning" inline size="sm"
                               readonly class="ml-0 pl-0" /> <span class="d-flex align-items-center">{{
@@ -70,13 +70,15 @@ import {
    BFormRating,
    BLink,
    BCard,
-   BBadge
+   BBadge,
+   BButton
 
 } from 'bootstrap-vue'
 
-import { ref,onMounted} from 'vue'
+import { ref,onMounted,toRefs} from 'vue'
 import useAuth from '@core/utils/useAuth'
 import { optionsSwiper } from '@core/utils/utils.js'
+import router from '@/router';
 
 export default {
 
@@ -90,6 +92,10 @@ export default {
          type: String,
          required: false,
          default: 'Destinos Travel Points',
+      },
+      isSelected:{
+         type:Boolean,
+         default:false
       }
    },
 
@@ -104,16 +110,16 @@ export default {
       BFormRating,
       hasLike: () => import('components/HasLike.vue'),
       BCard,
-      BBadge
-
-
-
+      BBadge,
+      BButton
    },
 
 
-   setup(props) {
+   setup(props,{emit}) {
 
       const swiperRef = ref(null)
+      const {isSelected} = toRefs(props)
+
       onMounted(() => {
             Object.assign(swiperRef.value, optionsSwiper.value)
             swiperRef.value.initialize();
@@ -124,9 +130,20 @@ export default {
          is_loggin
       } = useAuth();
 
+      const seleccionarDestino = (destino_id,ruta) => {
+
+         if(isSelected.value){
+            emit('destinoSelected',destino_id)
+         }else{
+            router.push(ruta)
+         }
+
+      } 
+
       return {
          is_loggin,
-         swiperRef
+         swiperRef,
+         seleccionarDestino
       }
 
    }

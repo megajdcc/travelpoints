@@ -222,13 +222,14 @@ class ConsumoController extends Controller
     }
 
     private function getTpsConsumidos(Consumo $consumo){
+
         $cliente = $consumo->cliente;
         $cliente->cuenta;
 
         if($consumo->paypal_id){
             $consumo->tps = $consumo->total - ($consumo->paypal['transactions'][0]['amount']['total'] - $consumo->monto_envio);
         }else{
-            $consumo->tps = $consumo->total();
+            $consumo->tps = $consumo->total;
         }
 
         return $consumo->tps;

@@ -237,10 +237,10 @@ export default new Vuex.Store({
     },
 
 
-    searchPublic({commit},query){
+    searchPublic({commit},{query,destino}){
       return new Promise((resolve, reject) => {
         
-        axios.post(`/api/search/public`,{q:query}).then(({data}) => {
+        axios.post(`/api/search/public`,{q:query,destino:destino}).then(({data}) => {
           resolve(data)
         }).catch(e => reject(e))
 

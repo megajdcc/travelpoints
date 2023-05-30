@@ -55,7 +55,7 @@
                   </template>
 
                   <template #cell(nombre)="{ item }">
-                    <span class="text-nowrap">
+                    <span class="">
                       {{ item.producto.nombre }}
                     </span>
                   </template>
@@ -82,14 +82,13 @@
 
                 </b-table>
             </b-card>
-
           </template>
        
 
         <template #prePaginate="{items}">
           <section class="w-100 d-flex flex-column align-items-end">
             
-            <section class="d-flex flex-wrap justify-content-between">
+            <section class="w-100 d-flex flex-wrap  flex-md-nowrap justify-content-between">
 
               <b-card class="mr-md-1 flex-grow-1" title="Datos para el envío">
                     <validation-observer ref="formValidate" #default="{ handleSubmit }">
@@ -142,16 +141,16 @@
                                                   </b-button-group>
                                                </section>
                                              
-                                               <table class="table table-sm table-hover table-bordeless mt-1">
+                                               <table class="table table-sm table-hover table-bordeless mt-1 table-responsive">
                                                   <thead>
                                                      <th>
-                                                        Número de Télefono:
+                                                        Número:
                                                      </th>
                                                      <th>
-                                                        ¿ Está asociado a whatsapp ?
+                                                        ¿ Con whatsapp ?
                                                      </th>
                                                      <th>
-                                                        ¿ Es el número principal ?
+                                                        ¿ Es el principal ?
                                                      </th>
                                                      <th>
                                              
@@ -161,7 +160,7 @@
                                                      <tr v-for="(telefono, i) in form.telefonos" :key="i">
                                                         <td>
                                                            <validation-provider name="telefono" rules="required" #default="{ valid, errors }">
-                                                              <b-form-input v-mask="'+#############'" v-model="telefono.telefono" :state="valid" />
+                                                              <b-form-input v-mask="'+#############'" v-model="telefono.telefono" :state="valid" style="min-width:150px" />
                                              
                                                               <b-form-invalid-feedback :state="valid">
                                                                  {{ errors[0] }}
@@ -314,7 +313,7 @@
                     </validation-observer>
               </b-card>
 
-              <b-card class="flex-grow-0 w-25">
+              <b-card class="flex-grow-0">
                  <table class="table table-hover table-sm " >
 
                     <tr>
@@ -409,6 +408,7 @@
            
                 
               </b-card>
+
             </section>
             
 

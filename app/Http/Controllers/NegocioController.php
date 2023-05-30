@@ -632,7 +632,7 @@ class NegocioController extends Controller
     public function fetchDataPublic(Request $request){
 
         $datos = $request->all();
-
+       
         $paginator = Negocio::where([
             ['nombre', 'LIKE', "%{$datos['q']}%", "OR"],
             ['breve', 'LIKE', "%{$datos['q']}%", "OR"],
@@ -642,7 +642,7 @@ class NegocioController extends Controller
             ['codigo_postal', 'LIKE', "%{$datos['q']}%", "OR"],
 
         ])
-            ->when($datos['destino'], function($query) use($datos){
+            ->when(isset($datos['destino']) && !empty($datos['destino']), function($query) use($datos){
                 $query->whereHas('iata', function (Builder $q) use ($datos) {
                     $q->whereHas('destinos', function (Builder $query) use ($datos) {
                         $query->where('id', $datos['destino']);

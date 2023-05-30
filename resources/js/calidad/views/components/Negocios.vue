@@ -1,6 +1,6 @@
 <template>
     <b-row>
-      <b-col cols="12">
+      <b-col cols="12" >
         <h3>{{ titulo  }}</h3>
         <p>{{  subTitulo  }}</p>
       </b-col>
@@ -129,7 +129,7 @@ export default{
   setup(props){
 
     const { negocios,destino,atraccion } = toRefs(props)
-  
+    
     const actions = useNegocioList({destino:destino.value ? destino : null,atraccion:atraccion.value ? atraccion : null})
 
     const portada = (imagenes) => {
@@ -145,6 +145,7 @@ export default{
 
 
     onMounted(() => actions.refetchData());
+    watch(() => destino.value.id,() => actions.refetchData());
 
     return {
       promedioCalificacion: computed({

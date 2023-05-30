@@ -17,7 +17,7 @@ class DestinoController extends Controller
 
     public function getAll(){
 
-        $destinos = Destino::limit(10)->get();
+        $destinos = Destino::where('activo',true)->limit(10)->get();
 
         foreach($destinos as $destino){
             $destino->iata;
@@ -272,7 +272,7 @@ class DestinoController extends Controller
 
     public function getPorNombre(Request $request){
 
-        $destino = Destino::where('nombre',$request->get('nombre'))->first();
+        $destino = Destino::where('nombre',$request->get('nombre'))->where('activo',true)->first();
         
         if($destino){
             $destino->iata;
@@ -299,6 +299,29 @@ class DestinoController extends Controller
         }
         
         return response()->json(['result' => $destino ? true : false,'destino' => $destino]);
+    }
+
+    public function toggleActive(Request $request, Destino $destino){
+
+        $datos = $request->all();
+
+        try {
+            DB::beginTransaction();
+
+            $destino->update($datos);
+
+            $destino->cargar();
+
+            DB::commit();
+            $result =true;
+            
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            $result = false;
+        }
+
+        return response()->json(['result' => $result,'destino' => $destino]);
+
     }
 
 

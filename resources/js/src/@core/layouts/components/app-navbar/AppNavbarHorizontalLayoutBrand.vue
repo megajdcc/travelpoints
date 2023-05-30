@@ -1,5 +1,5 @@
 <template>
-  <div class="navbar-header d-xl-block d-none">
+  <div class="navbar-header d-xl-block">
     <ul class="nav navbar-nav">
       <li class="nav-item">
         <b-link class="navbar-brand" to="/">

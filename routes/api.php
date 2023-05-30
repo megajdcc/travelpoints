@@ -157,7 +157,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::resource('destinos',DestinoController::class);
     Route::put('destinos/{destino}/cargar/imagen',[DestinoController::class,'cargarImagen']);
     Route::delete('destinos/{destino}/eliminar/imagen/{imagen}',[DestinoController::class,'eliminarImagen']);
-    
+    Route::put('destinos/{destino}/toggle/active',[DestinoController::class,'toggleActive']);
     /*****************************/
     /* Atracciones
     /*****************************/

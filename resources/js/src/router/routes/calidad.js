@@ -577,7 +577,7 @@ export default [
    {
       path:'/destinos',
       component:() => import('views/destinos/index.vue'),
-
+      name:'destino',
       children:[
 
          {
@@ -2324,7 +2324,7 @@ export default [
             meta: {
                resource: 'productos',
                action: 'read',
-               pageTitle: 'Productos (Almacen)',
+               pageTitle: 'Productos (Almacén)',
                breadcrumb: [
                   { text: 'Home', to: { name: 'home' }, active: false },
                   { text: 'Productos', active: true },

@@ -177,10 +177,16 @@ export default {
 @import "~@core/scss/base/core/menu/menu-types/vertical-menu.scss";
 
 .brand-logo img{
-  max-width: 180px !important;
+  max-width: 130px !important;
   height: 56px !important;
   object-fit: contain;
 
+}
+
+@media (min-width:1200px){
+  .brand-logo img{
+    max-width: 180px !important;
+  }
 }
 
 

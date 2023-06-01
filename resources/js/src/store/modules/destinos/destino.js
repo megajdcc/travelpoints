@@ -313,6 +313,12 @@ export default{
          return new Promise((resolve, reject) => {
             axios.put(`/api/destinos/${destino}/toggle/active`,{activo:activo}).then(({data}) => resolve(data)).catch(e => reject(e))
          })
+      },
+
+      fetchDataPublic({commit},datos){
+         return new Promise((resolve, reject) => {
+            axios.post('/api/destinos/fetch-data/public',datos).then(({data}) => resolve(data)).catch(e => reject(e))
+         })
       }
 
    }

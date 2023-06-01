@@ -1,10 +1,8 @@
-import store from '@/store';
-
 export default [
    /*****************************************/
    /* SOCIO
    /*************************************** */
-    {
+   {
     path: '/socio',
     name:'socio',
     component: () => import('views/socio'),
@@ -291,7 +289,7 @@ export default [
 
 
     ]
-  },
+   },
 
    /*****************************************/
    /* USUARIO
@@ -3007,10 +3005,67 @@ export default [
    },
 
    /*****************************************/
+   /* Paginas
+   /*************************************** */
+   {
+      path:'/paginas',
+      name:'pagina',
+      component:() => import('views/pages/index.vue'),
+      children:[
+         {
+            path:'',
+            name:'pagina.list',
+            component:() => import('views/pages/list.vue'),
+            meta:{
+               resource:'paginas',
+               action:'read',
+               pageTitle:'Paginas',
+               breadcrumb:[
+                  {text:'Paginas',active:true}
+               ]
+            }
+         },
+
+          {
+            path:'create',
+            name:'pagina.create',
+            component:() => import('views/pages/create.vue'),
+            meta:{
+               resource:'paginas',
+               action:'write',
+               pageTitle:'Paginas',
+               navActiveLink:'pagina.list',
+               breadcrumb:[
+                  {text:'Paginas',active:false,to:{name:'pagina.list'}},
+                  {text:'Crear',active:true}
+               ]
+            }
+         },
+         {
+            path:':id/edit',
+            props:true,
+            name:'pagina.edit',
+            component:() => import('views/pages/edit.vue'),
+            meta:{
+               resource:'paginas',
+               action:'update',
+               pageTitle:'Paginas', 
+               navActiveLink:'pagina.list',
+               breadcrumb:[
+                  {text:'Paginas',active:false,to:{name:'pagina.list'}},
+                  {text:'Editar',active:true}
+               ]
+            }
+         }
+      ]
+   },
+
+
+   /*****************************************/
    /* PAGINA DE perfil de negocios
    /*************************************** */
    {
-      path: '/:url',
+      path: '/negocio/:url',
       props:true,
       component: () => import('views/paginas/negocio/index.vue'),
 
@@ -3074,24 +3129,7 @@ export default [
          }
 
       ]
-      // beforeEnter: (to, from, next) => {
-         
-      //    store.dispatch('negocio/negocioUrl',to.params.url).then(({result}) => {
 
-      //       if(result){
-      //          next()
-      //       }else{
-      //          next({name:'inicio'})
-      //       }
-
-      //    }).catch(e => {
-      //       next({ name: 'inicio' })
-      //    })
-
-         
-         
-      // },
-     
      
       
    },

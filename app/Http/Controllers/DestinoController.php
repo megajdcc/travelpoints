@@ -19,20 +19,48 @@ class DestinoController extends Controller
 
         $destinos = Destino::where('activo',true)->limit(10)->get();
 
-        foreach($destinos as $destino){
-            $destino->iata;
-            $destino->imagenes;
-            $destino->ciudad;
-            $destino->estado?->pais;
-            $destino->likes;
-            $destino->modelType = $destino->model_type;
-            $destino->ruta = "/Destinos?q={$destino->nombre}";
-            $destino->negocios = $destino->negocios();
+        $destinos->each(fn($destino)=> $destino->cargar());
+
+        // foreach($destinos as $destino){
+        //     $destino->iata;
+        //     $destino->imagenes;
+        //     $destino->ciudad;
+        //     $destino->estado?->pais;
+        //     $destino->likes;
+        //     $destino->modelType = $destino->model_type;
+        //     $destino->ruta = "/Destinos?q={$destino->nombre}";
+        //     $destino->negocios = $destino->negocios();
             
-        }
+        // }
 
         return response()->json($destinos);
 
+    }
+
+
+    public function fetchDataPublic(Request $request){
+        $datos = $request->all();
+
+        $pagination = Destino::where([
+            ['nombre', 'LIKE', "%{$datos['q']}%", 'OR'],
+            ['titulo', 'LIKE', "%{$datos['q']}%", 'OR'],
+            ['descripcion', 'LIKE', "%{$datos['q']}%", 'OR'],
+        ])
+        ->where('activo',true)
+        ->whereHas('iata', function (Builder $q) use ($datos) {
+            $q->orWhere([
+                ['codigo', 'LIKE', "%{$datos['q']}%", 'OR'], ['aeropuerto', 'LIKE', "%{$datos['q']}%", 'OR'],
+            ]);
+        })
+        ->orderBY($datos['sortBy'] ?: 'id', $datos['isSortDirDesc'] ? 'desc' : 'asc')
+        ->paginate($datos['perPage'] ?: 10000);
+
+        $destinos = collect($pagination->items())->each(fn($destino) => $destino->cargar());
+
+        return response()->json([
+            'destinos' => $destinos,
+            'total' => $pagination->total()
+        ]);
     }
 
     public function fetch(Destino $destino){

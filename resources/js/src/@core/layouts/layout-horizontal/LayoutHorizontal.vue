@@ -9,7 +9,7 @@
       }" :toggleable="false" class="header-navbar navbar-shadow align-items-center navbar-brand-center navbar-fixed"
       :class="{'fixed-top': $store.getters['app/currentBreakPoint'] !== 'xl'}">
       <slot name="navbar" :toggleVerticalMenuActive="toggleVerticalMenuActive">
-        <app-navbar-horizontal-layout-brand />
+        <app-navbar-horizontal-layout-brand :toggle-vertical-menu-active="toggleVerticalMenuActive" />
         <app-navbar-horizontal-layout :toggle-vertical-menu-active="toggleVerticalMenuActive" />
       </slot>
     </b-navbar>

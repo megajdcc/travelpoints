@@ -236,6 +236,13 @@ export default [
          },
 
          {
+            title   : 'Paginas',
+            route   : 'pagina.list',
+            action  : 'read',
+            resource: 'paginas'
+         },
+
+         {
             title: 'Preguntas Frecuentes (Faqs)',
             route: 'listar.faqs',
             icon:'HelpCircleIcon',

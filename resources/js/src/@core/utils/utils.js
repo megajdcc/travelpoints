@@ -323,6 +323,27 @@ export const getExt = (archivo,separator = '.') => {
   let ext =  (archive.length > 1) ? archive[archive.length - 1] : null;
   return ext;
 } 
+
+export const convertirKebabCase = (cadena) => {
+  // Reemplazar guiones medios con espacios
+  var resultado = cadena.replace(/-/g, ' ');
+  return resultado;
+}
+
+export const capitalize = (cadena)  => {
+  // Dividir la cadena en palabras separadas por espacios
+  var palabras = cadena.split(' ');
+
+  // Recorrer cada palabra y convertir la primera letra a mayúscula
+  for (var i = 0; i < palabras.length; i++) {
+    palabras[i] = palabras[i].charAt(0).toUpperCase() + palabras[i].slice(1);
+  }
+
+  // Unir las palabras nuevamente en una sola cadena
+  var resultado = palabras.join(' ');
+  return resultado;
+}
+
 /**
  * This is just enhancement over Object.extend [Gives deep extend]
  * @param {target} a Object which contains values to be overridden

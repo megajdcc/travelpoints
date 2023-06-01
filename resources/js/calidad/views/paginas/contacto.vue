@@ -76,7 +76,7 @@
 
                   <b-col cols="12">
                       <b-form-checkbox id="checkbox-1" v-model="politicas">
-                        Usted acepta nuestras <b-link :to="{ name: 'politicas.privacidad' }"> Políticas de Privacidad ?</b-link>
+                        Usted acepta nuestras <b-link :to="{ path: pagePolitica }"> Políticas de Privacidad ?</b-link>
                       </b-form-checkbox>
                   </b-col>
                 </b-row>
@@ -176,6 +176,7 @@ export default {
   setup() {
 
     const windowWidth = computed(() => store.state.app.windowWidth)
+    const {paginas} = toRefs(store.state.pagina)
     const { sistema } = toRefs(store.state.sistema)
     const formValidate = ref(null)
     const politicas = ref(false)
@@ -188,6 +189,17 @@ export default {
       asunto: '',
       mensaje: ''
     })
+
+    const cargarForm = () => {
+      
+      if(!paginas.value.lenth){
+        store.dispatch('pagina/getPaginas')
+      }
+
+    }
+
+    cargarForm();
+
 
     const enviar = () => {
 
@@ -248,6 +260,7 @@ export default {
       refMap,
       politicas,
       iconMapa,
+      pagePolitica:computed(() => store.getters['pagina/pagePolitica']),
       optionsPlace: (sucursal) => ({ content: `<strong>${sucursal.nombre} 
         <br> ${sucursal.direccion} 
         <br> Teléfonos: ${sucursal.telefonos.map(val => val.telefono).join()} </strong>` }),

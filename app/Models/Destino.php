@@ -100,6 +100,10 @@ class Destino extends Model
         $this->estado;
         $this->imagenes;
         $this->likes;
+        $this->estado?->pais;
+        $this->modelType = $this->model_type;
+        $this->ruta = "/Destinos?q={$this->nombre}";
+        $this->negocios = $this->negocios();
         
         
 

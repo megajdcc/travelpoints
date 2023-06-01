@@ -10,6 +10,7 @@ import paginas from './routes/paginas';
 import negocio from './routes/negocio';
 
 Vue.use(VueRouter)
+import store from '@/store'
 
 const router = new VueRouter({
   
@@ -30,7 +31,26 @@ const router = new VueRouter({
     ...pages,
     ...negocio,
     ...calidad,
-    
+      {
+        path:'/:page',
+        component:() => import('views/paginas/pages.vue'),
+        name:'pages.public',
+        props:true,
+        beforeEnter:(to,from,next) => {
+          let param = to.params;
+          store.dispatch('pagina/capturarPagina',param.page).then(({result}) => {
+            if(result){
+              next()
+            }else{
+              // next(`/${param.page}`)
+            }
+          })
+        },
+        meta:{
+          resource: 'Auth',
+          layout: 'travel',
+        }
+    },
     {
       path: '*',
       redirect: 'error-404',

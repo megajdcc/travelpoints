@@ -187,7 +187,7 @@
 
                            <b-input-group>
                               <b-input-group-prepend is-text>
-                                 {{ url }}/
+                                 {{ url }}/negocio/
                               </b-input-group-prepend>
 
                               <b-form-input v-model="formulario.url" :state="errors.length ? false : null"

@@ -16,10 +16,10 @@
 
          <carrito-compra v-if="is_loggin && carrito.length" />
 
-         <b-nav-item :to="{name:'about'}" v-b-tooltip.hover.bottom title="¿Qué es TravelPoints?"
+         <!-- <b-nav-item :to="{name:'about'}" v-b-tooltip.hover.bottom title="¿Qué es TravelPoints?"
             class="d-none d-md-flex">
             <feather-icon size="21" icon="InfoIcon" />
-         </b-nav-item>
+         </b-nav-item> -->
 
          <b-nav-item :to="{name:'tienda.travel'}" v-b-tooltip.hover.bottom title="Tienda de Regalos" class="d-none d-md-flex">
             <feather-icon size="21" icon="ShoppingBagIcon" />

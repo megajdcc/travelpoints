@@ -160,6 +160,10 @@ import ciudad from './modules/ciudad.js'
 // Academias
 import academiaVideos from './modules/academiaVideos.js'
 
+// Pagina
+
+import pagina from './modules/pagina.js';
+
 Vue.use(Vuex)
 
 export default new Vuex.Store({
@@ -310,7 +314,8 @@ export default new Vuex.Store({
     pais,
     estado,
     ciudad,
-    academiaVideos
+    academiaVideos,
+    pagina
   },
 
   strict: process.env.DEV,

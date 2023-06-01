@@ -2,7 +2,7 @@
   <div class="navbar-container d-flex content align-items-center">
 
     <!-- Nav Menu Toggler -->
-    <ul class="nav navbar-nav d-xl-none">
+    <ul class="nav navbar-nav d-none d-xl-none">
       <li class="nav-item">
         <b-link class="nav-link" @click="toggleVerticalMenuActive">
           <feather-icon icon="MenuIcon" size="21" />
@@ -26,7 +26,7 @@
 
     <!-- Right Col -->
     <b-navbar-nav class="nav align-items-center ml-auto">
-      <locale />
+      <locale class="d-none d-md-flex" />
       <dark-Toggler class="d-none d-lg-block" />
       <!-- <search-bar /> -->
       <!-- <cart-dropdown /> -->
@@ -98,3 +98,10 @@ export default {
 
 }
 </script>
+
+
+<style lang="scss">
+  .vertical-overlay-menu .navbar .navbar-header {
+      min-width: 180px !important;
+  }
+</style>

@@ -28,7 +28,7 @@
          <!-- Vertical Nav Menu -->
          <vertical-nav-menu :is-vertical-menu-active="isVerticalMenuActive"
             :toggle-vertical-menu-active="toggleVerticalMenuActive" class="d-block d-xl-none"
-            :navMenuItems="verticalNavMenuItems">
+            :navMenuItems="itemsMenu">
             <template #header="slotProps">
                <slot name="vertical-menu-header" v-bind="slotProps" />
             </template>
@@ -78,7 +78,7 @@ import useAppConfig from '@core/app-config/useAppConfig'
 import { BNavbar } from 'bootstrap-vue'
 import { useScrollListener } from '@core/comp-functions/misc/event-listeners'
 
-import { onUnmounted } from 'vue'
+import { onUnmounted,toRefs,ref } from 'vue'
 
 // Content Renderer
 // Vertical Menu
@@ -101,6 +101,8 @@ import verticalNavMenuItems from '@/navigation/vertical/travel'
 import {
    BContainer
 } from 'bootstrap-vue'
+
+import store from '@/store'
 
 
 export default {
@@ -133,6 +135,45 @@ export default {
    },
    setup() {
 
+      const {paginas} = toRefs(store.state.pagina)
+      const itemsMenu = ref([
+         ...verticalNavMenuItems,
+      ])
+
+
+      const cargarForm = () => {
+         
+         if(!paginas.value.length){
+            
+            store.dispatch('pagina/getPaginas').then((data) => {
+               itemsMenu.value = [
+                  ...verticalNavMenuItems,
+                  ...data.map((val) => ({
+                        title   : val.nombre,
+                        route   : {path: val.ruta },
+                        action  : 'read',
+                        resource: 'Auth',
+                        icon    : 'PlusSquareIcon',
+                  }))
+               ]
+            })
+
+         }else{
+             itemsMenu.value = [
+               ...verticalNavMenuItems,
+               ...paginas.value.map((val) => ({
+                     title: val.nombre,
+                     route: { path: val.ruta },
+                     action: 'read',
+                     resource: 'Auth',
+                     icon: 'PlusSquareIcon',
+               }))
+            ]
+         }
+
+      }
+
+      cargarForm();
 
       const {
          skin,
@@ -189,7 +230,8 @@ export default {
 
          isNavMenuHidden,
          overlayClasses,
-         verticalNavMenuItems
+         verticalNavMenuItems,
+         itemsMenu
 
       }
    },

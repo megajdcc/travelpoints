@@ -20,11 +20,11 @@
                      Afilia tú negocio
                   </b-link>
                </li>
-               <li class="nav-item">
+               <!-- <li class="nav-item">
                   <b-link :to="{name:'negocio.about'}" class="nav-link px-2 font-weight-bolder">
                      Porque afiliar tu negocio?
                   </b-link>
-               </li>
+               </li> -->
 
 
                <li class="nav-item">
@@ -33,23 +33,24 @@
                   </b-link>
                </li>
 
-               <li class="nav-item">
-                  <b-link :to="{name:'about'}" class="nav-link px-2 font-weight-bolder">
-                     Acerca de {{ app_name }}
+
+               <li class="nav-item" v-for="(pagina,i) in paginas" :key="i">
+                  <b-link :to="{path:`/${pagina.ruta}`}" class="nav-link px-2 font-weight-bolder">
+                     {{ pagina.nombre }}
                   </b-link>
                </li>
 
-               <li class="nav-item">
+               <!-- <li class="nav-item">
                   <b-link :to="{name:'politicas.privacidad'}" class="nav-link px-2 font-weight-bolder">
                      Políticas de privacidad
                   </b-link>
-               </li>
+               </li> -->
 
-               <li class="nav-item">
+               <!-- <li class="nav-item">
                   <b-link :to="{name:'terminos-condiciones'}" class="nav-link px-2 font-weight-bolder">
                     Términos y condiciones 
                   </b-link>
-               </li>
+               </li> -->
 
 
 
@@ -125,9 +126,9 @@ import {
 } from 'bootstrap-vue'
 import useAuth from '@core/utils/useAuth'
 import { $themeConfig } from '@themeConfig'
-import { toRefs, computed, ref} from 'vue'
+import { toRefs, computed, ref,onMounted} from 'vue'
 import store from '@/store'
-
+import { convertirKebabCase,capitalize } from '@core/utils/utils';
 export default {
    components: {
       BContainer,
@@ -144,6 +145,19 @@ export default {
 
    setup(){
       const {sistema} = toRefs(store.state.sistema)
+      const { paginas } = toRefs(store.state.pagina)
+
+      const cargarForm = () => {
+
+         if(!paginas.value.length){
+            store.dispatch('pagina/getPaginas')
+         }  
+
+      } 
+
+      onMounted(() => cargarForm())
+
+
       const {
          appName:app_name
       } = $themeConfig.app;
@@ -164,7 +178,10 @@ export default {
          is_loggin,
          app_name,
          sistema,
-         swiperOptions
+         swiperOptions,
+         paginas,
+         convertirKebabCase,
+         capitalize
       }
    }
 }

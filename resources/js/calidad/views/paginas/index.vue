@@ -33,11 +33,11 @@
       <el-dialog
          title="Elija un Destino"
          :visible.sync="showDestino"
-         fullscreen
+         width="90%"
          :show-close="false"
          :close-on-click-modal="false"
          :close-on-press-escape="false">
-            <destinos :destinos="destinos" isSelected @destinoSelected="destinoSeleccionado" />
+            <destino-selected isSelected @destinoSelected="destinoSeleccionado" />
          </el-dialog>
 
    </b-container>
@@ -92,7 +92,7 @@ export default {
       FormWizard:() => import('@/views/forms/form-wizard/FormWizard.vue'),
       Search:() => import('components/Search.vue'),
       Atracciones: () => import('components/Atracciones.vue'),
-      Destinos : () => import('components/Destinos.vue'),
+      destinoSelected:() => import('components/DestinoSelected.vue'),
       Negocios:() => import('components/Negocios.vue'),
       BBreadcrumb,
       BBreadcrumbItem
@@ -278,7 +278,7 @@ export default {
 </style>
 
 <style lang="scss">
-.el-dialog.is-fullscreen{
-   width:100% !important;
+.el-dialog{
+   width:80% !important;
 }
 </style>

@@ -25,8 +25,9 @@
             <feather-icon size="21" icon="ShoppingBagIcon" />
          </b-nav-item>
 
-         <b-nav-item :to="{name:'contacto'}" v-b-tooltip.hover.bottom title="Contáctanos" class="d-none d-md-flex">
-            <feather-icon size="21" icon="SendIcon" />
+
+         <b-nav-item v-for="(pagina,i) in paginas.filter(val => val.showHeader && val.icono)"  :to="{ path: pagina.ruta }" v-b-tooltip.hover.bottom :title="pagina.nombre" :key="i" class="d-none d-md-flex">
+               <font-awesome-icon :icon="['fas',`fa-${pagina.icono}`]" size="lg"/>
          </b-nav-item>
 
          <dark-Toggler class="d-none d-lg-block" />
@@ -81,7 +82,10 @@ export default {
    setup(){
       const {carrito} = toRefs(store.state.carrito)
       const {usuario} = toRefs(store.state.usuario)
+      const {paginas} = toRefs(store.state.pagina)
 
+
+   
       const {
          is_loggin
       } = useAuth()
@@ -90,18 +94,21 @@ export default {
            if (is_loggin.value) {
             store.dispatch('carrito/getCarrito', usuario.value.id)
          }
+
+         if(!paginas.value.length){
+            store.dispatch('pagina/getPaginas')
+         }
       }
 
       onMounted(() => cargarForm())
       
       watch([usuario],() =>  cargarForm())
 
-    
-
       return {
          carrito,
          is_loggin,
-         usuario
+         usuario,
+         paginas
       }
    }
 

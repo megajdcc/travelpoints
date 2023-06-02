@@ -10,6 +10,7 @@ export default function usePaginaList(){
     {key:'ruta',label:'Ruta',sortable:true},
     {key:'activo',label:'Pagina activa?',sortable:true},
     {key:'is_termino',label:'Pagina de terminos?',sortable:true},
+    {key:'is_contacto',label:'Pagina de contacto?',sortable:true},
     {key:'is_politica',label:'Pagina de politicas?',sortable:true},
     {key:'actions',label:'Actions',sortable:false,sortKey:'id'},
   ])

@@ -75,8 +75,6 @@ export const eliminarDuplicados = (array) => {
 export const marcasFontAwesome = ref([...new Set(Object.keys(fab).map(val => fab[val].iconName))]);
 export const iconosFontAwesome = ref(eliminarDuplicados([...new Set(Object.keys(fas).map(val => ({label:fas[val].iconName,value:fas[val].iconName})))]));
 
-// export eliminarDuplicados;
-
 export const optionsSwiper = ref({
          slidesPerView: 1,
          'centered-slides': false,

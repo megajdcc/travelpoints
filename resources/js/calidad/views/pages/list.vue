@@ -40,6 +40,7 @@
 
                <template #cell(ruta)="{ item }">
                   <b-link :href="`/${item.ruta}`" target="_blank">
+                    <font-awesome-icon :icon="['fas',`fa-${item.icono}`]" v-if="item.icono" class="mr-1"/>
                     {{ item.ruta }}
                   </b-link>
                 </template>
@@ -48,6 +49,12 @@
                 <span class="text-nowrap">
                   {{ item.is_termino ? 'Sí' : 'No' }}
                 </span>
+              </template>
+
+              <template #cell(is_contacto)="{ item }">
+                  <span class="text-nowrap">
+                    {{ item.is_contacto ? 'Sí' : 'No' }}
+                  </span>
               </template>
 
               <template #cell(is_politica)="{ item }">

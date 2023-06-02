@@ -9,6 +9,8 @@ import axios from 'axios'
 import moment from 'moment';
 
 import { fab } from '@fortawesome/free-brands-svg-icons'
+import { fas } from '@fortawesome/free-solid-svg-icons';
+
 import { Pagination, Navigation } from "swiper";
 
 const modules = [Pagination,Navigation] ;
@@ -52,8 +54,28 @@ export const useRouter = () => {
   return { ...toRefs(state), router: vm.$router }
 }
 
-export const marcasFontAwesome = ref([...new Set(Object.keys(fab).map(val => fab[val].iconName))]);
 
+export const eliminarDuplicados = (array) => {
+   const uniqueArray = [];
+  const seenValues = new Set();
+
+  for (let obj of array) {
+    const { label, value } = obj;
+    const key = label + "_" + value;
+
+    if (!seenValues.has(key)) {
+      seenValues.add(key);
+      uniqueArray.push(obj);
+    }
+  }
+
+  return uniqueArray;
+}
+
+export const marcasFontAwesome = ref([...new Set(Object.keys(fab).map(val => fab[val].iconName))]);
+export const iconosFontAwesome = ref(eliminarDuplicados([...new Set(Object.keys(fas).map(val => ({label:fas[val].iconName,value:fas[val].iconName})))]));
+
+// export eliminarDuplicados;
 
 export const optionsSwiper = ref({
          slidesPerView: 1,

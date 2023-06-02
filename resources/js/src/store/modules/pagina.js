@@ -11,7 +11,10 @@ export default{
          is_termino : false,
          is_politica: false,
          usuario_id : null,
-         usuario    : null
+         usuario    : null,
+         is_contacto:false,
+         showHeader:false,
+         icono:''
       },
 
       paginas:[]
@@ -47,6 +50,19 @@ export default{
          }else{
             return ''
          }
+      },
+
+       pageContacto(state){
+         if(state.paginas.length){
+            let page =  state.paginas.find(val => val.is_contacto)
+            if(page != undefined){
+               return page.ruta
+            }else{
+               return '';
+            }
+         }else{
+            return ''
+         }
       }
    },
 
@@ -61,7 +77,11 @@ export default{
             is_termino : false,
             is_politica: false,
             usuario_id : null,
-            usuario    : null
+            usuario    : null,
+            is_contacto:false,
+            showHeader:false,
+            icono:''
+
          }
       },
 

@@ -60,10 +60,53 @@
 
                         </validation-provider>
                 
-                    </b-form-group>
+                </b-form-group>
+
+                
               </b-col>
 
               <b-col cols="12" md="6">
+
+                <b-form-group description="Si habilitas esta opción, mostraremos en el header, un icono con la opción de menú" >
+                          <template #label>
+                            ¿ Deseas mostrar un icono que represente a esta pagina en el header ?: <span class="text-danger">*</span>
+                          </template>
+                          <validation-provider name="showHeader" rules="required" #default="{ errors, valid }">
+                            <b-form-checkbox v-model="formulario.showHeader" :state="valid" switch />
+                      
+                            <b-form-invalid-feedback :state="valid">
+                              {{ errors[0] }}
+                            </b-form-invalid-feedback>
+
+                          </validation-provider>
+                
+                </b-form-group>
+
+                <b-form-group v-if="formulario.showHeader" description="Selecciona un icono, para tu pagina, esto lo mostraremos en el header en vez del nombre" >
+                            <template #label>
+                              Selecciona un icono: <span class="text-danger">*</span>
+                            </template>
+                            <validation-provider name="icono" rules="required" #default="{ errors, valid }">
+                              <v-select v-model="formulario.icono" :options="iconosFontAwesome" label="label" :reduce="option => option.value" >
+                                <template #option="{label}">
+                                    <font-awesome-icon :icon="['fas',`fa-${label}`]"/> 
+                                    {{ label }}
+                                </template>
+
+                                 <template #selected-option="{ label }">
+                                      <font-awesome-icon :icon="['fas',`fa-${label}`]"/> 
+                                      {{ label }}
+                                  </template>
+                              </v-select>
+                      
+                              <b-form-invalid-feedback :state="valid">
+                                {{ errors[0] }}
+                              </b-form-invalid-feedback>
+
+                            </validation-provider>
+                
+                  </b-form-group>
+
                  <b-form-group >
                       <template #label>
                         ¿ Es la pagina de terminos y condiciones ?: <span class="text-danger">*</span>
@@ -92,6 +135,21 @@
 
                       </validation-provider>
               
+                  </b-form-group>
+
+                  <b-form-group >
+                      <template #label>
+                        ¿ Es la pagina de contacto ?: <span class="text-danger">*</span>
+                      </template>
+                      <validation-provider name="is_contacto" rules="required" #default="{ errors, valid }">
+                        <b-form-checkbox v-model="formulario.is_contacto" :state="valid" switch />
+                  
+                        <b-form-invalid-feedback :state="valid">
+                          {{ errors[0] }}
+                        </b-form-invalid-feedback>
+
+                      </validation-provider>
+            
                   </b-form-group>
               </b-col>
             </b-row>
@@ -143,6 +201,8 @@ import {
 
 } from 'vee-validate'
 
+import vSelect from 'vue-select'
+
 import {
   BForm,
   BFormInput,
@@ -167,6 +227,7 @@ import store from '@/store';
 import { optionsEditor } from '@core/utils/utils';
 import Editor from '@tinymce/tinymce-vue'
 
+import { iconosFontAwesome } from '@core/utils/utils'
 export default {
 
 
@@ -187,6 +248,7 @@ export default {
     BInputGroupPrepend,
     Editor,
     BCard,
+    vSelect
 
 
   },
@@ -207,7 +269,8 @@ export default {
       formulario,
       required,
       url,
-      optionsEditor
+      optionsEditor,
+      iconosFontAwesome
 
     }
   }

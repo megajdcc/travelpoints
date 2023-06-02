@@ -18,15 +18,20 @@ class Pagina extends Model
         'is_politica',
         'ruta',
         'usuario_id',
-        'activo'
+        'activo',
+        'is_contacto',
+        'showHeader',
+        'icono'
     ];
 
 
     public $casts = [
-        'header' => 'array',
-        'is_termino' => 'boolean',
+        'header'      => 'array',
+        'is_termino'  => 'boolean',
         'is_politica' => 'boolean',
-        'activo' => 'boolean',
+        'activo'      => 'boolean',
+        'is_contacto' => 'boolean',
+        'showHeader'  => 'boolean'
 
     ];
 

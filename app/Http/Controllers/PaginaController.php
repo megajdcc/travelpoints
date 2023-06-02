@@ -69,7 +69,10 @@ class PaginaController extends Controller
             'is_politica' => 'required',
             'ruta'        => ['required', !is_null($pagina) ? Rule::unique('paginas','ruta')->ignore($pagina): 'unique:paginas,ruta'],
             'usuario_id'  => 'nullable',
-            'activo' => 'nullable'
+            'activo' => 'nullable',
+            'icono' => 'nullable',
+            'showHeader' => 'nullable',
+            'is_contacto' => 'nullable'
         ]));
     }
 
@@ -97,6 +100,13 @@ class PaginaController extends Controller
                 if ($pagina_with_politica = Pagina::where('is_politica', true)->first()) {
                     $pagina_with_politica->is_politica = false;
                     $pagina_with_politica->save();
+                }
+            }
+
+            if ($datos['is_contacto']) {
+                if ($pagina_with_contacto = Pagina::where('is_contacto', true)->first()) {
+                    $pagina_with_contacto->is_contacto = false;
+                    $pagina_with_contacto->save();
                 }
             }
 
@@ -150,6 +160,13 @@ class PaginaController extends Controller
                 if ($pagina_with_politica = Pagina::where('is_politica', true)->first()) {
                     $pagina_with_politica->is_politica = false;
                     $pagina_with_politica->save();
+                }
+            }
+
+            if ($datos['is_contacto']) {
+                if ($pagina_with_contacto = Pagina::where('is_contacto', true)->first()) {
+                    $pagina_with_contacto->is_contacto = false;
+                    $pagina_with_contacto->save();
                 }
             }
 

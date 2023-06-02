@@ -153,7 +153,9 @@ export default {
                         route   : {path: val.ruta },
                         action  : 'read',
                         resource: 'Auth',
-                        icon    : 'PlusSquareIcon',
+                        fontAwesome:val.icono ? true : false,
+                        icon    : val.icono ? `fa-${val.icono}` : 'MinusIcon',
+                        ExactPath:true
                   }))
                ]
             })

@@ -92,6 +92,10 @@ export const navLinkProps = item => computed(() => {
    if(item.exact){
      props.exact = item.exact
    }
+
+   if(item.ExactPath){
+     props.ExactPath = item.ExactPath
+   }
   
   return props
 })

@@ -5,10 +5,10 @@
          <b-card no-body class="faq-search"
             :style="{ backgroundImage: `url(${imgBanner})` }">
             <b-card-body class="text-center content-banner">
-               <h1 class="text-primary font-weight-bolder display-5">
+               <h1 class="text-white font-weight-bolder display-5">
                   Respondamos algunas preguntas
                </h1>
-               <b-card-text class="mb-2 font-weight-bolder "  >
+               <b-card-text class="mb-2 font-weight-bolder text-white "  >
                   o elige una categoría para encontrar rápidamente la ayuda que necesitas
                </b-card-text>
 
@@ -141,7 +141,7 @@ export default {
    setup(){
       const datos = ref([])
 
-
+      const {sistema} = toRefs(store.state.sistema)
       const {skin} = useAppConfig();
       const {authGoogle} = useAuth();
 
@@ -170,7 +170,7 @@ export default {
 
       return {
          skin,
-         imgBanner: computed(() => ['semi-dark', 'dark'].includes(skin.value) ? require('@/assets/images/illustration/patron_fondo_blanco.svg') : require('@/assets/images/illustration/patron_fondo_negro.svg')),
+         imgBanner: computed(() => `/storage/${sistema.value.banner_principal}`),
          datos,
          faqSearchQuery,
          loading:computed(() => store.state.loading)
@@ -184,16 +184,21 @@ export default {
 @import '~@core/scss/vue/pages/page-faq.scss';
 
 .faq-search{
-   background-attachment: fixed;
-   background-position: top;
+   // background-attachment: fixed;
    position: relative;
+   border-radius:7px;
+   background-position: center center !important;
+   background-repeat: no-repeat;
+   background-size: cover;
+   height:300px;
    &::after{
          content:'';
          position: absolute;
          width: 100%;
          height:100%;
-         background-color: rgba(0,0,0,0.6);
+         background-color: rgba(0,0,0,0.3);
          z-index: 9;
+         border-radius:7px;
    }
 
    .content-banner{

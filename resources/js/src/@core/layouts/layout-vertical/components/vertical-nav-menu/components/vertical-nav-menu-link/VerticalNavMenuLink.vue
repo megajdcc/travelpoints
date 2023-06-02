@@ -9,7 +9,6 @@
   >
     <b-link
       v-bind="linkProps"
-      
       class="d-flex align-items-center"
     >
       <font-awesome-icon :icon="[ item.iconFa || 'fas',item.icon]" v-if="item.fontAwesome"  />

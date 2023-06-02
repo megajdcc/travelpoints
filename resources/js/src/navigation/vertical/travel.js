@@ -17,13 +17,13 @@ export default [
       icon: 'ShoppingBagIcon',
    },
 
-   {
-      title: 'Contacto',
-      route: 'contacto',
-      action: 'read',
-      resource: 'Auth',
-      icon: 'SendIcon',
-   },
+   // {
+   //    title: 'Contacto',
+   //    route: 'contacto',
+   //    action: 'read',
+   //    resource: 'Auth',
+   //    icon: 'SendIcon',
+   // },
 
    {
       title: 'Preguntas Frecuentes',
@@ -32,6 +32,7 @@ export default [
       resource: 'Auth',
       icon: 'HelpCircleIcon',
    },
+   
    {
       title: 'Afilia tú negocio',
       route: 'socio.negocio.afiliar',

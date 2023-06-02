@@ -98,7 +98,7 @@
         <el-divider content-position="left">Sucursales</el-divider>
         <b-col cols="12" class="mt-2">
             <GmapMap :center="{ lat: promedioLatitud, lng: promedioLongitud }" :zoom="3" map-type-id="terrain"
-                      style="width: 100%; height: 300px" :options="{ styles: stylos }" ref="refMap">
+                      style="width: 100%; height: 300px" :options="{ styles: stylosMap }" ref="refMap">
                 
                 <GmapMarker :visible="true" :draggable="false" :icon="iconMapa" :clickable="true" 
                 v-for="(sucursal, i) in sistema.sucursales" :key="i" :position="{

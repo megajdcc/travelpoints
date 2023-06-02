@@ -5,7 +5,7 @@
 
       <b-col cols="12">
 
-        <strong class="text-center mb-2 d-block" style="font-size:14pt; font-style:italic">Ponte con contácto con nosotros !</strong>
+        <strong class="text-center mb-2 d-block" style="font-size:14pt; font-style:italic">Ponte en contácto con nosotros !</strong>
 
         <validation-observer ref="formValidate" #default="{ handleSubmit }">
             <b-form @submit.prevent="handleSubmit(enviar)" >
@@ -100,18 +100,18 @@
           <GmapMap :center="{ lat: promedioLatitud, lng: promedioLongitud }" :zoom="3" map-type-id="terrain"
                     style="width: 100%; height: 300px" :options="{ styles: stylos }" ref="refMap">
                 
-                    <GmapMarker :visible="true" :draggable="false" :icon="iconMapa" :clickable="true" 
-                    v-for="(sucursal, i) in sistema.sucursales" :key="i" :position="{
-                      lat: Number(sucursal.lat),
-                      lng: Number(sucursal.lng)
-                    }">
-                
-                      <GmapInfoWindow :options="optionsPlace(sucursal)">
-                      </GmapInfoWindow>
-                
-                    </GmapMarker>
-                
-                  </GmapMap>
+              <GmapMarker :visible="true" :draggable="false" :icon="iconMapa" :clickable="true" 
+              v-for="(sucursal, i) in sistema.sucursales" :key="i" :position="{
+                lat: Number(sucursal.lat),
+                lng: Number(sucursal.lng)
+              }">
+          
+                <GmapInfoWindow :options="optionsPlace(sucursal)">
+                </GmapInfoWindow>
+          
+              </GmapMarker>
+          
+          </GmapMap>
       </b-col>
     </b-row>
 

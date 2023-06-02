@@ -42,7 +42,7 @@ const router = new VueRouter({
             if(result){
               next()
             }else{
-              // next(`/${param.page}`)
+              next({name:'error-404'})
             }
           })
         },

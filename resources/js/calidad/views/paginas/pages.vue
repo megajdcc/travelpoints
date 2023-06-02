@@ -9,7 +9,8 @@
 <script>
 
 import store from '@/store'
-import {ref,computed,toRefs} from 'vue'
+import {ref,computed,toRefs,watch} from 'vue'
+import router from '@/router';
 
 export default {
   
@@ -21,6 +22,14 @@ export default {
     const {page} = toRefs(props)
 
     const {pagina} = toRefs(store.state.pagina)
+
+    watch(page,() => {
+        store.dispatch('pagina/capturarPagina', page.value).then(({ result }) => {
+          if (!result) {
+              router.push({ name: 'error-404' })
+          }
+        })
+    })
 
     return {
       pagina,

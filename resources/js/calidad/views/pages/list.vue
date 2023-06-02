@@ -26,7 +26,7 @@
 
                <template #row-details="{ item }">
 
-                 <el-divider content-position="left">Promotores</el-divider>
+                 <el-divider content-position="left">Vista Previa</el-divider>
                   <b-container fluid>
                     <b-row>
                       <b-col>

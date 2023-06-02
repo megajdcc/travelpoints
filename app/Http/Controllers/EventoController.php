@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Evento;
 use Illuminate\Http\Request;
 use App\Models\{Atraccion,Destino,Imagen};
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\{DB,Storage,File};
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Str;
@@ -60,7 +61,9 @@ class EventoController extends Controller
             ])
                 ->where('model_id', $datos['model_id'])
                 ->where('model_type', $datos['model_type'])
-                ->where('status',isset($datos['perfil']) && $datos['perfil'] == true ? 1 :  '>', 0)
+                ->when($datos['perfil'], function($q){
+                    $q->where('status',true);
+                })
                 ->with(['imagenes', 'model'])
                 ->orderBy($datos['sortBy']  ?: 'id', $datos['isSortDirDesc'] ? 'desc' : 'asc')
                 ->paginate($datos['perPage'] ?: 10000);
@@ -69,7 +72,9 @@ class EventoController extends Controller
                 ['titulo', 'LIKE', "%{$datos['q']}%", 'OR'],
                 ['contenido', 'LIKE', "%{$datos['q']}%", 'OR'],
             ])
-            ->where('status', isset($datos['perfil']) && $datos['perfil'] == true ? 1 :  '>', 0)
+            ->when($datos['perfil'], function ($q) {
+                $q->where('status', true);
+            })
             ->with(['imagenes', 'model'])
             ->orderBy($datos['sortBy'] ?: 'id', $datos['isSortDirDesc'] ? 'desc' : 'asc')
             ->paginate($datos['perPage'] ?: 10000);
@@ -276,6 +281,58 @@ class EventoController extends Controller
         }
 
         return response()->json(['result' => $result, 'evento' => $evento]);
+    }
+
+
+    public function fetchDataPublic(Request $request){
+
+        $filtro = $request->all();
+        $destino = $request->get('destino');
+
+        $paginator = Evento::where([
+            ['titulo','LIKE',"%{$filtro['q']}%",'OR'],
+            ['contenido', 'LIKE', "%{$filtro['q']}%", 'OR'],
+            ['fecha_inicio', 'LIKE', "%{$filtro['q']}%", 'OR'],
+            ['fecha_fin', 'LIKE', "%{$filtro['q']}%", 'OR'],
+            ['url', 'LIKE', "%{$filtro['q']}%", 'OR'],
+        ])->where('status',1)
+      
+        ->orderBy('fecha_inicio','asc')
+        ->paginate($filtro['perPage']?: 1000);
+
+          
+
+        $eventos = collect($paginator->items())->each(fn($event) => $event->cargar())
+        ->filter(function($event) use($destino){
+                switch ($event->model->model_type) {
+                    case "App\\Models\\Destino":
+                        return $event->model->id == $destino ;
+                        break;
+
+                    case "App\\Models\\Atraccion":
+                        return $event->model->destino_id == $destino;
+                        break;
+                    
+                    default:
+                        return false;
+                        break;
+                }
+        });
+        
+
+        return response()->json(['total' => $paginator->total(),'eventos' => $eventos]);
+
+
+    }
+
+    public function fetchDataUrl(string $url){
+
+        $result = false;
+        if( $evento = Evento::where('url', $url)->first()){
+            $evento->cargar();
+            $result = true;
+        }
+        return response()->json(['result' => $result,'evento' =>  $result ? $evento : null]);
     }
 
 

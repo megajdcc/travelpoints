@@ -29,6 +29,9 @@
       <!-- Negocios -->
       <negocios :destino="destino" v-if="destino_id" />
 
+      <!-- Eventos -->
+      <eventos :destino="destino" v-if="destino_id" />
+
       <!-- Si el usuario no Ha seleccionado un destino, debe hacerlo  -->
       <el-dialog
          title="Elija un Destino"
@@ -94,6 +97,8 @@ export default {
       Atracciones: () => import('components/Atracciones.vue'),
       destinoSelected:() => import('components/DestinoSelected.vue'),
       Negocios:() => import('components/Negocios.vue'),
+      Eventos: () => import('components/Eventos.vue'),
+
       BBreadcrumb,
       BBreadcrumbItem
    },

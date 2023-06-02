@@ -5,7 +5,7 @@
 
         <b-col cols="12">
 
-          <strong class="text-center mb-2 d-block" style="font-size:14pt; font-style:italic">¡Contáctanos!</strong>
+          <strong class="text-center mb-2 d-block" style="font-size:18pt; font-style:italic">¡Contáctanos!</strong>
 
           <validation-observer ref="formValidate" #default="{ handleSubmit }">
               <b-form @submit.prevent="handleSubmit(enviar)" >

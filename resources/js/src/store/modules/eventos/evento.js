@@ -293,6 +293,33 @@ export default{
 
       },
 
+      fetchDataPublic({commit},filtro){
+
+         return new Promise((resolve, reject) => {
+            
+            axios.post(`/api/eventos/fetch-data-public`,filtro).then(({data}) => {
+               resolve(data)
+            }).catch(e => reject(e))
+
+         })
+      },
+
+
+      fetchEventPublic({commit},event_url){
+         return new Promise((resolve, reject) => {
+            axios.get(`/api/eventos/fetch-data/url/${event_url}`).then(({data}) => {
+
+               if(data.result){
+                  commit('setEvento',data.evento)
+               }
+
+               resolve(data)
+            })
+            .catch(e => reject(e))
+
+         })
+      }
+
 
 
 

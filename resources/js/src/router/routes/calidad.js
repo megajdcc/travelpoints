@@ -1,3 +1,5 @@
+import store from '@/store';
+
 export default [
    /*****************************************/
    /* SOCIO
@@ -3134,6 +3136,34 @@ export default [
       
    },
 
+   /*****************************************/
+   /* PAGINA DE EVENTOS
+   /*************************************** */
+
+   {
+      path:'/eventos/:event',
+      props:true,
+      component:() => import('views/paginas/eventos/show.vue'),
+      name:'evento.show',
+      beforeEnter: (to, from, next) => {
+          let param = to.params;
+
+         store.dispatch('evento/fetchEventPublic',param.event).then(({result,evento}) => {
+            if(result){
+               next();
+            }else{
+               next({name:'error-404'})
+            }
+         }).catch(e => {
+            next({name:'error-404'})
+         })
+      },
+      meta:{
+         layout:'travel',
+         resource:'Auth',
+         action:"read"
+      }
+   },
 
    
 

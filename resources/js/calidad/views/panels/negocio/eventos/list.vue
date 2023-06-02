@@ -30,7 +30,7 @@
 
       <b-sidebar v-model="showEvent" :title="evento.titulo.toUpperCase()" :width="getAncho > 720 ? '450px' : '320px'">
          <template #title>
-            <b-link :href="evento.url" target="_blank"> <font-awesome-icon icon="fas fa-hand-pointer" /> {{
+            <b-link :to="{name:'evento.show',params:{event:evento.url}}" target="_blank"> <font-awesome-icon icon="fas fa-hand-pointer" /> {{
                evento.titulo.toUpperCase() }} </b-link>
          </template>
          <b-container fluid>

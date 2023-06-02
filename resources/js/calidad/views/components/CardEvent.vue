@@ -14,7 +14,7 @@
     >
 
           <template #title >
-            <b-link :href="evento.url" target="_blank " class="text-white"> <font-awesome-icon icon="fas fa-hand-pointer"/>
+            <b-link :to="{ name: 'evento.show', params: { event: evento.url } }" target="_blank " class="text-white"> <font-awesome-icon icon="fas fa-hand-pointer"/>
               {{ evento.titulo.toUpperCase() }}
             </b-link>
          </template>

@@ -724,3 +724,6 @@ Route::get('paginas/get/all', [PaginaController::class, 'getAll']);
 // Eventos
 Route::get('eventos/fetch-data/url/{url}', [EventoController::class, 'fetchDataUrl']);
 Route::post('eventos/fetch-data-public', [EventoController::class, 'fetchDataPublic']);
+
+// Travels
+Route::get('travels/map/destino/{destino}',[HomeController::class,'getTravels']);

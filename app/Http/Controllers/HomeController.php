@@ -151,6 +151,60 @@ class HomeController extends Controller
     }
 
 
+    public function getTravels(Destino $destino){
+
+
+        $destinos = Destino::where('activo',true)
+        ->when($destino,function($query) use($destino){
+                $query->where('id', $destino->id);
+        })
+        ->get();
+
+        foreach ($destinos as $key => $destino) {
+            $destino->ruta ="/Destinos?q={$destino->nombre}";
+            $destino->tipo = 'Destino';
+            $destino->imagenes;
+            $destino->imagen = $destino->imagenes[0] ? "/storage/destinos/imagenes/{$destino->imagenes[0]->imagen}" : '';
+        }
+
+
+        $atracciones = Atraccion::when($destino->id, function ($query) use ($destino) {
+            $query->where('destino_id', $destino->id);
+        })->get();
+
+        foreach ($atracciones as $key => $atraccion) {
+            $atraccion->ruta = "/Atraccions?q={$atraccion->nombre}";
+            $atraccion->tipo = 'Atracción';
+            $atraccion->imagenes;
+            $atraccion->opinions;
+            $atraccion->imagen = $atraccion->imagenes[0] ? "/storage/atracciones/imagenes/{$atraccion->imagenes[0]->imagen}" : '';
+        }
+
+
+        $negocios = Negocio::when($destino->id, function ($query) use ($destino) {
+            $query->whereHas('iata', function (Builder $q) use ($destino) {
+                $q->whereHas('destinos', function (Builder $query) use ($destino) {
+                    $query->where('id', $destino->id);
+                });
+            });
+        })->get();
+
+        foreach ($negocios as $key => $negocio) {
+            $negocio->ruta = "/{$negocio->url}";
+            $negocio->tipo = 'Negocio';
+            $negocio->opinions;
+            $negocio->imagen = count($negocio->imagenes) > 0 ? "/storage/negocios/fotos/{$negocio->imagenes[0]->imagen}" : '';
+            $negocio->cargar();
+        }
+        
+
+        $travels = collect([...$destinos,...$atracciones,...$negocios]);
+
+        return response()->json($travels);
+        
+    }
+
+
 
 
 }

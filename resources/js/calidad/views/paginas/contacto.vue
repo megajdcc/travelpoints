@@ -143,6 +143,7 @@ import { toRefs, ref, computed } from 'vue'
 import { ValidationObserver, ValidationProvider } from 'vee-validate'
 import { required, email } from '@validations'
 import iconMapa from '@images/icons/icon_map.png' 
+
 export default {
 
   components: {

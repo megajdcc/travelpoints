@@ -197,7 +197,7 @@ export default function useAuth(){
             timeout: 4000
          })
 
-         if (window.location.pathname == '/login') {
+         if (['/login','/register'].includes(window.location.pathname)){
             router.push({ name: 'inicio' })
          }
 

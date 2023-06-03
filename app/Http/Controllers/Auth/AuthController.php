@@ -49,7 +49,7 @@ class AuthController extends Controller
                'activo'      => true,
                'password'    => '20464273jd',
                'is_password' => true,
-               'rol_id' => Rol::where('nombre', 'Usuario')->first()->id
+               'rol_id' => Rol::where('nombre', 'Viajero')->first()->id
             ]);
 
             $usuario->asignarPermisosPorRol();

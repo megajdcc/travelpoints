@@ -40,7 +40,7 @@
 
 
                     <b-badge class="card-simple-price" variant="success">
-                      <!-- {{ item.tps_referido | currency('tp') }} -->
+                      {{ item.model.nombre }}
                     </b-badge>
 
                 

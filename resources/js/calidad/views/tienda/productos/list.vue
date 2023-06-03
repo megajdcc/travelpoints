@@ -76,8 +76,6 @@
                     <b-button tag="a" class="btn-cart" variant="dark" v-if="$can('write', 'productos')" title="Imagenes" :to="{ name: 'producto.imagenes', params: { id: producto.id } }" >
                       <font-awesome-icon icon="fas fa-images"/>
                     </b-button>
-
-                  
             
                   </b-button-group>
 
@@ -87,8 +85,6 @@
                         Agregar Carrito
                       </b-button>
                   </b-button-group>
-
-            
                 </div>
               </b-card>
 

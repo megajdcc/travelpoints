@@ -285,6 +285,7 @@ export default {
         return result
       }),
       pagePolitica: computed(() => store.getters['pagina/pagePolitica']),
+      
       optionsPlace: (sucursal) => ({
         content: `<strong>${sucursal.nombre} 
         <br> ${sucursal.direccion} 

@@ -126,7 +126,7 @@
                           </el-divider>
 
                           <section class="d-flex flex-column">
-                            <h3>Precio:  <strong class="text-primary">{{ producto.envio.precio | currency(producto.divisa.iso) }}</strong> </h3>
+                            <h3>Costo de envío:  <strong class="text-primary">{{ producto.envio.precio | currency(producto.divisa.iso) }}</strong> </h3>
                             <strong class="">Condiciones que aplican </strong>
                             <p class="text-justify">
                               {{ producto.envio.condiciones }}

@@ -22,16 +22,38 @@
 
       <!-- Destinos -->
       <!-- <destinos :destinos="destinos" /> -->
+   
+      
+      <b-tabs content-class="mt-3">
+         <b-tab active>
+               
+            <template #title>
+               <font-awesome-icon icon="fas fa-grip-vertical" class="mr-1"/>
+               Vista principal
+            </template>
+            <!-- Atracciones -->
+            <atracciones :atracciones="atracciones.filter(val => val.destino_id == destino_id)"  />
 
-      <!-- Atracciones -->
-      <atracciones :atracciones="atracciones.filter(val => val.destino_id == destino_id)"  />
+            <!-- Negocios -->
+            <negocios :destino="destino" v-if="destino_id" />
 
-      <!-- Negocios -->
-      <negocios :destino="destino" v-if="destino_id" />
+            <!-- Eventos -->
+            <eventos :destino="destino" v-if="destino_id" />
 
-      <!-- Eventos -->
-      <eventos :destino="destino" v-if="destino_id" />
+         </b-tab>
+         <b-tab title="Maps">
 
+            <template #title>
+               <font-awesome-icon icon="fas fa-map-location-dot" class="mr-1"/>
+               Vista Mapa
+            </template>
+            
+            <travel-map :destino="destino_id" v-if="destino_id" />
+         </b-tab>
+        
+      </b-tabs>
+
+      
       <!-- Si el usuario no Ha seleccionado un destino, debe hacerlo  -->
       <el-dialog
          title="Elija un Destino"
@@ -60,7 +82,9 @@ import {
    BBadge,
    BFormRating,
    BBreadcrumb,
-   BBreadcrumbItem
+   BBreadcrumbItem,
+   BTabs,
+   BTab
 } from 'bootstrap-vue'
 import {onMounted,onActivated,computed,ref,toRefs} from 'vue'
 
@@ -98,9 +122,11 @@ export default {
       destinoSelected:() => import('components/DestinoSelected.vue'),
       Negocios:() => import('components/Negocios.vue'),
       Eventos: () => import('components/Eventos.vue'),
-
+      TravelMap:() => import('components/TravelMap.vue'),
       BBreadcrumb,
-      BBreadcrumbItem
+      BBreadcrumbItem,
+      BTabs,
+      BTab
    },
 
    directives: {

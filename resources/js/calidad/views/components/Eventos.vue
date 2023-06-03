@@ -1,6 +1,6 @@
 <template>
   <b-row>
-    <b-col cols="12" v-if="actions.items.length">
+    <b-col cols="12">
       <h3>{{ titulo }}</h3>
       <p>{{ subTitulo }}</p>
     </b-col>

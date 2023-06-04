@@ -33,20 +33,10 @@ export default [
 
   {
     path: '/reset-password/:token',
-<<<<<<< HEAD
-    props:route => {
-      return{
-        token: (route.params.token),
-        email: (route.query.email),
-      }
-      
-    },
-=======
     props: (route) => ({
       token: (route.params.token),
       email: (route.query.email),
     }),
->>>>>>> vite
     name: 'auth-reset-password',
     component: () => import('views/auth/PasswordReset.vue'),
     meta: {

@@ -1,5 +1,4 @@
 <template>
-
   <div class="container-fluid w-100 px-0 mx-0">
 
     <!-- Filters -->
@@ -23,12 +22,13 @@
             <b-input-group size="sm">
               <b-form-input v-model="searchQuery" placeholder="Buscar..." />
               <template #append>
-                <b-button variant="primary" @click="$router.push({name:'create.usuario'})" v-if="$can('write','usuarios')">
-                  <span class="text-nowrap">{{ legendBtn  }}</span>
+                <b-button variant="primary" @click="$router.push({ name: 'create.usuario' })"
+                  v-if="$can('write', 'usuarios')">
+                  <span class="text-nowrap">{{ legendBtn }}</span>
                 </b-button>
               </template>
             </b-input-group>
-            
+
           </b-col>
         </b-row>
 
@@ -39,21 +39,7 @@
         :sort-desc.sync="isSortDirDesc">
 
         <!-- Column: User -->
-<<<<<<< HEAD
-        <template #cell(usuario)="data">
-          <b-media vertical-align="center">
-            <template #aside>
-              <b-avatar size="32" :src="data.item.avatar" :text="avatarText(data.item.usuario)"
-                :variant="`light-${resolveUserRoleVariant(data.item.rol)}`"
-                :to="{ name: 'mostrar.usuario', params: { id: data.item.id } }" disabled />
-            </template>
-            <b-link :to="{ name: 'mostrar.usuario', params: { id: data.item.id } }" disabled
-              class="font-weight-bold d-block text-nowrap"> 
-              {{ data.item.usuario }}
-            </b-link>
-            <small class="text-muted" v-if="data.item.username">{{ data.item.username }}</small>
-=======
-        <template #cell(username)="{item}">
+        <template #cell(username)="{ item }">
           <b-media vertical-align="center">
             <template #aside>
               <b-avatar size="32" :src="item.avatar" :text="avatarText(`${item.nombre} ${item.apellido}`)"
@@ -61,30 +47,22 @@
                 :to="{ name: 'mostrar.usuario', params: { id: item.id } }" disabled />
             </template>
             <b-link :to="{ name: 'mostrar.usuario', params: { id: item.id } }" disabled
-              class="font-weight-bold d-block text-nowrap"> 
+              class="font-weight-bold d-block text-nowrap">
               {{ `${item.nombre} ${item.apellido}` }}
             </b-link>
             <small class="text-muted" v-if="item.username">{{ item.username }}</small>
->>>>>>> vite
           </b-media>
         </template>
-        
-        
-        <template #cell(activo)="{item}">
+
+
+        <template #cell(activo)="{ item }">
           <b-form-checkbox v-model="item.activo" switch @change="cambiarEstado(item.id)">
             {{ item.activo ? 'Activo (¿Desactivar?)' : 'Desactivo (¿Activar?)' }}
           </b-form-checkbox>
         </template>
 
         <!-- Column: Rol -->
-<<<<<<< HEAD
-        <template #cell(rol)="data">
-          <div class="text-nowrap">
-            <feather-icon :icon="resolveUserRoleIcon(data.item.rol)" size="18" class="mr-50"
-              :class="`text-${resolveUserRoleVariant(data.item.rol)}`" />
-            <span class="align-text-top text-capitalize">{{ data.item.rol }}</span>
-=======
-        <template #cell(rol)="{item}">
+        <template #cell(rol)="{ item }">
           <div class="text-nowrap">
             <feather-icon :icon="resolveUserRoleIcon(item.rol ? item.rol.nombre : '')" size="18" class="mr-50"
               :class="`text-${resolveUserRoleVariant(item.rol ? item.rol.nombre : '')}`" />
@@ -102,7 +80,8 @@
             </template>
 
 
-            <b-dropdown-item :to="{ name: 'edit.usuario', params: { id: data.item.id } }" v-if="$can('update','usuarios')">
+            <b-dropdown-item :to="{ name: 'edit.usuario', params: { id: data.item.id } }"
+              v-if="$can('update', 'usuarios')">
               <feather-icon icon="EditIcon" />
               <span class="align-middle ml-50">Editar</span>
             </b-dropdown-item>
@@ -112,15 +91,15 @@
               <span class="align-middle ml-50">Eliminar</span>
             </b-dropdown-item>
 
-             <b-dropdown-item :to="{name:'movimientos.user',params:{id:data.item.id}}">
-                <font-awesome-icon icon="fas fa-money-check"/>
-                <span class="align-middle ml-50">Movimientos de cuenta</span>
-              </b-dropdown-item>
+            <b-dropdown-item :to="{ name: 'movimientos.user', params: { id: data.item.id } }">
+              <font-awesome-icon icon="fas fa-money-check" />
+              <span class="align-middle ml-50">Movimientos de cuenta</span>
+            </b-dropdown-item>
 
-              <b-dropdown-item :to="{name:'promotores.list',params:{id:data.item.id}}" v-if="$can('read','promotores')">
-                <font-awesome-icon icon="fas fa-user-tie"/>
-                <span class="align-middle ml-50">Promotores</span>
-              </b-dropdown-item>
+            <b-dropdown-item :to="{ name: 'promotores.list', params: { id: data.item.id } }" v-if="$can('read', 'promotores')">
+              <font-awesome-icon icon="fas fa-user-tie" />
+              <span class="align-middle ml-50">Promotores</span>
+            </b-dropdown-item>
           </b-dropdown>
         </template>
 
@@ -155,16 +134,16 @@ import {
 
 import vSelect from 'vue-select'
 import store from '@/store'
-import { ref, onUnmounted,onMounted,computed} from 'vue'
+import { ref, onUnmounted, onMounted, computed } from 'vue'
 import { avatarText } from '@core/utils/filter'
 import UsersListFilters from './UsersListFilters.vue'
 import useUsersList from './useUsersList'
 
 // import UserListAddNew from './UserListAddNew.vue'
 
-import { mapGetters,mapMutations,mapActions } from 'vuex';
+import { mapGetters, mapMutations, mapActions } from 'vuex';
 
-import {toRefs} from 'vue'
+import { toRefs } from 'vue'
 
 export default {
   components: {
@@ -185,18 +164,18 @@ export default {
     BDropdownItem,
     BDropdownItemButton,
     BPagination,
-    PaginateTable:() => import('components/PaginateTable'),
+    PaginateTable: () => import('components/PaginateTable'),
     vSelect,
-    PerPage:() => import('components/PerPage'),
+    PerPage: () => import('components/PerPage'),
     BInputGroup,
     BFormCheckbox
   },
 
-  computed:{
-    ...mapGetters('rol',['getRols'])
+  computed: {
+    ...mapGetters('rol', ['getRols'])
   },
 
-  mounted(){
+  mounted() {
 
     this.$eventHub.$on('fetch-user', () => {
       this.refetchData();
@@ -209,17 +188,17 @@ export default {
 
     const cambiarEstado = (user_id) => {
 
-      store.dispatch('usuario/cambiarEstado',user_id).then(({result}) => {
+      store.dispatch('usuario/cambiarEstado', user_id).then(({ result }) => {
 
-        if(result){
+        if (result) {
           toast.success('Se ha cambiado con éxito el estado del usuario')
           refetchData()
-        }else{
+        } else {
           toast.info('No se pudo cambiar el Estado del usuario')
           refetchData();
         }
       }).catch(e => console.log(e))
-      
+
     }
 
 
@@ -274,9 +253,9 @@ export default {
       // Extra Filters
       roleFilter,
       usuario,
-      legendBtn:computed(() => {
+      legendBtn: computed(() => {
 
-        if(!['Lider','Coordinador','Promotor'].includes(usuario.value.rol ? usuario.value.rol.nombre : '')){
+        if (!['Lider', 'Coordinador', 'Promotor'].includes(usuario.value.rol ? usuario.value.rol.nombre : '')) {
           return 'Agregar Usuario'
         }
 
@@ -286,26 +265,26 @@ export default {
   },
 
 
-  methods:{
-     ...mapMutations('app',['TOGGLE_OVERLAY']),
-    ...mapActions('usuario',['eliminar']),
+  methods: {
+    ...mapMutations('app', ['TOGGLE_OVERLAY']),
+    ...mapActions('usuario', ['eliminar']),
 
-    eliminarUsuario(item){
+    eliminarUsuario(item) {
 
       this.TOGGLE_OVERLAY();
 
       this.eliminar(item.id).then(respon => {
-        
-        if(respon.data.result){
+
+        if (respon.data.result) {
           this.$notify.info('Cuenta eliminada exitosamente');
           this.refetchData();
-        }else{
-           this.$notify.info('La cuenta de usuario no se pudo eliminar ');
+        } else {
+          this.$notify.info('La cuenta de usuario no se pudo eliminar ');
         }
 
       }).catch(e => {
         console.log(e)
-      }).then(() =>  {
+      }).then(() => {
         this.TOGGLE_OVERLAY()
       })
 
@@ -315,9 +294,9 @@ export default {
   },
 
 
- 
 
-  
+
+
 }
 </script>
 

@@ -31,8 +31,6 @@ export const primerNombre = value => {
 
  }
 
-<<<<<<< HEAD
-=======
  export const horarioDia = (horario) => {
 
    var dia = ''
@@ -62,7 +60,6 @@ export const primerNombre = value => {
    return dia;
  }
 
->>>>>>> vite
 export const getEtapaEdad = (edad) => {
 
   if (edad <= 5) {

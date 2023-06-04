@@ -9,12 +9,8 @@ export default function usePermiso() {
 
    const tableColumns = [
       { key: 'id', sortable: true, label: '#' },
-<<<<<<< HEAD
-      { key: 'nombre', sortable: true, label: "Rol" },
-=======
       { key: 'nombre', sortable: true, label: "Permiso" },
       { key:'panel_id',sortable:true,label:'Panel'},
->>>>>>> vite
       { key: 'actions', sortKey: "id", sortable: true },
    ];
 

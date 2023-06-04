@@ -35,10 +35,6 @@ export default {
 
 	setup(){
 		// store.dispatch('rol/cargarRoles')
-<<<<<<< HEAD
-		store.dispatch('permiso/cargarPermisos')
-=======
->>>>>>> vite
 
 		let {
 			routerTransition

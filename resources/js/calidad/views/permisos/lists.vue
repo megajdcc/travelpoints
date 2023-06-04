@@ -39,8 +39,6 @@
 				:sort-by.sync="sortBy" empty-text="No se encontró ningún Permiso" :sort-desc.sync="isSortDirDesc"
 				sticky-header="700px" :no-border-collapse="false" borderless outlined small>
 
-<<<<<<< HEAD
-=======
 
 				<template #cell(panel_id)="{item}">
 					<div class="text-nowrap">
@@ -49,7 +47,6 @@
 
 				</template>
 
->>>>>>> vite
 				<!-- Column: Actions -->
 				<template #cell(actions)="{ item }">
 

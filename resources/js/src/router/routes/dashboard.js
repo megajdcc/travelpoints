@@ -8,9 +8,6 @@ export default [
     },
     component: () => import('views/home'),
   },
-<<<<<<< HEAD
-=======
   
 
->>>>>>> vite
 ]

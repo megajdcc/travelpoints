@@ -2,22 +2,12 @@
    <div>
       <!-- faq search section -->
       <section id="faq-search-filter">
-         <b-card no-body class="faq-search"
-<<<<<<< HEAD
-            :style="{ backgroundImage: `url(${require('@/assets/images/banner/banner.png')})` }">
-            <b-card-body class="text-center">
-               <h2 class="text-primary">
-                  Respondamos algunas preguntas
-               </h2>
-               <b-card-text class="mb-2">
-=======
-            :style="{ backgroundImage: `url(${imgBanner})` }">
+         <b-card no-body class="faq-search" :style="{ backgroundImage: `url(${imgBanner})` }">
             <b-card-body class="text-center content-banner">
-               <h1 class="text-primary font-weight-bolder display-5">
+               <h1 class="text-white font-weight-bolder display-5">
                   Respondamos algunas preguntas
                </h1>
-               <b-card-text class="mb-2 font-weight-bolder "  >
->>>>>>> vite
+               <b-card-text class="mb-2 font-weight-bolder text-white ">
                   o elige una categoría para encontrar rápidamente la ayuda que necesitas
                </b-card-text>
 
@@ -42,7 +32,7 @@
             nav-wrapper-class="faq-navigation col-md-4 col-lg-3 col-12" nav-class="nav-left">
 
             <!-- payment tab -->
-            <b-tab v-for="(categoria,i) in datos" :key="i" :active="!i">
+            <b-tab v-for="(categoria, i) in datos" :key="i" :active="!i">
 
                <!-- title -->
                <template #title>
@@ -75,13 +65,8 @@
             </b-col>
             <b-col sm="6">
                <b-card class="shadow-none py-1 faq-contact-card">
-<<<<<<< HEAD
-                  <b-avatar size="42" rounded variant="light-primary" class="mb-2">
-                     <feather-icon icon="PhoneCallIcon" size="18" />
-=======
-                  <b-avatar size="70" rounded variant="light-primary" class="mb-2" >
+                  <b-avatar size="70" rounded variant="light-primary" class="mb-2">
                      <font-awesome-icon icon="fas fa-phone" size="4x" />
->>>>>>> vite
                   </b-avatar>
                   <h4>01 800 400 INFO (4636), (322) 225 9635.</h4>
                   <span class="text-body">¡Siempre estamos felices de ayudar!</span>
@@ -89,15 +74,9 @@
             </b-col>
             <b-col sm="6">
                <b-card class="shadow-none py-1 faq-contact-card">
-<<<<<<< HEAD
-                  <b-avatar size="42" rounded variant="light-primary" class="mb-2">
-                     <b-link href="mailto:soporte@infochannel.si" target="_blank">
-                        <feather-icon icon="MailIcon" size="18" />
-=======
                   <b-avatar size="70" rounded variant="light-primary" class="mb-2">
                      <b-link href="mailto:soporte@infochannel.si" target="_blank">
                         <font-awesome-icon icon="fas fa-envelope" size="4x" />
->>>>>>> vite
                      </b-link>
                   </b-avatar>
                   <h4>soporte@infochannel.si</h4>
@@ -130,16 +109,12 @@ import {
 
 import FaqQuestionAnswer from './FaqQuestionAnswer.vue'
 import store from '@/store'
-<<<<<<< HEAD
-import {ref,onMounted,watch,toRefs,computed} from '@vue/composition-api'
-=======
-import {ref,onMounted,watch,toRefs,computed,onActivated} from '@vue/composition-api'
+import { ref, onMounted, watch, toRefs, computed, onActivated } from 'vue'
 
 
 import useAppConfig from '@core/app-config/useAppConfig';
 
 import useAuth from '@core/utils/useAuth';
->>>>>>> vite
 
 export default {
 
@@ -162,27 +137,24 @@ export default {
 
    },
 
-   setup(){
+   setup() {
       const datos = ref([])
 
-
-<<<<<<< HEAD
-=======
-      const {skin} = useAppConfig();
-      const {authGoogle} = useAuth();
+      const { sistema } = toRefs(store.state.sistema)
+      const { skin } = useAppConfig();
+      const { authGoogle } = useAuth();
 
       onMounted(() => authGoogle())
-      
->>>>>>> vite
+
       const faqSearchQuery = ref('')
 
-      const cargarForm = ()  =>  {
+      const cargarForm = () => {
 
-         store.dispatch('faq/getCategorias',faqSearchQuery.value).then((data) => {
+         store.dispatch('faq/getCategorias', faqSearchQuery.value).then((data) => {
 
-            datos.value =data
+            datos.value = data
 
-            
+
          })
 
 
@@ -190,20 +162,17 @@ export default {
 
       onMounted(() => cargarForm())
 
-      watch([faqSearchQuery],() => {
+      watch([faqSearchQuery], () => {
          cargarForm();
       })
 
 
       return {
-<<<<<<< HEAD
-=======
          skin,
-         imgBanner: computed(() => ['semi-dark', 'dark'].includes(skin.value) ? require('@/assets/images/illustration/patron_fondo_blanco.svg') : require('@/assets/images/illustration/patron_fondo_negro.svg')),
->>>>>>> vite
+         imgBanner: computed(() => `/storage/${sistema.value.banner_principal}`),
          datos,
          faqSearchQuery,
-         loading:computed(() => store.state.loading)
+         loading: computed(() => store.state.loading)
       }
 
    }
@@ -212,26 +181,29 @@ export default {
 
 <style lang="scss">
 @import '~@core/scss/vue/pages/page-faq.scss';
-<<<<<<< HEAD
-=======
 
-.faq-search{
-   background-attachment: fixed;
-   background-position: top;
+.faq-search {
+   // background-attachment: fixed;
    position: relative;
-   &::after{
-         content:'';
-         position: absolute;
-         width: 100%;
-         height:100%;
-         background-color: rgba(0,0,0,0.6);
-         z-index: 9;
+   border-radius: 7px;
+   background-position: center center !important;
+   background-repeat: no-repeat;
+   background-size: cover;
+   height: 300px;
+
+   &::after {
+      content: '';
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.3);
+      z-index: 9;
+      border-radius: 7px;
    }
 
-   .content-banner{
+   .content-banner {
       z-index: 10;
    }
 
 }
->>>>>>> vite
 </style>

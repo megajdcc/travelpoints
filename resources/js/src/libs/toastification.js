@@ -11,6 +11,8 @@ const pluginsOptions = {
   icon: false,
   timeout: 3000,
   transition: 'Vue-Toastification__fade',
+  position:'bottom-right'
+
   
 }
 
@@ -24,4 +26,5 @@ Vue.use(Toast, {
   icon: false,
   timeout: 3000,
   transition: 'Vue-Toastification__fade',
+  position:'bottom-right'
 })

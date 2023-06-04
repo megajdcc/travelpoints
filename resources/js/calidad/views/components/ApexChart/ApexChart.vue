@@ -1,24 +1,30 @@
 <template>
-  <b-card no-body>
-    <b-card-header>
+  <b-card no-body >
+    <b-card-header class="d-flex flex-column align-items-start">
       <!-- title and subtitle -->
-      <div>
+      <div class="d-block">
         <b-card-title class="mb-1">
           {{titulo}}
         </b-card-title>
         <b-card-sub-title>{{ subtitulo }}</b-card-sub-title>
       </div>
-      <!--/ title and subtitle -->
 
+      <section class="w-100 mx-0 px-0">
+         <slot name="filtro" >
+            
+         </slot>
+      </section>
+      <!--/ title and subtitle -->
       <!--/ badge -->
     </b-card-header>
 
     <b-card-body>
       <vue-apex-charts
-        type="bar"
-        height="400"
+        :type="type"
+        :height="height"
         :options="chartOptions"
         :series="data"
+        ref="chartRef"
       />
     </b-card-body>
   </b-card>
@@ -29,13 +35,15 @@ import {
   BCard, BCardBody, BCardHeader, BCardTitle, BCardSubTitle, BBadge,BFormGroup
 } from 'bootstrap-vue'
 import VueApexCharts from 'vue-apexcharts'
-import apexChatData from './apexChartData'
+// import apexChatData from './apexChartData'
 import { $themeColors } from '@themeConfig'
-import {ref, toRefs} from '@vue/composition-api';
+import {ref, toRefs,onMounted,watch} from 'vue';
 import vSelect from 'vue-select'
+
 export default {
 
    props:{
+
       titulo:{
          type:String,
          default:'Balance'
@@ -46,30 +54,30 @@ export default {
          default:''
       },
 
-      subjects:{
-         type:Array,
-         default:[]
-      },
+      // subjects:{
+      //    type:Array,
+      //    default:[]
+      // },
 
-      subjectFilter:{
-         type:[Number,null],
-         default:null
+      // subjectFilter:{
+      //    type:[Number,null],
+      //    default:null
 
-      },
+      // },
 
-      subjectTitle:{
-         type:String,
-         default:'Bodas'
-      },
+      // subjectTitle:{
+      //    type:String,
+      //    default:'Bodas'
+      // },
 
-      subjectDescription:{
-         type:String,
-         default:''
-      },
+      // subjectDescription:{
+      //    type:String,
+      //    default:''
+      // },
       chartOptions:{
          type:Object,
          default:{
-               chart: {
+               chart:{
                   zoom: {
                      enabled: true,
                   },
@@ -97,12 +105,7 @@ export default {
                      },
                   },
                },
-               tooltip: {
-                  custom(data) {
-                     return `${'<div class="px-1 py-50"><span>'}${data.series[data.seriesIndex][data.dataPointIndex]
-                        } Reservas</span></div>`
-                  },
-               },
+           
                xaxis: {
                   
                   labels: {
@@ -122,7 +125,13 @@ export default {
       data:{
          type:Array,
          default:[],
-      }
+      },
+      type:{
+         type:String,
+         default:'bar'
+      },
+
+      height:String|Number
 
 
 
@@ -140,18 +149,32 @@ export default {
     vSelect
   },
 
-  data() {
-    return {
-      value:null
-    }
-  },
+   setup(props){
 
-  setup(props){
+      const chartRef = ref(null)
+      const { data } = toRefs(props);
+      const  value = ref(null)
 
-     return {
-        $themeColors
-     };
-  }
+
+     
+
+      onMounted(() => {
+         //  console.log(chartRef.value)
+         
+      })
+
+      watch([data],() => {
+         // console.log(chartRef.value)
+         chartRef.value.refresh()
+      });
+
+      return {
+         $themeColors,
+         chartRef,
+         value
+      };
+
+   }
 
  
 

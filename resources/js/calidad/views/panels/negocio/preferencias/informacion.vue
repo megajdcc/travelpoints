@@ -63,7 +63,7 @@
                      </b-form-group>
 
                      <b-form-group v-b-tooltip.hover.v-warning
-                        title="Elija entre pagar una comisión o un monto fijo por persona">
+                        title="Elija entre pagar una comisión o un cantidad fija por persona">
                         <template #label>
                            Tipo de pago: <span class="text-danger">*</span>
                            <feather-icon icon="HelpCircleIcon" class="text-warning" />
@@ -72,7 +72,7 @@
                         <validation-provider name="tipo_comision" rules="required" #default="{ errors }">
 
                            <b-form-radio-group v-model="formulario.tipo_comision"
-                              :options="[{ text: 'Comisión', value: 1 }, { text: 'Monto Fíjo', value: 2 }]"
+                              :options="[{ text: 'Comisión', value: 1 }, { text: 'Cantidad Fija', value: 2 }]"
                               button-variant="outline-primary" buttons size="md" :state="errors.length ? false : null"
                               class="w-100" @change="formulario.comision = 10">
 
@@ -118,13 +118,13 @@
 
                         <validation-provider name="comision" rules="required" #default="{ errors }">
 
-
                            <currency-input :value="formulario.comision" @input="formulario.comision = $event"
-                              :options="optionsCurrency" class="form-control" />
+                              :options="{...optionsCurrency,...{ currency: getCurrency }}" class="form-control" />
 
                            <b-form-invalid-feedback :state="errors.length ? false : null">
                               {{ errors[0] }}
                            </b-form-invalid-feedback>
+
 
                         </validation-provider>
 
@@ -136,7 +136,7 @@
 
                            <validation-provider name="divisa_id" rules="required" #default="{ valid, errors }">
                               <v-select v-model="formulario.divisa_id" :reduce="(option) => option.id"
-                                 :options="divisas" label="nombre" class="w-100" />
+                                 :options="divisas.filter(val => !val.principal)" label="nombre" class="w-100" />
 
                               <b-form-invalid-feedback :state="valid">
                                  {{ errors[0] }}
@@ -152,23 +152,23 @@
                <b-row>
                   <b-col cols="12">
 
-                     <b-form-group
-                        title="Explica con más detalle acerca de tu negocio. Los socios de TravelPoints tambien pueden encontrar tu negocio por su descripción. Puedes agregar palabras claves para facilitar la busqueda."
-                        v-b-tooltip.hover.v-warning>
-                        <template #label>
-                           Descripción del negocio: <span class="text-danger">*</span>
-                           <feather-icon icon="HelpCircleIcon" class="text-warning" />
-                        </template>
-
-                        <validation-provider name="descripcion" rules="required" #default="{ errors }">
-                           <b-form-textarea v-model="formulario.descripcion" :state="errors.length ? false : null"
-                              :row="3" placeholder="Descripción del negocio" />
-                           <b-form-invalid-feedback :state="errors.length ? false : null">
-                              {{ errors[0] }}
-                           </b-form-invalid-feedback>
-
-                        </validation-provider>
-                     </b-form-group>
+                      <b-form-group
+                                    title="Explica con más detalle acerca de tu negocio. Los socios de TravelPoints tambien pueden encontrar tu negocio por su descripción. Puedes agregar palabras claves para facilitar la busqueda."
+                                    v-b-tooltip.hover.v-primary>
+                                    <template #label>
+                                       Descripción del negocio: <span class="text-danger">*</span>
+                                       <feather-icon icon="HelpCircleIcon" class="text-warning" />
+                                    </template>
+                           
+                                    <validation-provider name="descripcion" rules="required" #default="{ errors }">
+                                         <editor output-format="html" :value="formulario.descripcion" @input="formulario.descripcion = $event"
+                             api-key="t1i940nuarrf1zefgxbf6ow5cxmgjmcad7q7l3fm5prgebyc" :init="optionsEditor" />
+                                       <b-form-invalid-feedback :state="errors.length ? false : null">
+                                          {{ errors[0] }}
+                                       </b-form-invalid-feedback>
+                           
+                                    </validation-provider>
+                                 </b-form-group>
                   </b-col>
 
                   <b-col cols="12">
@@ -659,6 +659,8 @@
 <script>
 
 import { ValidationProvider, ValidationObserver } from 'vee-validate'
+import Editor from '@tinymce/tinymce-vue'
+
 import {
    BForm,
    BCard,
@@ -685,12 +687,12 @@ import {
 import useDireccion from '@core/utils/useDireccion'
 import vSelect from 'vue-select'
 
-import { toRefs, ref, onMounted, watch, computed } from '@vue/composition-api'
+import { toRefs, ref, onMounted, watch, computed } from 'vue'
 import store from '@/store'
 import { required, min, max, comision, email } from '@validations'
 import { optionsCurrency, getSituacionSolicitud } from '@core/utils/utils'
 
-import { regresar  } from '@core/utils/utils'
+import { regresar, optionsEditor } from '@core/utils/utils'
 export default {
 
    components: {
@@ -716,6 +718,7 @@ export default {
       BFormFile,
       BBadge,
       vSelect,
+      Editor,
       CurrencyInput: () => import('components/CurrencyInput')
    },
 
@@ -927,7 +930,12 @@ export default {
          quitarEmail,
 
          agregarTelefono,
-         quitarTelefono
+         quitarTelefono,
+         optionsEditor,
+         getCurrency:computed(() => {
+            let divisa = divisas.value.find(val => val.id === formulario.value.divisa_id)
+            return divisa ? divisa.iso : 'MXN'
+         })
       }
 
    },

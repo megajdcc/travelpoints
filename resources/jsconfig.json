@@ -1,0 +1,11 @@
+{
+    "allowJS":true,
+    "compilerOptions": {
+        "jsx":"preserve",
+        "baseUrl": ".",
+        "paths": {
+            "@/*": ["js/src/*"],
+            "@core/*": ["js/src/@core/*"],
+        }
+    }
+}

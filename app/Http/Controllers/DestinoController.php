@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\{DB,Storage,File};
 
 use Illuminate\Database\Eloquent\Builder;
 use App\Models\Imagen;
+use Illuminate\Support\Collection;
 
 class DestinoController extends Controller
 {
@@ -16,22 +17,50 @@ class DestinoController extends Controller
 
     public function getAll(){
 
-        $destinos = Destino::limit(10)->get();
+        $destinos = Destino::where('activo',true)->limit(10)->get();
 
-        foreach($destinos as $destino){
-            $destino->iata;
-            $destino->imagenes;
-            $destino->ciudad;
-            $destino->estado?->pais;
-            $destino->likes;
-            $destino->modelType = $destino->model_type;
-            $destino->ruta = "/Destinos?q={$destino->nombre}";
-            $destino->negocios = $destino->negocios();
+        $destinos->each(fn($destino)=> $destino->cargar());
+
+        // foreach($destinos as $destino){
+        //     $destino->iata;
+        //     $destino->imagenes;
+        //     $destino->ciudad;
+        //     $destino->estado?->pais;
+        //     $destino->likes;
+        //     $destino->modelType = $destino->model_type;
+        //     $destino->ruta = "/Destinos?q={$destino->nombre}";
+        //     $destino->negocios = $destino->negocios();
             
-        }
+        // }
 
         return response()->json($destinos);
 
+    }
+
+
+    public function fetchDataPublic(Request $request){
+        $datos = $request->all();
+
+        $pagination = Destino::where([
+            ['nombre', 'LIKE', "%{$datos['q']}%", 'OR'],
+            ['titulo', 'LIKE', "%{$datos['q']}%", 'OR'],
+            ['descripcion', 'LIKE', "%{$datos['q']}%", 'OR'],
+        ])
+        ->where('activo',true)
+        ->whereHas('iata', function (Builder $q) use ($datos) {
+            $q->orWhere([
+                ['codigo', 'LIKE', "%{$datos['q']}%", 'OR'], ['aeropuerto', 'LIKE', "%{$datos['q']}%", 'OR'],
+            ]);
+        })
+        ->orderBY($datos['sortBy'] ?: 'id', $datos['isSortDirDesc'] ? 'desc' : 'asc')
+        ->paginate($datos['perPage'] ?: 10000);
+
+        $destinos = collect($pagination->items())->each(fn($destino) => $destino->cargar());
+
+        return response()->json([
+            'destinos' => $destinos,
+            'total' => $pagination->total()
+        ]);
     }
 
     public function fetch(Destino $destino){
@@ -81,9 +110,9 @@ class DestinoController extends Controller
     }
 
 
-    private function validar(Request $request, Destino $destino = null) :array{
+    private function validar(Request $request, Destino $destino = null) : Collection {
 
-        return $request->validate([
+        return collect($request->validate([
             'nombre'      => 'required',
             'titulo'      => 'required',
             'descripcion' => 'required',
@@ -91,8 +120,9 @@ class DestinoController extends Controller
             'estado_id'   => 'nullable',
             'iata_id'     => 'required',
             'lat' => 'nullable',
-            'lng' => 'nullable'
-        ]);
+            'lng' => 'nullable',
+            'imagenes' => 'nullable'
+        ]));
 
     }
     /**
@@ -103,11 +133,29 @@ class DestinoController extends Controller
      */
     public function store(Request $request)
     {
+        $datos = $this->validar($request);
+
+
         try{
             DB::beginTransaction();
 
-            $destino = Destino::create($this->validar($request));
+            $destino = Destino::create($datos->except(['imagenes'])->toArray());
 
+
+            if (isset($datos['imagenes']) && count($datos['imagenes']) > 0) {
+                foreach ($datos['imagenes'] as $imagen) {
+
+                    $img = Imagen::find($imagen);
+
+                    Storage::copy("/public/multimedias/{$img->imagen}", "/public/destinos/imagenes/{$img->imagen}");
+
+                    $destino->addImagen([
+                        'imagen' => $img->imagen,
+                    ]);
+                }
+            }
+
+            $destino->refresh();
             $destino->iata;
             $destino->ciudad;
             $destino->estado?->pais;
@@ -136,10 +184,12 @@ class DestinoController extends Controller
      */
     public function update(Request $request, Destino $destino)
     {
+        $datos = $this->validar($request,$destino);
+
         try {
             DB::beginTransaction();
 
-            $destino->update($this->validar($request,$destino));
+            $destino->update($datos->except(['imagenes'])->toArray());
 
             $destino->iata;
             $destino->ciudad;
@@ -250,30 +300,56 @@ class DestinoController extends Controller
 
     public function getPorNombre(Request $request){
 
-        $destino = Destino::where('nombre',$request->get('nombre'))->first();
-
-        $destino->iata;
-        $destino->imagenes;
-        $destino->ciudad;
-        $destino->estado?->pais;
-        $destino->likes;
-        $destino->modelType = $destino->model_type;
+        $destino = Destino::where('nombre',$request->get('nombre'))->where('activo',true)->first();
         
-        $destino->negocios = $destino->negocios();
-        
+        if($destino){
+            $destino->iata;
+            $destino->imagenes;
+            $destino->ciudad;
+            $destino->estado?->pais;
+            $destino->likes;
+            $destino->modelType = $destino->model_type;
 
-        foreach($destino->atracciones as $atraccion){
-            $atraccion->ruta = "/Atraccions?q={$atraccion->nombre}";
-            $atraccion->opinions;
-            $atraccion->telefono;
-            $atraccion->imagenes;
-            $atraccion->destino;
-            $atraccion->horarios;
-            $atraccion->likes;
-            $atraccion->modelType = $atraccion->model_type;
+            $destino->negocios = $destino->negocios();
+
+
+            foreach ($destino->atracciones as $atraccion) {
+                $atraccion->ruta = "/Atraccions?q={$atraccion->nombre}";
+                $atraccion->opinions;
+                $atraccion->telefono;
+                $atraccion->imagenes;
+                $atraccion->destino;
+                $atraccion->horarios;
+                $atraccion->likes;
+                $atraccion->modelType = $atraccion->model_type;
+            }
+
+        }
+        
+        return response()->json(['result' => $destino ? true : false,'destino' => $destino]);
+    }
+
+    public function toggleActive(Request $request, Destino $destino){
+
+        $datos = $request->all();
+
+        try {
+            DB::beginTransaction();
+
+            $destino->update($datos);
+
+            $destino->cargar();
+
+            DB::commit();
+            $result =true;
+            
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            $result = false;
         }
 
-        return response()->json(['result' => $destino ? true : false,'destino' => $destino]);
+        return response()->json(['result' => $result,'destino' => $destino]);
+
     }
 
 

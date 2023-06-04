@@ -2,16 +2,17 @@
       <b-row>
          <b-col cols="12">
             <h3>{{ titulo }}</h3>
-            <p>Los mejores tours, actividades y boletos</p>
+            <p>Descubre los lugares que no te debes perder</p>
          </b-col>
          <b-col cols="12">
                <!-- <SwiperComponent /> -->
-               <swiper class="swiper-centered-slides px-0 py-1" :options="swiperOptions">
+               <swiper-container class="swiper-centered-slides px-0 py-1" ref="swiperRef" init="false" >
          
                   <!-- slides -->
                   <swiper-slide v-for="(atraccion, i) in atracciones" :key="i" class="rounded ">
          
-                     <b-card class="cursor-pointer" header-class="p-0 header-card" body-class="mt-1 px-1 contenido-card" @click="$router.push(atraccion.ruta)" style="height:370px !important; "> 
+                     <b-card class="cursor-pointer" header-class="p-0 header-card" body-class="mt-1 px-1 contenido-card"
+                      @click="$router.push(atraccion.ruta)" style="height:370px !important; max-width:350px"> 
          
                         <template #header>
          
@@ -68,7 +69,7 @@
                   </div>
 
                   <!-- <div slot="button-prev" class="swiper-button-prev" /> -->
-               </swiper>
+               </swiper-container>
          </b-col>
 
       
@@ -92,12 +93,11 @@ import {
    BBadge
 
 } from 'bootstrap-vue'
-import { Swiper, SwiperSlide } from 'vue-awesome-swiper'
-import 'swiper/css/swiper.css'
 
-import {ref,computed} from '@vue/composition-api'
+import {ref,computed,onMounted,toRefs} from 'vue'
 import useAuth from '@core/utils/useAuth'
 import store from '@/store'
+import {optionsSwiper} from '@core/utils/utils'
 
 export default {
    
@@ -110,8 +110,10 @@ export default {
       titulo:{
          type:String,
          required:false,
-         default:'Las experiencias más populares en TravelPoints',
-      }
+         default:'Las experiencias que te recomendamos',
+      },
+
+    
    },
 
    components:{
@@ -120,8 +122,6 @@ export default {
       BCol,
       BFormInput,
       BFormGroup,
-      SwiperSlide,
-      Swiper,
       BImg,
       BLink,
       BFormRating,
@@ -135,71 +135,24 @@ export default {
 
 
    setup(props){
-
-      const swiperOptions = ref({
-         slidesPerView: 4,
-         // allowSlidePrev:false,
-         // allowSlideNext: false,
-         autoplay: {
-            delay: 5000,
-         },
-         // centeredSlides: true,
-         spaceBetween: 30,
-         watchSlidesProgress: true,
-         effect: 'creative',
-         creativeEffect: {
-            prev: {
-               // will set `translateZ(-400px)` on previous slides
-               translate: [0, 0, -400],
-            },
-            next: {
-               // will set `translateX(100%)` on next slides
-               translate: ['100%', 0, 0],
-            },
-         },
-
-         pagination: {
-            el: '.swiper-pagination',
-            type: 'fraction',
-            dynamicBullets: true,
-         },
-         navigation: {
-            nextEl: '',
-            prevEl: ''
-
-         },
-         breakpoints: {
-            1024: {
-               slidesPerView: 4,
-               spaceBetween: 40,
-            },
-            768: {
-               slidesPerView: 3,
-               spaceBetween: 30,
-            },
-            640: {
-               slidesPerView: 2,
-               spaceBetween: 20,
-            },
-            320: {
-               slidesPerView: 1,
-               spaceBetween: 10,
-            },
-         },
-
-      })
-
-
-
+      
+      const swiperRef = ref(null)
+      
       const {
          is_loggin
       } = useAuth();
 
-      return {
-         swiperOptions,
-         is_loggin,
 
-         promedioCalificacion:(atraccion) => store.getters['atraccion/promedioCalificacion'](atraccion)
+      onMounted(() => {
+         Object.assign(swiperRef.value, optionsSwiper.value)
+         swiperRef.value.initialize();
+
+      })
+
+      return {
+         swiperRef,
+         is_loggin,
+         promedioCalificacion:(atraccion) => store.getters['atraccion/promedioCalificacion'](atraccion),
       }
 
    }
@@ -209,7 +162,7 @@ export default {
 </script>
 
 
-<style lang="scss">
+<style lang="scss" scoped>
 .banner-search {
    height: 300px;
    background-position: center top;

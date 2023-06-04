@@ -4,7 +4,7 @@
       <!-- Nav Menu Toggler -->
       <ul class="nav navbar-nav d-xl-none">
          <li class="nav-item">
-            <b-link class="nav-link" @click="toggleVerticalMenuActive">
+            <b-link class="nav-link d-none" @click="toggleVerticalMenuActive">
                <feather-icon icon="MenuIcon" size="21" />
             </b-link>
          </li>
@@ -14,26 +14,26 @@
       <b-navbar-nav class="nav align-items-center ml-auto">
          <locale class="d-none d-md-flex" />
 
-         <b-nav-item :to="{name:'about'}" v-b-tooltip.hover.bottom title="¿Qué es TravelPoints?"
+         <carrito-compra v-if="is_loggin && carrito.length" />
+
+         <!-- <b-nav-item :to="{name:'about'}" v-b-tooltip.hover.bottom title="¿Qué es TravelPoints?"
             class="d-none d-md-flex">
             <feather-icon size="21" icon="InfoIcon" />
-         </b-nav-item>
+         </b-nav-item> -->
 
-<<<<<<< HEAD
-         <b-nav-item :to="{name:'store'}" v-b-tooltip.hover.bottom title="Tienda de Regalos" class="d-none d-md-flex">
-=======
          <b-nav-item :to="{name:'tienda.travel'}" v-b-tooltip.hover.bottom title="Tienda de Regalos" class="d-none d-md-flex">
->>>>>>> vite
             <feather-icon size="21" icon="ShoppingBagIcon" />
          </b-nav-item>
 
-         <b-nav-item :to="{name:'contacto'}" v-b-tooltip.hover.bottom title="Contáctanos" class="d-none d-md-flex">
-            <feather-icon size="21" icon="SendIcon" />
+
+         <b-nav-item v-for="(pagina,i) in paginas.filter(val => val.showHeader && val.icono)"  :to="{ path: pagina.ruta }" v-b-tooltip.hover.bottom :title="pagina.nombre" :key="i" class="d-none d-md-flex">
+               <font-awesome-icon :icon="['fas',`fa-${pagina.icono}`]" size="lg"/>
          </b-nav-item>
 
          <dark-Toggler class="d-none d-lg-block" />
 
          <notification-dropdown v-if="is_loggin" />
+         <academia v-if="is_loggin && usuario.rol.academia.length" />
          <user-dropdown />
       </b-navbar-nav>
    </div>
@@ -50,6 +50,8 @@ import NotificationDropdown from '@/components/notifications.vue'
 import UserDropdown from './components/UserDropdown.vue'
 import useAuth from '@core/utils/useAuth'
 
+import {toRefs,onMounted,watch} from 'vue'
+import store from '@/store'
 
 export default {
    components: {
@@ -61,6 +63,9 @@ export default {
       NotificationDropdown,
       UserDropdown,
       BNavItem,
+      carritoCompra:() => import('components/carritoCompra.vue'),
+    Academia: () => import('components/Academia.vue')
+
    },
    directives:{
       'b-tooltip':VBTooltip
@@ -75,13 +80,35 @@ export default {
 
 
    setup(){
+      const {carrito} = toRefs(store.state.carrito)
+      const {usuario} = toRefs(store.state.usuario)
+      const {paginas} = toRefs(store.state.pagina)
 
+
+   
       const {
-         is_loggin 
+         is_loggin
       } = useAuth()
 
+      const cargarForm = () => {
+           if (is_loggin.value) {
+            store.dispatch('carrito/getCarrito', usuario.value.id)
+         }
+
+         if(!paginas.value.length){
+            store.dispatch('pagina/getPaginas')
+         }
+      }
+
+      onMounted(() => cargarForm())
+      
+      watch([usuario],() =>  cargarForm())
+
       return {
-         is_loggin
+         carrito,
+         is_loggin,
+         usuario,
+         paginas
       }
    }
 

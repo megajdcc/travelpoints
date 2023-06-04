@@ -3,17 +3,11 @@
       <b-row>
          <b-col cols="12">
             <b-card :class="{ 'w-75 mx-auto': windowWidth >= 762}">
-<<<<<<< HEAD
-               <b-embed type="iframe" :aspect="relation" src="https://www.youtube.com/embed/1MorMmT-hPs"
-                  allowfullscreen>
-               </b-embed>
-=======
                
                <b-embed type="iframe" :aspect="relation" src="https://www.youtube.com/embed/1MorMmT-hPs"
                   allowfullscreen>
                </b-embed>
                
->>>>>>> vite
             </b-card>
          </b-col>
       </b-row>
@@ -132,14 +126,9 @@ import {
    BMedia,
    BEmbed
 } from 'bootstrap-vue'
-<<<<<<< HEAD
 
-import {toRefs,computed} from '@vue/composition-api'
-=======
 import useAuth from '@core/utils/useAuth';
-
-import {toRefs,computed,onMounted} from '@vue/composition-api'
->>>>>>> vite
+import {toRefs,computed,onMounted} from 'vue'
 import store from '@/store'
 export default {
 
@@ -155,12 +144,9 @@ export default {
 
    setup() {
       const { windowWidth } = toRefs(store.state.app)
-<<<<<<< HEAD
-=======
       const {authGoogle} = useAuth();
 
       onMounted(() => authGoogle())
->>>>>>> vite
       return {
          windowWidth,
          relation:computed(() => {

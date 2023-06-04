@@ -1,18 +1,18 @@
 
 import useFilterTable from "@core/utils/useFilterTable";
-import {ref,toRefs} from '@vue/composition-api'
+import {ref,toRefs} from 'vue'
 import store from '@/store'
 
 
-export default function useVentasList(){
+export default function useVentasList(usuario = null){
 
   const tableColumns = ref([
     { key:'id',  label:'#',sortable:true,},
     { key: 'total', label: 'Monto', sortable: true, },
     { key: 'cliente_id', label: 'Cliente', sortable: true, },
     { key: 'empleado_id', label: 'Empleado', sortable: true, },
+    { key:'actions', label:'Actions',sortKey:'id',sortBy:'id',sortable:true }
   ])
-
   const {
 
     perPageOptions,
@@ -32,11 +32,12 @@ export default function useVentasList(){
   const fetchData = (ctx,next) => {
 
       store.dispatch('consumo/fetchData',{
-        perPage: perPage.value,
-        currentPage: currentPage.value,
-        sortBy: sortBy.value,
-        q: searchQuery.value,
+        perPage      : perPage.value,
+        currentPage  : currentPage.value,
+        sortBy       : sortBy.value,
+        q            : searchQuery.value,
         isSortDirDesc: isSortDirDesc.value,
+        usuario_id   : usuario.value ? usuario.value.id: null
       }).then(({total:all,consumos}) => {
 
         total.value = all

@@ -7,7 +7,7 @@ import {
   h,
   toRefs,
   watch
-} from '@vue/composition-api'
+} from 'vue'
 
 
 export default {

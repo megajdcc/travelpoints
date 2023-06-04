@@ -104,6 +104,14 @@ return [
             'visibility' => 'public',
         ],
 
+
+        'negocio_menu' => [
+            'driver' => 'local',
+            'root' => storage_path('app/public/negocios/menu'),
+            'url' => env('APP_URL') . '/storage/negocios/menu',
+            'visibility' => 'public', 
+        ],
+
         'imagenes_productos' => [
             'driver' => 'local',
             'root' => storage_path('app/public/productos'),
@@ -115,6 +123,27 @@ return [
             'driver' => 'local',
             'root' => storage_path('app/public/productos/archivos'),
             'url' => env('APP_URL') . '/storage/productos/archivos',
+            'visibility' => 'public',
+        ],
+
+        'archivos_multimedias' => [
+            'driver' => 'local',
+            'root' => storage_path('app/public/multimedias'),
+            'url' => env('APP_URL') . '/storage/multimedias',
+            'visibility' => 'public',
+        ],
+
+        'archivos_comprobante' => [
+            'driver' => 'local',
+            'root' => storage_path('app/public/comprobantes/archivo_acreditativo'),
+            'url' => env('APP_URL') . '/storage/comprobantes/archivo_acreditativo',
+            'visibility' => 'public',
+        ],
+
+        'comprobante_retiro' => [
+            'driver' => 'local',
+            'root' => storage_path('app/public/comprobantes/retiros'),
+            'url' => env('APP_URL') . '/storage/comprobantes/retiros',
             'visibility' => 'public',
         ],
 

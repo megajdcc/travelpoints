@@ -16,7 +16,7 @@
 import ScrollToTop from '@core/components/scroll-to-top/ScrollToTop.vue'
 
 import { $themeColors, $themeBreakpoints, $themeConfig } from '@themeConfig'
-import { watch,onMounted,toRefs,onActivated,computed } from '@vue/composition-api'
+import { watch,onMounted,toRefs,onActivated,computed } from 'vue'
 
 
 import { useRoute } from 'vue2-helpers/vue-router';

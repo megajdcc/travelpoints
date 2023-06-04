@@ -115,7 +115,7 @@
 import {
   BSidebar, BForm, BFormGroup, BFormInput, BFormTextarea, BButton, BBadge,
 } from 'bootstrap-vue'
-import { ref } from '@vue/composition-api'
+import { ref } from 'vue'
 import Ripple from 'vue-ripple-directive'
 
 export default {

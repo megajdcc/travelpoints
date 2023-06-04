@@ -1,8 +1,4 @@
 import { Ability } from '@casl/ability'
-<<<<<<< HEAD
-import store from '@/store'
-=======
->>>>>>> vite
 import { initialAbility } from './config'
 
 //  Capacidad de lectura de localStorage
@@ -14,13 +10,10 @@ import { initialAbility } from './config'
 
 const habilidades = (localStorage.getItem('habilidades')) ? JSON.parse(localStorage.getItem('habilidades')) : null;
 
-
-
 let existingAbility = habilidades ? habilidades : null
 
 if(existingAbility){
    existingAbility = [...existingAbility, ...initialAbility];
 }
-
 
 export default new Ability(existingAbility || initialAbility)

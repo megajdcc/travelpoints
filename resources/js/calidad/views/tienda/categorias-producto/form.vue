@@ -80,7 +80,7 @@ import store from '@/store'
 import {regresar} from '@core/utils/utils';
 
 import {required} from '@validations'
-import {computed,toRefs,ref} from '@vue/composition-api';
+import {computed,toRefs,ref} from 'vue';
 
 import {
   BCard,

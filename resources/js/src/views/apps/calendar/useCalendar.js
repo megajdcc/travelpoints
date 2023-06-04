@@ -8,7 +8,7 @@ import interactionPlugin from '@fullcalendar/interaction'
 import ToastificationContent from '@core/components/toastification/ToastificationContent.vue'
 
 // eslint-disable-next-line object-curly-newline
-import { ref, computed, watch, onMounted } from '@vue/composition-api'
+import { ref, computed, watch, onMounted } from 'vue'
 import store from '@/store'
 
 export default function userCalendar() {

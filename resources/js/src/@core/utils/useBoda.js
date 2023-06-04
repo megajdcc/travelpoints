@@ -1,5 +1,5 @@
 
-import { ref, watch, computed } from '@vue/composition-api'
+import { ref, watch, computed } from 'vue'
 
 import router from '@/router'
 

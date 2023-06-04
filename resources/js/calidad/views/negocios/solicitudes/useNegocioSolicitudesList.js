@@ -32,7 +32,7 @@ export default function useNegocioSolicitudesList(){
 
    const fetchData = (ctx,next) => {
 
-      store.dispatch('solicitud/fetchData',{
+      store.dispatch('solicitud/fetchDataAdmin',{
          currentPage:currentPage.value,
          sortBy:sortBy.value,
          q:searchQuery.value,
@@ -54,16 +54,6 @@ export default function useNegocioSolicitudesList(){
       store.dispatch('solicitud/eliminar',id).then(({result}) => {
 
          if(result){
-<<<<<<< HEAD
-            refetchData();
-            toast.info('Solicitud eliminada con éxito')
-         }else{
-            toast.error('La solicitud no se pudo eliminar')
-         }
-         
-      }).catch(e => {
-         toast.error('La solicitud no se pudo eliminar')
-=======
            
             toast.info('Solicitud eliminada con éxito',{position:'bottom-right'})
             
@@ -75,7 +65,6 @@ export default function useNegocioSolicitudesList(){
          
       }).catch(e => {
          toast.error('La solicitud no se pudo eliminar', { position: 'bottom-right' })
->>>>>>> vite
 
       })
 

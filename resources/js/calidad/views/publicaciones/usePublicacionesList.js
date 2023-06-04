@@ -1,6 +1,6 @@
 
 import store from '@/store'
-import { ref, computed, onMounted, watch } from '@vue/composition-api'
+import { ref, computed, onMounted, watch } from 'vue'
 
 export default function usePublicacionesList(negocio) {
 

@@ -6,7 +6,7 @@ import router from '@/router';
 
 import {
   h
-} from '@vue/composition-api'
+} from 'vue'
 
 
 export default {

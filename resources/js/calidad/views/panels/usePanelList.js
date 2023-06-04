@@ -1,7 +1,7 @@
 
 import store from '@/store'
 import useFilterTable from '@core/utils/useFilterTable'
-import {ref} from '@vue/composition-api'
+import {ref} from 'vue'
 
 export default function usePanelList(){
 

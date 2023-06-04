@@ -189,7 +189,7 @@ import {
 import VuePerfectScrollbar from 'vue-perfect-scrollbar'
 import Ripple from 'vue-ripple-directive'
 
-import {ref,onMounted, watch,toRefs,computed, onUnmounted} from '@vue/composition-api';
+import {ref,onMounted, watch,toRefs,computed, onUnmounted} from 'vue';
 
 import store from '@/store';
 import router from '@/router';
@@ -254,15 +254,6 @@ export default {
    
 
     let modalNotificacion = ref(null);
-<<<<<<< HEAD
-     const cargarNotificaciones = (usuario_id) => {
-       
-        if(usuario_id){
-          store.dispatch('notificacion/cargarNotificaciones',usuario_id)
-        }
-       
-     }
-=======
     
     const cargarNotificaciones = (usuario_id) => {
       
@@ -271,7 +262,6 @@ export default {
       }
       
     }
->>>>>>> vite
     
     onMounted(() => {
        

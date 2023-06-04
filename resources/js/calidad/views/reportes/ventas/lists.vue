@@ -28,7 +28,7 @@
                   <b-input-group size="sm">
                      <b-form-input v-model="searchQuery" class="d-inline-block" placeholder="Buscar..."
                         size="sm" />
-                     <template #append is-text>
+                     <template #append >
                         <b-button @click="exportarData" variant="primary" size="sm">
                            <feather-icon icon="downloadIcon" />
                            Descargar
@@ -207,7 +207,7 @@ import {
 import StatisticCardWithLineChart from '@core/components/statistics-cards/StatisticCardWithLineChart.vue'
 import StatisticCardHorizontal from '@core/components/statistics-cards/StatisticCardHorizontal.vue'
 
-import {ref,onMounted,watch} from '@vue/composition-api';
+import {ref,onMounted,watch} from 'vue';
 import xlsx from 'xlsx'
 
 import store from '@/store';

@@ -79,7 +79,7 @@
 import usePanelList from './usePanelList.js'
 import store from '@/store'
 
-import {toRefs,ref,computed,onMounted} from '@vue/composition-api'
+import {toRefs,ref,computed,onMounted} from 'vue'
 
 import {
    BCard,

@@ -4,6 +4,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ApplicationController;
 use App\Models\User;
 use App\Http\Controllers\Auth\AuthController;
+use App\Mail\NuevoConsumo;
+use App\Models\Consumo;
 
 /*
 |--------------------------------------------------------------------------
@@ -15,6 +17,10 @@ use App\Http\Controllers\Auth\AuthController;
 | contains the "web" middleware group. Now create something great!
 |
 */
+// Route::get('correo/consumo',function(){
+//    $consumo = Consumo::all()->last();
+//    return (new NuevoConsumo($consumo))->render();
+// });
 
 Route::get('/usuario/{usuario}/establecer/contrasena', function (User $usuario) {
 

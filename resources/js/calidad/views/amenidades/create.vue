@@ -3,7 +3,7 @@
 import form from './form.vue'
 
 import store from '@/store'
-import {onMounted,h} from '@vue/composition-api'
+import {onMounted,h} from 'vue'
 import router from '@/router'
 
 export default {

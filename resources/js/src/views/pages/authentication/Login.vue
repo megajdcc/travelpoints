@@ -9,7 +9,16 @@
       <!-- Left Text-->
       <b-col lg="8" class="d-none d-lg-flex align-items-center p-5">
         <div class="w-100 d-lg-flex align-items-center justify-content-center px-5">
-          <b-img fluid :src="imgUrl" alt="Login V2" />
+          <!-- Cambiar a imagen nueva de travelpoints esperando por Mario -->
+          <!-- <b-img fluid :src="imgUrl" alt="Login V2" />
+           -->
+           <section class="video-travel">
+              <!-- <video loop muted autoplay controls="false">
+                  <source src="/storage/animation_travel.webm" type="video/webm">
+                
+              </video> -->
+            </section>
+
         </div>
       </b-col>
       <!-- /Left Text-->
@@ -78,18 +87,12 @@
               <b-button type="submit" variant="primary" block :disabled="invalid" v-loading="loading">
                 Iniciar
               </b-button>
-<<<<<<< HEAD
-<!-- 
-              <b-button @click="authGoogle" variant="primary" block :disabled="invalid" v-loading="loading">
-                Google Auth
-              </b-button> -->
-=======
-
               <b-button @click="authenticarGoogle(optionsAuth)"  variant="primary" block  v-loading="loading">
                 Google Auth
               </b-button>
->>>>>>> vite
-              
+              <b-button :to="{ name: 'register' }" variant="warning" v-loading="loading" block >
+                  Registrate
+              </b-button>
             </b-form>
           </validation-observer>
 
@@ -104,13 +107,6 @@
       </b-col>
       <!-- /Login-->
     </b-row>
-<<<<<<< HEAD
-=======
-
-   
-
-
->>>>>>> vite
   </div>
 </template>
 
@@ -140,13 +136,8 @@ import {
 import { required, email } from '@validations'
 import { togglePasswordVisibility } from '@core/mixins/ui/forms'
 import store from '@/store/index'
-<<<<<<< HEAD
-import {computed,toRefs} from '@vue/composition-api';
-=======
-import {computed,toRefs,onMounted} from '@vue/composition-api';
->>>>>>> vite
+import {computed} from 'vue';
 import useAuth from '@core/utils/useAuth'
-
 import '@core/scss/vue/libs/toastification.scss'
 import ToastificationContent from '@core/components/toastification/ToastificationContent'
 import router from '@/router'
@@ -198,26 +189,10 @@ export default {
     },
   },
 
-
-<<<<<<< HEAD
-=======
-
->>>>>>> vite
   setup(props){
     
     const usuario = computed(() => store.state.usuario.usuario)
     const { appName, appLogoImage, applogoImageWhite } = $themeConfig.app
-<<<<<<< HEAD
-    const {
-      login,
-      formValidate,
-      formulario
-    } = useAuth();
-
-=======
-
-
-
 
     const {
       login,
@@ -228,12 +203,10 @@ export default {
       optionsAuth
     } = useAuth();
 
-    // onMounted(() => authGoogle())
->>>>>>> vite
+     onMounted(() => localStorage.removeItem('destino_id'))
 
     const iniciar  = ()  => {
 
-      store.commit('toggleLoading')
 
       login().then((result) => {
 
@@ -272,34 +245,19 @@ export default {
         }
 
 
-<<<<<<< HEAD
-      }).catch(e => console.log(e))
-=======
+
       }).catch(e => {
-        console.log(e)
+
+        if(e.response.status === 401){
+          if(!e.response.data.result){
+             toast.info(e.response.data.message)
+          }
+         
+        }
 
       })
-
->>>>>>> vite
-      .then(() => store.commit('toggleLoading'))
-
-
     }
 
-<<<<<<< HEAD
-    const authGoogle = () => {
-
-      axios.get(`/api/auth/google/redirect`).then(response => {
-        console.log(response)
-      }).catch(e => {
-        console.log(e)
-      })
-
-    }
-
-
-=======
->>>>>>> vite
     return{
       login,
       required,
@@ -310,11 +268,8 @@ export default {
       iniciar,
       authGoogle,
       appName,
-<<<<<<< HEAD
-=======
       authenticarGoogle,
       optionsAuth
->>>>>>> vite
      
 
     }
@@ -331,5 +286,33 @@ export default {
   width: auto;
   height: auto;
 }
+
+.video-travel{
+  
+  width: 100%;
+  height: 500px;
+  background-image:url('/storage/animation_travel.gif');
+  background-repeat:no-repeat;
+  background-position:center center;
+  background-size:contain;
+
+  video{
+    height:100%;
+    width:100%;
+  }
+}
+
+video::-webkit-media-controls {
+  display: none !important;
+}
+
+video::-webkit-media-controls-enclosure {
+  display: none !important;
+}
+
+video::-webkit-media-controls-panel {
+  display: none !important;
+}
+
 
 </style>

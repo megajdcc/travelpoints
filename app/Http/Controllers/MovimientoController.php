@@ -39,12 +39,15 @@ class MovimientoController extends Controller
                 break;
 
             case 'Sistema':
-                $model = Sistema::find($datos['model_id']);
+                $rol = $request->user()->rol;
+                $model = $request->user();
+                if(in_array($rol->nombre,['Desarrollador','Administrador'])){
+                    $model = Sistema::find($datos['model_id']);
+                }
+               
                 break;
 
         }
-
-
         if(!$model->cuenta){
             $cuenta = $model->aperturarCuenta();
         }else{
@@ -57,23 +60,14 @@ class MovimientoController extends Controller
                                 ['monto','LIKE',"%{$datos['q']}%",'OR'],
                                 ['balance', 'LIKE', "%{$datos['q']}%", 'OR'],
                                 ['created_at', 'LIKE', "%{$datos['q']}%", 'OR'],
+                                ['concepto', 'LIKE', "%{$datos['q']}%", 'OR'],
+
                             ])
                             ->orderBy($datos['sortBy'],$datos['isSortDirDesc'] ? 'desc' : 'asc')
-                            ->paginate($datos['perPage'] == 0  ? 10000 : $datos['perPage']);
+                            ->paginate($datos['perPage']?: 1000, pageName:'currentPage');
 
         
-                            $movimientos = $pagination->items();
-
-                        foreach($movimientos as $movimiento){
-                            
-                            $movimiento->cuenta->model;
-                            $movimiento->cuenta->divisa;
-                            $movimiento->_cellVariants =  ['monto' => $movimiento->tipo_movimiento == 1 ? 'success' : 'danger' , "balance" => $movimiento->tipo_movimiento == 1 ? 'success' : 'danger' ];
-                           
-
-
-                        }
-
+                    $movimientos = collect($pagination->items())->each(fn($val) => $val->cargar());
 
                     return response()->json([
                         'total' => $pagination->total(),

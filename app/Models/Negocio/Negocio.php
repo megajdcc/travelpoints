@@ -9,6 +9,7 @@ use App\Models\{Divisa, FormaPago, User,Iata};
 use Illuminate\Database\Eloquent\Casts\Attribute;
 
 use App\Models\Amenidad;
+use App\Models\Sistema;
 
 
 class Negocio extends Model
@@ -19,12 +20,16 @@ class Negocio extends Model
     use hasVideos,hasVenta,hasRecomendacion,hasSeguidores,hasLocation;
 
     public readonly string $model_type;
+    public $saldo_apertura = 5;
 
     public $table = 'negocios';
 
     public function __construct()
     {
         $this->model_type = 'App\Models\Negocio\Negocio';
+
+       
+
     }
 
 
@@ -33,7 +38,7 @@ class Negocio extends Model
         'descripcion',
         'breve',
         'categoria_id',
-        'comision',
+        'comision', // Comision que paga el negocio a Travelpoints
         'tipo_comision', // 1 Porcentaje por venta, 2 Monto por Venta 
         'url',
         'sitio_web',
@@ -55,11 +60,14 @@ class Negocio extends Model
         'iata_id',
         'divisa_id',
         'precios', // [precio_minimo => 0,precio_maximo => 0]
+        'tipo_menu', // 1 => URL , 2=> PDF 3 => image
+        'menu',
+        'tps_referido' // Comision en tps que se paga a los usuarios viajeros por consumir, es una propiedad se calcula convirtiendo la comision en su divisa a la divisa principal tps 
     ];
 
     public $casts = [
         'emails'          => 'array',
-        'ultima_recarga'  => 'datetime: Y-m-d H: i: s',
+        'ultima_recarga'  => 'datetime: Y-m-d Hi:s',
         'floor_plan'      => 'boolean',
         'acepta_reservas' => 'boolean',
         // 'precios'         => 'object'
@@ -124,15 +132,15 @@ class Negocio extends Model
             'cargo' => $cargo
         ]);
 
+        $cargo->asignarPermisosDefault();
         return $cargo;
+        
     }
-
-
 
     public function cargar() : Negocio{
         $this->telefonos;
         $this->imagenes;
-        $this->cuenta;
+       
         $this->categoria;
         $this->solicitud;
         $this->encargado;
@@ -157,9 +165,20 @@ class Negocio extends Model
         $this->recomendaciones;
         $this->seguidores;
         // $this->precios = $this->precios ?: ['precio_minimo' => 0, 'precio_maximo' => 0];
+
+        if(!$this->cuenta){
+            
+            $sistema = Sistema::first();
+            $sistema->cargar();
+            
+            $divisa_credito = Divisa::find($sistema?->negocio['divisa_id']) ?: $this->divisa;
+            $saldo_apertura = $divisa_credito->convertir($this->divisa, ($sistema?->negocio['credito'] || 5));
+            $this->aperturarCuenta($saldo_apertura);
+            $this->cuenta;
+
+        }
         return $this;
     }
-    
 
     /**
      * @param App\Models\User $empleado;

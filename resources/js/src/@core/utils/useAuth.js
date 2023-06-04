@@ -1,25 +1,15 @@
 
 import store from '@/store'
 import router from '@/router'
-<<<<<<< HEAD
-import {ref,computed} from '@vue/composition-api'
-import { initialAbility } from '@/libs/acl/config'
-import ability from '@/libs/acl/ability'
-=======
-import {ref,computed,onMounted} from '@vue/composition-api'
+import {ref,computed} from 'vue'
 import { initialAbility } from '@/libs/acl/config'
 import ability from '@/libs/acl/ability'
 import ToastificationContent from '@core/components/toastification/ToastificationContent'
-import googleOneTap from 'google-one-tap';
->>>>>>> vite
 
 export default function useAuth(){
 
    const usuario = computed(() => store.state.usuario.usuario)
 
-<<<<<<< HEAD
-   
-=======
    const optionsAuth = ref({
       client_id: '860503848534-po9nnigudd7v9upbsip07iu4b93nvnf5.apps.googleusercontent.com', // required
       auto_select: false, // optional
@@ -30,7 +20,6 @@ export default function useAuth(){
       
    })
 
->>>>>>> vite
    const formValidate = ref(null)
 
    const formulario = ref({
@@ -41,10 +30,6 @@ export default function useAuth(){
 
    const logout = () => {
 
-<<<<<<< HEAD
-      store.commit('toggleLoading')
-=======
->>>>>>> vite
 
       store.dispatch('cerrarSesion').then(({data}) => {
       localStorage.removeItem('token')
@@ -67,11 +52,7 @@ export default function useAuth(){
 
          }
 
-<<<<<<< HEAD
-      }).then(() => store.commit('toggleLoading'))
-=======
       })
->>>>>>> vite
 
      
    }
@@ -100,15 +81,9 @@ export default function useAuth(){
                   resolv(data.result)
 
             }).catch((error) => {
-<<<<<<< HEAD
-              
-               if (error.response && error.response.status === 422) {
-                  loginForm.value.setErrors(error.response.data.errors)
-=======
 
                if (error.response && error.response.status === 422) {
                   formValidate.value.setErrors(error.response.data.errors)
->>>>>>> vite
                }
 
                reject(error)
@@ -121,8 +96,6 @@ export default function useAuth(){
       })
    }
 
-<<<<<<< HEAD
-=======
    const authenticarGoogle = ({
       client_id,
       auto_select = false,
@@ -223,7 +196,7 @@ export default function useAuth(){
             timeout: 4000
          })
 
-         if (window.location.pathname == '/login') {
+         if (['/login','/register'].includes(window.location.pathname)){
             router.push({ name: 'inicio' })
          }
 
@@ -235,21 +208,16 @@ export default function useAuth(){
    const isNegocios = computed(() => usuario.value.negocios.length > 0 ? true : false);
 
 
->>>>>>> vite
    return {
       logout,
       login,
       formValidate,
       formulario,
-<<<<<<< HEAD
-      is_loggin:computed(() => usuario.value.id ? true : false)
-=======
       authGoogle,
       is_loggin:computed(() => usuario.value.id ? true : false),
       authenticarGoogle,
       optionsAuth, 
       isNegocios
->>>>>>> vite
    };
 
 }

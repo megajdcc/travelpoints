@@ -105,7 +105,7 @@ import {
   BAvatar, BInputGroup, BInputGroupPrepend, BFormInput,
 } from 'bootstrap-vue'
 import VuePerfectScrollbar from 'vue-perfect-scrollbar'
-import { ref, computed } from '@vue/composition-api'
+import { ref, computed } from 'vue'
 import ChatContact from './ChatContact.vue'
 import UserProfileSidebar from './UserProfileSidebar.vue'
 

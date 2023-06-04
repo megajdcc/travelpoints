@@ -1,7 +1,7 @@
 
 <script>
 import form from './form'
-import { h, onMounted,toRefs,watch } from '@vue/composition-api'
+import { h, onMounted,toRefs,watch } from 'vue'
 import store from '@/store'
 import router from '@/router'
 
@@ -20,10 +20,6 @@ export default {
          if(solicitudes.value.length){
             store.commit('solicitud/capturar',Number(id.value))
          }else{
-<<<<<<< HEAD
-=======
-
->>>>>>> vite
             store.dispatch('solicitud/getsolicitud',id.value).then(() => {
                store.commit('solicitud/capturar',Number(id.value))
             })
@@ -48,11 +44,7 @@ export default {
 
             save: (data, formValidate) => {
                data.situacion = 1;
-<<<<<<< HEAD
-               store.dispatch('solicitud/guardar', data).then(({ result }) => {
-=======
                store.dispatch('solicitud/guardar', {...data,...{panel:'usuario'}}).then(({ result }) => {
->>>>>>> vite
 
                   if (result) {
                      toast.success('Se ha enviado con éxito la solicitud, te estaremos informando sobre el estatus de esta solicitud')

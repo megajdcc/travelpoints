@@ -2,13 +2,40 @@
       <b-modal :visible="showHorario" @hide="cerrar" title="Horarios de atención" body-class="d-flex justify-content-center" hide-footer centered >
          <table class="table table-sm table-hover table-bordeless " >
                <tbody>
-                  <tr v-for="({dia,apertura,cierre},i) in horarios" :key="i">
+                  <tr v-for="({dia,apertura,cierre,doble_turno},i) in horarios" :key="i">
                      <td>
                         {{ getDay(dia) }}
                      </td>
                      
                      <td>
-                        {{ getHora(apertura) }} - {{ getHora(cierre) }}
+                         <section v-if="!doble_turno">
+                           <template v-if="apertura && cierre">
+                              {{ apertura[0] | fecha('hh:mm A', true) }} - {{ cierre[0] | fecha('hh:mm A', true) }}
+                           </template>
+
+                           <template v-else>
+                              <strong class="text-danger">Cerrado</strong>
+                           </template>
+                        </section>
+
+                        <section v-else class="">
+                           <template v-if="apertura.length && cierre.length">
+
+                              <section class="d-flex justify-content-between">
+                                 Mañana: ({{ apertura[0] | fecha('hh:mm A', true) }} - {{ cierre[0] | fecha('hh:mm A', true) }})
+                              </section>
+                        
+                              <section class="d-flex justify-content-between">
+                                 Tarde: ({{ apertura[1] | fecha('hh:mm A', true) }} - {{ cierre[1] | fecha('hh:mm A', true) }})
+                              </section>
+                        
+                           </template>
+
+                           <template v-else>
+                              <strong class="text-danger">Cerrado</strong>
+                           </template>
+                        </section>
+                        <!-- {{ getHora(apertura) }} - {{ getHora(cierre) }} -->
                      </td>
 
                   </tr>

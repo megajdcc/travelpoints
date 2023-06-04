@@ -220,7 +220,7 @@ import { ValidationProvider, ValidationObserver } from 'vee-validate'
 import { required, email, url } from '@validations'
 import { avatarText } from '@core/utils/filter'
 import formValidation from '@core/comp-functions/forms/form-validation'
-import { toRefs } from '@vue/composition-api'
+import { toRefs } from 'vue'
 import { quillEditor } from 'vue-quill-editor'
 import useTaskHandler from './useTaskHandler'
 

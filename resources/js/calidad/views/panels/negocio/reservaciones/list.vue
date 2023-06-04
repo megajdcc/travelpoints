@@ -98,7 +98,7 @@
 
 <script>
 
-import { toRefs, watch,computed } from '@vue/composition-api'
+import { toRefs, watch,computed } from 'vue'
 
 
 import Listado from 'components/Listado.vue'

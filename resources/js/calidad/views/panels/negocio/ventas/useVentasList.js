@@ -1,12 +1,11 @@
 
 
 import store from '@/store'
-import { toRefs, ref, watch, onMounted, computed } from '@vue/composition-api'
+import { toRefs, ref, watch, onMounted, computed } from 'vue'
 
-export default function useVentasList(negocio) {
+export default function useVentasList(negocio,panel = 'negocio') {
 
    const items = ref([])
-
    const isSortDirDesc = ref(true)
    const sortBy = ref('id')
    const searchQuery = ref('')
@@ -38,8 +37,6 @@ export default function useVentasList(negocio) {
 
    ])
 
-
-
    const dataMeta = computed(() => {
 
       const localItemsCount =  items.value.length
@@ -57,29 +54,46 @@ export default function useVentasList(negocio) {
          items.value = ventas
       })
    }
-   
 
-   watch([currentPage, perPage, searchQuery], () => {
+   watch([currentPage, perPage, searchQuery,negocio], () => {
       refetchData()
    })
 
-
    const fetchData = (next) => {
 
-      store.dispatch('venta/fetchData', {
-         perPage: perPage.value,
-         sortBy: sortBy.value,
-         isSortDirDesc: isSortDirDesc.value,
-         q: searchQuery.value,
-         page: currentPage.value,
-         negocio_id: negocio.value ? negocio.value.id : null,
-         model_type:'App\\Models\\Negocio\\Negocio',
-      }).then(({ ventas, total: all }) => {
-
-         total.value = all
-         items.value = ventas
-         next(ventas)
-      })
+      if(panel == 'negocio'){
+         if(negocio.value.id){
+              store.dispatch('venta/fetchData',{
+            perPage: perPage.value,
+            sortBy: sortBy.value,
+            isSortDirDesc: isSortDirDesc.value,
+            q: searchQuery.value,
+            page: currentPage.value,
+            negocio_id: negocio.value ? negocio.value.id : null,
+            model_type:'App\\Models\\Negocio\\Negocio',
+         }).then(({ ventas, total: all }) => {
+            total.value = all
+            items.value = ventas
+            next(ventas)
+         })
+         }
+      }else{
+           store.dispatch('venta/fetchData',{
+            perPage: perPage.value,
+            sortBy: sortBy.value,
+            isSortDirDesc: isSortDirDesc.value,
+            q: searchQuery.value,
+            page: currentPage.value,
+            negocio_id: negocio.value ? negocio.value.id : null,
+            model_type:'App\\Models\\Negocio\\Negocio',
+         }).then(({ ventas, total: all }) => {
+            total.value = all
+            items.value = ventas
+            next(ventas)
+         })
+      }
+        
+     
 
    }
 
@@ -116,6 +130,5 @@ export default function useVentasList(negocio) {
       items,
 
    }
-
 
 }

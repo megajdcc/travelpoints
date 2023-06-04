@@ -52,7 +52,7 @@ import { chartColors } from '@core/utils/utils';
 
 import {
    ref,toRefs,onMounted,computed,watch
-} from '@vue/composition-api'
+} from 'vue'
 
 export default {
 

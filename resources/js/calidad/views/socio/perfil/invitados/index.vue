@@ -6,22 +6,20 @@
                <h2 class="font-weight-bolder">Mi código de referidor</h2>
             </header>
          </template>
-         <h2>Gana puntos ($Tp) envíando tu código de referidor a tus amigos.</h2>
-         <p class="text-justify">Aumenta tus puntos ($Tp) por cada Amigo que se haya registrado con tu código de
-            referidor
-            y haya consumado una
-         reserva. <br> Por cada reserva consumada de tus referidos tu ganarás saldo ($Tp) que luego podrás usar en
-            nuestras tiendas de destinos que tenemos para Tí.</p>
+          
+
+         <h2>Gana puntos (Tp$) en tu cartera de Travel Points.</h2>
+         <p class="text-justify">Cada vez que cualquiera de los amigos que se hayan registrado usando tu link, registren un consumo.</p>
 
          <validation-observer ref="formValidate" #default="{ handleSubmit }">
             <b-form @submit.prevent="handleSubmit(guardar)">
                <b-form-group label="Comparte tu link">
-                  <validation-provider name="codigo" rules="required" #default="{ errors }">
+                  <validation-provider name="codigo_referidor" rules="required" #default="{ errors,valid }">
                      <b-input-group size="sm" class="w-100">
                         <b-input-group-prepend is-text>
                            {{ url }}
                         </b-input-group-prepend>
-                        <b-form-input v-model="formulario.codigo_referidor" :state="errors.length ? false : null"
+                        <b-form-input v-model="formulario.codigo_referidor" :state="valid"
                            :disabled="usuario.codigo_referidor ? true : false" />
 
                         <b-input-group-append>
@@ -89,7 +87,7 @@ import {
 
 } from 'bootstrap-vue'
 
-import { ref,computed,toRefs} from '@vue/composition-api'
+import { ref,computed,toRefs} from 'vue'
 
 import store from '@/store'
 
@@ -125,6 +123,7 @@ export default {
     
 
       const formulario = ref(store.getters['usuario/draftUsuario'])
+      const formValidate  = ref(null)
       const usuario = computed(() => store.state.usuario.usuario)
       const url = ref('');
       const url_app = ref(window.location.origin)
@@ -152,20 +151,18 @@ export default {
          store.dispatch('usuario/crearLinkReferido',formulario.value).then(({result}) => {
 
             if(result){
-<<<<<<< HEAD
-               toast.success('Su código de referido ha sido creado con éxito...')
-
-            }else{
-               toast.error('Su código de referido no se pudo crear, inténtelo de nuevo mas tarde...')
-=======
                toast.success('Su código de referido ha sido creado con éxito...',{position:'bottom-right'})
 
             }else{
                toast.error('Su código de referido no se pudo crear, inténtelo de nuevo mas tarde...',{position:'bottom-right'})
->>>>>>> vite
             }
 
 
+         }).catch(e => {
+
+            if(e.response.status === 422){
+               formValidate.value.setErrors(e.response.data.errors)
+            }
          })
 
       }
@@ -180,7 +177,8 @@ export default {
          copiarLink,
          link_referido,
          guardar,
-         usuario
+         usuario,
+         formValidate
       }
    }
 }

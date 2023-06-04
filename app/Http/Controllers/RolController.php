@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\{Auth,DB};
@@ -12,16 +13,9 @@ class RolController extends Controller
 
 
     public function getRol(Rol $role){
-<<<<<<< HEAD
-
-        $role->permisos;
-        $role->usuarios;
-        
-=======
         $role->permisos->groupBy('panel.panel');
         $role->usuarios;
 
->>>>>>> vite
         return response()->json($role);
     }
 
@@ -30,22 +24,6 @@ class RolController extends Controller
         $datos = $request->all();
 
         $paginator = Rol::where([
-<<<<<<< HEAD
-            ['nombre','LIKE','%'.$datos['q'].'%','OR'],
-            
-        ])->where('nombre','!=','Desarrollador')
-        ->orderBy($datos['sortBy'], $datos['isSortDirDesc'] ? 'desc' : 'asc')
-        ->paginate($datos['perPage']  == 0 ? 10000 : $datos['perPage']);
-
-        
-        $roles = $paginator->items();
-
-        foreach($roles as $rol){
-            $rol->permisos;
-            $rol->usuarios;
-        }
-
-=======
             ['nombre','LIKE','%'.$datos['q'].'%','OR'],            
         ])->where('nombre','!=','Desarrollador')
         ->with(['permisos','usuarios'])
@@ -54,25 +32,11 @@ class RolController extends Controller
         
         $roles = $paginator->items();
             
->>>>>>> vite
         return response()->json([
             'roles' => $roles,
             'total' => $paginator->total()
         ]);
 
-<<<<<<< HEAD
-    }
-
-    public function getRoles(){
-        $roles = Rol::get();
-        $rols = collect([]);
-        if (Auth::user()->rol->nombre == 'Desarrollador') {
-            
-            $rols = $roles;
-
-        }else{
-
-=======
 
     }
 
@@ -83,7 +47,6 @@ class RolController extends Controller
         if (Auth::user()->rol->nombre == 'Desarrollador') {
             $rols = $roles;
         }else{
->>>>>>> vite
             foreach($roles as $rol){
 
                 if ($rol->nombre != 'Desarrollador') {
@@ -93,12 +56,9 @@ class RolController extends Controller
             }
             
         }
-<<<<<<< HEAD
-=======
 
 
         
->>>>>>> vite
         return response()->json($rols);
     }
 
@@ -196,10 +156,6 @@ class RolController extends Controller
     }
 
     private function validar(Request $request,Rol $role = null) : array{
-<<<<<<< HEAD
-=======
-
->>>>>>> vite
         return $request->validate([
             'nombre' => ['required',$role ?  Rule::unique('rols', 'nombre')->ignore($role) : 'unique:rols,nombre'],
             'permisos.*' => 'required',
@@ -222,24 +178,16 @@ class RolController extends Controller
         $datos = $this->validar($request,$role);
 
          try{
-<<<<<<< HEAD
-            DB::beginTransaction();
-=======
             
                 DB::beginTransaction();
 
->>>>>>> vite
                 $role->nombre = $datos['nombre'];
 
                 $role->save();
 
                 if(isset($datos['permisos'])){
 
-<<<<<<< HEAD
-                    $role->permisos()->detach();
-=======
                         $role->permisos()->detach();
->>>>>>> vite
 
 
                      foreach($datos['permisos'] as $key => $permiso){
@@ -274,12 +222,10 @@ class RolController extends Controller
 
                     
                 }
-
                 
-               foreach(\App\Models\User::where('rol_id', $role->id)->get() as $usuario){
-                $usuario->asignarPermisosPorRol();
+               foreach(User::where('rol_id', $role->id)->get() as $usuario){
+                    $usuario->asignarPermisosPorRol();
                }
-
 
                 $role->permisos;
 

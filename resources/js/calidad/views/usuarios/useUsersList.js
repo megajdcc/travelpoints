@@ -1,4 +1,4 @@
-import { ref, watch, computed,onMounted } from '@vue/composition-api'
+import { ref, watch, computed,onMounted } from 'vue'
 import store from '@/store'
 import { title } from '@core/utils/filter'
 
@@ -12,18 +12,11 @@ export default function useUsersList() {
 
    // Table Handlers
    const tableColumns = [
-<<<<<<< HEAD
-      { key: 'usuario', sortable: true,label:'Usuario' },
-      { key: 'email', sortable: true,label:"Email" },
-      { key: 'rol', sortable: true,label:'rol' },
-      { key: 'telefono', sortable: true,label:'Telefono' },
-      { key: 'actions',sortable:false },
-=======
       { key: 'username', sortable: true,label:'Usuario' },
+      { key: 'activo',label:'Estado',sortable:true},
       { key: 'email', sortable: true,label:"Email" },
       { key: 'rol', sortable: true,label:'rol',sortKey:'rol_id' },
       { key: 'actions',sortable:true, sortKey:'id',sortBy:'id' },
->>>>>>> vite
    ]
    const totalUsers = ref(0)
    

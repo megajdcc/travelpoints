@@ -126,7 +126,7 @@ import {ValidationObserver,ValidationProvider}  from 'vee-validate'
 import {required} from '@validations';
 
 import store from '@/store'
-import { toRefs, ref, computed, onMounted,onActivated,watch,inject } from '@vue/composition-api'
+import { toRefs, ref, computed, onMounted,onActivated,watch,inject } from 'vue'
 import useAuth from '@core/utils/useAuth';
 export default {
   

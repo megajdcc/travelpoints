@@ -115,7 +115,7 @@
 import store from '@/store'
 import { avatarText } from '@core/utils/filter'
 
-import {toRefs,computed,onMounted,ref,watch} from '@vue/composition-api'
+import {toRefs,computed,onMounted,ref,watch} from 'vue'
 import useConsumosList from './useConsumosList'
 
 import {

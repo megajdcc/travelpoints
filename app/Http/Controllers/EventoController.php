@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Evento;
 use Illuminate\Http\Request;
 use App\Models\{Atraccion,Destino,Imagen};
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\{DB,Storage,File};
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Str;
@@ -22,6 +23,29 @@ class EventoController extends Controller
         return response()->json($evento);
     }
 
+    public function fetchEventos(Request $request){
+
+        $datos = $request->all();
+
+        $eventos = Evento::when(isset($datos['model_type']), function($query) use($datos) {
+                $query->where('model_id', $datos['model_id'])->where('model_type', $datos['model_type']);
+        })
+        ->when(count($datos['filterOption']) > 0 , function($query) use($datos){
+            $query->whereIn('model_type',$datos['filterOption']);
+        })
+        ->when(isset($datos['negocio']),function($query) use($datos){
+            $query->where('model_id',$datos['negocio'])->where('model_type',"App\Models\Negocio\Negocio");
+        })
+                ->where('status',isset($datos['perfil']) && $datos['perfil'] == true ? 1 :  '>', 0)
+                ->with(['imagenes'])
+                ->orderBy('fecha_inicio','asc')
+                ->get()
+                ->each(fn($event) => $event->cargar());
+
+            
+        return response()->json($eventos);
+
+    }
 
     public function fetchData(Request $request){
 
@@ -37,7 +61,9 @@ class EventoController extends Controller
             ])
                 ->where('model_id', $datos['model_id'])
                 ->where('model_type', $datos['model_type'])
-                ->where('status',isset($datos['perfil']) && $datos['perfil'] == true ? 1 :  '>', 0)
+                ->when($datos['perfil'], function($q){
+                    $q->where('status',true);
+                })
                 ->with(['imagenes', 'model'])
                 ->orderBy($datos['sortBy']  ?: 'id', $datos['isSortDirDesc'] ? 'desc' : 'asc')
                 ->paginate($datos['perPage'] ?: 10000);
@@ -46,7 +72,9 @@ class EventoController extends Controller
                 ['titulo', 'LIKE', "%{$datos['q']}%", 'OR'],
                 ['contenido', 'LIKE', "%{$datos['q']}%", 'OR'],
             ])
-            ->where('status', isset($datos['perfil']) && $datos['perfil'] == true ? 1 :  '>', 0)
+            ->when($datos['perfil'], function ($q) {
+                $q->where('status', true);
+            })
             ->with(['imagenes', 'model'])
             ->orderBy($datos['sortBy'] ?: 'id', $datos['isSortDirDesc'] ? 'desc' : 'asc')
             ->paginate($datos['perPage'] ?: 10000);
@@ -67,9 +95,14 @@ class EventoController extends Controller
         return $request->validate([
             'titulo' => 'required',
             'fecha_inicio' => 'required',
-            'fecha_fin' => 'required',
+            'fecha_fin' => 'nullable',
             'recurrente' => 'required',
+            'recurrencia' => 'nullable',
+            'all_dia' => 'nullable',
+            'tipo_recurrencia' => 'nullable',
             'contenido' => 'required',
+            'model_type' => 'nullable',
+            'model_id' => 'nullable',
             'url' => ['required',$evento ? Rule::unique('eventos','url')->ignore($evento) : 'unique:eventos,url']
         ]);
 
@@ -92,16 +125,14 @@ class EventoController extends Controller
             DB::beginTransaction();
 
             $evento = Evento::create([...$datos,...[
-                'model_type' => $model['model_type'],
-                'model_id' => $model['model_id'],
+                'model_type' => isset($datos['model_type']) ? $datos['model_type'] : $model['model_type'],
+                'model_id' => isset($datos['model_id']) ? $datos['model_id'] : $model['model_id'],
                 'url' => Str::slug($datos['url'])
             ]]);
             
-            $evento->establecerEstaus();
+            // $evento->establecerEstaus();
 
-            $evento->model;
-            $evento->model->model_type;
-            $evento->imagenes;
+            $evento->load(['imagenes','model']);
 
             DB::commit();
             $result = true;
@@ -109,7 +140,7 @@ class EventoController extends Controller
             DB::rollBack();
             $result = false;
 
-            dd($e->getMessage());
+            // dd($e->getMessage());
         }
 
 
@@ -250,6 +281,62 @@ class EventoController extends Controller
         }
 
         return response()->json(['result' => $result, 'evento' => $evento]);
+    }
+
+
+    public function fetchDataPublic(Request $request){
+
+        $filtro = $request->all();
+        $destino = $request->get('destino');
+
+        $paginator = Evento::where([
+            ['titulo','LIKE',"%{$filtro['q']}%",'OR'],
+            ['contenido', 'LIKE', "%{$filtro['q']}%", 'OR'],
+            ['fecha_inicio', 'LIKE', "%{$filtro['q']}%", 'OR'],
+            ['fecha_fin', 'LIKE', "%{$filtro['q']}%", 'OR'],
+            ['url', 'LIKE', "%{$filtro['q']}%", 'OR'],
+        ])->whereIn('status',[1,3])
+      
+        ->orderBy('fecha_inicio','asc')
+        ->paginate($filtro['perPage']?: 1000);
+
+          
+
+        $eventos = collect($paginator->items())->each(fn($event) => $event->cargar())
+        ->filter(function($event) use($destino){
+                switch ($event->model->model_type) {
+                    case "App\\Models\\Destino":
+                        return $event->model->id == $destino ;
+                        break;
+
+                    case "App\\Models\\Atraccion":
+                        return $event->model->destino_id == $destino;
+                        break;
+
+                    case "App\\Models\\Negocio\\Negocio":
+                        return $event->model->iata->id == (Destino::find($destino))?->iata->id;
+                        break;
+                    
+                    default:
+                        return false;
+                        break;
+                }
+        });
+        
+
+        return response()->json(['total' => $paginator->total(),'eventos' => $eventos]);
+
+
+    }
+
+    public function fetchDataUrl(string $url){
+
+        $result = false;
+        if( $evento = Evento::where('url', $url)->first()){
+            $evento->cargar();
+            $result = true;
+        }
+        return response()->json(['result' => $result,'evento' =>  $result ? $evento : null]);
     }
 
 

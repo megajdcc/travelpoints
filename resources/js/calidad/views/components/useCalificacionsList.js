@@ -1,7 +1,7 @@
 
 import store from '@/store'
 import useFilterTable from '@core/utils/useFilterTable'
-import {ref,watch,onMounted,computed} from '@vue/composition-api'
+import {ref,watch,onMounted,computed} from 'vue'
 
 export default function useCalificacionList(model) {
 

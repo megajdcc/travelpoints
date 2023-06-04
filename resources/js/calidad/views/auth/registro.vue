@@ -72,7 +72,7 @@
                   <b-form-group>
                      <b-form-checkbox id="register-privacy-policy" v-model="formulario.condiciones" name="checkbox-1">
                         Acepto los
-                        <b-link :to="{name:'terminos-condiciones'}">Terminos y condiciones</b-link>
+                        <b-link :to="{path:pageTermino}">Terminos y condiciones</b-link>
                      </b-form-checkbox>
                   </b-form-group>
 
@@ -98,7 +98,7 @@
 
             <!-- social buttons -->
             <div class="auth-footer-btn d-flex justify-content-center">
-               <b-button variant="google" href="javascript:void(0)">
+               <b-button variant="google" type="button" @click.stop="authenticarGoogle(optionsAuth)">
                   <feather-icon icon="MailIcon" />
                   Google
                </b-button>
@@ -130,10 +130,11 @@ import useTogglePassword from '@core/utils/useTogglePassword';
 
 import ToastificationContent from '@core/components/toastification/ToastificationContent.vue'
 
-import { ref, computed, toRefs, onMounted, watch } from '@vue/composition-api'
+import { ref, computed, toRefs, onMounted, watch } from 'vue'
 import router from '@/router'
 import store from '@/store'
 
+import useAuth from '@core/utils/useAuth'
 
 export default {
 
@@ -166,6 +167,17 @@ export default {
    setup(props,{emit}){
 
       const {codigo } = toRefs(props)
+      const { paginas } = toRefs(store.state.pagina)
+
+      
+      
+      const {
+         login,
+         authGoogle,
+         authenticarGoogle,
+         optionsAuth
+      } = useAuth();
+
 
       const formulario = ref({
          username      : null,
@@ -220,6 +232,10 @@ export default {
             })
          }
 
+          if (!paginas.value.lenth) {
+            store.dispatch('pagina/getPaginas')
+         }
+
       }
 
       onMounted(() => cargarForm())
@@ -239,9 +255,10 @@ export default {
          passwordToggleIcon:computed(() => {
             return passwordFieldType.value === 'password' ? 'EyeIcon' : 'EyeOffIcon'
          }),
-       
-        
-         guardar
+         optionsAuth,
+         authenticarGoogle,
+         guardar,
+         pageTermino: computed(() => store.getters['pagina/pageTermino']),
 
       }
    }

@@ -8,14 +8,7 @@
     
     <div class="header-navbar-shadow" />
 
-<<<<<<< HEAD
-    <div
-      class="content-wrapper"
-      :class="contentWidth === 'boxed' ? 'container p-0' : null"
-    >
-=======
-    <div class="content-wrapper " :class="contentWidth === 'boxed' ? 'container p-0' : null" >
->>>>>>> vite
+    <div class="content-wrapper " :class="contentWidth === 'boxed' ? 'container p-0' : null" style="min-height:75vh" >
       <slot name="breadcrumb">
         <app-breadcrumb />
       </slot>

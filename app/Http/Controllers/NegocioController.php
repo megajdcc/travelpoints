@@ -2,38 +2,13 @@
 
 namespace App\Http\Controllers;
 
-<<<<<<< HEAD
-use App\Models\Negocio;
-use Illuminate\Http\Request;
-
-class NegocioController extends Controller
-{
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
-    {
-        //
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-=======
 use App\Models\Atraccion;
+use App\Models\Divisa;
 use App\Models\Negocio\Negocio;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\{DB,Storage,File};
 use App\Models\Imagen;
+use App\Models\Movimiento;
 use App\Models\Negocio\HorarioReservacion;
 use App\Models\Red;
 use App\Models\User;
@@ -52,6 +27,12 @@ class NegocioController extends Controller
         return response()->json($negocio);
     }
 
+    public function getNegocios(){
+        $negocios = Negocio::all();
+
+        return response()->json($negocios);
+        
+    }
 
     public function fetchData(Request $request){
 
@@ -66,16 +47,15 @@ class NegocioController extends Controller
             ['codigo_postal', 'LIKE', "%{$datos['q']}%", "OR"],
 
         ])
+        ->with(['cuenta.divisa'])
         ->orderBy($datos['sortBy'] ?: 'id',$datos['isSortDirDesc'] ? 'desc' : 'desc')
-        ->paginate($datos['perPage']);
+        ->paginate($datos['perPage']?: 10000,pageName:'currentPage');
 
         
         $negocios = $paginator->items();
 
         foreach ($negocios as $key => $negocio) {
             $negocio->cargar();
-
-
         }   
 
 
@@ -89,7 +69,6 @@ class NegocioController extends Controller
     }
 
 
->>>>>>> vite
     /**
      * Store a newly created resource in storage.
      *
@@ -99,31 +78,6 @@ class NegocioController extends Controller
     public function store(Request $request)
     {
         //
-<<<<<<< HEAD
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Negocio  $negocio
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Negocio $negocio)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Negocio  $negocio
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Negocio $negocio)
-    {
-        //
-    }
-=======
     }   
 
 
@@ -156,24 +110,16 @@ class NegocioController extends Controller
 
     }
 
->>>>>>> vite
 
     /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-<<<<<<< HEAD
-     * @param  \App\Models\Negocio  $negocio
-=======
      * @param  \App\Models\Negocio\Negocio  $negocio
->>>>>>> vite
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, Negocio $negocio)
     {
-<<<<<<< HEAD
-        //
-=======
 
         $datos = $this->validar($request, $negocio);
 
@@ -181,6 +127,14 @@ class NegocioController extends Controller
             DB::beginTransaction();
 
             $negocio->update($datos);
+
+            if(!$negocio->tps_referido){
+
+                $tps_referido = Divisa::convertirToTravel($negocio->comision,$negocio->divisa);
+
+                $negocio->tps_referido = $tps_referido;
+                $negocio->save();
+            }
 
             foreach($datos['telefonos'] as $telefono){
                 $negocio->actualizarTelefono($telefono);
@@ -205,7 +159,6 @@ class NegocioController extends Controller
 
         return response()->json(['result' => $result,'negocio' => $negocio]);
 
->>>>>>> vite
     }
 
     /**
@@ -216,10 +169,6 @@ class NegocioController extends Controller
      */
     public function destroy(Negocio $negocio)
     {
-<<<<<<< HEAD
-        //
-    }
-=======
         try{
             DB::beginTransaction();
 
@@ -424,15 +373,19 @@ class NegocioController extends Controller
 
     public function cargarNegocioEmpleado(Request $request, int|string $ultimoNegocio = null){
 
-
-        if($ultimoNegocio){
-            $negocio = $request->user()->negocios->where('id',$ultimoNegocio)->first();
+        if(\in_array($request->user()->rol->nombre, ['Desarrollador', 'Administrador'])){
+            $negocio = $ultimoNegocio ? Negocio::where('id', $ultimoNegocio)->first() : Negocio::first();
         }else{
-            $negocio = $request->user()->negocios->first();
+            
+            if ($ultimoNegocio) {
+                $negocio = Negocio::where('id', $ultimoNegocio)->first();
+            } else {
+                $negocio = $request->user()->negocios->first();
+            }
+
         }
-
-        $negocio->cargar();
-
+        
+        $negocio?->cargar();
         return response()->json($negocio);
         
     }
@@ -679,7 +632,7 @@ class NegocioController extends Controller
     public function fetchDataPublic(Request $request){
 
         $datos = $request->all();
-
+       
         $paginator = Negocio::where([
             ['nombre', 'LIKE', "%{$datos['q']}%", "OR"],
             ['breve', 'LIKE', "%{$datos['q']}%", "OR"],
@@ -689,7 +642,7 @@ class NegocioController extends Controller
             ['codigo_postal', 'LIKE', "%{$datos['q']}%", "OR"],
 
         ])
-            ->when($datos['destino'], function($query) use($datos){
+            ->when(isset($datos['destino']) && !empty($datos['destino']), function($query) use($datos){
                 $query->whereHas('iata', function (Builder $q) use ($datos) {
                     $q->whereHas('destinos', function (Builder $query) use ($datos) {
                         $query->where('id', $datos['destino']);
@@ -697,8 +650,9 @@ class NegocioController extends Controller
                 });
             })
           
-            ->orderBy($datos['sortBy'] ?: 'id', $datos['isSortDirDesc'] ? 'desc' : 'desc')
-            ->paginate($datos['perPage']);
+            ->orderBy('tipo_comision', 'desc')
+            ->orderBy('comision','desc')
+            ->paginate($datos['perPage']?:1000, pageName:'currentPage');
 
 
         $negocios = collect($paginator->items());
@@ -775,6 +729,64 @@ class NegocioController extends Controller
         return response()->json(['total' => $paginator->total(),'negocios' => $negocios]);
     }
 
+    public function updateMenu(Request $request,Negocio $negocio){
 
->>>>>>> vite
+
+        $datos = $request->validate([
+            'tipo_menu' => 'required',
+            'menu' => 'required'
+        ]);
+
+        try {
+            DB::beginTransaction();
+
+            if($datos['tipo_menu'] == 2 || $datos['tipo_menu'] == 3){
+                $archivo = $request->file('menu');
+                $archivo_name = \sha1($archivo->getClientOriginalName()).'.'.$archivo->getClientOriginalExtension();
+                Storage::disk('negocio_menu')->put($archivo_name,File::get($archivo));
+            }
+            
+            $negocio->update([
+                'tipo_menu' => $datos['tipo_menu'],
+                'menu' => ($datos['tipo_menu'] == 2 || $datos['tipo_menu'] == 3) ? $archivo_name : $datos['menu'],
+            ]);
+
+            DB::commit();
+            $result = true;
+
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            $result = false;
+            // dd($th->getMessage());
+        }
+
+        $negocio->refresh();
+        $negocio->cargar();
+
+        return response()->json(['result' => $result, 'negocio' => $negocio]);
+
+    }
+
+
+    public function gestionSaldo(Request $request,Negocio $negocio){
+
+        $datos = $request->all();
+
+        try {
+            DB::beginTransaction();
+            Movimiento::add($negocio->cuenta,$datos['monto'], $datos['concepto'],$datos['tipo'] == 1 ? Movimiento::TIPO_INGRESO : Movimiento::TIPO_EGRESO);
+            $negocio->cargar();
+            DB::commit();
+            $result = true;
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            $result = false;
+        }
+        
+        $negocio->refresh();
+
+        return response()->json(['result' => $result, 'negocio' => $negocio]);
+    }
+
+
 }

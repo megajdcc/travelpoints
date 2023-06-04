@@ -31,7 +31,8 @@ export default{
          divisa_id:null,
          iata_id:null,
          iata:null,
-
+         tipo_menu:null,
+         menu:null,
          imagenes:[],
          telefonos:[],
          eventos:[],
@@ -49,6 +50,7 @@ export default{
          modelType:'App\\Models\\Negocio\\Negocio',
          recomendaciones:[],
          seguidores:[],
+         tps_referido:0,
 
 
 
@@ -84,12 +86,8 @@ export default{
 
             if (negocio.opinions.length) {
                const sum_calificacion = negocio.opinions.reduce((a, b) => a + Number(b.calificacion), 0);
-
                result = sum_calificacion / negocio.opinions.length;
-
             }
-
-
             return result;
          }
 
@@ -128,6 +126,8 @@ export default{
             codigo_postal: null,
             ciudad_id: null,
             estado_id: null,
+            tipo_menu: null,
+            menu: null,
             lat: 0,
             lng: 0,
             logo: null,
@@ -157,6 +157,8 @@ export default{
             modelType: 'App\\Models\\Negocio\\Negocio',
             recomendaciones: [],
             seguidores: [],
+            tps_referido:0,
+
 
          }
       },
@@ -303,7 +305,8 @@ export default{
             
             axios.get(`/api/negocios/${negocio_id}/fetch/data`).then(({data}) => {
                commit('setNegocio',data)
-            })
+               resolve(data)
+            }).catch(e => reject(e))
 
          })
       },
@@ -565,7 +568,6 @@ export default{
 
       cambiarNegocio({commit},id_negocio){
 
-
          return new Promise((resolve, reject) => {
 
             axios.get(`/api/empleado/cambiar/negocio/${id_negocio}`).then(({data}) => {
@@ -578,7 +580,6 @@ export default{
                resolve(data)
 
             }).catch(e => reject(e))
-            
 
          })
       },
@@ -798,15 +799,60 @@ export default{
 
             
          })
+      },
+
+      guardarMenu({state,commit},datos){
+
+         const formData = new FormData();
+
+         Object.keys(datos).forEach(val => {
+               formData.append(val,datos[val])
+         })
+
+         formData.append('_method',"PUT");
+
+         return new Promise((resolve, reject) => {
+            
+            axios.post(`/api/negocios/${state.negocio.id}/update/menu`,formData,{
+               headers:{
+                  ContentType:'multipart/form-data'
+               }
+            }).then(({data}) => {
+
+               if(data.result){
+                  commit('update',data.negocio)
+               }
+
+               resolve(data)
+
+            }).catch(e => reject(e))
+
+         })
+      
+      },
+
+
+      gestionSaldo({state,commit},datos){
+         return new Promise((resolve, reject) => {
+            axios.put(`/api/negocios/${state.negocio.id}/gestion/saldo`,datos).then(({data}) => {
+
+               if(data.result){
+                  commit('update',data.negocio)
+               }
+
+               resolve(data)
+            }).catch(e => reject(e))
+         })
+      },
+
+      getNegocios({commit}){
+         return new Promise((resolve, reject) => {
+            axios.get(`/api/negocios/get/all`).then(({data}) => {
+               commit('setNegocios',data)
+               resolve(data)
+            }).catch(e => reject(e))
+         })
       }
-
-
-
-
-
-
-
-
 
    }
 

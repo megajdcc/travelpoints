@@ -10,10 +10,8 @@
     @mouseleave="() => updateGroupOpen(false)"
   >
     <b-link class="nav-link dropdown-toggle d-flex align-items-center">
-      <feather-icon
-        size="14"
-        :icon="item.icon"
-      />
+      <font-awesome-icon :icon="[item.iconFa || 'fas', item.icon]" v-if="item.fontAwesome"  />
+      <feather-icon :icon="item.icon || 'CircleIcon'" v-else />
       <span>{{ t(item.header) }}</span>
     </b-link>
     <ul class="dropdown-menu">

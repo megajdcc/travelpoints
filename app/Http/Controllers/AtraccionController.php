@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\{DB, Storage, File};
 use Illuminate\Database\Eloquent\Builder;
 use App\Models\Imagen;
+use Illuminate\Support\Collection;
 
 class AtraccionController extends Controller
 {
@@ -100,10 +101,10 @@ class AtraccionController extends Controller
     }
 
 
-    private function validar(Request $request, Atraccion $atraccion = null): array
+    private function validar(Request $request, Atraccion $atraccion = null): Collection
     {
 
-        return $request->validate([
+        return collect($request->validate([
             'nombre'            => 'required',
             'duracion_sugerida' => 'nullable',
             'sitio_web'         => 'nullable',
@@ -112,8 +113,9 @@ class AtraccionController extends Controller
             'lat'               => 'nullable',
             'lng'               => 'nullable',
             'incluye'           => 'nullable',
-            'descripcion' => 'nullable'
-        ]);
+            'descripcion' => 'nullable',
+            'imagenes' => 'nullable'
+        ]));
     }
     /**
      * Store a newly created resource in storage.
@@ -124,20 +126,35 @@ class AtraccionController extends Controller
     public function store(Request $request)
     {
         $telefono = $request->get('telefono');
+        $datos = $this->validar($request);
 
         try {
             DB::beginTransaction();
 
-            $atraccion = Atraccion::create($this->validar($request));
+            $atraccion = Atraccion::create($datos->except(['imagenes'])->toArray());
             
             if($telefono['telefono']){
                 $atraccion->addTelefono($telefono);
             }
 
+            if (isset($datos['imagenes']) && count($datos['imagenes']) > 0) {
+                foreach ($datos['imagenes'] as $imagen) {
+
+                    $img = Imagen::find($imagen);
+
+                    Storage::copy("/public/multimedias/{$img->imagen}", "/public/atracciones/imagenes/{$img->imagen}");
+
+                    $atraccion->addImagen([
+                        'imagen' => $img->imagen,
+                    ]);
+                }
+            }
+
            
 
+            $atraccion->refresh();
 
-             $atraccion->telefono;
+            $atraccion->telefono;
             $atraccion->imagenes;
             $atraccion->destino;
             $atraccion->destino->estado?->pais;
@@ -174,11 +191,12 @@ class AtraccionController extends Controller
     {   
 
         $telefono = $request->get('telefono');
+        $datos = $this->validar($request,$atraccion);
 
         try {
             DB::beginTransaction();
 
-            $atraccion->update($this->validar($request, $atraccion));
+            $atraccion->update($datos->except(['imagenes'])->toArray());
             
             if ($telefono['telefono'] ) {
 
@@ -443,7 +461,7 @@ class AtraccionController extends Controller
 
     public function otrasCercanas(Atraccion $atraccion){
   
-        $atracciones = Atraccion::getLocation(['lat' => $atraccion->lat,'lng' => $atraccion->lng,'km' => 300]);
+        $atracciones = Atraccion::getLocation(['lat' => $atraccion->lat,'lng' => $atraccion->lng,'km' => 50]);
 
         $atracciones  = $atracciones->filter(fn ($val) => $val->id != $atraccion->id)->all();
         return response()->json([...$atracciones]);

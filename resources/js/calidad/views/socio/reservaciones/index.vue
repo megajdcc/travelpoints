@@ -116,7 +116,7 @@ import {
 
 import store from '@/store'
 
-import { toRefs, ref, computed, onMounted, watch } from '@vue/composition-api'
+import { toRefs, ref, computed, onMounted, watch } from 'vue'
 import useReservacionsList from './useReservacionsList.js'
 import { avatarText } from '@core/utils/filter'
 

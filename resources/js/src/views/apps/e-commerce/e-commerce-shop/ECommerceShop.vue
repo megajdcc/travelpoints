@@ -231,7 +231,7 @@ import {
   BDropdown, BDropdownItem, BFormRadioGroup, BFormRadio, BRow, BCol, BInputGroup, BInputGroupAppend, BFormInput, BCard, BCardBody, BLink, BImg, BCardText, BButton, BPagination,
 } from 'bootstrap-vue'
 import Ripple from 'vue-ripple-directive'
-import { watch } from '@vue/composition-api'
+import { watch } from 'vue'
 import { useResponsiveAppLeftSidebarVisibility } from '@core/comp-functions/ui/app'
 import ShopLeftFilterSidebar from './ECommerceShopLeftFilterSidebar.vue'
 import { useShopFiltersSortingAndPagination, useShopUi, useShopRemoteData } from './useECommerceShop'

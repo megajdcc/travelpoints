@@ -8,23 +8,31 @@ export default {
       nombre: '',
       breve:'',
       categoria_id: null,
-      producto_id: null,
+      tiendas: [],
       precio: null,
       descripcion: null,
       disponibles: 1,
       caracteristicas:[],
       envio: null,
+      divisa_id:null,
       tipo_producto:1, // 1 => fisico, 2 => digital
       archivo:null,
       categoria:null,
       producto:null,
       opinions:[],
       imagenes:[],
-      consumos:[]
+      consumos:[],
+      divisa: null,
+      carritos: [],
+      isChino:false,
+      pid:null,
+      cj:[],
+      enviable:false,
 
     },
 
     productos: []
+    
   }),
 
 
@@ -74,22 +82,28 @@ export default {
       state.producto = {
         id: null,
         nombre: '',
-        breve: '',
+        breve:'',
         categoria_id: null,
-        producto_id: null,
+        tiendas: [],
         precio: null,
         descripcion: null,
         disponibles: 1,
-        caracteristicas: [],
+        caracteristicas:[],
         envio: null,
-        tipo_producto: 1, // 1 => fisico, 2 => digital
-        archivo: null,
-        categoria: null,
-        producto: null,
-        opinions: [],
-        imagenes: [],
-        consumos: []
-
+        divisa_id:null,
+        tipo_producto:1, // 1 => fisico, 2 => digital
+        archivo:null,
+        categoria:null,
+        producto:null,
+        opinions:[],
+        imagenes:[],
+        consumos:[],
+        divisa: null,
+        carritos: [],
+        isChino:false,
+        pid:null,
+        cj:[],
+        enviable:false,
       }
     },
 
@@ -174,7 +188,22 @@ export default {
             
          }
 
-      }
+      },
+
+    agregarTienda(state){
+      
+      state.producto.tiendas.push({
+        cantidad:1,
+        tienda_id:null
+      })
+
+
+    },
+
+
+    quitarTienda(state,i){
+      state.producto.tiendas.splice(i,1)
+    }
 
 
   },
@@ -206,14 +235,23 @@ export default {
 
     },
 
+    fetchDataProductoDropShipping({commit},filtro){
+        return new Promise((resolve, reject) => {
+        
+        axios.post(`/api/productos/cj-dropshipping/fetch/data`, filtro).then(({ data }) => {
+
+          resolve(data)
+        }).catch(e => reject(e))
+
+      })
+    },
+
+
     fetch({ state, commit }, producto_id) {
 
       return new Promise((resolve, reject) => {
 
         axios.get(`/api/productos/${producto_id}/fetch/data`).then(({data}) => {
-
-          console.log(data);
-
           commit('setProducto', data)
           resolve(data)
         }).catch(e => reject(e))
@@ -361,6 +399,29 @@ export default {
          })
 
       },
+
+
+      productoDetailsCj({commit},producto_id){
+
+        return new Promise((resolve, reject) => {
+          axios.get(`/api/productos/details/${producto_id}`).then(({data}) => resolve(data)).catch(e => reject(e))
+          
+        })
+      },
+
+      agregarToTravel({commit},pid){
+        return new Promise((resolve,reject) => {
+
+          return axios.get(`/api/productos/agregar-to-travel/producto-cj/${pid}`).then(({data}) => resolve(data)).catch(e => reject(e))
+        })
+      },
+
+      cjProductStock({commit},vid){
+        return new Promise((resolve, reject) => {
+          axios.get(`/api/productos-cj/vid/${vid}/stock`).then(({data}) => resolve(data)).catch(e => reject(e))
+        })
+      }
+
 
 
   }

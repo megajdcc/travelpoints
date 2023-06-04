@@ -17,7 +17,7 @@ import navMenuItems from '@/navigation/negocio'
 import store from '@/store'
 import router from '@/router'
 
-import {onMounted,toRefs,onBeforeMount} from '@vue/composition-api'
+import {onMounted,toRefs,onBeforeMount} from 'vue'
 
 export default {
    

@@ -1,6 +1,14 @@
 <template>
-  <div class="navbar-header  d-xl-block d-none">
+  <div class="navbar-header  d-xl-block">
+
+
     <ul class="nav navbar-nav">
+       <li class="nav-item d-xl-none d-flex align-items-center">
+          <b-link class="nav-link" @click="toggleVerticalMenuActive">
+              <feather-icon icon="MenuIcon" size="21" />
+          </b-link>
+        </li>
+
       <li class="nav-item">
         <b-link class="navbar-brand" to="/">
           <span class="brand-logo">
@@ -12,13 +20,14 @@
         </b-link>
       </li>
     </ul>
+
   </div>
 </template>
 
 <script>
 import { BLink, BImg } from 'bootstrap-vue'
 import { $themeConfig } from '@themeConfig'
-import {computed,toRefs,onMounted} from '@vue/composition-api'
+import {computed,toRefs,onMounted} from 'vue'
 import store from '@/store'
 
 
@@ -27,6 +36,14 @@ export default {
     BLink,
     BImg,
   },
+
+   props: {
+    toggleVerticalMenuActive: {
+      type: Function,
+      default: () => { },
+    },
+  },
+
   setup() {
     // App Name
     const { appName, appLogoImage, applogoImageWhite } = $themeConfig.app
@@ -48,6 +65,33 @@ export default {
 }
 </script>
 
-<style>
+<style lang="scss">
 
+.brand-logo img {
+    max-width: 90px !important;
+}
+
+@media (min-width:400px) {
+    .brand-logo img {
+        max-width: 100px !important;
+    }
+}
+
+@media (min-width:500px) {
+    .brand-logo img {
+        max-width: 110px !important;
+    }
+}
+
+@media (min-width:720px) {
+    .brand-logo img {
+        max-width: 130px !important;
+    }
+}
+
+@media (min-width:1200px) {
+    .brand-logo img {
+        max-width: 180px !important;
+    }
+}
 </style>

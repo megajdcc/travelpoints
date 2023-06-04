@@ -4,16 +4,14 @@
 
       <!-- Forgot Password v1 -->
       <b-card class="mb-0">
-        
-         <!-- Brand logo-->
-         <b-link class="brand-logo">
-         
-            <img src="/storage/logotipo.png" alt="Logo" />
-         <!-- <h2 class="brand-text text-primary ml-1">
-            Boda y Playa
-         </h2> -->
-         </b-link>
-         <!-- /Brand logo-->
+
+        <!-- Brand logo-->
+        <b-link class="brand-logo">
+
+          <img src="/storage/logotipo.png" alt="Logo" />
+          
+        </b-link>
+        <!-- /Brand logo-->
 
         <b-card-title class="mb-1">
           Has olvidado tu contraseña? 🔒
@@ -24,15 +22,12 @@
 
         <!-- form -->
         <validation-observer ref="form" #default="{ handleSubmit }">
-          <b-form class="auth-forgot-password-form mt-2" @submit.prevent="handleSubmit(validationForm)" >
+          <b-form class="auth-forgot-password-form mt-2" @submit.prevent="handleSubmit(validationForm)">
             <!-- email -->
-            <b-form-group
-              label="Email"
-              label-for="forgot-password-email"
-            >
+            <b-form-group label="Email" label-for="forgot-password-email">
               <validation-provider #default="{ errors }" name="email" rules="required|email">
-                <b-form-input id="email" v-model="formulario.email" :state="errors.length > 0 ? false:null" placeholder="Jhonatan@example.com"
-                />
+                <b-form-input id="email" v-model="formulario.email" :state="errors.length > 0 ? false : null"
+                  placeholder="Jhonatan@example.com" />
                 <small class="text-danger">{{ errors[0] }}</small>
 
               </validation-provider>
@@ -41,7 +36,7 @@
             <!-- submit button -->
 
             <el-button type="primary" :loading="loading" native-type="submit" icon="el-icon-position" class="w-100">
-               Enviar enlace de restablecimiento
+              Enviar enlace de restablecimiento
             </el-button>
 
 
@@ -57,13 +52,13 @@
         </validation-observer>
 
         <b-card-text class="text-center mt-2">
-          <b-link :to="{name:'login'}">
+          <b-link :to="{ name: 'login' }">
             <feather-icon icon="ChevronLeftIcon" /> Regresar a login
           </b-link>
         </b-card-text>
 
       </b-card>
-    <!-- /Forgot Password v1 -->
+      <!-- /Forgot Password v1 -->
     </div>
   </div>
 </template>
@@ -75,8 +70,8 @@ import { BCard, BLink, BCardText, BCardTitle, BFormGroup, BFormInput, BForm, BBu
 import { required, email } from '@validations'
 
 
-import {ref,toRefs} from '@vue/composition-api';
-import {Notification} from 'element-ui';
+import { ref, toRefs } from 'vue';
+import { Notification } from 'element-ui';
 import store from 'store';
 
 
@@ -95,7 +90,7 @@ export default {
     ValidationObserver,
   },
 
-  setup(props){
+  setup(props) {
 
     axios.get('/sanctum/csrf-cookie').then(response => {
       // console.log(response)
@@ -103,23 +98,18 @@ export default {
 
     let form = ref(null);
 
-    let {loading} = toRefs(store.state)
+    let { loading } = toRefs(store.state)
 
     let formulario = ref({
-      email:null
+      email: null
     })
 
     // console.log($('meta[name="csrf-token"]').attr('content'));
 
-    let  validationForm = ()  => {
+    let validationForm = () => {
       form.value.validate().then(success => {
 
         if (success) {
-<<<<<<< HEAD
-        
-        store.commit('toggleLoading');
-=======
->>>>>>> vite
 
           // fetch('/api/auth/recuperar/contrasena',{
           //   method:'POST',
@@ -140,32 +130,19 @@ export default {
           // }).catch(e => {
           //   console.log(e)
           // }).then(() => store.commit('toggleLoading'));
-          
-          axios.post('/api/auth/recuperar/contrasena',formulario.value).then(respon => {
-<<<<<<< HEAD
-            console.log(respon)
-=======
->>>>>>> vite
+
+          axios.post('/api/auth/recuperar/contrasena', formulario.value).then(respon => {
             Notification.success({
-              title:'¡Hemos enviado su enlace de restablecimiento de contraseña por correo electrónico!'
+              title: '¡Hemos enviado su enlace de restablecimiento de contraseña por correo electrónico!'
             })
           }).catch(e => {
-<<<<<<< HEAD
-            // console.log(e);
-=======
-           
->>>>>>> vite
-            if(e.response && e.response.status === 422){
+
+            if (e.response && e.response.status === 422) {
               // console.log(e.response.data.errors);
               form.value.setErrors(e.response.data.errors);
-            }else{
-             console.log(e)
+            } else {
+              console.log(e)
             }
-<<<<<<< HEAD
-          }).then(() => {
-            store.commit('toggleLoading');
-=======
->>>>>>> vite
           })
 
         }

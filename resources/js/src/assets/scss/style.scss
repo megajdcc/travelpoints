@@ -2,32 +2,21 @@
 @import './fuentes/fuentes';
 
 h1,h2,h3,h4,h5,h6{
-   font-family: 'Myriad Regular';
+   font-family: 'Myriad Bold';
    font-weight: bolder;
 }
 
 body{
-   font-family: 'Myriad Light';
-<<<<<<< HEAD
-   font-size: 1.3rem;
-=======
    font-size: 12pt;
->>>>>>> vite
+   font-family: "Myriad Regular" !important;
+   font-size: 13pt;
+   line-height: 14.3pt;
 }
 
 strong{
    font-weight: 'Nexa Bold' !important;
 }
 
-<<<<<<< HEAD
-
-html body p{
-   // font-size: 14pt;
-   // line-height: 2rem !important;
-}
-
-=======
->>>>>>> vite
 .main-menu .navbar-header {
    height: 100%;
    width: 260px;
@@ -87,13 +76,10 @@ html body p{
    background-color: #283046;
 }
 
-<<<<<<< HEAD
-=======
 .dark-layout .el-rate__text{
    color:white !important; 
 }
 
->>>>>>> vite
 .dark-layout .el-tabs--border-card {
    background: #283046;
    border: 1px solid #7c859d;
@@ -223,9 +209,6 @@ body {
     font-size: 1.3rem;
     line-height: 1rem;
     color: #5e5873;
-<<<<<<< HEAD
-}
-=======
 }
 
 .layout-travel {
@@ -267,7 +250,6 @@ body {
    100% {
       background-size: 100%;
    }
-
+ 
 
 }
->>>>>>> vite

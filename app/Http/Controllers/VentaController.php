@@ -16,18 +16,21 @@ class VentaController extends Controller
     public function fetchData(Request $request){
         $datos = $request->all();
 
+       
         if(isset($datos['negocio_id']) ){
-
-            $paginator = Venta::where([
+          
+            $paginator = Venta::where('model_id',$datos['negocio_id'])
+            ->where('model_type', $datos['model_type'])
+            ->where([
                 ['monto','like',"%{$datos['q']}%",'or'],
                 ['comision', 'like', "%{$datos['q']}%", 'or'],
                 ['tps', 'like', "%{$datos['q']}%", 'or'],
                 ['tps_referente', 'like', "%{$datos['q']}%", 'or'],
                 ['certificado', 'like', "%{$datos['q']}%", 'or'],
             ])
-            ->orWhereHas('cliente',function(Builder $q) use($datos){
+            ->whereHas('cliente',function(Builder $q) use($datos){
 
-                $q->where([
+                $q->orWhere([
                     ['nombre','like',"%{$datos['q']}%",'or'],
                     ['apellido', 'like', "%{$datos['q']}%", 'or'],
                     ['email', 'like', "%{$datos['q']}%", 'or'],
@@ -35,24 +38,10 @@ class VentaController extends Controller
                 ]);
 
             })
-
-            ->orWhereHas('empleado', function (Builder $q) use ($datos) {
-
-                $q->whereHas('usuario',function(Builder $query) use($datos){
-                    $query->where([
-                        ['nombre', 'like', "%{$datos['q']}%", 'or'],
-                        ['apellido', 'like', "%{$datos['q']}%", 'or'],
-                        ['email', 'like', "%{$datos['q']}%", 'or'],
-                        ['username', 'like', "%{$datos['q']}%", 'or'],
-                    ]);
-                });
-
-            })
-            ->where('model_id',$datos['negocio_id'])
-            ->where('model_type', $datos['model_type'])
             ->with(['model','empleado','cliente','divisa'])
             ->orderBy($datos['sortBy'] ?: 'id',$datos['isSortDirDesc'] ? 'desc' : 'asc')
             ->paginate($datos['perPage'] ?: 10000);
+
         }else{
 
             $paginator = Venta::where([
@@ -62,7 +51,7 @@ class VentaController extends Controller
                 ['tps_referente', 'like', "%{$datos['q']}%", 'or'],
                 ['certificado', 'like', "%{$datos['q']}%", 'or'],
             ])
-            ->whereHas('cliente', function (Builder $q) use ($datos) {
+            ->whereHas('cliente', function (Builder $q) use ($datos){
                 $q->orWhere([
                     ['nombre', 'like', "%{$datos['q']}%", 'or'],
                     ['apellido', 'like', "%{$datos['q']}%", 'or'],
@@ -85,33 +74,20 @@ class VentaController extends Controller
             ->when($datos['model_type'],function($query) use($datos) {
                 $query->where('model_type',$datos['model_type']);
             })
+            ->when(isset($datos['usuario_id']) && $datos['usuario_id'],function($q) use($datos){
+                $q->where('cliente_id',$datos['usuario_id']);
+            })
             ->with(['model', 'empleado', 'cliente', 'divisa'])
             ->orderBy($datos['sortBy'] ?: 'id', $datos['isSortDirDesc'] ? 'desc' : 'asc')
             ->paginate($datos['perPage'] ?: 10000);
         }
 
+        $ventas = collect($paginator->items())->each(fn ($val) => $val->cargar());
 
-        $ventas = $paginator->items();
-
-        foreach($ventas as $venta){
-
-            if($venta->empleado){
-                $venta->empleado->usuario;
-                $venta->empleado->usuario->avatar = $venta->empleado->usuario->getAvatar();
-            }
-            
-
-            $venta->cliente->avatar = $venta->cliente->getAvatar();
-
-            if($venta->model->model_type == 'App\Models\Producto'){
-                $venta->model?->tienda?->divisa;
-            }
-
-        }
-
-        return response()->json([
+        return response()
+        ->json([
             'total' => $paginator->total(),
-            'ventas' => $paginator->items()
+            'ventas' => $ventas
         ]);
 
 
@@ -160,7 +136,9 @@ class VentaController extends Controller
 
         try {
             DB::beginTransaction();
+            
             $venta = Venta::create([...$datos]);
+       
 
             if($venta->empleado_id = Empleado::where('negocio_id',$venta->model_id)->where('usuario_id', $request->user()->id)->first()?->id){
                 $venta->save();
@@ -168,20 +146,30 @@ class VentaController extends Controller
         
             $monto = number_format((float) $venta->monto,2,'.',',') .' '.$venta->divisa->iso;
 
-
-            $venta->cliente->generarMovimiento($datos['tps'],"Consumo en {$venta->model->nombre} por un monto de:{$monto}.");
-
-            // dd($monto);
-
-            $venta->model->generarMovimiento($venta->model->divisa->convertir($venta->divisa, $datos['tps']), "Consumo de cliente {$venta->cliente->nombre} {$venta->cliente->apellido} por un monto de:{$monto}.",Movimiento::TIPO_EGRESO);
+            // Comision Viajero Tps
+            if(in_array($venta->cliente->rol->nombre, ['Viajero'])){
+                // multiplicamos el monto tps correspondido por la tasa de la divisa de la venta correspondiente a la divisa principal TP
+                $comision_cliente = $datos['tps'] / $venta->divisa->tasa; 
+                // GEneramos el movimiento en la billetera del cliente 
+                $venta->cliente->generarMovimiento($comision_cliente, "Consumo en {$venta->model->nombre} por un monto de:{$monto}.");
+            }
             
+          
+
+            // descontamos al negocio El monto correspondiente por haber realizado la venta
+            $comision_travel = $venta->getComisionTravel();
+            
+            $venta->model->generarMovimiento($venta->model->divisa->convertir($venta->divisa, $comision_travel), "Consumo de cliente {$venta->cliente->nombre} {$venta->cliente->apellido} por un monto de:{$monto}.",Movimiento::TIPO_EGRESO);
+
+           
             // generar movimiento para el sistema... 
-
             $sistema = Sistema::first();
-            $sistema->generarMovimiento($sistema->divisa->convertir($venta->divisa,$datos['tps']), "Consumo de cliente {$venta->cliente->nombre} {$venta->cliente->apellido} por un monto de:{$monto}.",Movimiento::TIPO_INGRESO);
-            
-            // $sistema->refresh();
+            $sistema->adjudicarComisiones($comision_travel,$venta);
+            // dd($venta);
+            $sistema->refresh();
 
+
+          
             $venta->cargar();
 
             if($reservacion = $venta->reservacion){
@@ -190,10 +178,10 @@ class VentaController extends Controller
             }
 
             // Falta Notificar Venta al usuario y a los operadores si los Hubiera...
-
             DB::commit();
             $result = true;
         } catch (\Throwable $th) {
+
             DB::rollBack();
             $result = false;
 

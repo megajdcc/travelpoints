@@ -4,10 +4,13 @@
 
         <p>Saldo actual: <strong v-if="divisa" :class="{'text-danger' : saldo < 0}" >{{ saldo | currency(divisa.simbolo) }} {{ divisa.iso.toUpperCase(0) }}</strong></p>
 
-        <p>Saldo después de la venta: </p>
+        <p>Saldo después de la venta:  <strong v-if="divisa" :class="{ 'text-danger': saldo_pos_venta < 0 }" >{{ saldo_pos_venta | currency(divisa.simbolo) }} {{ divisa.iso.toUpperCase(0) }}</strong></p>
 
-        <b-card body-class="altura-container-search" :style="{'background-image':`url(${imageBanner})`}">
-          <search-user text-search="Nombre de usuario del cliente" legend-tooltip="Ingrese el nombre propio, nombre de usuario o correo electrónico del socio de Travel Points. Verifique su coincidencia cuidadosamente." @userSelected="usuarioSeleccionado" />
+        <p>Comisión para TravelPoints:  <strong v-if="divisa" class="text-warning" >{{ formulario.comision_travel | currency(divisa.simbolo) }} {{ divisa.iso.toUpperCase(0) }}</strong></p>
+
+        <!-- :style="{'background-image':`url(${imageBanner})`}" -->
+        <b-card body-class="altura-container-search" title="Identifique al Viajero de TravelPoints (Teclee su nombre de usuario)" >
+          <search-user text-search="Nombre del viajero (Identifiquelo con su nombre de usuario)" legend-tooltip="Ingrese el nombre propio, nombre del viajero o correo electrónico del viajero de Travel Points. Verifique su coincidencia cuidadosamente." @userSelected="usuarioSeleccionado" />
 
         </b-card>
 
@@ -116,7 +119,7 @@
 
                       <b-input-group-prepend is-text>
                         <span class="" v-if="negocio.tipo_comision == 2">
-                          {{  negocio.comision | currency(negocio.divisa.simbolo)  }}
+                          {{  negocio.tps_referido | currency()  }}
                         </span>
 
                           <span class="" v-else>
@@ -137,15 +140,13 @@
                 </b-form-group>
               </b-col>
 
-
-
             </b-row>
 
           </b-container>
 
           <template #footer>
             <b-button-group size="sm">
-              <b-button type="submit" variant="primary" title="Registrar Venta" v-loading="loading" :disabled="loading || !formulario.cliente_id">
+              <b-button type="submit" variant="primary" title="Registrar Venta" v-loading="loading" :disabled="loading || !formulario.cliente_id || saldo_pos_venta < 0">
                 <feather-icon icon="SendIcon"/>
                 Registrar Venta
               </b-button>
@@ -157,9 +158,6 @@
             </b-button-group>
           </template>
         </b-card>
-
-        
-
 
     </b-form>
   </validation-observer>
@@ -196,11 +194,12 @@ import {required} from '@validations'
 import { regresar } from '@core/utils/utils'
 
 import store from '@/store'
-import {toRefs,ref,computed,onMounted,inject,watch, onActivated} from '@vue/composition-api';
+import {toRefs,ref,computed,onMounted,inject,watch, onActivated} from 'vue';
 
 import { optionsCurrency } from '@core/utils/utils'
 
 import vSelect from 'vue-select'
+import router from '@/router'
 
 export default {
 
@@ -243,19 +242,30 @@ export default {
     const search = ref('')
     const reserva = ref(null)
 
-    const { divisas }  = toRefs(store.state.divisa)
-
-    const tps = computed(() => {
-
-      if(negocio.value.tipo_comision == 2){
-
+    const comision_travel = computed(() => {
+      
+      //  Monto por venta
+      if (negocio.value.tipo_comision == 2) {
         return negocio.value.comision * formulario.value.personas
       }
 
       return formulario.value.monto * negocio.value.comision / 100
     })
 
-    
+    const { divisas }  = toRefs(store.state.divisa)
+
+    const tps = computed(() => {
+
+      //  Monto por venta
+      if(negocio.value.tipo_comision == 2){
+        return negocio.value.tps_referido * formulario.value.personas
+      }
+
+      return formulario.value.monto * negocio.value.comision / 100
+    })
+
+
+
 
     const guardar = () => {
       
@@ -339,13 +349,47 @@ export default {
       }
 
       formulario.value.divisa_id = negocio.value.divisa_id
+      formulario.value.tps = tps.value
+      formulario.value.comision_travel = comision_travel.value
     }
 
     // onActivated(() => cargarForm())
     onMounted(() => cargarForm())
     watch([negocio],() => cargarForm())
 
-    watch(tps,(val) => formulario.value.tps = val)
+    watch(tps,(val) => {
+        formulario.value.tps = val
+    })
+
+    watch(comision_travel, (val) => {
+      formulario.value.comision_travel = val
+    })
+    
+    const saldo = computed(() => negocio.value.cuenta ? negocio.value.cuenta.saldo : 0)
+    const saldo_pos_venta = computed(() => saldo.value - comision_travel.value) 
+
+    watch(saldo_pos_venta,(val) => {
+      if(val < 0){
+
+          swal({
+            icon: 'info',
+            title: 'No puedes registrar la venta, porque no tienes fondos',
+            message:'Porfa recarga mas saldo para poder continuar',
+            confirmButtonText: 'Ok, Quiero recargar',
+            cancelButtonText:'Ok, no quiero recargar ahora mismo',
+            showCancelButton: true,
+           
+          }).then(({ isConfirmed}) => {
+
+            if (isConfirmed) {
+              router.push({name:'negocio.movimientos'});
+            }
+
+          })
+      }
+
+    })
+
     return {
       reserva,
       search,
@@ -372,11 +416,14 @@ export default {
 
       } ),
 
-      saldo:computed(() => negocio.value.cuenta ? negocio.value.cuenta.saldo : 0),
+      saldo,
       divisa:computed(() => negocio.value.divisa),
       loading:computed(() => store.state.loading),
 
       imageBanner: require('@images/banner/banner-travel.jpg'),
+      comision_travel,
+      saldo_pos_venta
+      
 
     }
   }

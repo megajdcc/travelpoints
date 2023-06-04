@@ -18,7 +18,7 @@
 
 <script>
 
-import {toRefs,ref,computed,onMounted}  from '@vue/composition-api'
+import {toRefs,ref,computed,onMounted}  from 'vue'
 import store from '@/store'
 
 import {

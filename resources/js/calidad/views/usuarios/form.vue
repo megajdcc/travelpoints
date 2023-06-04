@@ -58,66 +58,70 @@
                            <b-row class="mt-1">
                               <!-- username -->
                                <b-col cols="12" md="4">
-                                 <validation-provider #default="{errors}" name="username" rules="required">
+                                
                                     <b-form-group label="Username" label-for="username">
-                                       <b-form-input id="username" v-model="form.username" autofocus
-                                          :state="errors.length ? false : null" trim placeholder="" />
+                                       <validation-provider #default="{errors,valid}" name="username" rules="required">
+                                          <b-form-input id="username" v-model="form.username" autofocus
+                                             :state="errors.length ? false : null" trim placeholder="" />
 
-                                       <b-form-invalid-feedback>
-                                          {{ errors[0] }}
-                                       </b-form-invalid-feedback>
-
+                                          <b-form-invalid-feedback :state="valid">
+                                             {{ errors[0] }}
+                                          </b-form-invalid-feedback>
+                                       </validation-provider>
                                     </b-form-group>
-                                 </validation-provider>
+                               
 
                               </b-col>
 
 
                               <!-- Field: nombre -->
                               <b-col cols="12" md="4">
-                                 <validation-provider #default="{errors}" name="Nombre" rules="required">
-                                    <b-form-group label="Nombre" label-for="nombre">
+                                
+                                 <b-form-group label="Nombre" label-for="nombre">
+                                    <validation-provider #default="{errors,valid}" name="nombre" rules="required">
                                        <b-form-input id="nombre" v-model="form.nombre" autofocus
-                                          :state="errors.length ? false : null" trim placeholder="" />
+                                       trim placeholder=""  :state="valid" />
 
-                                       <b-form-invalid-feedback>
+                                       <b-form-invalid-feedback :state="valid">
                                           {{ errors[0] }}
                                        </b-form-invalid-feedback>
 
-                                    </b-form-group>
-                                 </validation-provider>
+                                    </validation-provider>
+                                 </b-form-group>
 
                               </b-col>
 
                               <!-- Field: Apellido -->
                               <b-col cols="12" md="4">
                                  <!-- Apellido -->
-                                 <validation-provider #default="{errors}" name="apellido" rules="required">
+                                
                                     <b-form-group label="Apellido" label-for="apellido">
-                                       <b-form-input id="apellido" v-model="form.apellido" autofocus
-                                          :state="errors.length ? false : null" trim placeholder="Crespo" />
-
-                                       <b-form-invalid-feedback>
-                                          {{ errors[0] }}
-                                       </b-form-invalid-feedback>
+                                       <validation-provider #default="{ errors, valid }" name="apellido" rules="required">
+                                          <b-form-input id="apellido" v-model="form.apellido" autofocus trim placeholder="Crespo" :state="valid" />
+                                          <b-form-invalid-feedback :state="valid">
+                                             {{ errors[0] }}
+                                          </b-form-invalid-feedback>
+                                        </validation-provider>
                                     </b-form-group>
-                                 </validation-provider>
+                                
                               </b-col>
 
 
                               <!-- Field: Email -->
                               <b-col cols="12" md="4">
                                  <!-- Email -->
-                                 <validation-provider #default="{errors}" name="Email" rules="required|email">
+                                
                                     <b-form-group label="Email" label-for="email">
-                                       <b-form-input id="email" v-model="form.email"
-                                          :state="errors.length ? false : null" trim />
+                                        <validation-provider #default="{ errors,valid }" name="email" rules="required|email">
+                                          <b-form-input id="email" v-model="form.email"
+                                             :state="valid" trim />
 
-                                       <b-form-invalid-feedback>
-                                          {{ errors[0] }}
-                                       </b-form-invalid-feedback>
+                                          <b-form-invalid-feedback :state="valid">
+                                             {{ errors[0] }}
+                                          </b-form-invalid-feedback>
+                                       </validation-provider>
                                     </b-form-group>
-                                 </validation-provider>
+                                 
 
                               </b-col>
 
@@ -125,25 +129,23 @@
                               <!-- Field: Rol de usuario -->
                               <b-col cols="12" md="4">
                                  <!-- User Role -->
-                                 <validation-provider #default="{errors}" name="rol_id" rules="required">
+                               
                                     
-                                    <b-form-group label="Rol de usuario" label-for="user-role"
-                                       :state="errors.length ? false : null">
+                                    <b-form-group label="Rol de usuario" label-for="user-role">
+
+                                         <validation-provider #default="{ errors,valid }" name="rol_id" rules="required">
                                        
-                                       <v-select v-model="form.rol_id"
-                                          :dir="$store.state.appConfig.isRTL ? 'rtl' : 'ltr'" :options="getRols"
-<<<<<<< HEAD
-                                          :reduce="val => val.value" :clearable="false" input-id="user-role" size="sm"/>
-=======
-                                          :reduce="val => val.value" :clearable="false" input-id="user-role" />
->>>>>>> vite
+                                          <v-select v-model="form.rol_id"
+                                             :dir="$store.state.appConfig.isRTL ? 'rtl' : 'ltr'" :options="getRols"
+                                             :reduce="val => val.value" :clearable="false" input-id="user-role" :selectable="verificarRol"  />
 
-                                       <b-form-invalid-feedback :state="errors.length ? false : null">
-                                          {{ errors[0] }}
-                                       </b-form-invalid-feedback>
+                                             <b-form-invalid-feedback :state="valid">
+                                                {{ errors[0] }}
+                                             </b-form-invalid-feedback>
+                                          </validation-provider>
 
-                                    </b-form-group>
-                                 </validation-provider>
+                                       </b-form-group>
+                                
                               </b-col>
 
                            </b-row>
@@ -167,10 +169,7 @@
                            </h4>
                         </div>
 
-
-
                         <!-- Form: Informacion Personal -->
-
                         <b-row>
 
                            <!-- Field: Fecha Nacimiento -->
@@ -181,15 +180,6 @@
                               </b-form-group>
                            </b-col>
 
-<<<<<<< HEAD
-                           <!-- Telefono -->
-                           <b-col cols="12" md="6" lg="4">
-                              <b-form-group label="Telefono" label-for="telefono">
-                                 <b-form-input id="telefono" v-model="form.telefono" />
-                              </b-form-group>
-                           </b-col>
-=======
->>>>>>> vite
 
                            <!-- Field: Website -->
                            <b-col cols="12" md="6" lg="4">
@@ -197,24 +187,11 @@
                                  <b-form-input id="website" v-model="form.website" />
                               </b-form-group>
                            </b-col>
-<<<<<<< HEAD
-
-                           <!-- Field: SI tiene whatsapp -->
-                           <b-col cols="12" md="6" lg="4">
-                              <b-form-group label="Tiene whatsapp ? " label-for="whatsapp" label-class="mb-1">
-                                 <b-form-radio-group id="whatsapp" v-model="form.is_whatsapp" :options="whatsappOptions"
-                                    :value="false" />
-                              </b-form-group>
-                           </b-col>
-                        </b-row>
-
-=======
                         
                         </b-row>
 
                        
 
->>>>>>> vite
                         <!-- Header: Personal Info -->
                         <div class="d-flex mt-2">
                            <feather-icon icon="MapPinIcon" size="19" />
@@ -236,9 +213,34 @@
                            </b-col>
 
                         </b-row>
+
+                        <template v-if="form.id && form.cuenta.divisa_id">
+                             <!-- Header: Info de Datos de cuenta y Divisa del usuario-->
+                           <div class="d-flex mt-2">
+                              <font-awesome-icon icon="fas fa-money-check" />
+                              <h4 class="mb-0 ml-50">
+                                 Datos de cuenta y divisa
+                              </h4>
+                           </div>
+
+                           <b-row>
+                              <b-col cols="12" md="6">
+                                 <b-form-group label="Divisa de Cuenta" description="Es la divisa con la que se muestran la moneda en la billetera; Al cambiar la divisa, se generará un  movimiento de conversión de saldo a la nueva divisa">
+                                    <validation-provider name="cuenta.divisa_id" #default="{valid,errors}">
+                                       <v-select v-model="form.cuenta.divisa_id" :options="divisas" :reduce="option => option.id" label="nombre" @input="changeDivisa">
+                                       </v-select>
+
+                                       <b-form-invalid-feedback :starte="valid">
+                                          {{ errors[0]  }}
+                                       </b-form-invalid-feedback>
+                                    </validation-provider>
+
+                                 </b-form-group>
+                              </b-col>
+                           </b-row>
+                        </template>
+                       
                      </b-tab>
-<<<<<<< HEAD
-=======
 
                      <b-tab>
                         <template #title>
@@ -320,7 +322,6 @@
                         </b-row>
 
                      </b-tab>
->>>>>>> vite
                      <!-- Tab: Redes -->
                      <b-tab>
                         <template #title>
@@ -409,10 +410,7 @@
 import {
    BCol,
    BRow,
-<<<<<<< HEAD
-=======
    BContainer,
->>>>>>> vite
    BForm,
    BFormGroup, 
    BFormInput, 
@@ -448,7 +446,7 @@ import formValidation from '@core/comp-functions/forms/form-validation'
 import Ripple from 'vue-ripple-directive'
 import vSelect from 'vue-select'
 import store from '@/store'
-import {onMounted, ref, watch,toRefs,computed} from '@vue/composition-api'
+import {onMounted, ref, watch,toRefs,computed} from 'vue'
 import { required, alphaNum, email } from '@validations'
 import { avatarText,title } from '@core/utils/filter'
 import flatPickr from 'vue-flatpickr-component'
@@ -471,10 +469,7 @@ export default {
       BFormCheckbox,
       BTab,
       BTabs,
-<<<<<<< HEAD
-=======
       BContainer,
->>>>>>> vite
       BCard,
       BAlert,
       BLink,
@@ -506,21 +501,24 @@ export default {
 
    setup(props, { emit }) {
       
+      const {usuario} = toRefs(store.state.usuario)
+      const {divisas} = toRefs(store.state.divisa)
+
+
       const { resolveUserRoleVariant } = useUsersList()
       const getRols = computed(() => store.getters['rol/getRols'])
       const { refFormObserver, getValidationState, resetForm } = formValidation(resetuserData)
       const profileFile = ref(null)
-      // const {usuario:form} = toRefs(store.state.usuario)
-<<<<<<< HEAD
-      const form = computed(() => store.getters['usuario/draft'])
-=======
       const form = computed(() => store.state.usuario.user)
->>>>>>> vite
 
       const cargarform = () => {
 
          if(!getRols.value.length){
             store.dispatch('rol/cargarRoles')
+         }
+
+         if(!divisas.value.length){
+            store.dispatch('divisa/getDivisas')
          }
 
       }
@@ -561,8 +559,7 @@ export default {
          }).catch(e => console.log(e))
 
       }
-<<<<<<< HEAD
-=======
+
       const agregarTelefono = () => {
          store.commit('usuario/agregarTelefono')
       }
@@ -605,7 +602,20 @@ export default {
       }
 
 
->>>>>>> vite
+      const changeDivisa = (divisa_id) => {
+         
+
+         store.dispatch('usuario/cambiarDivisa',{divisa:divisa_id,usuario:form.value.id}).then(({result}) => {
+            if(result){
+               toast.success('Se ha cambiado la divisa con éxito')
+            }else{
+               toast.info('No se pudo cambiar la divisa, inténte de nuevo')
+            }
+            
+         })
+
+
+      }
 
       return {
          refFormObserver,
@@ -628,15 +638,25 @@ export default {
          profileFile,
          loading:computed(() => store.state.loading),
          getRols,
-<<<<<<< HEAD
-         cargarImagen
-=======
+
          cargarImagen,
 
          agregarTelefono,
          quitarTelefono,
-         guardarTelefono
->>>>>>> vite
+         guardarTelefono,
+         divisas,
+         changeDivisa,
+         form,
+         verificarRol:(option) => {
+
+            if(option.label == 'Viajero' && usuario.value.rol.nombre == 'Promotor'){
+               return true;
+            }else if(usuario.value.rol.nombre != 'Promotor'){
+               return true
+            }
+            
+            return false;
+         }
          
       }
   }
@@ -644,14 +664,8 @@ export default {
 
 </script>
 
-<<<<<<< HEAD
-<style lang="scss">
-@import '~@core/scss/vue/libs/vue-flatpicker.scss';
-</style>
-=======
 <style lang="scss" >
 @import '~@core/scss/vue/libs/vue-flatpicker.scss';
 </style>
 
 
->>>>>>> vite

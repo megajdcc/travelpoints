@@ -19,18 +19,15 @@
 
   <!-- Favicon -->
   <link rel="shortcut icon" href="{{ asset('favicons/favicon-8x8.png') }}">
-<<<<<<< HEAD
-=======
   <script src="https://accounts.google.com/gsi/client" async defer ></script>
 
->>>>>>> vite
 </head>
 
 <body>
 
   <div id="loading-bg">
     <div class="loading-logo">
-      <img src="{{ asset('/storage/logotipov.png') }}" alt="Logo" />
+      <img src="{{ asset('/storage/logotipo.png') }}" alt="Logo" />
     </div>
     <div class="loading">
       <div class="effect-1 effects"></div>
@@ -53,16 +50,10 @@
     }
   </script> 
 
-  @endif
-
-<<<<<<< HEAD
-
-=======
->>>>>>> vite
     <script src="{{ mix('js/manifest.js')}}"></script>
     <script src="{{ mix('js/vendor.js')}}"></script>
     <script src="{{ mix('js/app.js')}}"></script>
-
-</body>
+  
+  </body>
 
 </html>

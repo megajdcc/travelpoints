@@ -3,7 +3,7 @@
   <div class="container-fluid w-100 px-0 mx-0">
 
     <!-- Filters -->
-    <users-list-filters :role-filter.sync="roleFilter" :role-options="getRols" />
+    <users-list-filters :role-filter.sync="roleFilter" :role-options="getRols" v-if="usuario.rol.nombre != 'Promotor'" />
 
     <!-- Table Container Card -->
     <b-card no-body class="mb-0">
@@ -22,13 +22,9 @@
           <b-col cols="12" md="9" class="d-flex align-items-center justify-content-end">
             <b-input-group size="sm">
               <b-form-input v-model="searchQuery" placeholder="Buscar..." />
-              <template #append is-text>
-<<<<<<< HEAD
-                <b-button variant="primary" @click="$router.push({name:'create.usuario'})">
-=======
+              <template #append>
                 <b-button variant="primary" @click="$router.push({name:'create.usuario'})" v-if="$can('write','usuarios')">
->>>>>>> vite
-                  <span class="text-nowrap">Agregar usuario</span>
+                  <span class="text-nowrap">{{ legendBtn  }}</span>
                 </b-button>
               </template>
             </b-input-group>
@@ -72,6 +68,13 @@
 >>>>>>> vite
           </b-media>
         </template>
+        
+        
+        <template #cell(activo)="{item}">
+          <b-form-checkbox v-model="item.activo" switch @change="cambiarEstado(item.id)">
+            {{ item.activo ? 'Activo (¿Desactivar?)' : 'Desactivo (¿Activar?)' }}
+          </b-form-checkbox>
+        </template>
 
         <!-- Column: Rol -->
 <<<<<<< HEAD
@@ -83,10 +86,9 @@
 =======
         <template #cell(rol)="{item}">
           <div class="text-nowrap">
-            <feather-icon :icon="resolveUserRoleIcon(item.rol.nombre)" size="18" class="mr-50"
-              :class="`text-${resolveUserRoleVariant(item.rol.nombre)}`" />
-            <span class="align-text-top text-capitalize">{{ item.rol.nombre }}</span>
->>>>>>> vite
+            <feather-icon :icon="resolveUserRoleIcon(item.rol ? item.rol.nombre : '')" size="18" class="mr-50"
+              :class="`text-${resolveUserRoleVariant(item.rol ? item.rol.nombre : '')}`" />
+            <span class="align-text-top text-capitalize">{{ item.rol ? item.rol.nombre : 'Sin definir' }}</span>
           </div>
         </template>
 
@@ -100,15 +102,25 @@
             </template>
 
 
-            <b-dropdown-item :to="{ name: 'edit.usuario', params: { id: data.item.id } }">
+            <b-dropdown-item :to="{ name: 'edit.usuario', params: { id: data.item.id } }" v-if="$can('update','usuarios')">
               <feather-icon icon="EditIcon" />
               <span class="align-middle ml-50">Editar</span>
             </b-dropdown-item>
 
-            <b-dropdown-item @click="eliminarUsuario(data.item)">
+            <b-dropdown-item @click="eliminarUsuario(data.item)" v-if="$can('delete', 'usuarios')">
               <feather-icon icon="TrashIcon" />
               <span class="align-middle ml-50">Eliminar</span>
             </b-dropdown-item>
+
+             <b-dropdown-item :to="{name:'movimientos.user',params:{id:data.item.id}}">
+                <font-awesome-icon icon="fas fa-money-check"/>
+                <span class="align-middle ml-50">Movimientos de cuenta</span>
+              </b-dropdown-item>
+
+              <b-dropdown-item :to="{name:'promotores.list',params:{id:data.item.id}}" v-if="$can('read','promotores')">
+                <font-awesome-icon icon="fas fa-user-tie"/>
+                <span class="align-middle ml-50">Promotores</span>
+              </b-dropdown-item>
           </b-dropdown>
         </template>
 
@@ -138,11 +150,12 @@ import {
   BDropdownItem,
   BDropdownItemButton,
   BPagination,
+  BFormCheckbox
 } from 'bootstrap-vue'
 
 import vSelect from 'vue-select'
 import store from '@/store'
-import { ref, onUnmounted,onMounted} from '@vue/composition-api'
+import { ref, onUnmounted,onMounted,computed} from 'vue'
 import { avatarText } from '@core/utils/filter'
 import UsersListFilters from './UsersListFilters.vue'
 import useUsersList from './useUsersList'
@@ -150,6 +163,8 @@ import useUsersList from './useUsersList'
 // import UserListAddNew from './UserListAddNew.vue'
 
 import { mapGetters,mapMutations,mapActions } from 'vuex';
+
+import {toRefs} from 'vue'
 
 export default {
   components: {
@@ -173,7 +188,8 @@ export default {
     PaginateTable:() => import('components/PaginateTable'),
     vSelect,
     PerPage:() => import('components/PerPage'),
-    BInputGroup
+    BInputGroup,
+    BFormCheckbox
   },
 
   computed:{
@@ -189,7 +205,22 @@ export default {
   },
 
   setup() {
-    
+    const { usuario } = toRefs(store.state.usuario)
+
+    const cambiarEstado = (user_id) => {
+
+      store.dispatch('usuario/cambiarEstado',user_id).then(({result}) => {
+
+        if(result){
+          toast.success('Se ha cambiado con éxito el estado del usuario')
+          refetchData()
+        }else{
+          toast.info('No se pudo cambiar el Estado del usuario')
+          refetchData();
+        }
+      }).catch(e => console.log(e))
+      
+    }
 
 
     const {
@@ -219,7 +250,7 @@ export default {
 
     return {
 
-
+      cambiarEstado,
       fetchUsers,
       tableColumns,
       perPage,
@@ -242,6 +273,15 @@ export default {
 
       // Extra Filters
       roleFilter,
+      usuario,
+      legendBtn:computed(() => {
+
+        if(!['Lider','Coordinador','Promotor'].includes(usuario.value.rol ? usuario.value.rol.nombre : '')){
+          return 'Agregar Usuario'
+        }
+
+        return 'Agregar Viajero'
+      })
     }
   },
 
@@ -272,7 +312,12 @@ export default {
     }
 
 
-  }
+  },
+
+
+ 
+
+  
 }
 </script>
 

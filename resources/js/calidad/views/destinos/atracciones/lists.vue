@@ -16,12 +16,14 @@
                   <b-input-group size="sm">
                      <b-form-input v-model="searchQuery" type="search" placeholder="..." />
                      <b-input-group-append>
+
                         <b-button variant="dark" size="sm" :to="{ name: 'create.atraccion',params:{destino:destino} }"
-                           v-if="$can('write', 'destino')" class="d-flex">
+                           v-if="$can('write', 'atracciones')" class="d-flex">
                            <span class="d-flex align-items-center py-0">
                               Agregar Atracción
                            </span>
                         </b-button>
+                        
                      </b-input-group-append>
                   </b-input-group>
                </b-col>
@@ -50,11 +52,11 @@
 
                      </template>
 
-                     <h4 v-b-popover.hover="atraccion.descripcion" :title="atraccion.nombre">
+                     <h4 v-b-popover.hover="atraccion.descripcion.substring(0,150)" :title="atraccion.nombre">
                         {{ atraccion.nombre }}
                      </h4>
 
-                     <p class="text-justify" v-b-popover.hover="atraccion.descripcion" :title="atraccion.nombre">
+                     <p class="text-justify" v-b-popover.hover="atraccion.descripcion.substring(0,150)" :title="atraccion.nombre">
                         {{ atraccion.descripcion.substring(0, 80) }} ...
                      </p>
 
@@ -73,7 +75,6 @@
                            <b-button :to="{ name:'imagenes.atraccion',params:{id:atraccion.id}}"
                               v-if="$can('update','atracciones')" variant="dark">
                               <feather-icon icon="ImageIcon" />
-                              Imagenes
                            </b-button>
 
                            <b-button :to="{ name:'atraccion.horarios',params:{id:atraccion.id}}"
@@ -129,7 +130,7 @@ import {
 
 import useAtraccionesList from './useAtraccionesList.js'
 import store from '@/store'
-import { ref, toRefs, computed, onActivated } from '@vue/composition-api'
+import { ref, toRefs, computed, onActivated } from 'vue'
 
 import { regresar } from '@core/utils/utils.js'
 

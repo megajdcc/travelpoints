@@ -19,11 +19,50 @@
                   </validation-provider>
 
                 </b-form-group>
-              </b-col>
-              
 
-              <b-col cols="12" md="6">
-                <b-form-group description="Breve del producto"> 
+                <b-form-group > 
+                  <template #label>
+                    Divisa : <span class="text-danger">*</span>
+                  </template>
+
+                  <validation-provider name="precio" rules="required" #default="{errors,valid}">
+
+                    <v-select v-model="formulario.divisa_id" :options="divisas" :reduce="option => option.id" label="nombre"/>
+
+                    <b-form-invalid-feedback :state="valid">
+                      {{ errors[0]  }}
+                    </b-form-invalid-feedback>
+                  </validation-provider>
+
+                </b-form-group>
+
+                <b-form-group > 
+
+                    <template #label>
+                      Precio : <span class="text-danger">*</span>
+                    </template>
+
+                    <validation-provider name="precio" rules="required" #default="{ errors, valid }">
+
+                      <currency-input v-model="formulario.precio" :options="{
+                        ...optionsCurrency, ...{
+                          currency: getCurrency == 'Tp' ? 'USD' : getCurrency,
+                          currencyDisplay: getCurrency == 'Tp' ? 'symbol' : 'hidden'
+                        }}" class="form-control"></currency-input>
+
+                      <b-form-invalid-feedback :state="valid">
+                        {{ errors[0] }}
+                      </b-form-invalid-feedback>
+
+                    </validation-provider>
+
+                  </b-form-group>
+
+              </b-col>
+
+               <b-col cols="12" md="6">
+
+                 <b-form-group description="Breve del producto"> 
                   <template #label>
                     Breve : 
                   </template>
@@ -38,11 +77,9 @@
                   </validation-provider>
 
                 </b-form-group>
-              </b-col>
 
 
-              <b-col cols="12" md="6">
-                <b-form-group description="Categoría del producto"> 
+                 <b-form-group description="Categoría del producto"> 
                   <template #label>
                     Categoría : <span class="text-danger">*</span>
                   </template>
@@ -56,10 +93,7 @@
                   </validation-provider>
 
                 </b-form-group>
-              </b-col>
 
-
-               <b-col cols="12" md="6">
                   <b-form-group > 
                     <template #label>
                       Tipo de Producto : <span class="text-danger">*</span>
@@ -77,58 +111,6 @@
                   </b-form-group>
                 </b-col>
 
-              <b-col cols="12" md="6">
-                <b-form-group description="La tienda a la que estará asociado el producto"> 
-                  <template #label>
-                    Tienda : <span class="text-danger">*</span>
-                  </template>
-
-                  <validation-provider name="tienda_id" rules="required" #default="{errors,valid}">
-
-                   <v-select v-model="formulario.tienda_id" :options="tiendas" :reduce="(option) => option.id" label="nombre"></v-select>
-
-                    <b-form-invalid-feedback :state="valid">
-                      {{ errors[0]  }}
-                    </b-form-invalid-feedback>
-                  </validation-provider>
-
-                </b-form-group>
-              </b-col>
-
-               <b-col cols="12" md="6">
-                <b-form-group > 
-                  <template #label>
-                    Precio : <span class="text-danger">*</span>
-                  </template>
-
-                  <validation-provider name="precio" rules="required" #default="{errors,valid}">
-
-                    <currency-input v-model="formulario.precio" :options="{ ...optionsCurrency ,...{currency:getCurrencyTienda}}" class="form-control"></currency-input>
-
-                    <b-form-invalid-feedback :state="valid">
-                      {{ errors[0]  }}
-                    </b-form-invalid-feedback>
-                  </validation-provider>
-
-                </b-form-group>
-              </b-col>
-
-               <b-col cols="12" md="6">
-                <b-form-group > 
-                  <template #label>
-                    Disponibles : <span class="text-danger">*</span>
-                  </template>
-
-                  <validation-provider name="disponibles" rules="required" #default="{errors,valid}">
-                      <b-form-spinbutton id="demo-sb" v-model="formulario.disponibles" min="1" max="1000" :state="valid" />
-                    <b-form-invalid-feedback :state="valid">
-                      {{ errors[0]  }}
-                    </b-form-invalid-feedback>
-                  </validation-provider>
-
-                </b-form-group>
-              </b-col>
-
 
               <b-col cols="12" md="6" v-if="formulario.tipo_producto == 2">
                 <b-form-group > 
@@ -145,10 +127,6 @@
 
                 </b-form-group>
               </b-col>
-
-
-
-
 
             </b-row>
 
@@ -230,7 +208,7 @@
             <b-col cols="12">
               <b-form-group label="¿ vas a realizar envíos ?">
 
-                <b-form-radio-group v-model="enviable" :options="[{text:'Sí',value:true},{text:'No',value:false}]" @change="$store.commit('producto/toggleEnvio',$event)">
+                <b-form-radio-group v-model="formulario.enviable" :options="[{text:'Sí',value:true},{text:'No',value:false}]" @change="$store.commit('producto/toggleEnvio',$event)">
 
                 </b-form-radio-group>
 
@@ -246,9 +224,11 @@
                         <template #label>
                           Precio: <span class="text-danger">*</span>
                         </template>
-                        <validation-provider name="precio" rules="required" #default="{errors,valid}">
+                        <validation-provider name="envio.precio" rules="required" #default="{errors,valid}">
 
-                          <currency-input v-model="formulario.envio.precio" :options="{ ...optionsCurrency ,...{currency:getCurrencyTienda}}"
+                          <currency-input v-model="formulario.envio.precio" :options="{ ...optionsCurrency ,...{
+                            currency:getCurrency == 'Tp' ? 'USD' : getCurrency, 
+                            currencyDisplay:getCurrency == 'Tp' ? 'name' : 'code' }}"
                             class="form-control"></currency-input>
 
                           <b-form-invalid-feedback :state="valid">
@@ -283,6 +263,70 @@
               
             </b-col>
           </b-row>
+
+           <el-divider content-position="left">Tiendas en la que habrá este Producto</el-divider>
+
+           <b-row>
+            <b-col cols="12" >
+                <b-button-group size="sm" class="mb-1">
+                  <b-button size="sm" variant="primary" @click="$store.commit('producto/agregarTienda')">Agregar Tienda</b-button>
+                </b-button-group>
+
+
+                <section v-if="formulario.tiendas.length">
+                  <table class="table table-sm table-hover w-100">
+                    <thead>
+                      <th>Tienda</th>
+                      <th>Cantidad</th>
+                      <th></th>
+                    </thead>
+                    <tbody>
+                      <tr v-for="(item, i) in formulario.tiendas" :key="i">
+                        <td>
+                          <validation-provider name="tienda_id" rules="required" #default="{ errors, valid }">
+                            <v-select v-model="item.tienda_id" :reduce="option => option.id" label="nombre" :options="tiendas"
+                              :selectable="(option) => formulario.tiendas.find(val => val.tienda_id === option.id) ? false : true ">
+                            </v-select>
+                            <b-form-invalid-feedback :state="valid">
+                              {{ errors[0] }}
+                            </b-form-invalid-feedback>
+                          </validation-provider>
+                        </td>
+
+                        <td>
+                          <validation-provider name="cantidad" rules="required" #default="{ errors, valid }">
+                            <b-form-spinbutton v-model="item.cantidad" :state="valid" min="1" />
+                            <b-form-invalid-feedback :state="valid">
+                              {{ errors[0] }}
+                            </b-form-invalid-feedback>
+                          </validation-provider>
+                        </td>
+                        <td>
+                          <b-button variant="danger" @click="quitarTienda(i)">
+                            <feather-icon icon="TrashIcon" />
+
+                          </b-button>
+                        </td>
+
+                      </tr>
+                    </tbody>
+                  </table>
+                </section>
+            </b-col>
+           </b-row>
+
+
+           <template v-if="!formulario.id">
+              <el-divider content-position="left">Asociar imagenes al producto</el-divider>
+             <b-row>
+              <b-col cols="12">
+                <multimedia hideVideos seleccionable />
+
+              </b-col>
+             </b-row>
+          </template>
+         
+
 
 
           </b-container>
@@ -338,7 +382,7 @@ import {
   BFormFile
 } from 'bootstrap-vue';
 
-import { toRefs, computed, ref,watch } from '@vue/composition-api';
+import { toRefs, computed, ref,watch, provide } from 'vue';
 import vSelect from 'vue-select'
 
 import store from '@/store'
@@ -363,7 +407,8 @@ export default {
     ValidationProvider,
     vSelect,
     Editor,
-    CurrencyInput:() => import('components/CurrencyInput.vue')
+    CurrencyInput:() => import('components/CurrencyInput.vue'),
+    multimedia:() => import('views/multimedias/multimedia.vue')
   },
 
 
@@ -372,7 +417,11 @@ export default {
     const formValidate = ref(null)
     const {categorias} = toRefs(store.state.categoriaProducto)
     const { tiendas } = toRefs(store.state.tienda)
+    const {divisas} = toRefs(store.state.divisa)
+    const seleccionados = ref([])
     const enviable = ref(false)
+    
+    provide('seleccionados',seleccionados)
 
     const cargarForm = () => {
 
@@ -384,8 +433,13 @@ export default {
         store.dispatch('tienda/getTiendas')
       }
 
+       if (!divisas.value.length) {
+        store.dispatch('divisa/getDivisas')
+      }
+
       if(formulario.value.id){
         formulario.value.archivo = null
+        formulario.value.tiendas = formulario.value.tiendas.map(val => val.pivot)
       }
 
     }
@@ -394,11 +448,19 @@ export default {
     watch([formulario],() => cargarForm())
 
     const guardar = () => {
-        emit('save',formulario.value, formValidate.value)
+       if( seleccionados.value.length){
+        formulario.value.imagenes = seleccionados.value
+       }
+
+       emit('save',formulario.value, formValidate.value)
     } 
 
     const quitarCaracteristica = (car_i) => {
       store.commit('producto/quitarCaracteristica',car_i)
+    }
+
+    const quitarTienda = (i) => {
+      store.commit('producto/quitarTienda',i)
     }
 
     return {
@@ -414,13 +476,27 @@ export default {
       optionsEditor,
       quitarCaracteristica,
       enviable,
-      getCurrencyTienda:computed(() => {
-        if(formulario.value.tienda_id){
-          return store.getters['tienda/getCurrency'](formulario.value.tienda_id) || 'MXN'
+      divisas,
+      seleccionados,
+      getCurrency:computed(() => {
+
+        if(formulario.value.divisa_id){
+
+          return divisas.value.find(val => val.id === formulario.value.divisa_id) 
+          ?  divisas.value.find(val => val.id === formulario.value.divisa_id).iso == 'Tp' 
+                          ? 'USD' : divisas.value.find(val => val.id === formulario.value.divisa_id).iso
+          : 'MXN'
         }
 
         return 'MXN';
 
+      }),
+
+      quitarTienda,
+      getTiendas:computed(() => {
+        return tiendas.value.filter(
+          val => formulario.value.tiendas.find(v =>  v.tienda_id === val.id )  ? false : true
+        )
       })
     }
   }

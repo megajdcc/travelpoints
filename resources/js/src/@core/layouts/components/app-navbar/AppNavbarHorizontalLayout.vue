@@ -2,7 +2,7 @@
   <div class="navbar-container d-flex content align-items-center">
 
     <!-- Nav Menu Toggler -->
-    <ul class="nav navbar-nav d-xl-none">
+    <ul class="nav navbar-nav d-none d-xl-none">
       <li class="nav-item">
         <b-link class="nav-link" @click="toggleVerticalMenuActive">
           <feather-icon icon="MenuIcon" size="21" />
@@ -26,11 +26,13 @@
 
     <!-- Right Col -->
     <b-navbar-nav class="nav align-items-center ml-auto">
-      <locale />
+      <locale class="d-none d-md-flex" />
       <dark-Toggler class="d-none d-lg-block" />
       <!-- <search-bar /> -->
       <!-- <cart-dropdown /> -->
       <notification-dropdown />
+      <academia  v-if="is_loggin && usuario.rol.academia.length"/>
+
       <!-- <observation-dropdown class="d-none d-sm-flex"/> -->
       <user-dropdown />
     </b-navbar-nav>
@@ -50,11 +52,14 @@ import NotificationDropdown from '@/components/notifications.vue'
 import ObservationDropdown from './components/ObservationDropdown.vue'
 import UserDropdown from './components/UserDropdown.vue'
 
+import useAuth from '@core/utils/useAuth.js'
+
+import store from '@/store'
+import { toRefs } from 'vue'
 
 export default {
   components: {
     BLink,
-
     // Navbar Components
     BNavbarNav,
     Bookmarks,
@@ -66,6 +71,8 @@ export default {
     ObservationDropdown,
     UserDropdown,
     BNavItem,
+    Academia: () => import('components/Academia.vue')
+
   },
   props: {
     toggleVerticalMenuActive: {
@@ -77,12 +84,24 @@ export default {
 
   setup(){
 
+    const { usuario } = toRefs(store.state.usuario)
+
+    const {
+      is_loggin
+    } = useAuth();
     
     return {
+      is_loggin,
+      usuario
     }
-
   }
-
 
 }
 </script>
+
+
+<style lang="scss">
+  .vertical-overlay-menu .navbar .navbar-header {
+      min-width: 180px !important;
+  }
+</style>

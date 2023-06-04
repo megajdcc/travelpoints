@@ -1,9 +1,5 @@
 <template>
-  <b-nav-item-dropdown
-    class="dropdown-notification mr-25"
-    menu-class="dropdown-menu-media"
-    right
-  >
+  <b-nav-item-dropdown class="dropdown-notification mr-25" menu-class="dropdown-menu-media" right >
     <template #button-content>
       <feather-icon
         :badge="cantidad"

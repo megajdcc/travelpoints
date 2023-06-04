@@ -30,6 +30,7 @@
       <dark-Toggler class="d-none d-lg-block" />
       <!-- <cart-dropdown /> -->
       <notification-dropdown />
+      <academia v-if="is_loggin && usuario.rol.academia.length" />
       <user-dropdown />
     </b-navbar-nav>
   </div>
@@ -52,6 +53,7 @@ import UserDropdown from './components/UserDropdown.vue'
 import {mapState, mapMutations, mapActions, mapGetters} from 'vuex';
 
 
+import useAuth from '@core/utils/useAuth.js'
 
 export default {
   components: {
@@ -61,7 +63,8 @@ export default {
     DarkToggler,
     NotificationDropdown,
     UserDropdown,
-    BNavItem
+    BNavItem,
+    Academia:() => import('components/Academia.vue')
   },
   props: {
     toggleVerticalMenuActive: {
@@ -71,11 +74,7 @@ export default {
   },
 
 
-  data(){    
-    return{
-    
-    }
-  },
+  
 
   computed:{
     ...mapState('usuario',['usuario'])
@@ -84,11 +83,13 @@ export default {
 
   setup(){
 
+    const {
+      is_loggin 
+    } = useAuth();
+    
     return {
+      is_loggin
     }
-
-
-
   }
 
 

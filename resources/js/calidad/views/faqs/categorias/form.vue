@@ -93,7 +93,7 @@ import { ValidationObserver,ValidationProvider } from 'vee-validate'
 
 import {required} from '@validations'
 
-import {ref,toRefs,computed} from '@vue/composition-api'
+import {ref,toRefs,computed} from 'vue'
 import store from '@/store'
 
 import { regresar } from '@core/utils/utils'

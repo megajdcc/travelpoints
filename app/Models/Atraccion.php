@@ -6,13 +6,13 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Destino;
 
-use App\Trais\{hasTelefonos,hasImages,hasHorario, hasLike, hasLocation, hasOpinion};
+use App\Trais\{hasTelefonos,hasImages,hasHorario, hasLike, hasLocation, hasOpinion,hasEvento};
 use Illuminate\Support\Collection;
 
 class Atraccion extends Model
 {
 
-    use HasFactory, hasTelefonos, hasImages, hasHorario, hasLike, hasLocation, hasOpinion;
+    use HasFactory, hasTelefonos, hasImages, hasHorario, hasLike, hasLocation, hasOpinion,hasEvento;
 
     public readonly string $model_type;
 
@@ -74,6 +74,17 @@ class Atraccion extends Model
         
 
         return $atraccions;
+    }
+
+    public function cargar(){
+        $this->telefono;
+        $this->destino;
+        $this->ruta = "/Atraccions?q={$this->nombre}";
+        $this->tipo = 'Atracción';
+        $this->imagenes;
+        $this->opinions;
+        $this->modelType = $this->model_type;
+        $this->imagen = $this->imagenes[0] ? "/storage/atracciones/imagenes/{$this->imagenes[0]->imagen}" : '';
     }
 
 }

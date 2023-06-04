@@ -33,16 +33,9 @@
 import { BAvatar,BOverlay } from 'bootstrap-vue'
 import AppCollapse from '@core/components/app-collapse/AppCollapse.vue'
 import AppCollapseItem from '@core/components/app-collapse/AppCollapseItem.vue'
-<<<<<<< HEAD
-import {computed} from '@vue/composition-api'
-
-import store from '@/store'
-=======
-import {computed,onMounted} from '@vue/composition-api'
-
+import {computed,onMounted} from 'vue'
 import store from '@/store'
 import useAuth from '@core/utils/useAuth';
->>>>>>> vite
 
 export default {
    components: {
@@ -59,13 +52,10 @@ export default {
    },
 
    setup(){
-<<<<<<< HEAD
-=======
 
       const { authGoogle } = useAuth();
 
       onMounted(() => authGoogle())
->>>>>>> vite
       return {
          loading:computed(() => store.state.loading)
       }

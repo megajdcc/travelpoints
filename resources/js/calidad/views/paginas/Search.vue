@@ -26,7 +26,7 @@ import {
 import {ValidationObserver,ValidationProvider} from 'vee-validate'
 import {required} from '@validations'
 
-import {computed,toRefs,ref}  from '@vue/composition-api'; 
+import {computed,toRefs,ref}  from 'vue'; 
 import { regresar } from '@core/utils/utils';
 
 export default {

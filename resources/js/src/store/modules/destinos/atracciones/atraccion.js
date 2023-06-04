@@ -70,8 +70,8 @@ export default {
          const dia = state.atraccion.horarios.find(val => val.dia == moment().day());
 
          if(dia){
-         const hora1 = moment(moment().format(`Y-M-D ${dia.apertura}`));
-         const hora2 = moment(moment().format(`Y-M-D ${dia.cierre}`));
+         const hora1 = moment(moment().format(`Y-M-D ${dia.apertura[0]}`));
+         const hora2 = moment(moment().format(`Y-M-D ${dia.cierre[0]}`));
 
             const horaActual = moment();
             

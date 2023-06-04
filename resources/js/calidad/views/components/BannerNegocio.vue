@@ -1,6 +1,6 @@
 <template>
-    <section class="banner-perfil-negocio" :style="{ 'background-image': `url(${portada})` }">
-      <b-container fluid class="py-2 px-3">
+    <section class="banner-perfil-negocio" :style="{ 'background-image': `url(${portada})`, position:'relative' }">
+      <b-container fluid class="py-2 px-1 px-md-3">
         <b-row>
     
           <b-col cols="12" md="8" class="d-flex flex-column flex-wrap">
@@ -16,7 +16,7 @@
               <!-- Comision por persona o porcentaje -->
     
               <b-badge variant="success" v-if="negocio.tipo_comision == 2" v-b-tooltip.hover="'Monto por Persona'">
-                {{ negocio.comision | currency(negocio.divisa.iso) }}
+                {{ negocio.comision | currency('Tp') }}
               </b-badge>
     
               <b-badge variant="success" v-else v-b-tooltip.hover="'Porcentaje por lo que consumas'">
@@ -30,25 +30,18 @@
               <h2 class="display-4 text-white mb-0">{{ negocio.nombre }}</h2>
 
               <el-rate :value="promedioCalificacion" disabled disabled-void-color="#4f4f4f" void-color="#000000"
-                  class="d-flex flex-nowrap rate-banner" size="large" style="font-size:30px" />
+                  class="d-flex flex-nowrap rate-banner my-1" size="large" style="font-size:30px"  />
     
               <strong class="font-weight-bolder mb-1 text-white"> {{ negocio.breve }}</strong>
-    
-              <p class=" text-justify font-weight-bolder text-white" style="font-size:16pt">
-    
-                <font-awesome-icon icon="fas fa-map" />
-    
-                {{ negocio.direccion }}
-              </p>
-    
-    
+
             </section>
     
             <section class="d-flex flex-column btn-options-banner">
 
               <actions-negocio :negocio="negocio" />  
 
-              <b-button variant="success" title="reservar" class="mt-1 font-weight-bolder" @click="isShowReservar = !isShowReservar" v-if="usuario.id" >
+              <b-button variant="success" title="reservar" class="mt-1 font-weight-bolder" 
+              @click="isShowReservar = !isShowReservar" v-if="usuario.id" >
 
                 <font-awesome-icon icon="fa fa-calendar" class="mr-1" />
                 Reservar
@@ -83,7 +76,7 @@ import {
   BCol
 } from 'bootstrap-vue'
 
-import {computed,toRef,ref,toRefs} from '@vue/composition-api'
+import {computed,toRef,ref,toRefs} from 'vue'
 import store from '@/store'
 
 import useAuth from '@core/utils/useAuth'

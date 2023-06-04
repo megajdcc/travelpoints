@@ -1,4 +1,4 @@
-import {ref,watch,onMounted,computed} from '@vue/composition-api'
+import {ref,watch,onMounted,computed} from 'vue'
 import {Notification} from 'element-ui';
 
 import ToastificationContent from '@core/components/toastification/ToastificationContent.vue'

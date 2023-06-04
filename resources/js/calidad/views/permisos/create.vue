@@ -1,7 +1,7 @@
 <script>
 
 import form from './form';
-import { h, onMounted, onActivated } from '@vue/composition-api'
+import { h, onMounted, onActivated } from 'vue'
 import store from '@/store'
 import router from '@/router'
 

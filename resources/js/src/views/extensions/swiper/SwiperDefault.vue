@@ -23,9 +23,9 @@
 
 <script>
 import BCardCode from '@core/components/b-card-code/BCardCode.vue'
-import { Swiper, SwiperSlide } from 'vue-awesome-swiper'
+import { Swiper, SwiperSlide } from 'swiper/vue'
 import { BImg } from 'bootstrap-vue'
-import 'swiper/css/swiper.css'
+import 'swiper/css'
 import { codeDefault } from './code'
 
 export default {

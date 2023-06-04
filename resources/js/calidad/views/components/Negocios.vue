@@ -1,6 +1,6 @@
 <template>
     <b-row>
-      <b-col cols="12">
+      <b-col cols="12" >
         <h3>{{ titulo  }}</h3>
         <p>{{  subTitulo  }}</p>
       </b-col>
@@ -48,14 +48,13 @@
         
                       <b-badge class="card-simple-price" variant="success" v-if="item.tipo_comision == 2"
                         v-b-tooltip.hover="'Monto por Persona'">
-                        {{ item.comision | currency(item.divisa.iso) }}
+                        {{ item.tps_referido | currency('tp') }}
                       </b-badge>
         
                       <b-badge class="card-simple-price" variant="success" v-else
                         v-b-tooltip.hover="'Porcentaje por lo que consumas'">
-                        {{ item.comision }} %
+                        {{ Math.round(item.comision) }} %
                       </b-badge>
-        
         
                     </div><!-- /.card-simple-background -->
                   </div><!-- /.card-simple -->
@@ -89,7 +88,7 @@ import {
 
 import store from '@/store'
 
-import {toRefs,ref,computed,onMounted,watch} from '@vue/composition-api'
+import {toRefs,ref,computed,onMounted,watch} from 'vue'
 import useNegocioList from '@core/utils/negocios/useNegocioList.js'
 
 
@@ -114,12 +113,12 @@ export default{
     atraccion: Object,
     titulo:{
       type:String,
-      default:'Negocios'
+      default:'Negocios Travel Points'
     },
 
     subTitulo: {
       type: String,
-      default: 'Explora los Restaurantes, Bares y mas...'
+      default: 'Descubre los restaurantes, experiencias y otras actividades turísticas que te dan puntos'
     }
   },
 
@@ -130,7 +129,7 @@ export default{
   setup(props){
 
     const { negocios,destino,atraccion } = toRefs(props)
-  
+    
     const actions = useNegocioList({destino:destino.value ? destino : null,atraccion:atraccion.value ? atraccion : null})
 
     const portada = (imagenes) => {
@@ -146,6 +145,7 @@ export default{
 
 
     onMounted(() => actions.refetchData());
+    watch(() => destino.value.id,() => actions.refetchData());
 
     return {
       promedioCalificacion: computed({

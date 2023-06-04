@@ -1,17 +1,10 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-<<<<<<< HEAD
-import axios from 'axios'
-=======
-
->>>>>>> vite
 
 // Modules
 import app from './app'
 import appConfig from './app-config'
 import verticalMenu from './vertical-menu'
-
-
 
 // Import Modulos
 
@@ -41,9 +34,6 @@ import categoriaNegocio from './modules/negocios/categorias'
 
 import solicitud from './modules/negocios/solicitudes'
 
-
-<<<<<<< HEAD
-=======
 // Divisas
 
 import divisa from './modules/divisas';
@@ -138,8 +128,38 @@ import producto from './modules/tienda/producto.js';
 
 import consumo from './modules/tienda/consumo.js';
 
+// carrito Compra
 
->>>>>>> vite
+import carrito from './modules/tienda/carrito.js';
+
+// Sucursales
+import sucursal from './modules/sucursal.js'
+
+// Comisiones
+
+import comision from './modules/comision.js'
+
+// Datos Pago 
+import datosPago from './modules/datosPago.js';
+
+// Retiros 
+
+import retiro from './modules/retiro.js';
+
+
+// Pais , Estados y Municipios
+
+import pais from './modules/pais.js'
+import estado from './modules/estado.js'
+import ciudad from './modules/ciudad.js'
+
+// Academias
+import academiaVideos from './modules/academiaVideos.js'
+
+// Pagina
+
+import pagina from './modules/pagina.js';
+
 
 Vue.use(Vuex)
 
@@ -188,19 +208,12 @@ export default new Vuex.Store({
 			}
 
 		},
-<<<<<<< HEAD
-=======
     
->>>>>>> vite
     setAuthMessage(state,data){
       state.auth.message = data;
 
     },
 
-<<<<<<< HEAD
-
-=======
->>>>>>> vite
     setToken(state,token){
       state.token = token
     },
@@ -215,28 +228,20 @@ export default new Vuex.Store({
 	actions: {
 
     async cerrarSesion({ state, commit }) {
-<<<<<<< HEAD
-=======
       
->>>>>>> vite
       return await axios.get('/api/auth/logout',null,{
         headers: {
           'WWW-Authenticate': 'Bearer', 'Authorization': (state.token) ? state.token : localStorage.getItem('accessToken')
         }
       });
 
-<<<<<<< HEAD
-    }
-
-
-=======
     },
 
 
-    searchPublic({commit},query){
+    searchPublic({commit},{query,destino}){
       return new Promise((resolve, reject) => {
         
-        axios.post(`/api/search/public`,{q:query}).then(({data}) => {
+        axios.post(`/api/search/public`,{q:query,destino:destino}).then(({data}) => {
           resolve(data)
         }).catch(e => reject(e))
 
@@ -259,7 +264,6 @@ export default new Vuex.Store({
 
 
 
->>>>>>> vite
 	},
 
   modules: {
@@ -274,9 +278,6 @@ export default new Vuex.Store({
     dashboard,
     faq,
     categoriaNegocio,
-<<<<<<< HEAD
-    solicitud
-=======
     solicitud,
     divisa,
     cuenta,
@@ -301,10 +302,18 @@ export default new Vuex.Store({
     categoriaProducto,
     tienda,
     producto,
-    consumo
->>>>>>> vite
+    consumo,
+    carrito,
+    sucursal,
+    comision,
+    datosPago,
+    retiro,
+    pais,
+    estado,
+    ciudad,
+    academiaVideos,
+    pagina
   },
-
   strict: process.env.DEV,
 
 })

@@ -43,7 +43,7 @@
 
 <script>
 import { FormWizard, TabContent } from 'vue-form-wizard'
-import { ref } from '@vue/composition-api'
+import { ref } from 'vue'
 import ECommerceCheckoutStepPayment from './ECommerceCheckoutStepPayment.vue'
 import ECommerceCheckoutStepCart from './ECommerceCheckoutStepCart.vue'
 import ECommerceCheckoutStepAddress from './ECommerceCheckoutStepAddress.vue'

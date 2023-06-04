@@ -1,80 +1,182 @@
 <template>
   <section class="w-100 d-flex flex-column">
 
-    <b-card class="gallerie mt-1">
-      <!-- swiper1 -->
-      <swiper ref="swiperTop" class="swiper-gallery gallery-top" :options="swiperOptions">
-    
-        <swiper-slide v-for="(data, index) in swiperData" :key="index">
-          <b-img :src="data.img" fluid heigth="350px" class="imagen-gallerie" />
-    
-        </swiper-slide>
-    
-        <div slot="button-next" class="swiper-button-next swiper-button-white" />
-        <div slot="button-prev" class="swiper-button-prev swiper-button-white" />
-    
-      </swiper>
-    
-      <!-- swiper2 Thumbs -->
-      <swiper ref="swiperThumbs" class="swiper gallery-thumbs" :options="swiperOptionThumbs">
-        <swiper-slide v-for="(data, index) in swiperData" :key="index">
-          <b-img :src="data.img" fluid class="imagen-thumb" />
-        </swiper-slide>
-      </swiper>
-    
-      <b-button variant="dark" @click="() => showGallerie = !showGallerie" size="sm" class="btn-gallerie" rounded>
-        <font-awesome-icon icon="fa-images" class="mr-1" />
-        Todas las fotos {{ negocio.imagenes.length }}
-      </b-button>
-    
-      <gallerie :galleries="negocio.imagenes" :showGallerie.sync="showGallerie" path="/storage/negocios/fotos" />
-    
-    </b-card>
+    <swiper-gallery :imagenes="negocio.imagenes" path="/storage/negocios/fotos/" class="mt-1" :heightGallery="400" :coverImg="false" />
+  
+      <h2 class="display-4 d-flex d-md-none">Sobre <span class="text-warning">{{ negocio.nombre }}</span></h2>
+      <b-card body-class="d-flex flex-column justify-content-center d-flex d-md-none">
+
+            <section class="d-flex align-items-center">
+              <!-- Logo -->
+              <section class="w-25">
+                <b-img style="width:100%; height:60px; object-fit:contain"
+                  :src="`/storage/negocios/logos/${negocio.logo}`" />
+              </section>
+
+              <!-- Otros -->
+              <section class="w-75">
+                <table class="table table-sm table-hover" border="0">
+                  <tr class="" v-if="negocio.emails.length">
+                    <td>
+                      <font-awesome-icon icon="fas fa-envelope" />
+                    </td>
+
+                    <td>
+                      <b-link :href="`mailto:${negocio.emails[0].email}`" target="_blank">
+                        {{ negocio.emails[0].email }}
+                      </b-link>
+                    </td>
+                  </tr>
+
+                  <tr class="" v-if="negocio.telefonos.length">
+                    <td>
+                      <font-awesome-icon icon="fas fa-phone" />
+                    </td>
+
+                    <td>
+                      <b-link :href="`tel:${negocio.telefonos[0].telefono}`" target="_blank" style="overflow-wrap: anywhere;">
+                        {{ negocio.telefonos[0].telefono }}
+                      </b-link>
+                    </td>
+                  </tr>
+
+
+                  <tr class="" v-if="negocio.sitio_web">
+                    <td>
+                      <font-awesome-icon icon="fas fa-globe" />
+                    </td>
+
+                    <td>
+                      <b-link :href="negocio.sitio_web" target="_blank" style="overflow-wrap:anywhere ;">
+                        {{ negocio.sitio_web }}
+                      </b-link>
+                    </td>
+                  </tr>
+
+               
+                
+                   <tr class="" >
+                      <td>
+                        <font-awesome-icon icon="fas fa-map" />
+                      </td>
+
+                      <td>
+                        {{ negocio.direccion }}
+                      </td>
+                    </tr>
+
+                     <tr class="" v-if="negocio.tipo_menu == 1" >
+
+                        <td colspan="2">
+                          <b-button :href="negocio.menu" target="_blank" style="text-decoration:none;" block variant="warning">
+                            <font-awesome-icon icon="fas fa-book-open"/>
+                            Ver menú
+                          </b-button>
+                        </td>
+                      </tr>
+
+                </table>
+              </section>
+
+            </section>
+            <el-divider></el-divider>
+
+            <!-- Perfil Negocio Mapa -->
+              <GmapMap :center="{ lat: Number(negocio.lat), lng: Number(negocio.lng) }" :zoom="17" map-type-id="terrain" style="width: 100%; height: 300px">
+              
+                <GmapMarker :key="0" :position="{
+                    lat: Number(negocio.lat),
+                    lng: Number(negocio.lng)
+                  }" :visible="true" :draggable="false" :clickable="false">
+
+                        <GmapInfoWindow :options="optionsPlace">
+                        </GmapInfoWindow>
+              
+                </GmapMarker>
+              
+              </GmapMap>
+
+
+            <el-divider></el-divider>
+
+            <table class="table table-hover table-sm table-responsive" border="0" v-if="negocio.precios">
+              <tr v-if="negocio.precios.compra_promedio">
+                <td>
+                  <strong>Compra promedio por persona</strong>
+                </td>
+                <td>
+                  <!-- Min: {{ negocio.precios.precio_minimo | currency(negocio.divisa.iso) }} - Max: {{
+                    negocio.precios.precio_maximo | currency(negocio.divisa.iso)
+                  }} -->
+
+                  {{  negocio.precios.compra_promedio | currency(negocio.divisa.iso)  }}
+                </td>
+              </tr>
+            </table>
+
+            <el-divider></el-divider>
+
+            <table class="table table-hover table-sm " border="0" v-if="negocio.redes.length">
+              <tr>
+                <td>
+                  <strong>Seguir</strong>
+                </td>
+                <td>
+
+                  <section class="d-flex justify-content-around">
+
+                    <b-avatar v-for="({ icono, nombre, url }, i) in negocio.redes" :key="i" :href="url" target="_blank"
+                      v-b-tooltip.hover="nombre" :variant="getColorRed(nombre)">
+                      <font-awesome-icon :icon="['fab', icono]" />
+                    </b-avatar>
+
+                  </section>
+
+                </td>
+              </tr>
+            </table>
+
+          </b-card>
+
+      <b-card>
+        <b-card-body >
+          <section v-html="negocio.descripcion"></section>
+        </b-card-body>
+      </b-card>
+     <!-- <p class="text-justify">
+            {{ negocio.descripcion }}
+      </p> -->
 
   
-    <!-- Perfil Negocio mana -->
-  <GmapMap :center="{lat:Number(negocio.lat), lng:Number(negocio.lng)}" :zoom="17" map-type-id="terrain" style="width: 100%; height: 300px">
-    
-    <GmapMarker :key="0" :position="{
-    	lat:Number(negocio.lat),
-    	lng:Number(negocio.lng)
-    }" :visible="true" :draggable="false" :clickable="false">
-
-            <GmapInfoWindow :options="optionsPlace">
-            </GmapInfoWindow>
-    
-    </GmapMarker>
-    
-  </GmapMap>
-
-  <hr>
   <!-- Video del negocio -->
   <template v-if="negocio.videos.length">
-
+    <hr>
     <h2>Video</h2>
     
     <section class="d-flex flex-column ">
       <video :poster="portada" :src="`/storage/negocios/videos/${video}`" controls class="video-negocio" controlslist="nodownload"></video>
     </section>
-
+    <hr>
   </template>
 
-  <hr>
-  <!-- Opiniones del negocio -->
-  <h2 >Opiniones sobre este <strong class="text-warning">negocio</strong></h2>
+  <template v-if="negocio.tipo_menu == 2 || negocio.tipo_menu == 3">
+      <hr>
+      <h2>Menú</h2>
+      <section class="d-flex justify-content-center">
+          <mi-pdf  v-if="negocio.tipo_menu == 2" :pdf="negocio.menu" height="600px" />
+          <b-img v-if="negocio.tipo_menu == 3" :src="`/storage/negocios/menu/${negocio.menu}`" class="w-100 h-auto rounded-sm" style="max-height:600px; object-fit: contain;"></b-img>
+      </section>
+      <hr>
+  </template>
 
-  <section class="d-flex flex-column ">
+  <!-- Opiniones del negocio -->
+  <h2 class="d-none d-md-flex" >Opiniones sobre este <strong class="text-warning">negocio</strong></h2>
+  <section class="d-none d-md-flex flex-column ">
     <reviews-opinion :promedioCalificacion="promedioCalificacion" :cantidad="negocio.opinions.length"
       :porcentajeOpinions="porcentajeOpinions" :model="{model_id:negocio.id,model_type:negocio.modelType}"
       class="mt-1 px-0 mx-0" />
-      <!-- <b-button :to="{ name:'perfil.negocio.opiniones'}" title="Ir a opiniones" v-b-tooltip.hover class="align-self-end"> 
-        Ir a Opiniones
-      </b-button> -->
+
   </section>
- 
-
-  
-
 
   </section>
    
@@ -87,26 +189,26 @@ import {
   BCard,
   BImg,
   BButton,
-  VBTooltip
+  BCardBody,
+  VBTooltip,
+  BLink
 } from 'bootstrap-vue'
 
-import { Swiper, SwiperSlide } from 'vue-awesome-swiper'
-import 'swiper/css/swiper.css'
 
-import { toRefs, computed, ref, nextTick , onMounted } from '@vue/composition-api';
+import { toRefs, computed, ref, nextTick , onMounted } from 'vue';
 import store from '@/store'
-import router from '@/router'
 
 export default {
 
   components:{
     BCard,
+    BCardBody,
     BImg,
     BButton,
-    Swiper,
-    SwiperSlide,
-    Gallerie: () => import('components/Gallerie.vue'),
     ReviewsOpinion: () => import('components/ReviewsOpinion.vue'),
+    MiPdf:() => import('components/MiPdf.vue'),
+    SwiperGallery:() => import('components/SwiperGallery.vue'),
+    BLink
 
   },
 
@@ -117,52 +219,6 @@ export default {
   setup(props){
 
     const { negocio } = toRefs(store.state.negocio)
-    const swiperThumbs = ref(null)
-    const swiperTop = ref(null)
-    const showGallerie= ref(false)
-
-    const swiperOptions = ref({
-      loop: true,
-      // autoplay:{
-      //    delay:5000
-      // },
-      loopedSlides: 5,
-      spaceBetween: 10,
-      navigation: {
-        nextEl: '.swiper-button-next',
-        prevEl: '.swiper-button-prev',
-      },
-    });
-
-    const swiperOptionThumbs = ref({
-      loop: false,
-      loopedSlides: 5, // looped slides should be the same
-      spaceBetween: 10,
-      centeredSlides: true,
-      slidesPerView: 6,
-      touchRatio: 0.2,
-      slideToClickedSlide: true,
-    });
-
-
-    const swiperData = computed(() => {
-      return negocio.value.imagenes.map(val => ({ img: `/storage/negocios/fotos/${val.imagen}` }))
-    })
-    
-
-    onMounted(() => {
-
-       nextTick(() => {
-            const swiperTopC = swiperTop.value.$swiper
-            const swiperThumbsC = swiperThumbs.value.$swiper
-            swiperTopC.controller.control = swiperThumbsC
-            swiperThumbsC.controller.control = swiperTopC
-
-        })
-
-    })  
-
-
 
     const portada = computed(() => {
 
@@ -176,20 +232,24 @@ export default {
 
     });
 
-
     return {
-      swiperOptions,
-      swiperOptionThumbs,
-      swiperData,
       negocio,
-      swiperThumbs,
-      swiperTop,
-      showGallerie,
       portada,
       video:computed(() => negocio.value.videos.length ? negocio.value.videos[0].url : ''),
       promedioCalificacion: computed(() => store.getters['negocio/promedioCalificacion'](negocio.value)),
       porcentajeOpinions: (cal) => store.getters['negocio/porcentajeOpinions'](cal),
       optionsPlace: computed(() => ({ content:`<strong>${negocio.value.nombre}</strong>`})),
+      getColorRed: (red) => {
+        switch (red) {
+          case 'Facebook':
+            return 'primary'
+            break;
+
+          default:
+            return 'dark'
+            break;
+        }
+      }
 
     }
   }
@@ -199,44 +259,6 @@ export default {
 </script>
 
 <style lang="scss">
-
-.swiper-slide {
-
-    display: flex;
-    justify-content: center;
-
-    .imagen-gallerie {
-      height: 350px;
-      width: 100%;
-      object-fit: contain;
-      margin: auto 0px;
-    }
-  }
-
-  .imagen-thumb {
-    width: 70px;
-    height: 50px;
-    cursor: pointer;
-  }
-
-  .gallerie {
-    //   flex: 1 1 60%;
-    position: relative;
-
-    // .swiper-slide-active{
-    .btn-gallerie {
-      position: absolute;
-      left: 2rem;
-      top: 3rem;
-      bottom: auto;
-      right: auto;
-      z-index: 10;
-    }
-
-    // }
-
-}
-
 
 .video-negocio{
   height:400px;

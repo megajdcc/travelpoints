@@ -1,7 +1,7 @@
 
 <script>
 import form from 'views/socio/negocio/solicitudes/form'
-import { h, onMounted, toRefs, watch } from '@vue/composition-api'
+import { h, onMounted, toRefs, watch } from 'vue'
 import store from '@/store'
 import router from '@/router'
 
@@ -45,17 +45,10 @@ export default {
 
             save: (data, formValidate) => {
 
-<<<<<<< HEAD
-               store.dispatch('solicitud/guardar', data).then(({ result,solicitud }) => {
-
-                  if (result) {
-                     toast.success('Se ha enviado con éxito la solicitud, le hemos enviado un correo al solicitante.')
-=======
                store.dispatch('solicitud/guardar', {...data,...{panel:'infochannel'}}).then(({ result,solicitud }) => {
 
                   if (result) {
                      toast.success('Se ha enviado con éxito la solicitud, le hemos enviado un correo al solicitante.',{position:'bottom-right'})
->>>>>>> vite
                      router.push({ name: 'listar.solicitudes.negocios' })
                   } else {
                      toast.error('No se pudo guardar tu solicitud, inténtelo de nuevo')

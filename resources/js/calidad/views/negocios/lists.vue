@@ -1,100 +1,115 @@
 <template>
-   <b-container fluid class="px-0 mx-0">
+   <listado :actions="actions" hideFooter>
 
-      <!-- Table Container Card -->
-      <b-card no-body class="mb-0">
+      <template #btn-action>
+         <b-button variant="primary" title="Crear Nuevo Negocio" v-if="$can('write','negocios')" class="d-flex align-items-center">
+            <font-awesome-icon icon="fa-plus"/>
+            Nuevo Negocio
+         </b-button>
+      </template>
 
-         <div class="m-2">
-            <!-- Table Top -->
-            <b-row>
-               <!-- Per Page -->
-               <b-col cols="12" md="4" class="d-flex align-items-center justify-content-start mb-1 mb-md-0">
-                  <per-page v-model="perPage" :perPageOptions="perPageOptions"></per-page>
-               </b-col>
+      <template #contenido="{fetchData,tableColumns,isSortDirDesc,sortBy,eliminar}">
+         <b-card no-body class="p-1">
+             <b-table ref="refTable" class="position-relative" :items="fetchData" responsive :fields="tableColumns"
+              primary-key="id" :sort-by="sortBy" show-empty empty-text="No se encontró ningún negocio"
+              :sort-desc="isSortDirDesc"  sticky-header="700px" :no-border-collapse="false"  
+              borderless outlined small :busy="loading" stacked="md"> 
 
-               <b-col md="8">
-                  <b-input-group size="sm">
-                     <b-form-input v-model="searchQuery" type="search" placeholder="..." />
-                     <!-- <b-input-group-append>
-                        <b-button variant="dark" size="sm" :to="{ name: 'negocio.create' }"
-                           v-if="$can('write', 'negocios')" class="d-flex">
-                           <span class="d-flex align-items-center py-0">
-                              Agregar Negocio
+            <template #cell(id)="{ item, detailsShowing, toggleDetails }">
+               <b-button variant="primary" @click="toggleDetails"  size="sm">
+                  # {{ item.id }}
+                  <font-awesome-icon :icon="['fas', detailsShowing ? 'fa-angle-up' : 'fa-angle-down']" class="ml-1" />
+               </b-button>
+            </template>
+
+               <template #row-details="{ item }">
+                  <banner-negocio :negocio="item" :promedioCalificacion="promedioCalificacion(item)" />
+               </template>
+
+               <template #cell(saldo)="{item}">
+                  
+                  <b-button variant="dark" @click="mostrarBalances(item)" v-b-tooltip.hover title="Mostrar Billetera" size="sm" v-if="item.cuenta">
+                           <span class="text-nowrap text-success" :class="{'text-danger': item.cuenta.saldo < 0}">
+                              {{ item.cuenta.saldo | currency(item.cuenta.divisa.iso) }}
                            </span>
-                        </b-button>
-                     </b-input-group-append> -->
-                  </b-input-group>
-               </b-col>
+                  </b-button>
 
-            </b-row>
+                  <span v-else>
+                     Sin Cuenta 
+                  </span>
+                
+               </template>
+              
+               <!-- Column: Nombre Negocio -->
+              <template #cell(nombre)="{ item }">
 
-         </div>
+               <section class="d-flex align-items-center flex-wrap flex-md-nowrap justify-content-center">
+                  <article class="flex-shrink-0">
+                      <b-img :src="`/storage/negocios/logos/${item.logo}`" height="60" width="120" style="object-fit:contain" ></b-img>
+                  </article>
 
+                  <section class="flex-grow-1 d-flex justify-content-center">
+                      <b-link :to="`/${item.url}`" 
+                       class="font-weight-bold d-block text-nowrap"> 
+                       {{ item.nombre }}
+                     </b-link>
+                  </section>
+
+               </section>
+           
+              </template>
+
+               <template #cell(comision)="{ item }">
+                  <div class="text-nowrap">
+                     <span class="align-text-top text-uppercase" 
+                     v-if="item.tipo_comision == 2" v-b-tooltip.hover="'Monto por persona'">{{ item.comision | currency(item.divisa.iso) }}</span>
+                     <span class="align-text-top text-uppercase" v-else v-b-tooltip.hover="'Porcentaje por venta'">{{ item.comision }} % </span>
+                  </div>
+               </template>
+
+               <template #cell(origen)="{ item }">
+                     <div class="text-nowrap">
+                        <span class="align-text-top text-uppercase" v-if="item.estado">{{ `${item.estado.estado} - ${item.estado.pais.pais}` }}</span>
+                     </div>
+               </template>
+
+                <template #cell(created_at)="{ item }">
+                     <div class="text-nowrap">
+                        <span class="align-text-top text-uppercase" >{{ item.created_at | fecha }}</span>
+                     </div>
+               </template>
+
+              <!-- Column: Actions -->
+              <template #cell(actions)="{ item }">
+                  <b-button-group size="sm">
+                     <b-button variant="dark" title="Entrar al panel de este negocio"  v-b-tooltip.hover
+                     @click="entrarPanelnegocio(item.id)" v-if="$can('write','negocios')">
+                        <font-awesome-icon icon="fas fa-right-to-bracket" />
+                        Panel
+                     </b-button>
+                     <b-button variant="primary" title="Editar" :to="{ name: 'negocio.edit', params: { id: item.id } }" v-if="$can('update', 'negocios')">
+                        <font-awesome-icon icon="fas fa-pen-to-square"/>
+                     </b-button>
+
+                     <b-button variant="danger" title="Eliminar" @click="eliminar()"  v-if="$can('delete', 'negocios')">
+                        <font-awesome-icon icon="fas fa-trash"/>
+                     </b-button>
+                  </b-button-group>
+              </template>
+
+            </b-table>
          </b-card>
 
-         <section class="w-100 d-flex justify-content-center py-3" v-if="loading" >
-            <b-spinner >
-            </b-spinner>
-         </section>
-       
-         <b-container fluid v-else >
-            <b-row>
-               <b-col cols="12" md="4" v-for="(negocio,i) in items" :key="i" class="px-0">
-
-                  <b-card class="my-2" :class="{'ml-2' : i > 0}" header-class="py-0 px-1">
-                  
-                     <template #header>
-                        <b-img :src="`/storage/negocios/logos/${negocio.logo}`" thumbnails class="logotipos cursor-pointer" style="border-radius:10px 10px 0px 0px" @click="irEditar(negocio)" />
-                     </template>
-         
-                     <h4 v-b-popover.hover="negocio.breve" :title="negocio.nombre" class="mt-1">
-                        {{ negocio.nombre }}
-                     </h4>
-
-                     <em class="line-height-1 font-weight-bolder" v-b-popover.hover="negocio.breve" :title="negocio.nombre">
-                        {{ negocio.nombre }}
-                     </em>
-                     
-                     
-                     <p class="text-justify" v-b-popover.hover="negocio.breve" :title="negocio.nombre" style="max-height:40px">
-                        {{ negocio.breve }}
-                     </p>
-         
-                     <template #footer>
-                        <b-button-group size="sm">
-         
-                           <b-button :to="{name:'negocio.edit',params:{id:negocio.id}}" v-if="$can('update','negocios')"
-                              variant="primary">
-                              <feather-icon icon="EditIcon" />
-                           </b-button>
-         
-                           <b-button @click="eliminar(negocio.id)" v-if="$can('delete','negocios')" variant="danger">
-                              <feather-icon icon="TrashIcon" />
-                           </b-button>
-         
-                        </b-button-group>
-                     </template>
-                  </b-card>
-               </b-col>
-            </b-row>
-         </b-container>
-
-         <paginate-table :dataMeta="dataMeta" :currentPage.sync="currentPage" :perPage="perPage" :total="total"  class="mt-1"/>
-
-         <b-card class="mt-1">
-
+         <b-modal v-model="showBalance" centered size="xl" title="Movimientos de Cuenta del negocio" lazy  hide-footer> 
+            <movimientos isAdmin/>
+         </b-modal>
         
-         <b-container class="mb-1">
-            <b-row>
-               <b-col class="px-1">
-                  <b-button @click="regresar" size="sm">Regresar</b-button>
-               </b-col>
-            </b-row>
-         </b-container>
+      </template>
 
+     
 
-      </b-card>
-   </b-container>
+   </listado>
+
 </template>
 
 <script>
@@ -114,7 +129,12 @@ import {
    BCarouselSlide,
    BImg,
    VBPopover,
-   BSpinner
+   BSpinner,
+   BAvatar,
+   BLink,
+   BMedia,
+   VBTooltip,
+   BModal
 
 } from 'bootstrap-vue'
 
@@ -122,7 +142,7 @@ import useNegocioList from './useNegocioList.js'
 import store from '@/store'
 import router from '@/router'
 
-import { ref, toRefs, computed, onActivated } from '@vue/composition-api'
+import { ref, toRefs, computed, onMounted } from 'vue'
 
 import { regresar } from '@core/utils/utils.js'
 
@@ -144,50 +164,53 @@ export default {
       BImg,
       perPage: () => import('components/PerPage.vue'),
       paginateTable: () => import('components/PaginateTable.vue'),
-      BSpinner
+      BSpinner,
+      BAvatar,
+      BMedia,
+      bannerNegocio: () => import('components/BannerNegocio.vue'),
+      BLink,
+      Listado:() => import('components/Listado.vue'),
+      BModal,
+      movimientos:() => import('views/panels/negocio/movimientos.vue')
+
    },
 
    directives: {
-      'b-popover': VBPopover
+      'b-popover': VBPopover,
+      'b-tooltip':VBTooltip
    },
 
    setup(props) {
 
+      const showBalance = ref(false)
 
-      const {
-         isSortDirDesc,
-         sortBy,
-         searchQuery,
-         perPage,
-         currentPage,
-         total,
-         items,
-         perPageOptions,
-         dataMeta,
-         refetchData,
-         fetchData,
-         eliminar,
-      } = useNegocioList();
+      const actions = useNegocioList();
 
-      onActivated(() => refetchData())
+      onMounted(() => setTimeout(() => actions.refetchData(),1500))
+
+      const mostrarBalances = (negocio) => {
+         store.commit('negocio/setNegocio',negocio)
+         showBalance.value = true;
+      }
+
+      const entrarPanelnegocio = (negocio_id) => {
+          store.dispatch('negocio/cambiarNegocio', negocio_id).then(({ result }) => {
+
+            if (result) {
+               router.push({ name: 'negocio.home' })
+            }
+         })
+      }
 
       return {
-         items,
-         isSortDirDesc,
-         sortBy,
-         searchQuery,
-         perPage,
-         currentPage,
-         total,
-         items,
-         perPageOptions,
-         dataMeta,
-         refetchData,
-         fetchData,
+         actions,
+         refTable:actions.refTable,
          loading: computed(() => store.state.loading),
-         regresar,
-         eliminar,
-         irEditar: (negocio) => router.push({ name: 'negocio.edit', params: { id: negocio.id } })
+         promedioCalificacion: (negocio) => store.getters['negocio/promedioCalificacion'](negocio),
+         mostrarBalances,
+         showBalance,
+         entrarPanelnegocio
+
       }
 
    }

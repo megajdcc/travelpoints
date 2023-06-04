@@ -1,5 +1,5 @@
 
-import { ref, watch, computed, onMounted } from '@vue/composition-api'
+import { ref, watch, computed, onMounted } from 'vue'
 import store from '@/store';
 
 export default function useMisInvitadosList(usuario_id){

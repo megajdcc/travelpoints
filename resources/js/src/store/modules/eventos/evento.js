@@ -15,8 +15,15 @@ export default{
          model_id    : null,
          model_type  : '',
          recurrente  : false,
+         recurrencia: {
+            dia_semana:[],
+            hora_inicio:null,
+            hora_fin:null,
+            id_group:''
+         },
+         tipo_recurrencia:1, // 0 => diariamente, 1 => semanalmente, 2 => mensual , 3 => anual
+         all_dia:false,
          url         : '',
-
          model       : null,
          imagenes    : []
       },
@@ -29,6 +36,23 @@ export default{
 
       draft(state) {
          return clone(state.evento)
+      },
+
+
+      getStatus(state){
+         return (event) => {
+            let status = ['Activo','Vencido','Prorrateado'];
+
+            return status[event.status - 1];
+         }
+      },
+
+       getRecurrencia(state){
+         return (event) => {
+            let tipo_recurrencia = ['Semanalmente','Mensual','Anual'];
+
+            return tipo_recurrencia[event.tipo_recurrencia - 1];
+         }
       }
    },
 
@@ -36,19 +60,26 @@ export default{
 
       clear(state){
          state.evento = {
-            id: null,
-            titulo: '',
-            contenido: '',
+            id          : null,
+            titulo      : '',
+            contenido   : '',
             fecha_inicio: null,
-            fecha_fin: null,
-            status: 1, // 1 > activo 2 > vencido 3 > prorrateado
-            model_id: null,
-            model_type: '',
-            recurrente: false,
-            url: '',
-
-            model: null,
-            imagenes: []
+            fecha_fin   : null,
+            status      : 1, // 1 > activo 2 > vencido 3 > prorrateado
+            model_id    : null,
+            model_type  : '',
+            recurrente  : false,
+            recurrencia: {
+               dia_semana:[],
+               hora_inicio:null,
+               hora_fin:null,
+               id_group:''
+            },
+            tipo_recurrencia:1, // 1 => semanalmente, 2 => mensual , 3 => anual
+            all_dia:false,
+            url         : '',
+            model       : null,
+            imagenes    : []
          }
       },
 
@@ -131,6 +162,19 @@ export default{
             
             axios.post(`/api/eventos/fetch/data`,datos).then(({data}) => {
                commit('setEventos',data.eventos)
+               resolve(data)
+            }).catch(e => reject(e))
+
+
+         })
+      },
+
+      fetchEventos({state,commit},datos){
+
+         return new Promise((resolve, reject) => {
+            
+            axios.post(`/api/eventos/fetch/eventos`,datos).then(({data}) => {
+               commit('setEventos',data)
                resolve(data)
             }).catch(e => reject(e))
 
@@ -248,6 +292,33 @@ export default{
          })
 
       },
+
+      fetchDataPublic({commit},filtro){
+
+         return new Promise((resolve, reject) => {
+            
+            axios.post(`/api/eventos/fetch-data-public`,filtro).then(({data}) => {
+               resolve(data)
+            }).catch(e => reject(e))
+
+         })
+      },
+
+
+      fetchEventPublic({commit},event_url){
+         return new Promise((resolve, reject) => {
+            axios.get(`/api/eventos/fetch-data/url/${event_url}`).then(({data}) => {
+
+               if(data.result){
+                  commit('setEvento',data.evento)
+               }
+
+               resolve(data)
+            })
+            .catch(e => reject(e))
+
+         })
+      }
 
 
 

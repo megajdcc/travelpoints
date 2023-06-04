@@ -53,7 +53,7 @@
 </template>
 
 <script>
-import { onUnmounted, computed } from '@vue/composition-api'
+import { onUnmounted, computed } from 'vue'
 import AppNavbarVerticalLayout from './AppNabvarVerticalLayout.vue'
 import AppFooter from '@core/layouts/components/AppFooter.vue'
 import useAppConfig from '@core/app-config/useAppConfig'

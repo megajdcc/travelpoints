@@ -29,11 +29,16 @@ class Evento extends Model
         'model_id',
         'model_type',
         'recurrente',
+        'recurrencia', // [dia_semana:[],hora_inicio:time,hora_fin:time,id_group:string,  ] 
+        'all_dia',
+        'tipo_recurrencia', // 1  => semanalmente, 2 => mensual, 3 => Anual
         'url'
     ];
 
     public $casts = [
         'recurrente' => 'boolean',
+        'all_dia' => 'boolean',
+        'recurrencia' => 'array',
         'fecha_inicio' => 'datetime:Y-m-d H:i:s',
         'fecha_fin' => 'datetime:Y-m-d H:i:s'
     ];
@@ -47,16 +52,21 @@ class Evento extends Model
         return $this->morphTo();
     }
 
+    public function cargar(){
+        $this->model;
+        $this->imagenes;
+    }
+
     public function establecerEstaus(){
 
         if($this->recurrente){
 
-            if(now()->isAfter($this->fecha_fin)){
+            if($this->fecha_fin && now()->isAfter($this->fecha_fin)){
                 $this->status = 3;
-                $this->fecha_inicio = $this->fecha_inicio->addYear();
-                $this->fecha_fin = $this->fecha_fin->addYear();
+                // $this->fecha_inicio = $this->fecha_inicio->addYear();
+                // $this->fecha_fin = $this->fecha_fin->addYear();
                 $this->save();
-                VerificarEvento::dispatch($this)->delay($this->fecha_inicio->addMinute());
+                // VerificarEvento::dispatch($this)->delay($this->fecha_inicio->addMinute());
 
             }
 

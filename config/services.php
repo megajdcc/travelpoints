@@ -34,5 +34,14 @@ return [
         'client_id' => env('CLIENT_ID_GOOGLE_AUTH'),
         'client_secret' => env('CLIENT_SECRET_GOOGLE_AUTH'),
         'redirect' => env('REDIRECT_AUTH')
-    ]
+    ],
+    
+    'cjdropshipping' => [
+        'base_uri' => env('CJ_API_BASE_URI'),
+        'api_key' => env('CJ_API_KEY'),
+        'api_secret' => env('CJ_API_SECRET'),
+    ],
+
+
+
 ];

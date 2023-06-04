@@ -9,7 +9,7 @@
 <script>
 
 import store from '@/store'
-import {computed,toRefs,ref} from '@vue/composition-api'
+import {computed,toRefs,ref} from 'vue'
 import {
    BButton,
    BForm,

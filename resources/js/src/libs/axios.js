@@ -1,25 +1,11 @@
 import Vue from 'vue'
-<<<<<<< HEAD
-
-=======
->>>>>>> vite
-// axios
 import axios from 'axios'
-import {Notification} from 'element-ui';
-
 import useAuth from '@core/utils/useAuth.js';
-
-import ToastificationContent from '@core/components/toastification/ToastificationContent';
-
 
 const axiosIns = axios.create({
   baseURL: window.location.origin,
   withCredentials:true,
-<<<<<<< HEAD
-  timeout: 1000,
-=======
   timeout:0,
->>>>>>> vite
   headers: { 'X-Requested-With': 'XMLHttpRequest', Accept: "application/json, text/plain, */*, text/html"}
 })
 
@@ -32,75 +18,6 @@ if(localStorage.getItem('token')){
 
 import store from '@/store';
 import router from '@/router';
-
-<<<<<<< HEAD
-axiosIns.interceptors.response.use(undefined, (error) => {
-
-  const response = error.response;
-  if (response.status === 401) {
-    
-    if (response.data.message == "Unauthenticated."){
-      
-      localStorage.removeItem('token');
-      localStorage.removeItem('userData');
-      localStorage.removeItem('habilidades');
-
-      if (window.location.pathname != '/login'){
-        useAuth().logout();
-        router.push({ name: 'login' })
-      }
-     
-    } else if (response.data.message == 'Unauthorized'){
-
-      localStorage.removeItem('token');
-      localStorage.removeItem('userData');
-      localStorage.removeItem('habilidades');
-     
-      if(window.location.pathname != '/login') {
-        useAuth().logout();
-        router.push({ name: 'login' })
-      }
-
-    }
-
-
-    if(response.data.message){
-
-      toast({
-        component: ToastificationContent,
-        props:{
-          title:response.data.message,
-          icon:'AlertCircleIcon'
-        }
-      },{
-        position:'bottom-left'
-      })
-
-    }
-  
-
-    // store.commit('toggleLoading',false)
-
-  }
-
-  if(response.status === 404) {
-    // location.reload()
-    router.push({ name: 'error-404' })
-  }
-
-  if (response.status === 419) {
-    
-    
-    useAuth().logout();
-    // router.push({name:'login'})
-    // location.reload()
-  }
-  
-  if(response.status === 503){
-    router.push({ name: 'show.mantenimiento'})
-  }
-
-=======
 
 // Intercetamos las peticiones para cambiar el estado de carga (Loading ) de la app enn true
 axiosIns.interceptors.request.use((config) => {
@@ -116,8 +33,6 @@ axiosIns.interceptors.request.use((config) => {
 // Intercetamos las respuesta para cambiar el estado de carga (Loading ) de la app en false
 
 axiosIns.interceptors.response.use((response) => {
-
-
   store.commit('toggleLoading')
   return Promise.resolve(response)
 
@@ -158,15 +73,15 @@ axiosIns.interceptors.response.use((response) => {
 
       if (response.data.message) {
 
-        toast({
-          component: ToastificationContent,
-          props: {
-            title: response.data.message,
-            icon: 'AlertCircleIcon'
-          }
-        }, {
-          position: 'bottom-left'
-        })
+        // toast({
+        //   component: ToastificationContent,
+        //   props: {
+        //     title: response.data.message,
+        //     icon: 'AlertCircleIcon'
+        //   }
+        // }, {
+        //   position: 'bottom-left'
+        // })
 
       }
 
@@ -195,16 +110,9 @@ axiosIns.interceptors.response.use((response) => {
     
 })
 
-
-
-
 axiosIns.interceptors.response.use(undefined, (error) => {
 
   const response = error.response;
-
-  
-
->>>>>>> vite
   return Promise.reject(error);
 
 });

@@ -5,7 +5,10 @@ vendor
 .idea/
 public/storage
 storage
-public/js
+public/js/
 public/css/
 public/images
 queue.log
+.*
+public/mix-manifest.json
+public/service-worker.js

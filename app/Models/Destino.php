@@ -32,6 +32,12 @@ class Destino extends Model
         'lat',
         'lng',
         'titulo',
+        'activo'
+    ];
+
+
+    public $casts = [
+        'activo' => 'boolean'
     ];
     
 
@@ -41,7 +47,7 @@ class Destino extends Model
 
     public static function getLocation($datos) : Collection{
         
-        $destinos = Destino::all()->filter(function($val) use($datos) {
+        $destinos = Destino::where('activo',true)->all()->filter(function($val) use($datos) {
             return Destino::cerca($datos,$val,$datos['km']);
         });
 
@@ -82,6 +88,24 @@ class Destino extends Model
         }
 
         return $negocios;
+
+    }
+
+
+    public function cargar(){
+        
+        $this->atracciones;
+        $this->iata;
+        $this->ciudad;
+        $this->estado;
+        $this->imagenes;
+        $this->likes;
+        $this->estado?->pais;
+        $this->modelType = $this->model_type;
+        $this->ruta = "/Destinos?q={$this->nombre}";
+        $this->negocios = $this->negocios();
+        
+        
 
     }
 }

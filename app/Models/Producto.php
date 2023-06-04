@@ -20,20 +20,28 @@ class Producto extends Model
         'nombre',
         'breve',
         'categoria_id',
-        'tienda_id',
         'precio',
         'descripcion',
-        'disponibles',
         'caracteristicas',
         'envio',
         'tipo_producto',
-        'archivo'
+        'archivo',
+        'divisa_id',
+        'isChino',
+        'pid', // si es chino el producto, aqui almacenamos su pid
+        'cj', // si es chino el producto, aquí guardamos toda la data del producto capturado desde la Api
+        'variants',
+        'enviable'
     ];
 
 
     protected $casts = [
         'caracteristicas' => 'array',
-        'envio' => 'array',
+        'envio'           => 'array',
+        'cj'              => 'array',
+        'variants'        => 'array',
+        'isChino'         => 'boolean',
+        'enviable'        => 'boolean'
     ];
 
 
@@ -45,18 +53,39 @@ class Producto extends Model
         return $this->belongsTo(CategoriaProducto::class,'categoria_id','id');
     }
 
-
-    public function tienda(){
-        return $this->belongsTo(Tienda::class,'tienda_id','id');
-    }
-
-
     public function consumos()
     {
         return $this->belongsToMany(Consumo::class, 'consumo_productos', 'producto_id', 'consumo_id')->withPivot([
             'cantidad',
-            'monto'
+            'monto',
+            'vid'
         ]);
     }
+
+
+    public function tiendas(){
+        return $this->belongsToMany(Tienda::class,'tienda_producto','producto_id','tienda_id')->withPivot(['cantidad']);
+    }
     
+
+    public function divisa(){
+        return $this->belongsTo(Divisa::class,'divisa_id','id');
+    }
+
+
+
+    public function carritos(){
+        return $this->belongsToMany(User::class,'carrito_productos','producto_id','cliente_id')->withPivot(['cantidad','precio_unitario','monto','tienda_id','vid']);
+    }
+
+    public function cargar(){
+
+        $this->carritos;
+        $this->divisa;
+        $this->tiendas;
+        $this->consumos;
+        $this->categoria;
+    }
+
+
 }

@@ -1,11 +1,7 @@
 const mix = require('laravel-mix');
 require('laravel-mix-workbox');
 
-
-const webpack = require('webpack');
-// import webpack from 'webpack';
-
-let path = require('path');
+const path = require('path');
 const ASSET_PATH = process.env.MIX_SENTRY_DSN_PUBLIC || 'public';
 
 /*
@@ -19,11 +15,9 @@ const ASSET_PATH = process.env.MIX_SENTRY_DSN_PUBLIC || 'public';
  |
  */
 
-//  mix.override((config) => {
-//   delete config.watchOptions;
-// });
-
 mix.webpackConfig({
+ 
+
   resolve: {
     alias: {
       '@': path.resolve(__dirname, 'resources/js/src/'),
@@ -37,16 +31,11 @@ mix.webpackConfig({
       'mixins': path.resolve(__dirname, 'resources/js/mixins'),
       'store': path.resolve(__dirname, 'resources/js/src/store'),
       'components': path.resolve(__dirname, 'resources/js/calidad/views/components'),
-<<<<<<< HEAD
-      '@fuentes':path.resolve(__dirname,'resources/js/src/assets/fonts/')
-=======
       '@fuentes':path.resolve(__dirname,'resources/js/src/assets/fonts/'),
       '@images':path.resolve(__dirname,'resources/js/src/assets/images/')
->>>>>>> vite
     }
   },
   module: {
-
     rules: [
       {
         test: /\.s[ac]ss$/i,
@@ -72,27 +61,11 @@ mix.webpackConfig({
         ]
       },
 
-      // {
-      //   test: /\.(otf|woff|woff2|eot|ttf)$/,
-      //   use:['url-loader','file-loader']
-      // },
-
-
-      // {
-      //   test: /(\.(png|jpe?g|gif|webp)$|^((?!font).)*\.svg$)/,
-      //   use:[
-      //     {
-      //       loader: 'file-loader',
-      //       options: {
-      //         name: 'images/[path][name].[ext]',
-      //         context:path.resolve(__dirname,'resources/js/src/assets/images')
-      //       }
-      //     }
-      //   ]
-      // }
-    ]
-  },
   
+    ]
+    
+  },
+
   output: {
     asyncChunks:false,
     path:path.resolve(__dirname,'public'),
@@ -109,16 +82,15 @@ mix.webpackConfig({
     // path.resolve(__dirname, 'vendor'),
     // path.resolve(__dirname, 'public/storage')
     ]
-  }
+  },
 
-})
+});
 
-mix
-  .js('resources/js/app.js','js')
+mix.js('resources/js/app.js','js')
   .sass('resources/scss/app.scss','css')
   .vue({version:2})
   .options({
-    postCss: [require('autoprefixer'), require('postcss-rtl')]
+    postCss: [require('autoprefixer')]
   })
   .extract();
 
@@ -161,14 +133,11 @@ if (mix.inProduction()) {
     ],
 
     skipWaiting: true,
-    maximumFileSizeToCacheInBytes: 10485760
+    maximumFileSizeToCacheInBytes: 20 * 1024 * 1024,
   });
 
  
 }
 
  mix.version();
-
-
-
 // mix.browserSync('https://byp.com')

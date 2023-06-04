@@ -20,7 +20,7 @@ import {
    BImg
 } from 'bootstrap-vue'
 
-import {computed,toRefs,ref} from '@vue/composition-api'
+import {computed,toRefs,ref} from 'vue'
 import VueGallerySlideshow from 'vue-gallery-slideshow';
 import VuePerfectScrollbar from 'vue-perfect-scrollbar'
 

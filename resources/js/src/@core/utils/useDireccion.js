@@ -1,12 +1,10 @@
 
 import store from '@/store'
 
-import {ref,onMounted, watch } from '@vue/composition-api'
+import {ref,onMounted, watch } from 'vue'
 import axios from 'axios'
 
 export default function useDireccion(){
-<<<<<<< HEAD
-=======
 
    const buscadormap = ref('');
    const visibleMarker = ref(true);
@@ -16,17 +14,12 @@ export default function useDireccion(){
    const input = ref(null)
 
 
->>>>>>> vite
    const paises = ref([])
    const ciudades = ref([])
    const estados = ref([])
 
    const pais_id = ref(null)
    const estado_id =ref(null)
-<<<<<<< HEAD
-
-    
-=======
    const iatas = ref([])
 
 
@@ -35,7 +28,6 @@ export default function useDireccion(){
 
    }
 
->>>>>>> vite
    const cargarPaises = () => {
 
       store.commit('toggleLoading')
@@ -53,29 +45,6 @@ export default function useDireccion(){
    }
 
    const cargarEstados = (pais_id) => {
-<<<<<<< HEAD
-      store.commit('toggleLoading')
-      axios.get(`/api/get/estados/${pais_id}`).then(({ data }) => {
-         estados.value = data
-      }).catch(e => {
-         console.log(e)
-      })
-         .then(() => {
-            store.commit('toggleLoading')
-      })
-   }
-
-   const cargarCiudades = (estado_id) => {
-      store.commit('toggleLoading')
-      axios.get(`/api/get/ciudades/${estado_id}`).then(({ data }) => {
-         ciudades.value = data
-      }).catch(e => {
-         console.log(e)
-      })
-         .then(() => {
-            store.commit('toggleLoading')
-         })
-=======
 
       if(pais_id){
          axios.get(`/api/get/estados/${pais_id}`).then(({ data }) => {
@@ -98,15 +67,12 @@ export default function useDireccion(){
          })
       }
 
->>>>>>> vite
    }
 
    onMounted(() => {
       cargarPaises()
    })
 
-<<<<<<< HEAD
-=======
 
 
    const cargarBuscador = (elementId = 'myAutocomplete')  => {
@@ -125,7 +91,6 @@ export default function useDireccion(){
 
 
 
->>>>>>> vite
    watch(pais_id,(val) => {
       cargarEstados(val)
    })
@@ -134,8 +99,6 @@ export default function useDireccion(){
       cargarCiudades(val)
    })
 
-<<<<<<< HEAD
-=======
    const optionsPlace = ref({
       content: '<strong>Méxio City</strong>',
    })
@@ -193,7 +156,6 @@ export default function useDireccion(){
 
 
 
->>>>>>> vite
    
    return {
       paises,
@@ -203,9 +165,6 @@ export default function useDireccion(){
       cargarEstados,
       cargarCiudades,
       pais_id,
-<<<<<<< HEAD
-      estado_id
-=======
       estado_id,
 
       buscadormap,
@@ -226,7 +185,6 @@ export default function useDireccion(){
       iatas,
       cargarIatas
 
->>>>>>> vite
    }
 
 }

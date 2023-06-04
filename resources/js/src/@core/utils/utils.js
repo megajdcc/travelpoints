@@ -1,6 +1,6 @@
 import router from '@/router'
 // eslint-disable-next-line object-curly-newline
-import { reactive, getCurrentInstance, watch, toRefs,ref } from '@vue/composition-api'
+import { reactive, getCurrentInstance, watch, toRefs,ref } from 'vue'
 import Swal from 'sweetalert2'
 export const isObject = obj => typeof obj === 'object' && obj !== null
 import 'animate.css';
@@ -8,6 +8,12 @@ import store from '@/store'
 import axios from 'axios'
 import moment from 'moment';
 
+import { fab } from '@fortawesome/free-brands-svg-icons'
+import { fas } from '@fortawesome/free-solid-svg-icons';
+
+import { Pagination, Navigation } from "swiper";
+
+const modules = [Pagination,Navigation] ;
 
 export const isToday = date => {
   const today = new Date()
@@ -48,6 +54,63 @@ export const useRouter = () => {
   return { ...toRefs(state), router: vm.$router }
 }
 
+
+export const eliminarDuplicados = (array) => {
+   const uniqueArray = [];
+  const seenValues = new Set();
+
+  for (let obj of array) {
+    const { label, value } = obj;
+    const key = label + "_" + value;
+
+    if (!seenValues.has(key)) {
+      seenValues.add(key);
+      uniqueArray.push(obj);
+    }
+  }
+
+  return uniqueArray;
+}
+
+export const marcasFontAwesome = ref([...new Set(Object.keys(fab).map(val => fab[val].iconName))]);
+export const iconosFontAwesome = ref(eliminarDuplicados([...new Set(Object.keys(fas).map(val => ({label:fas[val].iconName,value:fas[val].iconName})))]));
+
+export const optionsSwiper = ref({
+         slidesPerView: 1,
+         'centered-slides': false,
+         'space-between': 10,
+         pagination: {
+            type: 'fraction'
+         },
+         navigation: true,
+         modules,
+         loop: true,
+         speed: 500,
+         autoplay:{
+          delay:5000
+         },
+         'css-mode': true,
+         breakpoints: {
+            1024: {
+               slidesPerView: 4,
+               spaceBetween: 40,
+            },
+            768: {
+               slidesPerView: 3,
+               spaceBetween: 30,
+            },
+            640: {
+               slidesPerView: 2,
+               spaceBetween: 20,
+            },
+            320: {
+               slidesPerView: 1,
+               spaceBetween: 10,
+            },
+         }
+
+      })
+
 export const  chartColors = {
   primaryColorShade: '#836AF9',
   yellowColor: '#ffe800',
@@ -72,24 +135,12 @@ export const cantidadNoches = (fecha_inicial, fecha_final) => {
   return noches;
 } 
 
-<<<<<<< HEAD
-=======
 
->>>>>>> vite
 export const optionsCurrency = ref({
             currency:'MXN',
             locale:'es-ES',
             autoDecimalDigits:true,
          })
-
-
-<<<<<<< HEAD
-export const getSituacionSolicitud = (situacion) => {
-  const situaciones = [{
-    id:1,
-    text:'Solicitud enviada',
-=======
-
 
 export const dateOption = { dateFormat: 'Y-m-d H:i', enableTime: true }
 export const optionsEditor = {
@@ -111,7 +162,6 @@ export const getSituacionSolicitud = (situacion) => {
   const situaciones = [{
     id:1,
     text:'Solicitud enviada (Sin respuesta)',
->>>>>>> vite
     variant:'primary'
   },{
     id:2,
@@ -179,12 +229,10 @@ export const regresar = () => {
 
 }
 
-export const getFecha = (fecha) => {
-  return moment(fecha).format('LLL');
+export const getFecha = (fecha = Date(), format = 'LLL') => {
+  return moment(fecha).format(format);
 } 
 
-<<<<<<< HEAD
-=======
 export const getDay = (dia) => {
 
   const dias = ['Lunes','Martes','Miércoles','Jueves','Viernes','Sabado','Domingo'];
@@ -194,11 +242,20 @@ export const getDay = (dia) => {
 
 } 
 
+export const diasSemana = [
+  {text:'Lunes',value:1},
+  {text:'Martes',value:2},
+  {text:'Miercoles',value:3},
+  {text:'Jueves',value:4},
+  {text:'Viernes',value:5},
+  {text:'Sabado',value:6},
+  {text:'Domingo',value:0},
+]
+
 export const getHora = (hora) => {
   return moment(moment().format(`Y-M-D ${hora}`)).format('h:mm A');
 }
 
->>>>>>> vite
 
 export const getImage = (archivo) => {
 
@@ -242,12 +299,71 @@ export const getImage = (archivo) => {
 
 }
 
+// *===============================================---*
+   // *--------- UI ---------------------------------------*
+   // *===============================================---*
+
+  export  const resolveUserRoleVariant = role => {
+      if (role === 'Administrador') return 'primary'
+      if (role === 'Super administrador') return 'warning'
+      if (role === 'Desarrollador') return 'warning'
+      if (role === 'Invitado') return 'success'
+      if (role === 'Coordinador') return 'danger'
+      if (role === 'Lider') return 'primary'
+      if (role === 'Promotor') return 'warning'
+      return 'primary'
+   }
+
+  export const resolveUserRoleIcon = role => {
+      if(['Administrador','Super administrador','Desarrollador'].includes(role)) return 'ServerIcon'
+      if(['Lider','Coordinador','Promotor','Invitado'].includes(role)) return 'Usericon'
+
+      return 'UserIcon'
+   }
+   
+export const getStatusLegendPromotor = (status ) => {
+
+  const legend = [
+    
+    'Activo',
+    'En peligro',
+    'Inactivo'
+  ];
+
+  return legend[status - 1];
+  
+}
+
+export const getStatusLegendLider = getStatusLegendPromotor
+
+
 export const getExt = (archivo,separator = '.') => {
   
   let archive =  archivo.split(separator)
   let ext =  (archive.length > 1) ? archive[archive.length - 1] : null;
   return ext;
 } 
+
+export const convertirKebabCase = (cadena) => {
+  // Reemplazar guiones medios con espacios
+  var resultado = cadena.replace(/-/g, ' ');
+  return resultado;
+}
+
+export const capitalize = (cadena)  => {
+  // Dividir la cadena en palabras separadas por espacios
+  var palabras = cadena.split(' ');
+
+  // Recorrer cada palabra y convertir la primera letra a mayúscula
+  for (var i = 0; i < palabras.length; i++) {
+    palabras[i] = palabras[i].charAt(0).toUpperCase() + palabras[i].slice(1);
+  }
+
+  // Unir las palabras nuevamente en una sola cadena
+  var resultado = palabras.join(' ');
+  return resultado;
+}
+
 /**
  * This is just enhancement over Object.extend [Gives deep extend]
  * @param {target} a Object which contains values to be overridden

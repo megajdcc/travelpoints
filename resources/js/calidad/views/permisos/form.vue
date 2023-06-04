@@ -20,8 +20,6 @@
 								</validation-provider>
 							</b-form-group>
 						</b-col>
-<<<<<<< HEAD
-=======
 
 						<b-col cols="12" md="6">
 							<b-form-group >
@@ -38,7 +36,6 @@
 							</b-form-group>
 						</b-col>
 
->>>>>>> vite
 					</b-row>
 
 					<b-row>
@@ -90,18 +87,10 @@ import {
 	import { ValidationObserver,ValidationProvider } from 'vee-validate';
 	import {required } from '@validations'
 	import { regresar } from '@core/utils/utils';
-
-<<<<<<< HEAD
-	import { ref,computed,toRefs} from '@vue/composition-api'
+	import { ref,computed,toRefs,onMounted} from 'vue'
 	import store from '@/store'
-
-=======
-	import { ref,computed,toRefs,onMounted} from '@vue/composition-api'
-	import store from '@/store'
-
 	import vSelect from 'vue-select'
 
->>>>>>> vite
 	export default{  
 
 		components: {
@@ -122,38 +111,20 @@ import {
 			BFormInvalidFeedback,
 			BContainer,
 			ValidationObserver,
-<<<<<<< HEAD
-			ValidationProvider
-=======
 			ValidationProvider,
 			vSelect
->>>>>>> vite
 		},
 
 		setup(props,{emit}){
 
-				const PickerOptions = ref({
-					disabledDate(time) {
-						return time.getTime() > Date.now()
-					}
-				})
 				const formValidate = ref(null)
 
 				const { permiso:formulario } = toRefs(store.state.permiso)
 
-<<<<<<< HEAD
-=======
 				const {panels} = toRefs(store.state.panel)
 
->>>>>>> vite
 
-				const guardar = () => {
-
-					emit('save',formulario.value,formValidate.value)
-
-				}
-<<<<<<< HEAD
-=======
+				const guardar = () => emit('save', formulario.value, formValidate.value)
 
 				const cargarForm = () => {
 
@@ -162,25 +133,16 @@ import {
 					}
 
 				}
+				cargarForm();
 
-				onMounted(() => cargarForm())
-
->>>>>>> vite
 				return{
 					required,
 					regresar,
 					guardar,
 					formulario,
 					loading:computed(() => store.state.loading),
-<<<<<<< HEAD
-					PickerOptions
-=======
-					PickerOptions,
-					panels
->>>>>>> vite
 				}
 			}
-
 	} 
 
 </script>

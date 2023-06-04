@@ -49,7 +49,7 @@
 
       <b-row>
          <b-col cols="12" class="d-flex justify-content-center">
-            <b-button :to="{name:'afiliar.negocio'}" variant="primary">
+            <b-button :to="{ name: 'afiliar.negocio' }" variant="primary">
                <feather-icon icon="PlusIcon" />
                Afilia tu negocio aquí
             </b-button>
@@ -67,12 +67,9 @@ import {
    BButton
 
 } from 'bootstrap-vue'
-<<<<<<< HEAD
-=======
 import useAuth from '@core/utils/useAuth';
 
-import {onMounted} from '@vue/composition-api'
->>>>>>> vite
+import { onMounted } from 'vue'
 
 export default {
    components: {
@@ -90,12 +87,9 @@ export default {
 
    setup() {
 
-<<<<<<< HEAD
-=======
-      const {authGoogle} = useAuth();
+      const { authGoogle } = useAuth();
       onMounted(() => authGoogle())
 
->>>>>>> vite
       return {
          sales: require('@/assets/images/illustration/marketing.svg')
       }

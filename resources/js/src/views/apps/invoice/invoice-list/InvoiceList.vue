@@ -291,7 +291,7 @@ import {
 } from 'bootstrap-vue'
 import { avatarText } from '@core/utils/filter'
 import vSelect from 'vue-select'
-import { onUnmounted } from '@vue/composition-api'
+import { onUnmounted } from 'vue'
 import store from '@/store'
 import useInvoicesList from './useInvoiceList'
 

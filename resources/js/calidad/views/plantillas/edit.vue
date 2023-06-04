@@ -1,7 +1,7 @@
 <script>
 import form from './form'
 
-import { h, ref, toRefs, onMounted,watch } from '@vue/composition-api'
+import { h, ref, toRefs, onMounted,watch } from 'vue'
 
 import store from '@/store';
 import router from '@/router';

@@ -1,4 +1,4 @@
-import { ref, computed,watch,onMounted,toRefs } from '@vue/composition-api'
+import { ref, computed,watch,onMounted,toRefs } from 'vue'
 import store from '@/store'
 
 export default function useProductosList() {

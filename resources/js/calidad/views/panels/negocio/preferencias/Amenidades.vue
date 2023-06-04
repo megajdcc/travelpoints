@@ -108,7 +108,7 @@ import {
 import {required} from '@validations'
 import { regresar } from '@core/utils/utils'
 
-import {toRefs,computed,onMounted,ref,watch} from '@vue/composition-api'
+import {toRefs,computed,onMounted,ref,watch} from 'vue'
 import store from '@/store'
 
 export default {

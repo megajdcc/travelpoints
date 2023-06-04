@@ -9,12 +9,15 @@
     @mouseenter="() => updateGroupOpen(true)"
     @mouseleave="() => updateGroupOpen(false)"
   >
-    <b-link class="nav-link dropdown-toggle d-flex align-items-center">
-      <feather-icon
-        size="14"
-        :icon="item.icon"
-      />
+    <b-link class="nav-link dropdown-toggle d-flex align-items-center" style="position:relative"> 
+      <font-awesome-icon :icon="[item.iconFa || 'fas', item.icon]" v-if="item.fontAwesome"  />
+      <feather-icon :icon="item.icon || 'CircleIcon'" v-else />
       <span>{{ t(item.header) }}</span>
+
+      <div class="dot-tag" v-if="item.tag" >
+
+      </div>
+
     </b-link>
     <ul class="dropdown-menu">
       <component
@@ -28,7 +31,8 @@
 </template>
 
 <script>
-import { BLink } from 'bootstrap-vue'
+    
+import { BLink, BBadge } from 'bootstrap-vue'
 import { resolveHorizontalNavMenuItemComponent } from '@core/layouts/utils'
 import { useUtils as useAclUtils } from '@core/libs/acl'
 import { useUtils as useI18nUtils } from '@core/libs/i18n'
@@ -43,6 +47,7 @@ export default {
     BLink,
     HorizontalNavMenuGroup,
     HorizontalNavMenuLink,
+    BBadge
   },
   mixins: [mixinHorizontalNavMenuHeaderGroup],
   props: {
@@ -78,3 +83,16 @@ export default {
   },
 }
 </script>
+<style lang="scss">
+@import '@/assets/scss/variables/variables';
+
+  .dot-tag{
+    position:absolute;
+    height: 10px;
+    width:10px;
+    border-radius: 50%;
+    background:$danger;
+    right:-5px;
+    top:-5px;
+  }
+</style>

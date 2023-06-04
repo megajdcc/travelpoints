@@ -28,7 +28,7 @@
 </template>
 
 <script>
-import { computed } from '@vue/composition-api'
+import { computed } from 'vue'
 import { BAvatar } from 'bootstrap-vue'
 
 export default {

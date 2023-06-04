@@ -76,7 +76,7 @@ import store from '@/store'
 
 import { required } from '@validations'
 
-import {ref,computed} from '@vue/composition-api'
+import {ref,computed} from 'vue'
 import useAuth from '@core/utils/useAuth'
 
 export default {

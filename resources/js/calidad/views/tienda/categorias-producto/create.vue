@@ -1,6 +1,6 @@
 <script>
 
-import {h,toRefs,ref, computed} from '@vue/composition-api'
+import {h,toRefs,ref, computed} from 'vue'
 
 import store from '@/store'
 import router from '@/router'

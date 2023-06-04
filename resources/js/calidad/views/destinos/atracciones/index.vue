@@ -1,6 +1,6 @@
 <script>
 
-import {h,toRefs} from '@vue/composition-api'
+import {h,toRefs} from 'vue'
 import views from 'components/Views.vue'
 
 export default {

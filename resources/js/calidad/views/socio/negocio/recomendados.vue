@@ -95,7 +95,7 @@ import {
 
 import store from '@/store'
 
-import { toRefs, ref, computed, onMounted, watch } from '@vue/composition-api'
+import { toRefs, ref, computed, onMounted, watch } from 'vue'
 import useNegocioList from './useNegocioList.js'
 import router from '@/router'
 

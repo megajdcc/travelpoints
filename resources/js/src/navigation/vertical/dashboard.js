@@ -6,19 +6,14 @@ export default [
 
   {
     title: 'Home',
-<<<<<<< HEAD
-    icon: 'HomeIcon',
-    tagVariant: 'light-warning',
-    route: 'home',
-    resource:'home',
-    action:'read'
-=======
-    icon:'HomeIcon',
+    icon:'fa-house',
+    fontAwesome:true,
     children:[
 
       {
-        title: 'Home',
-        icon: 'HomeIcon',
+        title: 'Tablero',
+        icon: 'fa-house',
+        fontAwesome:true,
         tagVariant: 'light-warning',
         route: 'home',
         resource: 'home',
@@ -34,7 +29,6 @@ export default [
       }
 
     ]
->>>>>>> vite
   },
 
 

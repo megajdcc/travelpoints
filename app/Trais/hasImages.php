@@ -33,6 +33,12 @@ trait hasImages
       return $imagen;
    }
 
+   public function quitarImagen(Imagen $imagen) : bool{
+
+      return $imagen->delete();
+
+   }
+
 
 }
 

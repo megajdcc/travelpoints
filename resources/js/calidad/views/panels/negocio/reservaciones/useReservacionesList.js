@@ -2,13 +2,13 @@ import useFilterTable from "@core/utils/useFilterTable";
 
 import store from '@/store'
 
-import { ref } from '@vue/composition-api'
+import { ref } from 'vue'
 
-export default function useReservacionesList(negocio){
+export default function useReservacionesList(negocio = null){
 
   const tableColumns = ref([
     { key:'id',label:'#' },
-    { key:'usuario_id',label:'Usuario',sortable:true},
+    { key:'usuario_id',label:'Reservante',sortable:true},
     { key: 'operador_id', label: 'Operador', sortable: true },
     { key: 'negocio_id', label: 'Negocio', sortable: true },
     { key: 'fecha', label: 'Fecha', sortable: true },
@@ -40,7 +40,7 @@ export default function useReservacionesList(negocio){
       sortBy: sortBy.value,
       q: searchQuery.value,
       isSortDirDesc: isSortDirDesc.value,
-      negocio_id: negocio.value ? negocio.value.id : null,
+      negocio_id: negocio && negocio.value ? negocio.value.id : null,
     }).then(({total:all,reservaciones}) => {
       total.value = all
       next(reservaciones)

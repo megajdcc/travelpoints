@@ -144,6 +144,16 @@ export default {
 
       })
 
+    },
+
+    getCategoriasDropShipping({commit}){
+      return new Promise((resolve, reject) => {
+        axios.get('/api/categoria-productos/categories-dropshipping').then(({data}) => {
+          resolve(data)
+        }).catch(e => reject(e))
+        
+
+      })
     }
   }
 

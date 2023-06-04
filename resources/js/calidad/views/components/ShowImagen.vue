@@ -4,7 +4,7 @@
       no-close-on-backdrop body-class="p-0 chat-application">
 
       <template v-if="tipo && tipo == 'pdf'">
-         <pdf :src="url" style="
+         <pdf :source="url" style="
               display: inline-block;
               width: 100%;
               max-heigth: 450px !important;
@@ -65,7 +65,7 @@ export default {
       BImg,
       BButtonGroup,
       BButton,
-      pdf:() => import("vue-pdf")
+      pdf:() => import("vue-pdf-embed")
    },
 
    props:{

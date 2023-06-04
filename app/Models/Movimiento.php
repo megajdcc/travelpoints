@@ -14,7 +14,8 @@ class Movimiento extends Model
         'monto',
         'tipo_movimiento',  // 1 => Ingreso, 2 => egreso
         'balance',
-        'concepto'
+        'concepto',
+        'divisa_id'
     ];
 
     public const TIPO_INGRESO = 1;
@@ -31,6 +32,9 @@ class Movimiento extends Model
         return $this->belongsTo(EstadoCuenta::class,'estado_cuenta_id','id');
     }
 
+    public function divisa(){
+        return $this->belongsTo(Divisa::class,'divisa_id','id');
+    }
 
     public static function add(EstadoCuenta $cuenta,$monto, $concepto = 'Apertura de cuenta', int $tipo_movimiento = 1) : Movimiento  {
       
@@ -39,7 +43,8 @@ class Movimiento extends Model
             'monto'            => $monto,
             'tipo_movimiento'  => $tipo_movimiento,
             'balance'          => $tipo_movimiento == 1 ? $cuenta->saldo + $monto : $cuenta->saldo - $monto,
-            'concepto' => $concepto
+            'concepto' => $concepto,
+            'divisa_id' => $cuenta->divisa_id ?: null
         ]);
 
         $cuenta->saldo = $movimiento->balance;
@@ -47,6 +52,13 @@ class Movimiento extends Model
         return $movimiento;
         
 
+    }
+
+    public function cargar(){
+        $this->cuenta->model;
+        $this->cuenta->divisa;
+        $this->divisa;
+        $this->_cellVariants =  ['monto' => $this->tipo_movimiento == 1 ? 'success' : 'danger', "balance" => $this->tipo_movimiento == 1 ? 'success' : 'danger'];
     }
 
 

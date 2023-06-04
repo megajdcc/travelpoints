@@ -9,7 +9,7 @@
 
          </template>
 
-         <template #contenido="{ eliminar, items }">
+         <template #contenido="{ items }">
 
             <b-card v-for="(venta,i) in items" :key="i" class="my-1">
                <strong>Cliente</strong>
@@ -72,7 +72,7 @@
 <script>
 
 import store from '@/store'
-import {toRefs,ref,computed,watch} from '@vue/composition-api'
+import {toRefs,ref,computed,watch} from 'vue'
 
 import useVentasList from './useVentasList.js'
 import { avatarText } from '@core/utils/filter'
@@ -110,6 +110,7 @@ export default {
 
 
    setup(props){
+      
       const {negocio} = toRefs(store.state.negocio)
 
       const actions = useVentasList(negocio)

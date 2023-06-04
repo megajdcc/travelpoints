@@ -1,16 +1,4 @@
 <template>
-<<<<<<< HEAD
-   <h2>Negocios asociados</h2>
-</template>
-
-<script>
-export default {
-   setup() {
-      
-   },
-}
-</script>
-=======
    <b-row>
       <b-col cols="12">
          <listado :actions="actions" hideFooter >
@@ -105,7 +93,7 @@ import {
 
 import store from '@/store'
 
-import { toRefs, ref, computed, onMounted, watch } from '@vue/composition-api'
+import { toRefs, ref, computed, onMounted, watch } from 'vue'
 import useNegocioList from './useNegocioList.js'
 import router from '@/router'
 
@@ -384,4 +372,3 @@ export default {
    z-index: 2;
 }
 </style>
->>>>>>> vite

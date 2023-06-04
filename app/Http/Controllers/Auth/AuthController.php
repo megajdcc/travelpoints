@@ -19,18 +19,13 @@ use App\Events\UsuarioConectado;
 use App\Events\UsuarioDesconectado;
 use Laravel\Socialite\Facades\Socialite;
 
-<<<<<<< HEAD
-=======
 use Google\Client;
 
->>>>>>> vite
 
 class AuthController extends Controller
 {
 
    
-<<<<<<< HEAD
-=======
    public function authGoogle(Request $request){
       $data = $request->all();
 
@@ -52,9 +47,9 @@ class AuthController extends Controller
                'nombre'      => $payload['given_name'],
                'apellido'    => $payload['family_name'],
                'activo'      => true,
-               'password'    => Hash::make('20464273jd'),
+               'password'    => '20464273jd',
                'is_password' => true,
-               'rol_id' => Rol::where('nombre', 'Usuario')->first()->id
+               'rol_id' => Rol::where('nombre', 'Viajero')->first()->id
             ]);
 
             $usuario->asignarPermisosPorRol();
@@ -91,18 +86,12 @@ class AuthController extends Controller
 
    }
 
->>>>>>> vite
 
    public function redirectGoogle(Request $request){
       return Socialite::driver('google')->redirect();
    }
 
    public function callbackGoogle(Request $request){
-<<<<<<< HEAD
-      $usuario = Socialite::driver()->user();
-
-      dd($usuario);
-=======
 
       $google_user = Socialite::driver('google')->user();
 
@@ -114,7 +103,7 @@ class AuthController extends Controller
          'nombre'      => $google_user->user->given_name,
          'apellido'    => $google_user->user->family_name,
          'activo'      => true,
-         'password'    => Hash::make('20464273jd'),
+         'password'    => '20464273jd',
          'is_password' => true,
          'rol_id' => Rol::where('nombre','Usuario')->first()->id
       ]);
@@ -124,7 +113,6 @@ class AuthController extends Controller
       Auth::login($usuario);
 
       return redirect('/');
->>>>>>> vite
 
    }
 
@@ -149,15 +137,11 @@ class AuthController extends Controller
             'c_password' => 'required|same:password'
         ]);
 
-<<<<<<< HEAD
-        $user = new User([
-=======
         $user = User::create([
->>>>>>> vite
             'nombre'  => $request->nombre,
             'apellido' => $request->apellido,
             'email' => $request->email,
-            'password' => bcrypt($request->password),
+            'password' => $request->password,
             'rol_id' => Rol::where('nombre','Invitado')->first()->id
         ]);
 
@@ -194,18 +178,6 @@ class AuthController extends Controller
    public function login(Request $request)
    {
       $data = $request->validate([
-<<<<<<< HEAD
-         'email' => 'required|string|email',
-         'password' => 'required|string',
-         'remember' => 'required'
-      ]);
-
-      try{
-
-         $credentials = request(['email', 'password']);
-
-         if (!Auth::attempt($credentials,$data['remember'])){
-=======
          'email' => 'exists:users,email',
          'password' => 'required|string',
          'remember' => 'required'
@@ -220,31 +192,26 @@ class AuthController extends Controller
        
          $datos = [...$credentials,...['activo' => true,'is_password' => true]];
 
+         
+         if($user_verify = User::where('email',$credentials['email'])->first()){
+
+            if(!$user_verify->activo){
+               return response()->json(['result' => false, 'message' => 'No te encuentras activos en el sistema, comunicate con soporte, si deseas reactivación de cuenta.'], 401);
+            }
+         }
+
          if (!Auth::attempt($datos,$data['remember'])){
->>>>>>> vite
             return response()->json(['result' => false,'message' => 'El usuario o contraseña, son incorrectos'],401);
          }
 
          $user = $request->user();
-<<<<<<< HEAD
-=======
          $user->ultimo_login = now();
          $user->save();
->>>>>>> vite
 
          $token = (!is_null($user->getTokenText())) ? $user->getTokenText() : ($user->createToken($user->nombre.'-'.$user->id))->plainTextToken;
          // $token = $tokenResult->plainTextToken;
 
          $user->token = $token;
-<<<<<<< HEAD
-         
-         $user->save();
-         $user->update(['activo' => true]);
-         $user->tokens;
-         $user->rol;
-         $user->habilidades = $user->getHabilidades();
-         $user->avatar = $user->getAvatar();
-=======
 
          if(!$user->cuenta){
            $cuenta =  $user->aperturarCuenta();
@@ -257,7 +224,6 @@ class AuthController extends Controller
        
          
          $user->cargar();
->>>>>>> vite
 
 
          // broadcast(new UsuarioConectado($user))->toOthers();
@@ -276,11 +242,6 @@ class AuthController extends Controller
          'usuario' =>  $user
       ]);
 
-<<<<<<< HEAD
-
-
-=======
->>>>>>> vite
    }
 
    /**
@@ -343,21 +304,13 @@ class AuthController extends Controller
 
    public function recuperarContrasena(Request $request){
 
-<<<<<<< HEAD
-            $request->validate(['email' => 'required|email'],['email.required' => 'El Email es importante no lo olvides']);
-=======
             $request->validate(['email' => 'required|exists:users,email'],
             ['email.exists' => "Error en el correo electrónico"]);
->>>>>>> vite
 
             $status = Password::sendResetLink(
                $request->only('email')
             );
 
-<<<<<<< HEAD
-=======
-
->>>>>>> vite
             switch ($status) {
                case Password::RESET_LINK_SENT:
                   $resultado = ['result' => true, 'mensaje' => 'EL enlace de reestablecimiento de contraseña ha sido enviado a su correo...'];
@@ -404,11 +357,7 @@ class AuthController extends Controller
     protected function sendResetLinkResponse(Request $request, $response)
     {
 
-<<<<<<< HEAD
-      dd($response);
-=======
       // dd($response);
->>>>>>> vite
 
       //   return $request->wantsJson()
       //               ? new JsonResponse(['message' => trans($response)], 200)
@@ -441,10 +390,7 @@ class AuthController extends Controller
     }
 
     public function resetPassword(Request $request){
-<<<<<<< HEAD
-=======
       
->>>>>>> vite
       $request->validate([
          'token' => 'required',
          'email' => 'required|email',
@@ -452,13 +398,6 @@ class AuthController extends Controller
       ]);
 
       $status = Password::reset(
-<<<<<<< HEAD
-         $request->only('email', 'password', 'password_confirmation', 'token'),
-
-         function ($user, $password) {
-            $user->forceFill([
-               'password' => Hash::make($password)
-=======
 
          $request->only('email', 'password', 'password_confirmation', 'token'),
          
@@ -466,7 +405,6 @@ class AuthController extends Controller
 
             $user->forceFill([
                'password' => $password
->>>>>>> vite
             ])->setRememberToken(Str::random(60));
 
             $user->save();
@@ -474,11 +412,7 @@ class AuthController extends Controller
             event(new PasswordReset($user));
          }
       );
-<<<<<<< HEAD
-
-=======
       
->>>>>>> vite
       return $status === Password::PASSWORD_RESET
          ? response()->json(['result' => true, 'status' => $status])
          : response()->json(['result' => false, 'status' => $status]);

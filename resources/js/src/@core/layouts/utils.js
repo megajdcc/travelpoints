@@ -1,6 +1,6 @@
 import router from '@/router'
 import { isObject } from '@core/utils/utils'
-import { computed } from '@vue/composition-api'
+import { computed } from 'vue'
 
 /**
  * Return which component to render based on it's data/context
@@ -11,10 +11,6 @@ export const resolveVerticalNavMenuItemComponent = item => {
   if (item.children) return 'vertical-nav-menu-group'
   return 'vertical-nav-menu-link'
 }
-<<<<<<< HEAD
-
-=======
->>>>>>> vite
 /**
  * Return which component to render based on it's data/context
  * @param {Object} item nav menu item
@@ -95,6 +91,10 @@ export const navLinkProps = item => computed(() => {
 
    if(item.exact){
      props.exact = item.exact
+   }
+
+   if(item.ExactPath){
+     props.ExactPath = item.ExactPath
    }
   
   return props

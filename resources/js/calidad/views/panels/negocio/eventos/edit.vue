@@ -2,7 +2,7 @@
 
 import form from 'views/eventos/form.vue'
 
-import {onMounted,h,watch,toRefs} from '@vue/composition-api'
+import {onMounted,h,watch,toRefs} from 'vue'
 
 import store from '@/store'
 import router from '@/router'

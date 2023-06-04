@@ -111,7 +111,7 @@ import {
    BButtonGroup,
    BButton
 } from 'bootstrap-vue'
-import {ref,onMounted,computed,toRefs} from '@vue/composition-api'
+import {ref,onMounted,computed,toRefs} from 'vue'
 
 import store from '@/store'
 import { regresar } from '@core/utils/utils'

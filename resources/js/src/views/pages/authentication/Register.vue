@@ -165,7 +165,7 @@
                   name="checkbox-1"
                 >
                  estoy de acuerdo con
-                  <b-link>política y términos de privacidad</b-link>
+                  <b-link :to="pageTermino" target="_blank">política y términos de privacidad</b-link>
                 </b-form-checkbox>
               </b-form-group>
 
@@ -219,6 +219,7 @@ import { togglePasswordVisibility } from '@core/mixins/ui/forms'
 import store from '@/store/index'
 
 import ToastificationContent from '@core/components/toastification/ToastificationContent.vue'
+import {toRefs,computed} from 'vue'
 
 export default {
   components: {
@@ -311,6 +312,26 @@ export default {
       })
     },
   },
+
+  setup(props){
+    const { paginas } = toRefs(store.state.pagina)
+
+
+    const cargarForm = () => {
+      
+      if(!paginas.value.lenth){
+        store.dispatch('pagina/getPaginas')
+      }
+
+    }
+
+    cargarForm();
+
+    return {
+      pageTermino: computed(() => store.getters['pagina/pageTermino']),
+    }
+
+  }
 }
 /* eslint-disable global-require */
 </script>

@@ -20,7 +20,8 @@ export default{
          titulo:'',
          imagenes:[],
          atracciones:[],
-         negocios:[]
+         negocios:[],
+         activo:false,
       },
 
       destinos:[]
@@ -75,7 +76,9 @@ export default{
             titulo: '',
             atracciones: [],
             imagenes: [],
-            negocios: []
+            negocios: [],
+            activo:false,
+
 
          }
       },
@@ -304,20 +307,20 @@ export default{
             }).catch(e => reject(e))
             
          })
+      },
+
+      toggleActive({commit},{destino,activo}){
+         return new Promise((resolve, reject) => {
+            axios.put(`/api/destinos/${destino}/toggle/active`,{activo:activo}).then(({data}) => resolve(data)).catch(e => reject(e))
+         })
+      },
+
+      fetchDataPublic({commit},datos){
+         return new Promise((resolve, reject) => {
+            axios.post('/api/destinos/fetch-data/public',datos).then(({data}) => resolve(data)).catch(e => reject(e))
+         })
       }
 
-
-
-
-
-
-
-
-
    }
-
-
-
-
 
 }

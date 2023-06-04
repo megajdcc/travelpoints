@@ -110,7 +110,7 @@ import {
 import useNegocioCategoriasList from './useNegocioCategoriasList'
 import { getExt } from '@core/utils/utils'
 
-import {ref} from '@vue/composition-api'
+import {ref} from 'vue'
 
 export default {
    components: {

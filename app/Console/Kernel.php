@@ -5,7 +5,7 @@ namespace App\Console;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 use Illuminate\Support\Facades\{DB};
-
+use App\Jobs\VerificarRedPromotores;
 class Kernel extends ConsoleKernel
 {
 
@@ -28,13 +28,17 @@ class Kernel extends ConsoleKernel
     {
         
         // $schedule->command('inspire')->hourly();
-         
         
-        $schedule->command('queue:work --tries 5')->cron('* * * * *'); 
-        
+        $schedule->command('queue:work --max-time=290 --max-jobs 100 --tries 5')->cron('*/5 * * * *')->withoutOverlapping(10);
+
+        // La verificación la hacemos cada día
+
+        $schedule->call(function(){
+            VerificarRedPromotores::dispatch();
+        })->daily();
+
         // Limpiar los trabajos que esten fallidos... 
-         
-        // $schedule->command('queue:flush')->daily();
+        $schedule->command('queue:flush')->daily();
 
         
     }

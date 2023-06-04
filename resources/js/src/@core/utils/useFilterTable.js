@@ -1,4 +1,4 @@
-import {ref,watch,computed}  from '@vue/composition-api'
+import {ref,watch,computed}  from 'vue'
 
 export default function useFilterTable(){
 
@@ -51,10 +51,6 @@ export default function useFilterTable(){
       if (refTable.value) {
          refTable.value.refresh()
       }
-<<<<<<< HEAD
-     
-=======
->>>>>>> vite
    }
 
    watch([currentPage, perPage, searchQuery], () => {

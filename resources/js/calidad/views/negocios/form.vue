@@ -104,27 +104,6 @@
                               </validation-provider>
                            </b-form-group>
 
-                           
-                           <!-- Descripcion del negocio -->
-                           <b-form-group
-                              title="Explica con más detalle acerca de tu negocio. Los socios de TravelPoints tambien pueden encontrar tu negocio por su descripción. Puedes agregar palabras claves para facilitar la busqueda."
-                              v-b-tooltip.hover.v-primary>
-                              <template #label>
-                                 Descripción del negocio: <span class="text-danger">*</span>
-                                 <feather-icon icon="HelpCircleIcon" class="text-warning" />
-                              </template>
-                           
-                              <validation-provider name="descripcion" rules="required" #default="{errors}">
-                                 <b-form-textarea v-model="formulario.descripcion" :state="errors.length ? false : null" :rows="4"
-                                    placeholder="Descripción del negocio" />
-                                 <b-form-invalid-feedback :state="errors.length ? false : null">
-                                    {{ errors[0] }}
-                                 </b-form-invalid-feedback>
-                           
-                              </validation-provider>
-                           </b-form-group>
-
-
                            <!-- Url en el Sitio -->
                            <b-form-group title="Este será el enlace directo al perfil de tú negocio." v-b-tooltip.hover.v-primary>
 
@@ -174,7 +153,7 @@
                               </validation-provider>
                            </b-form-group>
                         
-                           <b-form-group v-b-tooltip.hover.v-primary title="Elija entre pagar una comisión o un monto fijo por persona">
+                           <b-form-group v-b-tooltip.hover.v-primary title="Elija entre pagar una comisión o una cantidad fija por persona">
                               <template #label>
                                  Tipo de pago: <span class="text-danger">*</span>
                                  <feather-icon icon="HelpCircleIcon" class="text-warning" />
@@ -183,7 +162,7 @@
                               <validation-provider name="tipo_comision" rules="required" #default="{errors}">
                         
                                  <b-form-radio-group v-model="formulario.tipo_comision"
-                                    :options="[{text:'Comisión',value:1},{text:'Monto Fíjo',value:2}]" button-variant="outline-primary" buttons
+                                    :options="[{text:'Comisión',value:1},{text:'Cantidad Fija',value:2}]" button-variant="outline-primary" buttons
                                     size="md" :state="errors.length ? false : null" class="w-100" @change="formulario.comision = 10">
                         
                                  </b-form-radio-group>
@@ -256,6 +235,29 @@
                         
                         </b-col>
 
+                     </b-row>
+
+                     <b-row>
+                        <b-col>
+                           <!-- Descripcion del negocio -->
+                              <b-form-group
+                                 title="Explica con más detalle acerca de tu negocio. Los socios de TravelPoints tambien pueden encontrar tu negocio por su descripción. Puedes agregar palabras claves para facilitar la busqueda."
+                                 v-b-tooltip.hover.v-primary>
+                                 <template #label>
+                                    Descripción del negocio: <span class="text-danger">*</span>
+                                    <feather-icon icon="HelpCircleIcon" class="text-warning" />
+                                 </template>
+                           
+                                 <validation-provider name="descripcion" rules="required" #default="{ errors }">
+                                      <editor output-format="html" :value="formulario.descripcion" @input="formulario.descripcion = $event"
+                          api-key="t1i940nuarrf1zefgxbf6ow5cxmgjmcad7q7l3fm5prgebyc" :init="optionsEditor" />
+                                    <b-form-invalid-feedback :state="errors.length ? false : null">
+                                       {{ errors[0] }}
+                                    </b-form-invalid-feedback>
+                           
+                                 </validation-provider>
+                              </b-form-group>
+                        </b-col>
                      </b-row>
                   
                   
@@ -686,6 +688,7 @@
 
 
 <script>
+import Editor from '@tinymce/tinymce-vue'
 
 import {
    BCard,
@@ -721,9 +724,10 @@ import vSelect from 'vue-select'
 import store from '@/store'
 
 import {regresar} from '@core/utils/utils'
-import {computed,onMounted,watch,toRefs,ref} from '@vue/composition-api'
+import {computed,onMounted,watch,toRefs,ref} from 'vue'
 
 import useDireccion from '@core/utils/useDireccion'
+import { optionsEditor } from '@core/utils/utils';
 
 export default {
    
@@ -758,7 +762,7 @@ export default {
       FormImagen: () => import('components/FormImagen.vue'),
       FormHorario: () => import('components/FormHorario.vue'),
       FormTelefono:() => import('components/FormTelefono.vue'),
-
+      Editor
 
    },
 
@@ -1099,7 +1103,7 @@ export default {
          actionsImagenes,
          actionsTelefono,
          usuarios,
-
+         optionsEditor,
          filtrarUsuarios:({nombre,email},search) => {
             
             return (nombre || email || '').toLocaleLowerCase().indexOf(search.toLocaleLowerCase()) > -1

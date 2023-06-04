@@ -1,90 +1,124 @@
 
 import store from '@/store'
 
-import { ref, computed, onMounted, watch } from '@vue/composition-api'
+import { ref, computed, onMounted, watch,h } from 'vue'
 
+import dayGridPlugin from '@fullcalendar/daygrid'
+import timeGridPlugin from '@fullcalendar/timegrid'
+import listPlugin from '@fullcalendar/list'
+import interactionPlugin from '@fullcalendar/interaction'
+import esLocale from '@fullcalendar/core/locales/es';
+import { createPopper } from '@popperjs/core';
 
-export default function useEventosList() {
+export default function useEventosList(negocio = null) {
 
-   const isSortDirDesc = ref(true)
-   const sortBy = ref('id')
-   const searchQuery = ref('')
-   const perPage = ref(12)
-   const currentPage = ref(1)
-   const total = ref(0);
-   const items = ref([]);
-   const perPageOptions = ref([
-      {
-         label: '12',
-         value: 12,
-      },
-      {
-         label: '25',
-         value: 25,
-      },
-      {
-         label: '50',
-         value: 50,
-      },
-      {
-         label: '100',
-         value: 100,
-      },
-      {
-         label: 'Todas',
-         value: 0,
-      },
+      const calendarApi = ref(null)
+      const showEvent = ref(false)
+      const refCalendar = ref(null)
+      const filterOption = ref([]);
+      // ------------------------------------------------
+      // (UI) updateEventInCalendar
+      // ------------------------------------------------
+      const updateEventInCalendar = (updatedEventData, propsToUpdate, extendedPropsToUpdate) => {
 
-   ])
-
-   const dataMeta = computed(() => {
-
-      const localItemsCount = items.value ? items.value.length : 0
-
-      return {
-         from: perPage.value * (currentPage.value - 1) + (localItemsCount ? 1 : 0),
-         to: perPage.value * (currentPage.value - 1) + localItemsCount,
-         of: total.value,
       }
 
-   })
+      // ------------------------------------------------
+      // (UI) removeEventInCalendar
+      // ------------------------------------------------
+      const removeEventInCalendar = eventId => {
+
+      }
 
 
-   const refetchData = () => fetchData((destinos) => items.value = destinos)
+      const refetchEvents = () => {
+         
 
-   watch([currentPage, perPage, searchQuery], () => {
-      refetchData()
-   })
-
-   onMounted(() => refetchData())
+         calendarApi.value.refetchEvents()
+      }
 
 
+      const isEventHandlerSidebarActive = ref(false)
 
-   const fetchData = (next) => {
+      const isCalendarOverlaySidebarActive = ref(false)
 
-      store.dispatch('evento/fetchData', {
-         perPage: perPage.value,
-         currentPage: currentPage.value,
-         sortBy: sortBy.value,
-         q: searchQuery.value,
-         isSortDirDesc: isSortDirDesc.value
-      }).then(({ total: all, eventos }) => {
+      watch([filterOption], () => refetchEvents())
 
-         total.value = all
-         next(eventos)
+      onMounted(() => {
+            calendarApi.value = refCalendar.value.getApi()
+            // calendarApi.value.render()
+      })
+
+      const fetchEvents = (info,next,failure) => { 
+
+      if (!info) return
+
+      // console.log(info.end.getDate())
+
+      store.dispatch('evento/fetchEventos',{
+         start:info.start.valueOf(),
+         end:info.end.valueOf(),
+         filterOption:filterOption.value,
+         negocio:negocio ? negocio.value.id: null
+      }).then((eventos) => {
+
+         next(eventos.map(val => {
+
+            if(val.recurrente){
+               return {
+                  title:val.titulo,
+                  start:val.fecha_inicio,
+                  end:val.fecha_fin,
+                  id:val.id,
+                  groupId:val.recurrencia.id_group,
+                  daysOfWeek:val.recurrencia.dia_semana,
+                  startTime:val.recurrencia.hora_inicio,
+                  endTime:val.recurrencia.hora_fin,
+                  allDay:val.all_dia,
+                  extendedProps:val,
+                  backgroundColor:colorRand(),
+                  eventColor:colorRand(),
+                  classNames:[`evento-${val.id}`],
+                  startRecur:val.fecha_inicio,
+                  endRecur:val.fecha_fin ? val.fecha_fin : null,
+                  resourceEditable:false,
+                  durationEditable:false,
+                  startEditable:false, 
+                  editable:false,
+                  // display: 'background'
+               }
+            }
+
+            return {
+               title:val.titulo,
+               start:val.fecha_inicio,
+               end:val.fecha_fin,
+               id:val.id,
+               allDay:val.all_dia,
+               backgroundColor:colorRand(),
+               eventColor:colorRand(),
+
+               classNames:[`evento-${val.id}`],
+               extendedProps:val,
+
+
+            }
+
+         }))
       }).catch(e => {
+         console.log(e)
+         failure(e)
          toast.info('Error trayendo Data', { position: 'bottom-right' })
       })
 
    }
 
    const eliminar = (evento_id) => {
-
-
       store.dispatch('evento/eliminar', evento_id).then(({ result }) => {
          if (result) {
             toast.success('Se ha eliminado con éxito el evento', { position: 'bottom-right' })
-            refetchData();
+            refetchEvents();
+            showEvent.value = false
          }
       })
 
@@ -92,22 +126,119 @@ export default function useEventosList() {
 
 
 
+   const calendarOptions = ref({
+
+      plugins: [dayGridPlugin, interactionPlugin, timeGridPlugin, listPlugin],
+      locale:esLocale,
+      initialView: 'dayGridMonth',
+      dayMaxEvents: true, // allow "more" link when too many events
+      headerToolbar: {
+         start: 'sidebarToggle, prev,next, title',
+         end: 'dayGridMonth,timeGridWeek,listMonth',
+      },
+
+      events:fetchEvents,
+
+      /*
+         Enable dragging and resizing event
+         ? Docs: https://fullcalendar.io/docs/editable
+      */
+      editable: true,
+
+      /*
+         Enable resizing event from start
+         ? Docs: https://fullcalendar.io/docs/eventResizableFromStart
+      */
+      eventResizableFromStart: true,
+
+      /*
+         Automatically scroll the scroll-containers during event drag-and-drop and date selecting
+         ? Docs: https://fullcalendar.io/docs/dragScroll
+      */
+      dragScroll: true,
+
+      /*
+         Max number of events within a given day
+         ? Docs: https://fullcalendar.io/docs/dayMaxEvents
+      */
+      //  dayMaxEvents: 2,
+
+      /*
+         Determines if day names and week names are clickable
+         ? Docs: https://fullcalendar.io/docs/navLinks
+      */
+      navLinks: true,
+
+      eventClick({ event: clickedEvent }) {
+         // isEventHandlerSidebarActive.value = true
+         store.commit('evento/setEvento',clickedEvent.extendedProps)
+         showEvent.value = true
+      },
+
+      eventMouseEnter({el}){
+
+      },
+
+      customButtons: {
+         sidebarToggle: {
+         text: 'sidebar',
+         click() {
+            isCalendarOverlaySidebarActive.value = !isCalendarOverlaySidebarActive.value
+         },
+         },
+      },
+
+      dateClick(info) {
+         isEventHandlerSidebarActive.value = true
+
+         
+      },
+
+
+      eventDrop({ event: droppedEvent }) {
+
+      },
+
+      /*
+         Handle event resize
+         ? Docs: https://fullcalendar.io/docs/eventResize
+      */
+      eventResize({ event: resizedEvent }) {
+
+      },
+
+
+      eventDidMount:function(info){
+         // // console.log(info)
+
+         // const h2 = () => h('h2','hola')
+         // let elemnt = info.el
+         // createPopper(info.el,h2(), {
+         // placement: 'right',
+         // })
+      }
+   ,
+
+   //   eventContent: ({event}) => (h('div', { id: 'foo' }, 'hello')),
+
+   rerenderDelay: 350,
+   })
+
+
+
 
 
    return {
-      items,
-      isSortDirDesc,
-      sortBy,
-      searchQuery,
-      perPage,
-      currentPage,
-      total,
-      items,
-      perPageOptions,
-      dataMeta,
-      refetchData,
-      fetchData,
-      eliminar
+      fetchEvents,
+      eliminar,
+      refCalendar,
+      calendarApi,
+      isCalendarOverlaySidebarActive,
+      calendarOptions,
+      refetchEvents,
+      isEventHandlerSidebarActive,
+      showEvent,
+      filterOption
    }
 
 }

@@ -17,28 +17,22 @@
             <span class="img-perfil-hover">Clic para cambiar imagen</span>
          </b-card>
 
-         <h1><strong> {{ ` ${usuario.nombre ? usuario.nombre +' ' +usuario.apellido : usuario.username}` }}</strong>
+         <h1><strong> {{ ` ${usuario.nombre ? usuario.nombre + ' ' + usuario.apellido : usuario.username}` }}</strong>
          </h1>
          <strong>{{ usuario.direccion ? usuario.direccion : 'Dirección sin definir' }}</strong>
          <hr>
-<<<<<<< HEAD
-         <h2><strong> Tp {{ usuario.tps | currency }}</strong></h2>
-         <b-button :to="{ name: 'tienda' }" variant="primary" size="sm">
-=======
-         <h2><strong> {{ usuario.cuenta.divisa.iso }}{{  usuario.cuenta.saldo | currency({symbol:usuario.cuenta.divisa.simbolo}) }}</strong></h2>
-         
+         <h2><strong> {{ usuario.cuenta.divisa.iso }}{{ usuario.cuenta.saldo |
+            currency({ symbol: usuario.cuenta.divisa.simbolo }) }}</strong></h2>
+
          <b-button :to="{ name: 'tienda.travel' }" variant="primary" size="sm">
->>>>>>> vite
             <feather-icon icon="ShoppingCartIcon" />
             Ir a tienda
          </b-button>
 
-         <b-form-file ref="refInputEl" v-model="profileFile" accept="image/*" :hidden="true" plain
-            @input="cargarImagen" />
+         <b-form-file ref="refInputEl" v-model="profileFile" accept="image/*" :hidden="true" plain @input="cargarImagen" />
 
       </b-media-body>
    </b-media>
-
 </template>
 <script>
 
@@ -63,16 +57,12 @@ import {
 
 import store from '@/store'
 
-<<<<<<< HEAD
-import {ref,computed} from '@vue/composition-api'
-=======
-import {ref,computed,onMounted,toRefs} from '@vue/composition-api'
->>>>>>> vite
+import { ref, computed, onMounted, toRefs } from 'vue'
 export default {
 
-   props:['usuario'],
-   
-   components:{
+   props: ['usuario'],
+
+   components: {
       BButton,
       BForm,
       BImg,
@@ -92,23 +82,20 @@ export default {
    },
 
 
-   setup(props,{emit}) {
+   setup(props, { emit }) {
 
       const previewEl = ref(null)
       const profileFile = ref(null)
       const refInputEl = ref(null)
 
-<<<<<<< HEAD
-=======
-      const {divisa} = toRefs(store.state.divisa)
+      const { divisa } = toRefs(store.state.divisa)
 
       onMounted(() => {
-      
+
          store.dispatch('divisa/getPrincipal')
 
       })
 
->>>>>>> vite
       const cargarImagen = (file) => {
 
          let form = new FormData();
@@ -130,38 +117,36 @@ export default {
          })
 
       }
-   
+
       return {
          previewEl,
          profileFile,
          refInputEl,
          cargarImagen,
-<<<<<<< HEAD
-=======
          divisa,
->>>>>>> vite
-         loading:computed(() => store.state.loading)
+         loading: computed(() => store.state.loading)
       }
-      
+
    },
 }
 </script>
 
 <style lang="scss" scoped>
-
 @import '@/assets/scss/variables/variables';
-.content-img{
-// background: white;
-border-radius: 10px;
-// border: 3px dotted rgba($color: #e4dada85, $alpha: 1.0);
-position: relative;
+
+.content-img {
+   // background: white;
+   border-radius: 10px;
+   // border: 3px dotted rgba($color: #e4dada85, $alpha: 1.0);
+   position: relative;
 
    .img-perfil {
       width: 220px;
       height: auto;
       vertical-align: middle;
    }
-   .img-perfil-hover{
+
+   .img-perfil-hover {
       background-color: rgba(255, 255, 255, 0.75);
       bottom: 20px;
       color: #363636;
@@ -174,10 +159,9 @@ position: relative;
       transition: 0.15s linear;
    }
 
-   &:hover>.img-perfil-hover{
+   &:hover>.img-perfil-hover {
       opacity: 1 !important;
    }
 
 }
-
 </style>

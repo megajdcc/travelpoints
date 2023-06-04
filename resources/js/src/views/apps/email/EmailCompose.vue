@@ -259,7 +259,7 @@
 <script>
 import { BDropdown, BDropdownItem, BForm, BFormInput, BAvatar, BDropdownDivider } from 'bootstrap-vue'
 import Ripple from 'vue-ripple-directive'
-import { ref } from '@vue/composition-api'
+import { ref } from 'vue'
 import { quillEditor } from 'vue-quill-editor'
 import vSelect from 'vue-select'
 

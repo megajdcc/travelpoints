@@ -165,7 +165,7 @@ import {
 import { ValidationObserver,ValidationProvider } from 'vee-validate'
 import {required} from '@validations'
 
-import {ref,toRefs,onMounted,computed,watch} from '@vue/composition-api'
+import {ref,toRefs,onMounted,computed,watch} from 'vue'
 import { regresar } from '@core/utils/utils';
 
 import store from '@/store'

@@ -1,8 +1,5 @@
 {
-<<<<<<< HEAD
-=======
-    "allowJs":true,
->>>>>>> vite
+    "allowJS":true,
     "compilerOptions": {
         "jsx":"preserve",
         "baseUrl": ".",

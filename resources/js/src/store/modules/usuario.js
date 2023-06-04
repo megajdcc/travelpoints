@@ -1,7 +1,3 @@
-<<<<<<< HEAD
-import axios from "axios";
-=======
->>>>>>> vite
 import store from "..";
 
 export default {
@@ -15,11 +11,7 @@ export default {
 				id: null,
 				nombre:null,
 				apellido:null,
-<<<<<<< HEAD
-				telefono: '',
-=======
 				telefonos:[],
->>>>>>> vite
 				bio: '',
 				website: '',
 				fecha_nacimiento: '',
@@ -46,15 +38,13 @@ export default {
 				codigo_referidor:null,
 				referidos:[],
 				referidor:[],
-<<<<<<< HEAD
-				tps:null,
-=======
 				likes:[],
 				negocios:[],
-				cupones:[]
->>>>>>> vite
-
-
+				cupones:[],
+				carrito_compra:[],
+				status:3,
+				lider:null,
+				promotores:[]
 			},
 
 			user: {
@@ -62,11 +52,7 @@ export default {
 				id: null,
 				nombre: null,
 				apellido: null,
-<<<<<<< HEAD
-				telefono: '',
-=======
 				telefonos:[],
->>>>>>> vite
 				bio: '',
 				website: '',
 				fecha_nacimiento: '',
@@ -93,43 +79,30 @@ export default {
 				codigo_referidor: null,
 				referidos: [],
 				referidor: [],
-<<<<<<< HEAD
-				tps:null,
-=======
 				negocios: [],
 				cupones: []
-
-
->>>>>>> vite
-
 			},
 
 			usuarios: [],
-	
-			
 
 		}),
 
 	mutations:{
-	
 
 		cargarUser(state,data){			
-	
 			state.usuario = data;
-
-
 		},
 
 		setTelefono(state,numero){
-
 			state.usuario.telefono = numero
 		},
 
-
 		setUsuarios(state,usuarios){
-		
-			
 			state.usuarios = usuarios;
+		},
+
+		setUsuario(state,usuario){
+			state.user = usuario
 		},
 
 		pushUsuario(state,usuario){
@@ -146,11 +119,7 @@ export default {
 				id: null,
 				nombre: null,
 				apellido: null,
-<<<<<<< HEAD
-				telefono: '',
-=======
 				telefonos:[],
->>>>>>> vite
 				bio: '',
 				website: '',
 				fecha_nacimiento: '',
@@ -177,33 +146,20 @@ export default {
 				codigo_referidor: null,
 				referidos: [],
 				referidor: [],
-<<<<<<< HEAD
-				tps:null,
-=======
 				negocios: [],
 				cupones: []
->>>>>>> vite
-
 			}
 		},
 
-
 		updateUsuario(state,data){
-
 			var i = state.usuarios.findIndex((user) => user.id == data.id);
 
 			if(i != -1){
 				state.usuarios[i] = data;
-<<<<<<< HEAD
-=======
-			
->>>>>>> vite
 				state.user = data;
 			}
 
 		},
-
-
 
 		update(state,data){
 
@@ -233,7 +189,6 @@ export default {
 
 		},
 
-
 		updatePerfil(state,data){
 			localStorage.setItem('userData',JSON.stringify(data))
 			state.usuario = data
@@ -256,11 +211,7 @@ export default {
 				username: null,
 				nombre: null,
 				apellido: null,
-<<<<<<< HEAD
-				telefono: '',
-=======
 				telefonos:[],
->>>>>>> vite
 				bio: '',
 				website: '',
 				fecha_nacimiento: '',
@@ -287,17 +238,11 @@ export default {
 				codigo_referidor: null,
 				referidos: [],
 				referidor: [],
-<<<<<<< HEAD
-				tps: null,
-			}
-			
-		}
-
-
-=======
 				likes:[],
+				status:3,
+				lider:null,
+				promotores:[]
 			}
-			
 		},
 
 		agregarTelefono(state,user = 'user'){
@@ -315,18 +260,13 @@ export default {
 					principal: false
 				})
 			}
-
-				
 		},
-
-		
 
 		quitarTelefono(state,i){
 				state.user.telefonos.splice(
 					i,
 					1
 				) 
-			
 		},
 
 		updateTelefono(state, telefono) {
@@ -353,11 +293,35 @@ export default {
 				) 
 		},
 
-
 		setLikesUser(state,likes){
 			state.usuario.likes = likes
+		},
+
+		setStatusLider(state,{promotores_activos}){
+			const {ultimo_mes,ultimo_trimestre } = promotores_activos
+
+			if(ultimo_mes > 0){
+				state.usuario.status = 1;
+			}else if(ultimo_trimestre > 0){
+				state.usuario.status = 2;
+			}else{
+				state.usuario.status = 3
+			}
+		},
+
+
+		setStatusCoordinador(state,{lideres_activos}){
+				const {ultimo_mes,ultimo_trimestre } = lideres_activos
+
+				if(ultimo_mes > 0){
+					state.usuario.status = 1;
+				}else if(ultimo_trimestre > 0){
+					state.usuario.status = 2;
+				}else{
+					state.usuario.status = 3
+				}
 		}
->>>>>>> vite
+
 	},
 
 	getters:{
@@ -370,10 +334,7 @@ export default {
 			return clone(state.usuario)
 		},
 
-<<<<<<< HEAD
 
-		conPermiso:(state) => {
-=======
 		isLikeModel:(state) => {
 
 			return ({model_id,model_type}) => {
@@ -384,7 +345,6 @@ export default {
 		conPermiso:(state) => {
 
 
->>>>>>> vite
 			return (permiso) => {
 
 				if(state.usuario){
@@ -394,12 +354,7 @@ export default {
 				return false;
 				
 			}
-<<<<<<< HEAD
-=======
-
->>>>>>> vite
 		},
-
 
 		getUsuarios: (state) => {
 			return (rol) => {
@@ -427,8 +382,6 @@ export default {
 
 		getListado:(state) => {
 			return (users_id) => {
-
-			
 
 				var users = [];
 
@@ -493,18 +446,6 @@ export default {
 				})
 			}
 		},
-
-<<<<<<< HEAD
-=======
-		
-
-
->>>>>>> vite
-
-		
-
-	
-
 	},
 
 	actions:{
@@ -523,6 +464,35 @@ export default {
 
 			return result;
 		},
+
+		cargarLideres({state,commit}){
+
+			return new Promise((resolve, reject) => {
+					axios.get('/api/usuarios/get/lideres').then(({data}) => {
+						commit('setUsuarios',data);
+						resolve(data)
+					}).catch(e => {
+						reject(e)
+					})
+			})
+		
+
+		},
+
+		cargarCoordinadores({state,commit}){
+
+			return new Promise((resolve, reject) => {
+					axios.get('/api/usuarios/get/coordinadores').then(({data}) => {
+						commit('setUsuarios',data);
+						resolve(data)
+					}).catch(e => {
+						reject(e)
+					})
+			})
+		
+
+		},
+
 
 		async cargarUsuario({state,commit,dispatch}){
 
@@ -591,17 +561,10 @@ export default {
 
 		async cambiarContrasena({commit,state},data){
 			return await new Promise((resolve, reject) => {
-				commit('toggleLoading', null, { root: true })
-<<<<<<< HEAD
-				axios.post(`/api/cambiar/contrasena/usuario/${state.usuario.id}`,data).then(({data}) => {
-=======
 				axios.put(`/api/cambiar/contrasena/usuario/${state.usuario.id}`,data).then(({data}) => {
->>>>>>> vite
 					resolve(data)
 				}).catch(e => reject(e))
-				.then(() => {
-					commit('toggleLoading',null,{root:true})
-				})
+
 			})
 		},
 
@@ -620,7 +583,11 @@ export default {
 		fetchUsers({state,commit},searchQuery){
 				return new Promise((resolve, reject) => {
 					axios.post('/api/fetch/usuarios', searchQuery)
-						.then(response => resolve(response))
+						.then((response) => {
+							const {data} = response;
+							commit('setUsuarios',data.users)
+							resolve(response)
+						})
 						.catch(error => reject(error))
 				});
 		},
@@ -651,18 +618,9 @@ export default {
 
 		getUsuario({state,commit},id_usuario){
 			return new Promise((resolve, reject) => {
-					
-				commit('toggleLoading',null,{root:true})
-
 				axios.get(`/api/usuarios/${id_usuario}/get`).then(({data}) => {
 					resolve(data)
 				}).catch(e => reject(e))
-				.then(() => {
-					commit('toggleLoading', null, { root: true })
-
-				})
-
-				
 			})
 		},
 
@@ -684,14 +642,11 @@ export default {
 
 		async crearLinkReferido({commit},data) {
 			return await new Promise((resolve, reject) => {
-				commit('toggleLoading',null,{root:true})
 				axios.put(`/api/usuarios/${data.id}/crear/link/referidor`,data).then(({data:datos}) => {
 					commit('updatePerfil',datos.usuario)
 					resolve(datos)
 				}).catch(e => reject(e))
-				.then(() => {
-					commit('toggleLoading', null, { root: true })
-				})
+				
 
 			})
 		},
@@ -711,13 +666,12 @@ export default {
 		async nuevoUsuario({commit},data){
 
 			return await new Promise((resolve, reject) => {
-				commit('toggleLoading',null,{root:true})
 
 				axios.post('/api/auth/nuevo/usuario',data).then(({data:datos}) => {
 					resolve(datos)
 				}).catch(e => {
 					reject(e)
-				}).then(() => commit('toggleLoading',null,{root:true}))
+				})
 
 			})
 
@@ -733,9 +687,7 @@ export default {
 					.then(() => commit('toggleLoading',null,{root:true}))
 
 			})
-<<<<<<< HEAD
-		}	
-=======
+
 		},
 
 
@@ -791,7 +743,9 @@ export default {
 						commit('setLikesUser',data.likes)
 						commit('updatePerfil',state.usuario)
 					} 
+
 					resolve(data)
+				
 				}).catch(e => reject(e))
 
 			})
@@ -803,13 +757,155 @@ export default {
 				
 				axios.post(`/api/users/search`,{q:query}).then(({data}) => resolve(data)).catch(e => reject(e))
 			})
+		},
+
+
+		getStatusPromotor({commit}){
+
+			return new Promise((resolve, reject) => {
+				axios.get(`/api/dashboard/tablero/promotor/get-status`).then(({data}) => {
+					commit('setStatusPromotor',data)
+					resolve(data)
+				}).catch(e => reject(e))
+
+			})
+		},
+
+		getStatusLider({commit}){
+
+			return new Promise((resolve, reject) => {
+				axios.get(`/api/dashboard/tablero/lider/get-status`).then(({data}) => {
+					commit('setStatusLider',data)
+					resolve(data)
+				}).catch(e => reject(e))
+
+			})
+		},
+
+		getStatusCoordinador({commit}){
+
+			return new Promise((resolve, reject) => {
+				axios.get(`/api/dashboard/tablero/coordinador/get-status`).then(({data}) => {
+					commit('setStatusCoordinador',data)
+					resolve(data)
+				}).catch(e => reject(e))
+
+			})
+		},
+
+		cambiarDivisa({commit},dato){
+
+			return new Promise((resolve, reject) => {
+				axios.put(`/api/usuarios/${dato.usuario}/change-divisa`,dato).then(({data}) => {
+
+					commit('update',data.usuario)
+
+					resolve(data)
+				}).catch(e => reject(e))
+			})
+		},
+
+		cambiarEstado({commit},usuario_id){
+			
+			return new Promise((resolve, reject) => {
+				axios.get(`/api/usuarios/${usuario_id}/cambiar/estado`).then(({data}) => {
+					resolve(data)
+				}).catch(e => reject(e))
+
+			})
+		},
+
+
+		fetchPromotores({commit},filtro){
+			return new Promise((resolve, reject) => {
+				
+				axios.post(`/api/usuarios/promotores/fetch/data`,filtro).then(({data}) => {
+					commit('setUsuarios',data.promotores)
+					resolve(data)
+				}).catch(e => reject(e))
+			})
+		},
+
+		fetchLideres({commit},filtro){
+			return new Promise((resolve, reject) => {
+				
+				axios.post(`/api/usuarios/lideres/fetch/data`,filtro).then(({data}) => {
+					commit('setUsuarios',data.lideres)
+					resolve(data)
+				}).catch(e => reject(e))
+			})
+		},
+
+		asignarLiderPromotor({commit},dato) {
+			return new Promise((resolve, reject) => {
+				axios.post(`/api/usuarios/promotor/asignar/lider`,dato).then(({data}) => {
+					resolve(data)
+
+				}).catch(e => reject(e))
+			})
+		},
+
+		asignarCoordinadorLider({commit},dato) {
+
+			return new Promise((resolve, reject) => {
+				axios.post(`/api/usuarios/lider/asignar/coordinador`,dato).then(({data}) => {
+					resolve(data)
+
+				}).catch(e => reject(e))
+			})
+
+		},
+
+
+		quitarLider({commit},promotor){
+			return new Promise((resolve, reject) => {
+				axios.get(`/api/usuarios/promotor/${promotor}/quitar/lider`).then(({data}) => resolve(data)).catch(e => reject(e))
+				
+			})
+		},
+
+		quitarCoordinador({commit},lider){
+			return new Promise((resolve, reject) => {
+				axios.get(`/api/usuarios/lider/${lider}/quitar/coordinador`).then(({data}) => resolve(data)).catch(e => reject(e))
+				
+			})
+		},
+
+
+		guardarPromotor({commit},datos){
+			return new Promise((resolve, reject) => {
+				axios.post('/api/usuarios/promotor/save',datos).then(({data}) => {
+
+					resolve(data)
+
+				}).catch(e => reject(e))
+
+			})
+		},
+		
+		guardarLider({commit},datos){
+			return new Promise((resolve, reject) => {
+				axios.post('/api/usuarios/lider/save',datos).then(({data}) => {
+
+					resolve(data)
+
+				}).catch(e => reject(e))
+
+			})
+		},
+
+
+		getPromotores({commit}){
+
+			return new Promise((resolve, reject) => {
+				axios.get('/api/usuarios/get/all/promotores').then(({data}) => {
+					resolve(data)
+
+				}).catch(e => reject(e))
+
+			})
 		}
 
-
->>>>>>> vite
-
-
-
-
 	}
+
 } 

@@ -66,7 +66,7 @@
 <script>
 import store from '@/store'
 import router from '@/router'
-import { ref, onUnmounted } from '@vue/composition-api'
+import { ref, onUnmounted } from 'vue'
 import {
   BRow, BCol, BAlert, BLink,
 } from 'bootstrap-vue'

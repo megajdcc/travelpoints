@@ -53,7 +53,7 @@ import usePublicacionesList from 'views/publicaciones/usePublicacionesList.js'
 
 import store from '@/store'
 
-import {toRefs, ref, computed,onMounted,watch} from '@vue/composition-api';
+import {toRefs, ref, computed,onMounted,watch} from 'vue';
 
 import {
     BCard,

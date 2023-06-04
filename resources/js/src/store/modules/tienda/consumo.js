@@ -16,7 +16,11 @@ export default {
       cliente:null,
       empleado:null,
       divisa:null,
+      tienda_id:null,
+      tienda:null,
       productos: [],
+      ordencj:null,
+      monto_envio:0,
     },
 
     consumos: [],
@@ -43,6 +47,10 @@ export default {
         empleado: null,
         divisa: null,
         productos: [],
+        tienda_id: null,
+        tienda: null,
+        ordencj:null,
+        monto_envio:0,
       }
     },
 
@@ -163,6 +171,39 @@ export default {
 
       })
 
+    },
+
+    marcarComentada({commit},consumo_id){
+      return new Promise((resolve, reject) => {
+        axios.get(`/api/consumos/${consumo_id}/marcar/comentada`).then(({data}) => resolve(data)).catch(e => reject(e))
+      })
+    },
+
+
+    getOrdenDetailsCj({commit},orden_id){
+      return new Promise((resolve, reject) => {
+        axios.get(`/api/consumos/orden-details/orden/${orden_id}`).then(({data}) => resolve(data)).catch(e => reject(e));
+
+      })
+    },
+
+    confirmarOrdenCj({commit},orden_id){
+      return new Promise((resolve, reject) => {
+        axios.get(`/api/consumos/orden-details/confirmar-orden/${orden_id}`).then(({data}) => resolve(data)).catch(e => reject(e))
+      })
+    },
+
+
+    eliminarOrdenCj({commit},{consumo,orden}){
+       return new Promise((resolve, reject) => {
+        axios.get(`/api/consumos/${consumo}/orden-details/eliminar-orden/${orden}`).then(({data}) => resolve(data)).catch(e => reject(e))
+      })
+    },
+
+    pagarOrdenCj({commit},orden_id){
+      return new Promise((resolve, reject) => {
+        axios.get(`/api/consumos/orden-details/pagar-orden/${orden_id}`).then(({data}) => resolve(data)).catch(e => reject(e))
+      })
     }
   }
 

@@ -2,38 +2,36 @@
 
 namespace App\Models\Usuario;
 
+use App\Models\AcademiaVideo;
+use App\Models\Comision;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-<<<<<<< HEAD
-=======
-use Illuminate\Database\Eloquent\Casts\Attibute;
->>>>>>> vite
 
 class Rol extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-<<<<<<< HEAD
-        'nombre'
-=======
         'nombre',
->>>>>>> vite
     ];
 
-    public function permisos(){
-        return $this->belongsToMany('App\Models\Usuario\Permiso','rol_permisos','rol_id','permiso_id')->withPivot(['actions']);
+    public function permisos()
+    {
+        return $this->belongsToMany('App\Models\Usuario\Permiso', 'rol_permisos', 'rol_id', 'permiso_id')->withPivot(['actions']);
     }
 
-
-    public function usuarios(){
-        return $this->hasMany('App\Models\User','rol_id','id');
+    public function usuarios()
+    {
+        return $this->hasMany('App\Models\User', 'rol_id', 'id');
     }
 
+    public function comision()
+    {
+        return $this->hasOne(Comision::class, 'rol_id', 'id');
+    }
 
-
-<<<<<<< HEAD
-
-=======
->>>>>>> vite
+    public function academia()
+    {
+        return $this->belongsToMany(AcademiaVideo::class, 'var', 'rol_id', 'video_academia_id');
+    }
 }

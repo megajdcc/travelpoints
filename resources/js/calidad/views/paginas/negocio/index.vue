@@ -1,8 +1,8 @@
 <template>
   <b-container fluid class="mx-0 px-0" v-if="negocio.id">
     
-    <b-row class="mx-0">
-      <b-col cols="12 mx-0 px-0">
+    <b-row class="mx-0 px-0">
+      <b-col cols="12 mx-0 px-0 ">
 
         <!-- Banner Header Perfil Negocio - terminar actions de los botones y las calificaciones -->
         <banner-negocio :negocio="negocio" :promedioCalificacion="promedioCalificacion"></banner-negocio>
@@ -11,7 +11,7 @@
 
 
     <b-row>
-      <b-col cols="12" md="8">
+      <b-col cols="12" md="8" class="">
 
         <transition :name="routerTransition" mode="out-in">
           <router-view />
@@ -19,7 +19,7 @@
 
       </b-col>
 
-      <b-col cols="12" md="4">
+      <b-col cols="12" md="4" class="">
 
         <b-card class="mt-1">
 
@@ -36,7 +36,6 @@
             {{ negocio.recomendaciones.length > 1 ? `${negocio.recomendaciones.length} personas lo recomienda` : `${negocio.recomendaciones.length} persona lo recomienda` }} 
 
           </section>
-
 
           <section class="d-flex align-items-center sticky-top" style="top:5rem">
           
@@ -60,14 +59,14 @@
 
         </b-card>
 
-        <h2 class="display-4">Sobre <span class="text-warning">{{ negocio.nombre }}</span></h2>
+        <h2 class="display-4 d-none d-md-flex">Sobre <span class="text-warning">{{ negocio.nombre }}</span></h2>
 
-        <b-card body-class="d-flex flex-column justify-content-center">
+        <b-card body-class="flex-column justify-content-center d-none d-md-flex">
 
           <section class="d-flex align-items-center">
             <!-- Logo -->
             <section class="w-25">
-              <b-img style="width:100%; height:60px; object-fit:cover"
+              <b-img style="width:100%; height:60px; object-fit:contain"
                 :src="`/storage/negocios/logos/${negocio.logo}`" />
             </section>
 
@@ -80,7 +79,7 @@
                   </td>
 
                   <td>
-                    <b-link :href="`mailto:${negocio.emails[0].email}`" target="_blank">
+                    <b-link :href="`mailto:${negocio.emails[0].email}`" target="_blank" style="overflow-wrap: anywhere;">
                       {{ negocio.emails[0].email }}
                     </b-link>
                   </td>
@@ -92,7 +91,7 @@
                   </td>
 
                   <td>
-                    <b-link :href="`tel:${negocio.telefonos[0].telefono}`" target="_blank">
+                    <b-link :href="`tel:${negocio.telefonos[0].telefono}`" target="_blank" style="overflow-wrap: anywhere;">
                       {{ negocio.telefonos[0].telefono }}
                     </b-link>
                   </td>
@@ -105,54 +104,80 @@
                   </td>
 
                   <td>
-                    <b-link :href="negocio.sitio_web" target="_blank">
+                    <b-link :href="negocio.sitio_web" target="_blank" style="overflow-wrap:anywhere ;">
                       {{ negocio.sitio_web }}
                     </b-link>
                   </td>
                 </tr>
 
-                <tr class="">
-                  <td>
-                    <font-awesome-icon icon="fas fa-map" />
-                  </td>
+               
+                
+                 <tr class="" >
+                    <td>
+                      <font-awesome-icon icon="fas fa-map" />
+                    </td>
 
-                  <td>
-                    {{ negocio.direccion }}
-                  </td>
-                </tr>
+                    <td>
+                      {{ negocio.direccion }}
+                    </td>
+                  </tr>
 
-
-
+                    <tr class="" v-if="negocio.tipo_menu == 1" >
+                      <td colspan="2">
+                        <b-button :href="negocio.menu" target="_blank" style="text-decoration:none;" block variant="warning">
+                          <font-awesome-icon icon="fas fa-book-open"/>
+                          Ver menú
+                        </b-button>
+                      </td>
+                    </tr>
 
               </table>
             </section>
 
           </section>
 
+
+
           <el-divider></el-divider>
 
-          <p class="text-justify">
-            {{ negocio.descripcion }}
-          </p>
+       
+
+          <!-- Perfil Negocio Mapa -->
+            <GmapMap :center="{lat:Number(negocio.lat), lng:Number(negocio.lng)}" :zoom="17" map-type-id="terrain" style="width: 100%; height: 300px">
+              
+              <GmapMarker :key="0" :position="{
+                lat:Number(negocio.lat),
+                lng:Number(negocio.lng)
+              }" :visible="true" :draggable="false" :clickable="false">
+
+                      <GmapInfoWindow :options="optionsPlace">
+                      </GmapInfoWindow>
+              
+              </GmapMarker>
+              
+            </GmapMap>
+
 
           <el-divider></el-divider>
 
           <table class="table table-hover table-sm table-responsive" border="0" v-if="negocio.precios">
-            <tr>
-              <td>
-                <strong>Rango de precios</strong>
-              </td>
-              <td>
-                Min: {{ negocio.precios.precio_minimo | currency(negocio.divisa.iso) }} - Max: {{
-                  negocio.precios.precio_maximo | currency(negocio.divisa.iso)
-                }}
-              </td>
-            </tr>
-          </table>
+              <tr v-if="negocio.precios.compra_promedio">
+                <td>
+                  <strong>Compra promedio por persona</strong>
+                </td>
+                <td>
+                  <!-- Min: {{ negocio.precios.precio_minimo | currency(negocio.divisa.iso) }} - Max: {{
+                    negocio.precios.precio_maximo | currency(negocio.divisa.iso)
+                  }} -->
+
+                  {{  negocio.precios.compra_promedio | currency(negocio.divisa.iso)  }}
+                </td>
+              </tr>
+            </table>
 
           <el-divider></el-divider>
 
-          <table class="table table-hover table-sm " border="0" v-if="negocio.precios">
+          <table class="table table-hover table-sm " border="0" v-if="negocio.redes.length">
             <tr>
               <td>
                 <strong>Seguir</strong>
@@ -208,42 +233,82 @@
           </b-nav>
         </b-card>
 
-        <h2 class="display-4">Horario de  <span class="text-warning">Trabajo</span></h2>
+        <template v-if="negocio.horarios.length">
+            <h2 class="display-4">Horario de  <span class="text-warning">Trabajo</span></h2>
 
-        <b-card>
-          <table class="table table-sm table-hover ">
+          <b-card>
+            <table class="table table-sm table-hover ">
 
-            <tr v-for="(horario,i) in negocio.horarios">
-                <td>
-                  {{  horario.dia | dia  }}
-                </td>
+              <tr v-for="(horario, i) in negocio.horarios">
+                  <td>
+                    {{ horario.dia | dia }}
+                  </td>
 
-                <td>
-                  <template v-if="horario.apertura && horario.cierre">
-                    {{ horario.apertura | fecha('hh:mm A',true) }} - {{ horario.cierre | fecha('hh:mm A',true) }}
-                  </template>
+                  <td>
+                    <section v-if="!horario.doble_turno">
+                       <template v-if="horario.apertura[0] && horario.cierre[0]">
+                        {{ horario.apertura[0] | fecha('hh:mm A', true) }} - {{ horario.cierre[0] | fecha('hh:mm A', true) }}
+                      </template>
 
-                  <template v-else>
-                    <strong class="text-danger">Cerrado</strong>
-                  </template>
+                      <template v-else>
+                        <strong class="text-danger">Cerrado</strong>
+                      </template>
+                    </section>
+
+                    <section v-else class="">
+                       <template v-if="horario.apertura.length && horario.cierre.length">
+
+                        <section class="d-flex justify-content-between">
+
+                          <template v-if="horario.apertura[0] && horario.cierre[0]">
+                            Mañana: ({{ horario.apertura[0] | fecha('hh:mm A', true) }} - {{ horario.cierre[0] | fecha('hh:mm A', true) }})
+                          </template>
+
+                          <template v-else>
+                            <strong class="text-danger">Cerrado</strong>
+                          </template>
+
+                        </section>
+                       
+                        <section class="d-flex justify-content-between">
+                             <template v-if="horario.apertura[1] && horario.cierre[1]">
+                              Tarde: ({{ horario.apertura[1] | fecha('hh:mm A', true) }} - {{ horario.cierre[1] | fecha('hh:mm A', true) }})
+                            </template>
+
+                            <template v-else>
+                              <strong class="text-danger">Cerrado</strong>
+                            </template>
+                        </section>
+                       
+                      </template>
+
+                      <template v-else>
+                        <strong class="text-danger">Cerrado</strong>
+                      </template>
+                    </section>
+                   
                   
-                </td>
-            </tr>
+                  </td>
+              </tr>
 
-          </table>
-        </b-card>
+            </table>
+          </b-card>
+        </template>
+      
 
-        <h2 class="display-4">Amenidades</h2>
-        
-        <b-card>
+        <template v-if="negocio.amenidades.length">
+          <h2 class="display-4">Amenidades</h2>
+          <b-card>
 
-          <b-form-checkbox-group :options="negocio.amenidades"  text-field="nombre" value-field="id"
-           disabled :checked="negocio.amenidades.map(val => val.id)">
-          </b-form-checkbox-group>
+            <b-form-checkbox-group :options="negocio.amenidades"  text-field="nombre" value-field="id"
+             disabled :checked="negocio.amenidades.map(val => val.id)">
+            </b-form-checkbox-group>
 
-        </b-card>
+          </b-card>
+        </template>
+      
 
-        <section class="d-flex justify-content-center align-items-center flex-column">
+        <section class="d-flex justify-content-center align-items-center flex-column" v-if="negocio.formas_pago.length">
             <h2 class="display-5 text-muted">Pagos Aceptados</h2>
 
             <article class="d-flex flex-wrap">
@@ -254,10 +319,14 @@
             
         </section>
 
-        
-          
-        
+        <h2 class="d-flex d-md-none mt-2" >Opiniones sobre este <strong class="text-warning">negocio</strong></h2>
 
+        <section class="d-flex d-md-none flex-column ">
+          <reviews-opinion :promedioCalificacion="promedioCalificacion" :cantidad="negocio.opinions.length"
+            :porcentajeOpinions="porcentajeOpinions" :model="{ model_id: negocio.id, model_type: negocio.modelType }"
+            class="mt-1 px-0 mx-0" />
+
+        </section>
 
       </b-col>
 
@@ -270,12 +339,12 @@
 
 <script>
 
-import { toRefs, ref, computed } from '@vue/composition-api'
+import { toRefs, ref, computed } from 'vue'
 
 import store from '@/store'
 import router from '@/router';
-import { Swiper, SwiperSlide } from 'vue-awesome-swiper'
-import 'swiper/css/swiper.css'
+import { Swiper, SwiperSlide } from 'swiper/vue'
+import 'swiper/css'
 
 import {
   BContainer,
@@ -320,7 +389,10 @@ export default {
     BNav,
     BNavItem,
     BFormCheckboxGroup,
-    BannerNegocio:() => import('components/BannerNegocio.vue')
+    BannerNegocio:() => import('components/BannerNegocio.vue'),
+    ReviewsOpinion: () => import('components/ReviewsOpinion.vue'),
+
+
 
   },
 
@@ -361,6 +433,8 @@ export default {
       negocio,
       promedioCalificacion: computed(() => store.getters['negocio/promedioCalificacion'](negocio.value)),
       porcentajeOpinions: (cal) => store.getters['negocio/porcentajeOpinions'](cal),
+      optionsPlace: computed(() => ({ content: `<strong>${negocio.value.nombre}</strong>` })),
+
       getColorRed: (red) => {
         switch (red) {
           case 'Facebook':

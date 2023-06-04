@@ -155,7 +155,7 @@ import {
    BLink
 
 } from 'bootstrap-vue'
-import {computed,ref,toRefs,watch} from '@vue/composition-api'
+import {computed,ref,toRefs,watch} from 'vue'
 import store from '@/store'
 import useCalificacionsList  from  './useCalificacionsList.js'
 import { avatarText } from '@core/utils/filter'

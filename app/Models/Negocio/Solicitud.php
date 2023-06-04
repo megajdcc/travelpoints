@@ -122,6 +122,19 @@ class Solicitud extends Model
     public function iata(){
         return $this->belongsTo(Iata::class,'iata_id','id');
     }
+
+    public function cargar(){
+        $this->categoria;
+
+        if ($this->usuario) {
+            $this->usuario->avatar = $this->usuario->getAvatar();
+        }
+
+        $this->ciudad;
+        $this->estado->pais;
+        $this->divisa;
+        $this->iata;
+    }
     
 
 }

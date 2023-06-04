@@ -35,9 +35,18 @@ class Tienda extends Model
         return $this->belongsTo(Iata::class,'iata_id','id');
     }
 
-
-    public function productos(){
-        return $this->hasMany(Producto::class,'tienda_id','id');
+    public function productos()
+    {
+        return $this->belongsToMany(Producto::class, 'tienda_producto', 'tienda_id', 'producto_id')->withPivot(['cantidad']);
     }
+
+    public function direccion(){
+        return $this->direccion." (". $this->ciudad?->ciudad." - ".$this->estado?->estado.' - '. $this->estado?->pais?->pais.')'; 
+    }
+
+    public function consumos(){
+        return $this->hasMany(Consumo::class,'tienda_id','id');
+    }
+    
 
 }

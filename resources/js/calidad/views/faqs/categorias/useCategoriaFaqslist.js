@@ -1,4 +1,4 @@
-import { ref, onMounted, watch } from '@vue/composition-api'
+import { ref, onMounted, watch } from 'vue'
 import store from '@/store'
 
 import useFilterTable from '@core/utils/useFilterTable'

@@ -2,7 +2,7 @@
    <b-container fluid px-0>
       <b-row>
          <b-col cols="12" md="2" class="d-flex justify-content-center">
-            <logo :url="{name:'inicio'}" />
+            <logo :url="{ name: 'inicio' }" />
          </b-col>
 
          <b-col cols="12" md="10">
@@ -24,7 +24,7 @@
             <h3 class="font-weight-bold">¿Qu&eacute; gano como Usuario de Travel Points?</h3>
             <p class="text-justify font-weight-bold">
                <mark>Gana Regalos</mark> de calidad, Productos y Servicios como joyas, hospedajes, masajes y mucho más.
-               Velos ahora mismo en nuestra <b-link :to="{name:'store'}">tienda</b-link> .
+               Velos ahora mismo en nuestra <b-link :to="{ name: 'store' }">tienda</b-link> .
                <br>
                Elige tus regalos favoritos y págalos con tus puntos (<strong>Travel Points</strong>) que vas acumulando
                con cada compra registrada en cualquiera de los negocios afiliados.
@@ -59,42 +59,36 @@
 
 <script>
 import {
-   BContainer,BCard,
-   BRow,BCol,
+   BContainer, BCard,
+   BRow, BCol,
    BImg,
    BLink
 
 } from 'bootstrap-vue'
-<<<<<<< HEAD
-=======
 import useAuth from '@core/utils/useAuth';
-import {onMounted} from '@vue/composition-api'
->>>>>>> vite
+import { onMounted } from 'vue'
 
 export default {
-   components:{
-      BContainer, 
+   components: {
+      BContainer,
       BCard,
       BRow,
       BCol,
       BImg,
-      Logo:() => import('components/Logo'),
+      Logo: () => import('components/Logo'),
       BLink
 
    },
 
    setup() {
-      
-<<<<<<< HEAD
-=======
-      const {authGoogle} = useAuth();
+
+      const { authGoogle } = useAuth();
 
       onMounted(() => authGoogle())
-      
-      
->>>>>>> vite
+
+
       return {
-         sales:require('@/assets/images/illustration/sales.svg')
+         sales: require('@/assets/images/illustration/sales.svg')
       }
 
    },

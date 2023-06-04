@@ -234,7 +234,7 @@ export default [
                   breadcrumb:[
                         {
                               text:'Home',
-                              to:{name:'home'},
+                              to:{name:'negocio.home'},
                               active:false
                         },
 
@@ -265,7 +265,7 @@ export default [
                   breadcrumb:[
                         {
                               text: 'Home',
-                              to: { name: 'home' },
+                              to: {name:'negocio.home'},
                               active: false
                         },
 
@@ -295,7 +295,7 @@ export default [
                   breadcrumb:[
                         {
                               text: 'Home',
-                              to: { name: 'home' },
+                              to: {name:'negocio.home'},
                               active: false
                         },
 
@@ -324,7 +324,7 @@ export default [
                   breadcrumb: [
                         {
                               text: 'Home',
-                              to: { name: 'home' },
+                              to: {name:'negocio.home'},
                               active: false
                         },
 
@@ -356,7 +356,7 @@ export default [
                   breadcrumb: [
                         {
                               text: 'Home',
-                              to: { name: 'home' },
+                              to: {name:'negocio.home'},
                               active: false
                         },
 
@@ -388,7 +388,7 @@ export default [
                   breadcrumb: [
                         {
                               text: 'Home',
-                              to: { name: 'home' },
+                              to: {name:'negocio.home'},
                               active: false
                         },
 
@@ -419,7 +419,7 @@ export default [
                   breadcrumb: [
                         {
                               text: 'Home',
-                              to: { name: 'home' },
+                              to: {name:'negocio.home'},
                               active: false
                         },
 
@@ -449,7 +449,7 @@ export default [
                   breadcrumb: [
                         {
                               text: 'Home',
-                              to: { name: 'home' },
+                              to: {name:'negocio.home'},
                               active: false
                         },
 
@@ -482,7 +482,7 @@ export default [
                               breadcrumb: [
                                     {
                                           text: 'Home',
-                                          to: { name: 'home' },
+                                          to: {name:'negocio.home'},
                                           active: false
                                     },
 
@@ -510,7 +510,7 @@ export default [
                               breadcrumb: [
                                     {
                                           text: 'Home',
-                                          to: { name: 'home' },
+                                          to: {name:'negocio.home'},
                                           active: false
                                     },
 
@@ -543,7 +543,7 @@ export default [
                               breadcrumb: [
                                     {
                                           text: 'Home',
-                                          to: { name: 'home' },
+                                          to: {name:'negocio.home'},
                                           active: false
                                     },
 
@@ -577,7 +577,7 @@ export default [
                               breadcrumb: [
                                     {
                                           text: 'Home',
-                                          to: { name: 'home' },
+                                          to: {name:'negocio.home'},
                                           active: false
                                     },
 
@@ -624,7 +624,7 @@ export default [
                               breadcrumb:[
                                     {
                                           text: 'Home',
-                                          to: { name: 'home' },
+                                          to: {name:'negocio.home'},
                                           active: false
                                     },
 
@@ -651,7 +651,7 @@ export default [
                               breadcrumb: [
                                     {
                                           text: 'Home',
-                                          to: { name: 'home' },
+                                          to: {name:'negocio.home'},
                                           active: false
                                     },
 
@@ -687,7 +687,7 @@ export default [
                               breadcrumb: [
                                     {
                                           text: 'Home',
-                                          to: { name: 'home' },
+                                          to: {name:'negocio.home'},
                                           active: false
                                     },
 
@@ -723,7 +723,7 @@ export default [
                               breadcrumb: [
                                     {
                                           text: 'Home',
-                                          to: { name: 'home' },
+                                          to: {name:'negocio.home'},
                                           active: false
                                     },
 
@@ -771,7 +771,7 @@ export default [
                               breadcrumb:[
                                     {
                                           text: 'Home',
-                                          to: { name: 'home' },
+                                          to: {name:'negocio.home'},
                                           active: false
                                     },
 
@@ -796,7 +796,7 @@ export default [
                               breadcrumb: [
                                     {
                                           text: 'Home',
-                                          to: { name: 'home' },
+                                          to: {name:'negocio.home'},
                                           active: false
                                     },
 
@@ -828,7 +828,7 @@ export default [
                               breadcrumb: [
                                     {
                                           text: 'Home',
-                                          to: { name: 'home' },
+                                          to: {name:'negocio.home'},
                                           active: false
                                     },
 
@@ -859,7 +859,7 @@ export default [
                               breadcrumb: [
                                     {
                                           text: 'Home',
-                                          to: { name: 'home' },
+                                          to: {name:'negocio.home'},
                                           active: false
                                     },
 
@@ -890,7 +890,7 @@ export default [
                               breadcrumb: [
                                     {
                                           text: 'Home',
-                                          to: { name: 'home' },
+                                          to: {name:'negocio.home'},
                                           active: false
                                     },
 
@@ -932,7 +932,7 @@ export default [
                               breadcrumb:[
                                     {
                                           text:'Home',
-                                          to:{name:'home'}
+                                          to:{name:'negocio.home'}
                                     },
 
                                     {
@@ -965,7 +965,7 @@ export default [
                               action:'read',
                               pageTitle:'Reservaciones',
                               breadcrumb:[
-                                    { text: 'Home', to: { name: 'home' }, active: false },
+                                    { text: 'Home', to: {name:'negocio.home'}, active: false },
                                     { text: 'Reservaciones', active: true },
                               ]
                         }
@@ -983,7 +983,7 @@ export default [
                               pageTitle: 'Generar Reservación',
                               navActiveLink:'negocio.reservaciones',
                               breadcrumb: [
-                                    { text: 'Home', to: { name: 'home' }, active: false },
+                                    { text: 'Home', to: {name:'negocio.home'}, active: false },
                                     { text: 'Reservaciones', active: false,to:{name:'negocio.reservaciones'} },
                                     { text: 'Generar Reservación', active: true},
 
@@ -1005,7 +1005,7 @@ export default [
                               pageTitle: 'Editar Reservación',
                               navActiveLink: 'negocio.reservaciones',
                               breadcrumb: [
-                                    { text: 'Home', to: { name: 'home' }, active: false },
+                                    { text: 'Home', to: {name:'negocio.home'}, active: false },
                                     { text: 'Reservaciones', active: false, to: { name: 'negocio.reservaciones' } },
                                     { text: 'Editar Reservación', active: true },
 
@@ -1036,7 +1036,7 @@ export default [
                               action: 'read',
                               layout:'negocio',
                               breadcrumb:[
-                                    {text:'Home',to:'home',active:false},
+                                    {text:'Home',to:{name:'negocio.home'},active:false},
                                     { text: 'Historial de venta', active: true },
 
                               ]
@@ -1054,7 +1054,7 @@ export default [
                               action: 'write',
                               layout: 'negocio',
                               breadcrumb: [
-                                    { text: 'Home', to: 'home', active: false },
+                                    { text: 'Home', to: {name:'negocio.home'}, active: false },
                                     { text: 'Historial de venta', active: false},
                                     { text: 'Generar', active: true, to: { name: 'negocio.ventas'}}
                               ]
@@ -1079,8 +1079,34 @@ export default [
                   layout:'negocio',
                   pageTile:'Movimientos de Cuenta',
                   breadcrumb:[
-                        { text: 'Home', to: { name: 'home' }, active: false },
+                        { text: 'Home', to: {name:'negocio.home'}, active: false },
                         { text: 'Movimientos de Cuenta', active: true},
+                  ]
+            }
+      },
+
+
+      /***************************************
+       *    Menú del Negocio
+       * *************************************/
+
+      {
+            path:'/negocio/menu',
+            component:() => import('views/panels/negocio/preferencias/menu.vue'),
+            name:'negocio.menu',
+            meta:{
+                  resource:'preferencias negocio',
+                  action:'read',
+                  pageTitle:'Menú del Negocio',
+                  layout: 'negocio',
+                  breadcrumb:[
+                        {
+                              text:'Home', to:{name:'negocio.home'}, active:false,
+                        },
+                        {
+                              text: 'Menú', active: true,
+                        }
+
                   ]
             }
       }

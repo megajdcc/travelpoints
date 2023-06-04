@@ -1,3 +1,5 @@
+import axios from "axios";
+
 export default {
 
   namespaced:true,
@@ -13,9 +15,20 @@ export default {
       paypal_id:null,
       paypal_secrect:null,
       production_paypal:false,
-      paypa:false,
+      banner_principal:null,
+      paypal:false,
       divisa_id:null,
-      cuenta:null
+      empresa_digital:false,
+      negocio:{
+        credito:0,
+        divisa_id:null,
+      },
+      cuenta:null,
+      imagenes:[],
+      videos: [],
+      sucursales:[],
+      redes:[],
+      cjdropshipping:null
     },
 
 
@@ -31,17 +44,71 @@ export default {
         sandbox: state.sistema.paypal_id || 'ARMAQ0_8KFm9nIJKGSOJUNWBfVWngxhsuu1Vj7N6yL2LVnXBAa_JXIDUeuqkMYU2yONIvpWZZQl-DLiw',
         production: "<production client id>"
       }
+    },
+    saldo:(state) => {
+      return state.sistema.cuenta ? state.sistema.cuenta.saldo : 0
     }
   },
 
   mutations:{
 
-    setSistema: (state,sistema) => state.sistema = sistema,
-    update:(state,sistema) => state.sistema = sistema
+    setSistema: (state,sistema) => {
+      state.sistema = sistema
+      if(!state.sistema.negocio){
+        state.sistema.negocio = {
+          credito:0,
+          divisa_id:null,
+        }
+      }
+    },
+    
+    update:(state,sistema) => state.sistema = sistema,
+
+    agregarRedSocial(state){
+      state.sistema.redes.push({
+        nombre:'',
+        url:'',
+        icono:'',
+      });
+    },
+
+    eliminarRed:(state,idx) => {
+      state.sistema.redes.splice(idx,1)
+    },
+
     
   },
 
   actions:{
+
+    cargarArchivo({commit,state},file){
+
+      let formData = new FormData();
+
+      file.forEach(val => {
+        formData.append('archivos[]',val);
+      })
+
+      formData.append('model_id',state.sistema.id)
+
+      return new Promise((resolve, reject) => {
+        axios.post(`/api/sistema/upload/archivos`,formData,{
+          headers:{
+            ContentType:'multipart/form-data',
+          }
+        }).then(({data}) => {
+
+          if(data.result){
+            commit('update',data.sistema)
+          }
+
+          resolve(data)
+
+        }).catch( e => reject(e))
+      })
+
+    },
+
 
     fetch({commit}){
 
@@ -113,7 +180,106 @@ export default {
         }).catch(e => reject(e))
 
       })
+    },
+
+    eliminarArchivo({state,commit},datos){
+
+      return new Promise((resolve, reject) => {
+        axios.put(`/api/sistemas/${state.sistema.id}/eliminar/archivo`,datos).then(({data}) => {
+
+          if(data.result){
+            commit('update',data.sistema)
+          }
+
+          resolve(data)
+
+        }).catch(e => reject(e))
+      })
+    },
+
+
+    updateBanner({commit,state},datos){
+      const formData = new FormData();
+
+      formData.append('banner',datos.banner_principal);
+      formData.append('_method','PUT');
+
+      return new Promise((resolve, reject) => {
+          axios.post(`/api/sistema/${state.sistema.id}/update/banner`,formData,{
+            headers:{
+              ContentType:'multipart/form-data'
+            }
+          }).then(({data}) => {
+            if(data.result){
+              commit('update',data.sistema)
+            }
+            resolve(data)
+          }).catch(e => reject(e))
+
+      })
+
+    },
+
+    eliminarRed({state,commit},red){
+       
+      return new Promise((resolve, reject) => {
+
+        axios.delete(`/api/sistema/${state.sistema.id}/eliminar/red/social/${red}`).then(({data}) => {
+          if(data.result){
+            commit('update',data.sistema)
+          }
+          resolve(data)
+        }).catch(e => reject(e))
+
+       })
+    },
+
+    optenerTokenDropshipping({state,commit}){
+
+      return new Promise((resolve, reject) => {
+        axios.get('/api/dropshipping/obtener-token').then(({data}) => {
+          
+          if(data.result){
+            commit('update',data.sistema)
+          }
+
+          resolve(data)
+
+        }).catch(e => reject(e))
+      })
+    },
+
+
+    refreshTokenDropshipping({commit}){
+        return new Promise((resolve, reject) => {
+        axios.get('/api/dropshipping/refresh-token').then(({data}) => {
+          
+          if(data.result){
+            commit('update',data.sistema)
+          }
+
+          resolve(data)
+
+        }).catch(e => reject(e))
+      })
+    },
+
+    caducarTokenDropshipping({commit}){
+      return new Promise((resolve, reject) => {
+        axios.get('/api/dropshipping/caducar-token').then(({data}) => {
+          
+          if(data.result){
+            commit('update',data.sistema)
+          }
+
+          resolve(data)
+
+        }).catch(e => reject(e))
+      });
+
     }
+
+
 
   }
 }

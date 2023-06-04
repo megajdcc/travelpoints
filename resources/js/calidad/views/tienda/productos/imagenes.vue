@@ -1,10 +1,10 @@
 <template>
-  <form-imagen :imagenes="imagenes" path-imagenes="/storage/productos/" :actions="actions" />
+  <form-imagen :imagenes="imagenes" path-imagenes="/storage/productos/" :actions="actions"/>
 </template>
 
 <script>
 
-import { onMounted, watch, toRefs, ref, computed } from '@vue/composition-api'
+import { onMounted, watch, toRefs, ref, computed } from 'vue'
 import store from '@/store'
 
 export default {

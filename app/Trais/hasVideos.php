@@ -14,6 +14,11 @@ trait hasVideos
          return $this->morphMany(Video::class,'model');
       }
 
+      public function addVideo(array $data) : Video{
+         $video = Video::create([...$data, ...['model_id' => $this->id, 'model_type' => $this->model_type]]);
+         $video->model;
+         return $video;
+      }
 
       public function agregarVideo(Request $request) : Video {
          

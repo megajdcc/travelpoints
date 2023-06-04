@@ -119,7 +119,7 @@ class OpinionController extends Controller
             'opinion'       => 'required',
             'titulo'        => 'required',
             'asistencia'    => 'nullable',
-            'acompanante'   => 'required',
+            'acompanante'   => 'nullable',
             'certificacion' => 'required',
             'model_id' => 'required',
             'model_type' => 'required',
@@ -138,7 +138,7 @@ class OpinionController extends Controller
     {
         
         $datos = $this->validar($request);
-
+       
         try{
             DB::beginTransaction();
             $opinion = Opinion::create([...$datos,...['usuario_id' => $request->user()->id,'preguntas' => null ]]);
@@ -154,6 +154,7 @@ class OpinionController extends Controller
                 }
 
             }
+
           
             $opinion->imagenes;
             $opinion->usuario;

@@ -191,7 +191,7 @@
 
                <b-row class="my-1">
                   
-                  <b-col cols="12" md="6">
+                  <b-col cols="12" md="6" v-if="formulario.telefono">
 
                      <b-form-group label="Teléfono" description="Puede agregar un número de teléfono o no, esto es opcional">
                         <b-form-input v-model="formulario.telefono.telefono" />
@@ -209,7 +209,7 @@
                      <b-button-group size="sm" class="mb-1">
                         <b-button @click="agregarInclusion" variant="primary"> 
                            <feather-icon icon="PlusIcon"/>
-                           Agregar Inlcusión
+                           Agregar Inclusión
                         </b-button>
                      </b-button-group>
 
@@ -274,6 +274,18 @@
                   </b-col>
                </b-row>
 
+                 <template v-if="!formulario.id">
+                     <el-divider content-position="left">Asociar imagenes al destino</el-divider>
+                     <b-row>
+                     <b-col cols="12">
+                        <multimedia hideVideos seleccionable />
+
+                     </b-col>
+                     </b-row>
+                  </template>
+
+
+
                <b-row>
                   <b-button-group size="sm">
                      <b-button type="submit" v-loading="loading" variant="primary">
@@ -322,7 +334,7 @@ import {
 
 import store from '@/store'
 
-import { computed, toRefs, ref, onMounted, watch } from '@vue/composition-api'
+import { computed, toRefs, ref, onMounted, watch,provide } from 'vue'
 
 import vSelect from 'vue-select'
 
@@ -347,7 +359,9 @@ export default {
       ValidationObserver,
       BInputGroup,
       vSelect,
-      BFormCheckbox
+      BFormCheckbox,
+      multimedia: () => import('views/multimedias/multimedia.vue')
+
    },
 
 
@@ -356,8 +370,15 @@ export default {
       const formValidate = ref(null)
 
       const formulario = computed(() => store.state.atraccion.atraccion)
+       const seleccionados = ref([])
+
+      provide('seleccionados', seleccionados)
 
       const guardar = () => {
+          if (seleccionados.value.length) {
+            formulario.value.imagenes = seleccionados.value
+         }
+         
          emit('save', formulario.value, formValidate.value)
       }
 
@@ -386,8 +407,18 @@ export default {
 
       const cargarform = () => {
 
+         
          if (formulario.value.id) {
+
             optionsPlace.value.content = '<div><strong>' + formulario.value.nombre + '</strong>'
+
+            if(!formulario.value.telefono){
+               formulario.value.telefono = {
+                     telefono:null,
+                     is_whatsapp:false
+               }
+            }
+
          }
 
       }

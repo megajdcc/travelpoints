@@ -2,55 +2,31 @@
   <b-card no-body>
     <b-card-body class="d-flex justify-content-between align-items-center pb-0">
       <div class="truncate">
-<<<<<<< HEAD
-        <h2 class="font-weight-bolder">
-          {{ statistic }}
-        </h2>
-        <span>{{ statisticTitle }}</span>
-=======
 
         <h2 class="font-weight-bolder">
-
-            <slot name="valor" :statistic="statistic">
-                {{ statistic }}
-            </slot>
-
-        
+          <slot name="valor" :statistic="statistic">
+            {{ statistic }}
+          </slot>
         </h2>
 
         <span>{{ statisticTitle }}</span>
-      
-       
->>>>>>> vite
       </div>
-      
-      <b-avatar
-        :variant="`light-${color}`"
-        size="45"
-      >
-<<<<<<< HEAD
-        <feather-icon
-          size="21"
-          :icon="icon"
-        />
-=======
 
+      <b-avatar :variant="`light-${color}`" size="45">
         <slot name="icon">
-          <font-awesome-icon :icon="['fas',icon]" size="2x" />
+          <font-awesome-icon :icon="['fas', icon]" size="2x" />
         </slot>
-    
->>>>>>> vite
       </b-avatar>
 
     </b-card-body>
 
-    <vue-apex-charts
+    <!-- <vue-apex-charts
       type="line"
       height="100"
       width="100%"
       :options="chartOptionsComputed"
       :series="chartData"
-    />
+    /> -->
 
   </b-card>
 </template>
@@ -63,7 +39,6 @@ import { lineChartOptions } from './chartOptions'
 
 export default {
   components: {
-    VueApexCharts,
     BCard,
     BCardBody,
     BAvatar,
@@ -111,7 +86,7 @@ export default {
   },
   methods: {
     gradientToColor(color) {
-       
+
       const gradientToColors = {
         primary: '#A9A2F6',
         success: '#55DD92',

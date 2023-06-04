@@ -48,7 +48,7 @@
             <b-col cols="12" md="4">
 
                <statistic-card-horizontal icon="fa-users" fontAwesome  :statistic="negocio.vistas"
-                  statistic-title="Visitas" />
+                  statistic-title="Visitas" color-icon="info" />
             </b-col>
 
           
@@ -70,9 +70,9 @@ import {
    BBadge
 }
    from 'bootstrap-vue'
-import { ref, onMounted, watch, toRefs, computed } from '@vue/composition-api';
+import { ref, onMounted, watch, toRefs, computed } from 'vue';
 
-import StatisticCardWithLineChart from 'components/dashboard/StaticCardWithLineChart.vue'
+// import StatisticCardWithLineChart from 'components/dashboard/StaticCardWithLineChart.vue'
 import TarjetasAgrupadasStaticas from 'components/dashboard/TarjetasAgrupadasStaticas.vue';
 
 import store from '@/store';
@@ -88,7 +88,7 @@ export default {
       BContainer,
       BCard,
       BCardTitle,
-      StatisticCardWithLineChart,
+      // StatisticCardWithLineChart,
       StatisticCardHorizontal,
       TarjetasAgrupadasStaticas,
       BLink,
@@ -110,19 +110,15 @@ export default {
 
       const cargarForm = () => {
          store.dispatch('negocio/datosHome').then(({ reservasMes }) => {
-
             total.value.reservas = reservasMes
          })
       }
 
       if(negocio.value.id){
          cargarForm();
-
       }
-      watch([negocio],() => cargarForm())
-      
-  
 
+      watch([negocio],() => cargarForm())
 
       return {
          total,

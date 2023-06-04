@@ -4,7 +4,7 @@
 
 <script>
 import store from '@/store'
-import {toRefs,ref} from '@vue/composition-api'
+import {toRefs,ref} from 'vue'
 
 export default {
 

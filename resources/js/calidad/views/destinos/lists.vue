@@ -37,20 +37,26 @@
                      <template #header>
                         <b-carousel :id="`carousel-${i}`"  indicators controls  background="#ababab" :intervals="3000" >
                            <b-carousel-slide v-for="(imagen,e) in destino.imagenes" :key="e" img-width="320px" img-height="auto" :img-src="`/storage/destinos/imagenes/${imagen.imagen}`" style="max-height:182px; height:182px; object-fit:cover" >
-                               
                            </b-carousel-slide>
-
                         </b-carousel>
                      </template>
 
-                     <h4 v-b-popover.hover="destino.descripcion" :title="destino.titulo">
+                     <!-- <b-form-checkbox-group v-model="destino.activo" :options="optionsActive" switches @change="destinoActiveToggle($event,destino.id)">
+                        
+                     </b-form-checkbox-group> -->
+
+                     <b-form-checkbox v-model="destino.activo" switch @change="destinoActiveToggle($event, destino.id)">
+                           {{ destino.activo ? 'Activo, ¿Desactivar?' : 'Inactivo, ¿Activar?' }}
+                     </b-form-checkbox>
+
+                     <h4 v-b-popover.hover="destino.descripcion.substring(0,150)" :title="destino.titulo">
                         {{ destino.nombre }}
                      </h4>
                      <em class="line-height-1 font-weight-bolder" v-b-popover.hover="destino.descripcion" :title="destino.titulo">
                         {{ destino.titulo }}
                      </em>
 
-                     <p class="text-justify" v-b-popover.hover="destino.descripcion" :title="destino.titulo">
+                     <p class="text-justify" v-b-popover.hover="destino.descripcion.substring(0, 150)" :title="destino.titulo">
                         {{ destino.descripcion.substring(0, 80) }} ...
                      </p>
 
@@ -67,7 +73,6 @@
 
                            <b-button :to="{name:'imagenes.destino',params:{id:destino.id}}" v-if="$can('update','destinos')" variant="dark">
                               <feather-icon icon="ImageIcon" />
-                              Imagenes
                            </b-button>
 
                               <b-button :to="{ name:'atracciones.lists',params:{destino:destino.id}}" v-if="$can('update','atracciones')" variant="warning">
@@ -76,7 +81,7 @@
                               </b-button>
 
                         </b-button-group>
-                     </template>
+                     </template>s
                   </b-card>
                </b-col>
             </b-row>
@@ -115,13 +120,16 @@ import {
    BCarousel,
    BCarouselSlide,
    BImg,
-   VBPopover
+   VBPopover,
+   BBadge,
+   BFormCheckboxGroup,
+   BFormCheckbox,
 
 } from 'bootstrap-vue'
 
 import useDestinoList from './useDestinoList.js'
 import store from '@/store'
-import { ref, toRefs, computed,onActivated } from '@vue/composition-api'
+import { ref, toRefs, computed,onActivated } from 'vue'
 
 import { regresar } from '@core/utils/utils.js'
 
@@ -141,8 +149,12 @@ export default {
       BCarouselSlide,
       BInputGroupAppend,
       BImg,
+      BBadge,
       perPage: () => import('components/PerPage.vue'),
-      paginateTable: () => import('components/PaginateTable.vue')
+      paginateTable: () => import('components/PaginateTable.vue'),
+      BFormCheckboxGroup,
+   BFormCheckbox,
+
 
    },
 
@@ -170,6 +182,26 @@ export default {
 
       onActivated(() => refetchData())
 
+      const optionsActive = ref([
+         
+         {
+            value:true,
+            text:'¿ Activo ?'
+         },
+      ])
+
+      const destinoActiveToggle = (value, destino_id) => {
+       
+
+         store.dispatch('destino/toggleActive',{destino:destino_id,activo:value}).then(({result}) => {
+               if(result){
+                  toast.success('Se ha guardado con éxito el cambio')
+               }else{
+                  toast.info('No se pudo guardar, inténtelo de nuevo')
+               }
+         })
+      }
+
       return {
          items,
          isSortDirDesc,
@@ -185,7 +217,9 @@ export default {
          fetchData, 
          loading: computed(() => store.state.loading),
          regresar,
-         eliminar
+         eliminar,
+         optionsActive,
+         destinoActiveToggle
       }
 
    }
@@ -193,3 +227,11 @@ export default {
 
 }
 </script>
+
+<style lang="scss">
+   .carousel-item img{
+      height: 100%;
+      object-fit: cover;
+      object-position: center center;
+   }
+</style>

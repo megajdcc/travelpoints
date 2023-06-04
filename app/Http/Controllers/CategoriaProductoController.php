@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\CategoriaProducto;
+use App\Models\Sistema;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Validation\Rule;
 
 class CategoriaProductoController extends Controller
@@ -147,4 +149,32 @@ class CategoriaProductoController extends Controller
         return response()->json(['result' => $result]);
 
     }
+
+
+    public function categoriesDropShipping(){
+
+        $categorias = collect([]);
+
+        if($sistema = Sistema::first()){
+
+            $response = Http::withHeaders([
+                'CJ-Access-Token' => $sistema->cjdropshipping['accessToken']
+            ])->get('https://developers.cjdropshipping.com/api2.0/v1/product/getCategory');
+
+            if($response->ok()){
+                $data = $response->object();
+
+                if($data->result){
+                    $categorias = collect($data->data);
+                }
+            }
+        }
+
+
+        return response()->json(['categorias' => $categorias]);
+
+
+        
+    }
+
 }

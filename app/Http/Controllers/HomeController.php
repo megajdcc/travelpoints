@@ -1,13 +1,11 @@
 <?php
 
 namespace App\Http\Controllers;
+
 use Illuminate\Http\Request;
-<<<<<<< HEAD
-use App\Models\{User};
-=======
 use App\Models\{Atraccion, Destino, User};
 use App\Models\Negocio\Negocio;
->>>>>>> vite
+use Illuminate\Database\Eloquent\Builder;
 
 class HomeController extends Controller
 {
@@ -18,11 +16,7 @@ class HomeController extends Controller
      */
     public function __construct()
     {
-<<<<<<< HEAD
-        $this->middleware('auth');
-=======
-        $this->middleware('auth')->except(['searchPublic','searchLocation']);
->>>>>>> vite
+        $this->middleware('auth')->except(['searchPublic', 'searchLocation', 'getTravels']);
     }
 
     /**
@@ -34,41 +28,41 @@ class HomeController extends Controller
     {
 
         $usuario = $request->user();
-        
+
         $usuario->rol = $usuario->rol;
- 
-        if($usuario->roles->first()){
+
+        if ($usuario->roles->first()) {
             $usuario->roles->first()->permissions;
-        } 
-        
+        }
+
         $usuario->avatar = $usuario->getAvatar();
 
 
         return view('home', compact('usuario'));
-
     }
 
 
-    public function getDataApp(Request $request){
+    public function getDataApp(Request $request)
+    {
 
         $usuario = $request->user();
         $usuario->rol = $usuario->rol;
 
-        if($usuario->roles->first()){
+        if ($usuario->roles->first()) {
             $usuario->roles->first()->permissions;
-        } 
-        
+        }
+
         $usuario->avatar = $usuario->getAvatar();
 
         return response()->json($usuario);
-        
     }
 
 
- 
 
 
-    public function tableroAdmin(){
+
+    public function tableroAdmin()
+    {
 
         $result = collect([
             'cantidad_usuarios' => User::get()->count()
@@ -77,37 +71,42 @@ class HomeController extends Controller
         return response()->json($result);
     }
 
-     public function tableroUser(){
+    public function tableroUser()
+    {
 
         $result = [];
         return response()->json($result);
     }
 
-<<<<<<< HEAD
-=======
-    public function searchPublic(request $request){
-       
+    public function searchPublic(request $request)
+    {
+
         $q = $request->get('q');
-        
+        $destino = $request->get('destino');
+
         $destinos = Destino::where([
-            ['nombre','LIKE',"%{$q}%","OR"],
+            ['nombre', 'LIKE', "%{$q}%", "OR"],
             ['descripcion', 'LIKE', "%{$q}%", "OR"],
             ['titulo', 'LIKE', "%{$q}%", "OR"],
-        ])->get();
+        ])->where('activo', true)->when($destino, function ($query) use ($destino) {
+            $query->where('id', $destino);
+        })
+            ->get();
 
         foreach ($destinos as $key => $destino) {
-            $destino->ruta ="/Destinos?q={$destino->nombre}";
+            $destino->ruta = "/Destinos?q={$destino->nombre}";
             $destino->tipo = 'Destino';
             $destino->imagenes;
             $destino->imagen = $destino->imagenes[0] ? "/storage/destinos/imagenes/{$destino->imagenes[0]->imagen}" : '';
-
         }
 
         $atracciones = Atraccion::where([
             ['nombre', 'LIKE', "%{$q}%", "OR"],
             ['descripcion', 'LIKE', "%{$q}%", "OR"],
             ['incluye', 'LIKE', "%{$q}%", "OR"],
-        ])->get();
+        ])->when($destino, function ($query) use ($destino) {
+                $query->where('destino_id', $destino);
+            })->get();
 
         foreach ($atracciones as $key => $atraccion) {
             $atraccion->ruta = "/Atraccions?q={$atraccion->nombre}";
@@ -117,12 +116,17 @@ class HomeController extends Controller
             $atraccion->imagen = $atraccion->imagenes[0] ? "/storage/atracciones/imagenes/{$atraccion->imagenes[0]->imagen}" : '';
         }
 
-
         $negocios = Negocio::where([
             ['nombre', 'LIKE', "%{$q}%", "OR"],
             ['descripcion', 'LIKE', "%{$q}%", "OR"],
             ['breve', 'LIKE', "%{$q}%", "OR"],
-        ])->get();
+        ])->when($destino && !empty($destino), function ($query) use ($destino) {
+            $query->whereHas('iata', function (Builder $q) use ($destino) {
+                $q->whereHas('destinos', function (Builder $query) use ($destino) {
+                    $query->where('id', $destino);
+                });
+            });
+        })->get();
 
         foreach ($negocios as $key => $negocio) {
             $negocio->ruta = "/{$negocio->url}";
@@ -132,23 +136,58 @@ class HomeController extends Controller
             $negocio->imagen = $negocio->imagenes[0] ? "/storage/negocios/fotos/{$negocio->imagenes[0]->imagen}" : '';
             $negocio->cargar();
         }
-        
 
-        $resultados = collect([...$destinos,...$atracciones,...$negocios]);
+
+        $resultados = collect([...$destinos, ...$atracciones, ...$negocios]);
 
         return response()->json($resultados);
     }
 
 
-    public function searchLocation(Request $request){
+    public function searchLocation(Request $request)
+    {
 
         $datos = $request->all();
-        return response()->json(collect([...Destino::getLocation($datos),...Atraccion::getLocation($datos)]));
-
+        return response()->json(collect([...Destino::getLocation($datos), ...Atraccion::getLocation($datos)]));
     }
 
 
+    public function getTravels(Destino $destino)
+    {
 
 
->>>>>>> vite
+        $destinos = Destino::where('activo', true)
+            // ->when($destino,function($query) use($destino){
+            //         $query->where('id', $destino->id);
+            // })
+            ->get();
+
+        foreach ($destinos as $key => $destino) {
+            $destino->ruta = "/Destinos?q={$destino->nombre}";
+            $destino->tipo = 'Destino';
+            $destino->imagenes;
+            $destino->cargar();
+            $destino->imagen = $destino->imagenes[0] ? "/storage/destinos/imagenes/{$destino->imagenes[0]->imagen}" : '';
+        }
+
+        $atracciones = Atraccion::get();
+        foreach ($atracciones as $key => $atraccion) {
+            $atraccion->cargar();
+        }
+
+        $negocios = Negocio::where('status', 1)->get();
+
+        foreach ($negocios as $key => $negocio) {
+            $negocio->ruta = "/{$negocio->url}";
+            $negocio->tipo = 'Negocio';
+            $negocio->opinions;
+            $negocio->imagen = count($negocio->imagenes) > 0 ? "/storage/negocios/fotos/{$negocio->imagenes[0]->imagen}" : '';
+            $negocio->cargar();
+        }
+
+
+        $travels = collect([...$destinos, ...$atracciones, ...$negocios]);
+
+        return response()->json($travels);
+    }
 }

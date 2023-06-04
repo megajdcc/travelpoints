@@ -99,7 +99,7 @@ import {required} from '@validations'
 
 import {regresar} from '@core/utils/utils'
 
-import {computed,toRefs,ref} from '@vue/composition-api'
+import {computed,toRefs,ref} from 'vue'
 
 
 export default {

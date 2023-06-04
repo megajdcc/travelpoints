@@ -1,13 +1,8 @@
-<<<<<<< HEAD
-=======
-import store from '@/store';
-
->>>>>>> vite
 export default [
    /*****************************************/
    /* SOCIO
    /*************************************** */
-    {
+   {
     path: '/socio',
     name:'socio',
     component: () => import('views/socio'),
@@ -32,20 +27,14 @@ export default [
                 name: 'miperfil',
                 component: () => import('views/socio/perfil/datos'),
                 meta: {
-<<<<<<< HEAD
-=======
-
->>>>>>> vite
                    name: 'perfil',
                    layout: 'travel'
-
                    //  navActiveLink: 'socio'
                 },
              },
 
              {
-<<<<<<< HEAD
-=======
+
                path:'mi-cuenta',
                name:'micuenta',
                component:() => import('views/socio/perfil/cuenta.vue'),
@@ -58,15 +47,12 @@ export default [
              },
 
              {
->>>>>>> vite
                 path: 'invitados',
                 name: 'misreferidos',
                 component: () => import('views/socio/perfil/invitados'),
                 meta: {
                    name: 'perfil',
                    layout: 'travel'
-
-                   
                    //  navActiveLink: 'socio'
                 },
              },
@@ -82,6 +68,17 @@ export default [
                    //  navActiveLink: 'socio'
                 },
              },
+
+             {
+                path: 'datos-pago',
+                name: 'perfil.datos_pago',
+                component: () => import('views/socio/perfil/datosPago.vue'),
+                meta: {
+                   name: 'perfil',
+                   layout: 'travel'
+                },
+             },
+
              {
                 path: 'contrasena',
                 name: 'perfil.password',
@@ -212,11 +209,7 @@ export default [
        },
        // reservaciones
        {
-<<<<<<< HEAD
-          path: 'reservaciones',
-=======
-          path: '/reservaciones',
->>>>>>> vite
+          path: '/socio/reservaciones',
           name: 'socio.reservaciones',
           component: () => import('views/socio/reservaciones'),
           meta: {
@@ -232,28 +225,7 @@ export default [
       //  consumos
 
        {
-<<<<<<< HEAD
-          path: 'consumos',
-          name: 'socio.consumos',
-          component: () => import('views/socio/consumos'),
-          meta: {
-             resource: 'perfil',
-             action: 'read',
-             layout: 'travel'
-            //  navActiveLink: 'socio'
-          }
 
-       },
-      //  certificados
-       {
-          path: 'certificados',
-          name: 'socio.certificados',
-          component: () => import('views/socio/certificados'),
-          meta: {
-             resource: 'perfil',
-             action: 'read',
-             layout: 'travel'
-=======
           path: '/consumos',
           name: 'socio.consumos',
           component: () => import('views/socio/consumos/index.vue'),
@@ -295,7 +267,6 @@ export default [
              resource: 'perfil',
              action: 'read',
              layout: 'travel',
->>>>>>> vite
             //  navActiveLink: 'socio'
           }
 
@@ -304,7 +275,7 @@ export default [
        {
           path: 'compras',
           name: 'socio.compras',
-          component: () => import('views/socio/compras'),
+          component: () => import('views/socio/compras/index.vue'),
           meta: {
              resource: 'perfil',
              action: 'read',
@@ -316,7 +287,7 @@ export default [
 
 
     ]
-  },
+   },
 
    /*****************************************/
    /* USUARIO
@@ -407,8 +378,6 @@ export default [
       ]
    },
 
-<<<<<<< HEAD
-=======
    /*****************************************/
    /* Movimientos de Cuenta del sistema
    /*************************************** */
@@ -425,6 +394,23 @@ export default [
             meta:{
                resources:'movimientos',
                action:'read'
+            }
+         },
+
+         {
+            
+            path:':id/user',
+            props:true,
+            component:() => import('views/socio/perfil/cuenta.vue'),
+            name:'movimientos.user',
+            meta:{
+               resources:'movimientos',
+               action:'read',
+               navActiveLink:'listar.usuarios',
+               breadcrumb:[
+                  {text:'Usuarios',active:false,to:{name:'listar.usuarios'}},
+                  {text:'Movimientos de Cuenta',active:true},
+               ]
             }
          }
       ]
@@ -538,7 +524,7 @@ export default [
    {
       path:'/destinos',
       component:() => import('views/destinos/index.vue'),
-
+      name:'destino',
       children:[
 
          {
@@ -957,7 +943,6 @@ export default [
       ]
    },
 
->>>>>>> vite
 
    /*****************************************/
    /* ROL DE USUARIO
@@ -1448,9 +1433,6 @@ export default [
       ]
    },
 
-<<<<<<< HEAD
-=======
-
    /*****************************************/
    /* Negocios
    /*************************************** */
@@ -1514,7 +1496,6 @@ export default [
 
    },
 
->>>>>>> vite
    /*****************************************/
    /* Solicitudes de negocios
    /*************************************** */
@@ -1580,9 +1561,6 @@ export default [
       ]
    },
 
-
-<<<<<<< HEAD
-=======
    /*****************************************/
    /* Divisas
    /*************************************** */
@@ -2000,7 +1978,10 @@ export default [
 
       ]
    },
-
+   
+   /*****************************************/
+   /* Sistema
+   /*************************************** */
    {  
       path:'/admin/sistema',
       name:'sistema',
@@ -2022,6 +2003,94 @@ export default [
          ]
       }
    },
+
+   {  
+      path:'/admin/sucursales',
+      component:() => import('views/sucursales/index.vue'),
+      children:[
+         {
+            path:'',
+            component:() => import('views/sucursales/list.vue'),
+            name:'sucursales.list',
+            meta:{
+               resource:'sucursales',
+               action:'read',
+               pageTitle:'Sucursales',
+               breadcrumb:[
+                  {
+                     text: 'Home',
+                     to: 'home',
+                     active: false,
+                  },
+                  {
+                     text: 'Sucursales',
+                     active: true,
+                  },
+               ]
+            }
+         },
+
+          {
+            path:'create',
+            component:() => import('views/sucursales/create.vue'),
+            name:'sucursales.create',
+            meta:{
+               resource:'sucursales',
+               action:'write',
+               pageTitle:'Sucursales',
+               navActiveLink:'sucursales.list',
+               breadcrumb:[
+                  {
+                     text: 'Home',
+                     to: 'home',
+                     active: false,
+                  },
+                  {
+                     text: 'Sucursales',
+                     active: false,
+                     to:{name:'sucursales.list'}
+                  },
+                    {
+                     text: 'Crear',
+                     active: true,
+                  },
+               ]
+            }
+         },
+
+          {
+            path:':id/edit',
+            props:true,
+            component:() => import('views/sucursales/edit.vue'),
+            name:'sucursales.edit',
+            meta:{
+               resource:'sucursales',
+               action:'update',
+               pageTitle:'Sucursales',
+               navActiveLink:'sucursales.list',
+               breadcrumb:[
+                  {
+                     text: 'Home',
+                     to: 'home',
+                     active: false,
+                  },
+                  {
+                     text: 'Sucursales',
+                     active: false,
+                     to:{name:'sucursales.list'}
+                  },
+                  {
+                     text: 'Editar',
+                     active: true,
+                  },
+               ]
+            }
+         }
+      ]
+   
+   },
+
+
 
 
    /*****************************************/
@@ -2186,6 +2255,51 @@ export default [
       ]
    },
 
+    /*****************************************/
+   /* Productos CJDROPSHIPPING
+   /*************************************** */
+   {
+      path: '/productos/cj-dropshiping',
+      component: () => import('views/tienda/productos-cj/index.vue'),
+      children: [
+         {
+            path: '',
+            component: () => import('views/tienda/productos-cj/list.vue'),
+            name: 'producto.cj.list',
+            meta: {
+               resource: 'productos',
+               action: 'read',
+               pageTitle: 'Productos (Almacén)',
+               breadcrumb: [
+                  { text: 'Home', to: { name: 'home' }, active: false },
+                  { text: 'Productos', active: true },
+               ]
+            }
+         },
+
+         {
+            path: ':id/show',
+            props: true,
+            component: () => import('views/tienda/productos-cj/perfil.vue'),
+            name: 'producto.show.cj',
+            meta: {
+               resource: 'productos',
+               action: 'read',
+               pageTitle: 'Producto',
+               navActiveLink: 'producto.cj.list',
+               breadcrumb: [
+                  { text: 'Home', to: { name: 'home' }, active: false },
+                  { text: 'Productos', active: false, to: { name: 'producto.cj.list' } },
+                  { text: 'Perfil', active: true },
+
+               ]
+            }
+         }
+
+      ]
+   },
+
+
    /*****************************************/
    /* Ventas de Productos
    /*************************************** */
@@ -2278,11 +2392,627 @@ export default [
       ]
    },
 
+
+   /*****************************************/
+   /* Pago en caja
+   /*************************************** */
+
+   {
+      path:'/carrito/caja',
+      component:() => import('views/tienda/caja.vue'),
+      name:'caja',
+      meta:{
+         resource:'Auth',
+         action:'read',
+         layout:'travel'
+      }
+
+   },
+
+   /*****************************************/
+   /* Multimedias
+   /*************************************** */
+   {
+      path: '/multimedias',
+      name: 'multimedias',
+      component: () => import('views/multimedias/multimedia.vue'),
+      meta: {
+         resource: 'multimedia',
+         action: 'read',
+         pageTitle: 'Multimedias',
+         breadcrumb: [
+            { text: 'Archivos', active: true }
+         ]
+      }
+   },
+
+   /*****************************************/
+   /* Comisiones
+   /****************************************/
+   {
+      path:'/comisiones',
+      name:'comisiones',
+      component:() => import('views/comisiones/index.vue'),
+      children:[
+         {
+            path:'',
+            name:'comisiones.list',
+            component:() => import('views/comisiones/list.vue'),
+            meta:{
+               pageTitle:'Comisiones de Roles',
+               resource:'comisiones',
+               action:'read',
+               breadcrumb:[
+                  {text:'Listado',active:true}
+               ]
+            }
+         },
+
+           {
+            path:'create',
+            name:'comision.create',
+            component:() => import('views/comisiones/create.vue'),
+            meta:{
+               pageTitle:'Crear Comisión',
+               resource:'comisiones',
+               action:'write',
+               navActiveLink:'comisiones.list',
+               breadcrumb:[
+                  {text:'Listado',active:false,to:{name:'comisiones.list'}},
+                  {text:'Crear',active:true},
+               ]
+            }
+         },
+
+         {
+            path:':id/edit',
+            props:true,
+            name:'comision.edit',
+            component:() => import('views/comisiones/edit.vue'),
+            meta:{
+               pageTitle:'Editar Comisión',
+               resource:'comisiones',
+               action:'update',
+               navActiveLink:'comisiones.list',
+               breadcrumb:[
+                  {text:'Listado',active:false,to:{name:'comisiones.list'}},
+                  {text:'Editar',active:true},
+               ]
+            }
+         }
+      ]
+   },
+
+   /*****************************************/
+   /* Reservaciones
+   /****************************************/
+   {
+      path:'/reservaciones',
+      name:'reservaciones',
+      component:() => import('views/reservaciones/index.vue'),
+      children:[
+         {
+            path:'',
+            name:'reservaciones.list',
+            component:() => import('views/reservaciones/list.vue'),
+            meta:{
+               resource:'reservaciones',
+               action:'read',
+               pageTitle:'Reservaciones',
+               breadcrumb:[
+                  {text:'listado',active:true}
+               ]
+            }
+         },
+         {
+            path:'create',
+            name:'reservacion.create',
+            component:() => import('views/reservaciones/create.vue'),
+            meta:{
+               resource:'reservaciones',
+               action:'write',
+               pageTitle:'Crear Reservación',
+               navActiveLink:'reservaciones.list',
+               breadcrumb:[
+                  {text:'listado',active:false,to:{name:'reservaciones.list'}},
+                  {text:'crear',active:true},
+
+               ]
+            }
+         },
+          {
+            path:':id/edit',
+            name:'reservacion.edit',
+            props:true,
+            component:() => import('views/reservaciones/edit.vue'),
+            meta:{
+               resource:'reservaciones',
+               action:'update',
+               pageTitle:'Editar Reservación',
+               navActiveLink:'reservaciones.list',
+               breadcrumb:[
+                  {text:'Listado',active:false,to:{name:'reservaciones.list'}},
+                  {text:'Editar',active:true},
+               ]
+            }
+         }
+      ]
+   },
+
+
+   /*****************************************/
+   /* Retiros comisiones
+   /****************************************/
+
+   {
+      path:'/retiros',
+      name:'retiros',
+      component:() => import('views/retiros/index.vue'),
+      children:[
+         {
+            path:'',
+            name:'retiro.list',
+            component:() => import('views/retiros/list.vue'),
+            meta:{
+               resource:'retiros',
+               action:'read',
+               pageTitle:'Retiros de comisiones',
+               breadcrumb:[
+                  {text:'Retiros',active:true}
+               ]
+            }
+         },
+         {
+            path:'create',
+            name:'retiro.create',
+            component:() => import('views/retiros/create.vue'),
+            meta:{
+               resource:'retiros',
+               action:'write',
+               pageTitle:'Crear Retiro',
+               navActiveLink:'retiro.list',
+               breadcrumb:[
+                  {text:'Retiros',active:false,to:{name:'retiro.list'}},
+                  {text:'Crear',active:true},
+               ]
+            }
+         },
+
+          {
+            path:':id/edit',
+            name:'retiro.edit',
+            props:true,
+            component:() => import('views/retiros/edit.vue'),
+            meta:{
+               resource:'retiros',
+               action:'update',
+               pageTitle:'Actualizar Retiro',
+               navActiveLink:'retiro.list',
+               breadcrumb:[
+                  {text:'Retiros',active:false,to:{name:'retiro.list'}},
+                  {text:'Actualizar',active:true},
+               ]
+            }
+         }
+
+      ]
+   },
+
+
+   /*****************************************/
+   /* Pais
+   /****************************************/
+
+   {
+      path:'/pais',
+      component:() => import('views/pais/index.vue'),
+      name:'pais',
+
+      children:[
+         {
+            path:'',
+            component:() => import('views/pais/list.vue'),
+            name:'listar.paises',
+            meta:{
+               resource:'pais',
+               action:'read',
+               pageTitle:'Paises',
+
+               breadcrumb:[
+                  {
+                     text:'Home',
+                     to:{name:'home'},
+                     active:false
+                  },
+                  {
+                     text: 'Listado',
+                     active: true
+                  }
+               ]
+            }
+         },
+         {
+            path:'create',
+            component: () => import('views/pais/create.vue'),
+            name:'create.pais',
+
+            meta: {
+               resource: 'pais',
+               action: 'write',
+               pageTitle: 'Registrar Pais',
+               navActiveLink:'listar.paises',
+               breadcrumb: [
+                  {
+                     text: 'Home',
+                     to: { name: 'home' },
+                     active: false
+                  },
+
+                  {
+                     text: 'Paises',
+                     to: { name: 'listar.paises' },
+                     active: false
+                  },
+                  {
+                     text: 'create',
+                     active: true
+                  }
+               ]
+            }
+
+         },
+
+         {
+            path: ':id/edit',
+            props:true,
+            component: () => import('views/pais/edit.vue'),
+            name: 'edit.pais',
+
+            meta: {
+               resource: 'pais',
+               action: 'update',
+               pageTitle: 'Actualizad Pais',
+               navActiveLink: 'listar.paises',
+               breadcrumb: [
+                  {
+                     text: 'Home',
+                     to: { name: 'home' },
+                     active: false
+                  },
+
+                  {
+                     text: 'Paises',
+                     to: { name: 'listar.paises' },
+                     active: false
+                  },
+                  {
+                     text: 'edit',
+                     active: true
+                  }
+               ]
+            }
+
+         }
+
+      ]
+   },
+
+   /*****************************************/
+   /* Estado
+   /*************************************** */
+
+   {
+      path: '/estado',
+      component: () => import('views/estado/index.vue'),
+      name: 'estado',
+
+      children: [
+         {
+            path: '',
+            component: () => import('views/estado/list.vue'),
+            name: 'listar.estados',
+            meta: {
+               resource: 'estado',
+               action: 'read',
+               pageTitle: 'Estados',
+
+               breadcrumb: [
+                  {
+                     text: 'Home',
+                     to: { name: 'home' },
+                     active: false
+                  },
+                  {
+                     text: 'Listado',
+                     active: true
+                  }
+               ]
+            }
+         },
+         {
+            path: 'create',
+            component: () => import('views/estado/create.vue'),
+            name: 'create.estado',
+
+            meta: {
+               resource: 'estado',
+               action: 'write',
+               pageTitle: 'Registrar Estado',
+               navActiveLink: 'listar.estados',
+               breadcrumb: [
+                  {
+                     text: 'Home',
+                     to: { name: 'home' },
+                     active: false
+                  },
+
+                  {
+                     text: 'Estados',
+                     to: { name: 'listar.estados' },
+                     active: false
+                  },
+                  {
+                     text: 'create',
+                     active: true
+                  }
+               ]
+            }
+
+         },
+
+         {
+            path: ':id/edit',
+            props: true,
+            component: () => import('views/estado/edit.vue'),
+            name: 'edit.estado',
+
+            meta: {
+               resource: 'estado',
+               action: 'update',
+               pageTitle: 'Actualizad Estado',
+               navActiveLink: 'listar.estados',
+               breadcrumb: [
+                  {
+                     text: 'Home',
+                     to: { name: 'home' },
+                     active: false
+                  },
+
+                  {
+                     text: 'Estados',
+                     to: { name: 'listar.estados' },
+                     active: false
+                  },
+                  {
+                     text: 'edit',
+                     active: true
+                  }
+               ]
+            }
+
+         }
+
+      ]
+   },
+
+
+   /*****************************************/
+   /* Ciudad
+   /*************************************** */
+   {
+      path: '/ciudad',
+      component: () => import('views/estado/index.vue'),
+      name: 'ciudad',
+
+      children: [
+         {
+            path: '',
+            component: () => import('views/ciudad/list.vue'),
+            name: 'listar.ciudades',
+            meta: {
+               resource: 'ciudad',
+               action: 'read',
+               pageTitle: 'Ciudades',
+
+               breadcrumb: [
+                  {
+                     text: 'Home',
+                     to: { name: 'home' },
+                     active: false
+                  },
+                  {
+                     text: 'Listado',
+                     active: true
+                  }
+               ]
+            }
+         },
+         {
+            path: 'create',
+            component: () => import('views/ciudad/create.vue'),
+            name: 'create.ciudad',
+
+            meta: {
+               resource: 'ciudad',
+               action: 'write',
+               pageTitle: 'Registrar Ciudad',
+               navActiveLink: 'listar.ciudades',
+               breadcrumb: [
+                  {
+                     text: 'Home',
+                     to: { name: 'home' },
+                     active: false
+                  },
+
+                  {
+                     text: 'Ciudades',
+                     to: { name: 'listar.ciudades' },
+                     active: false
+                  },
+                  {
+                     text: 'create',
+                     active: true
+                  }
+               ]
+            }
+
+         },
+
+         {
+            path: ':id/edit',
+            props: true,
+            component: () => import('views/ciudad/edit.vue'),
+            name: 'edit.ciudad',
+
+            meta: {
+               resource: 'ciudad',
+               action: 'update',
+               pageTitle: 'Actualizad Ciudad',
+               navActiveLink: 'listar.ciudades',
+               breadcrumb: [
+                  {
+                     text: 'Home',
+                     to: { name: 'home' },
+                     active: false
+                  },
+
+                  {
+                     text: 'Ciudades',
+                     to: { name: 'listar.ciudades' },
+                     active: false
+                  },
+                  {
+                     text: 'edit',
+                     active: true
+                  }
+               ]
+            }
+
+         }
+
+      ]
+   },
+
+
+   /*****************************************/
+   /* Academia
+   /*************************************** */
+   {
+      path:'/academia',
+      name:'academia',
+      component:() => import('views/academia/index.vue'),
+      children:[
+         {
+            path:'',
+            name:'academia.list',
+            component:() => import('views/academia/list.vue'),
+            meta:{
+               pageTitle:'Academia',
+               resource:'academias',
+               action:'read',
+               breadcrumb:[
+                  {text:'Listado',active:true}
+               ]
+            }
+         },
+
+         {
+            path:'create',
+            name:'academia.create',
+            component:() => import('views/academia/create.vue'),
+            meta:{
+               pageTitle:'Academia',
+               resource:'academias',
+               action:'write',
+               navActiveLink:'academia.list',
+               breadcrumb:[
+                  {text:'Listado',active:false,to:{name:'academia.list'}},
+                  {text:'Crear',active:true}
+               ]
+            }
+         },
+
+         {
+            path:':id/edit',
+            name:'academia.edit',
+            props:true,
+            component:() => import('views/academia/edit.vue'),
+            meta:{
+               pageTitle:'Academia',
+               resource:'academias',
+               action:'update',
+               navActiveLink:'academia.list',
+               breadcrumb:[
+                  {text:'Listado',active:false,to:{name:'academia.list'}},
+                   {text:'Editar',active:true}
+               ]
+            }
+         }
+      ]
+   },
+
+   /*****************************************/
+   /* Paginas
+   /*************************************** */
+   {
+      path:'/paginas',
+      name:'pagina',
+      component:() => import('views/pages/index.vue'),
+      children:[
+         {
+            path:'',
+            name:'pagina.list',
+            component:() => import('views/pages/list.vue'),
+            meta:{
+               resource:'paginas',
+               action:'read',
+               pageTitle:'Paginas',
+               breadcrumb:[
+                  {text:'Paginas',active:true}
+               ]
+            }
+         },
+
+          {
+            path:'create',
+            name:'pagina.create',
+            component:() => import('views/pages/create.vue'),
+            meta:{
+               resource:'paginas',
+               action:'write',
+               pageTitle:'Paginas',
+               navActiveLink:'pagina.list',
+               breadcrumb:[
+                  {text:'Paginas',active:false,to:{name:'pagina.list'}},
+                  {text:'Crear',active:true}
+               ]
+            }
+         },
+         {
+            path:':id/edit',
+            props:true,
+            name:'pagina.edit',
+            component:() => import('views/pages/edit.vue'),
+            meta:{
+               resource:'paginas',
+               action:'update',
+               pageTitle:'Paginas', 
+               navActiveLink:'pagina.list',
+               breadcrumb:[
+                  {text:'Paginas',active:false,to:{name:'pagina.list'}},
+                  {text:'Editar',active:true}
+               ]
+            }
+         }
+      ]
+   },
+
+
    /*****************************************/
    /* PAGINA DE perfil de negocios
    /*************************************** */
    {
-      path: '/:url',
+      path: '/negocio/:url',
       props:true,
       component: () => import('views/paginas/negocio/index.vue'),
 
@@ -2295,11 +3025,12 @@ export default [
       children:[
 
         {
+
          path:'',
          component:() => import('views/paginas/negocio/perfil.vue'),
          name:'perfil.negocio',
          meta: {
-            layout: 'travel',
+            layout:'travel',
          },
 
         },
@@ -2345,29 +3076,42 @@ export default [
          }
 
       ]
-      // beforeEnter: (to, from, next) => {
-         
-      //    store.dispatch('negocio/negocioUrl',to.params.url).then(({result}) => {
 
-      //       if(result){
-      //          next()
-      //       }else{
-      //          next({name:'inicio'})
-      //       }
-
-      //    }).catch(e => {
-      //       next({ name: 'inicio' })
-      //    })
-
-         
-         
-      // },
-     
      
       
    },
 
->>>>>>> vite
+   /*****************************************/
+   /* PAGINA DE EVENTOS
+   /*************************************** */
+
+   {
+      path:'/eventos/:event',
+      props:true,
+      component:() => import('views/paginas/eventos/show.vue'),
+      name:'evento.show',
+      beforeEnter: (to, from, next) => {
+          let param = to.params;
+
+         store.dispatch('evento/fetchEventPublic',param.event).then(({result,evento}) => {
+            if(result){
+               next();
+            }else{
+               next({name:'error-404'})
+            }
+         }).catch(e => {
+            next({name:'error-404'})
+         })
+      },
+      meta:{
+         layout:'travel',
+         resource:'Auth',
+         action:"read"
+      }
+   },
+
+
+
 
 
    /*****************************************/

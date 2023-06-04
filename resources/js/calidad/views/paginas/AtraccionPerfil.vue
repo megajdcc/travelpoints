@@ -104,35 +104,7 @@
          </b-col>
 
          <b-col cols="12" md="8">
-            <b-card class="gallerie">
-               <!-- swiper1 -->
-               <swiper ref="swiperTop" class="swiper-gallery gallery-top" :options="swiperOptions">
-
-                  <swiper-slide v-for="(data,index) in swiperData" :key="index">
-                     <b-img :src="data.img" fluid heigth="350px" class="imagen-gallerie"/>
-                     
-                  
-
-                  </swiper-slide>
-
-                  <div slot="button-next" class="swiper-button-next swiper-button-white" />
-                  <div slot="button-prev" class="swiper-button-prev swiper-button-white" />
-
-               </swiper>
-               
-               <!-- swiper2 Thumbs -->
-               <swiper ref="swiperThumbs" class="swiper gallery-thumbs" :options="swiperOptionThumbs">
-                  <swiper-slide v-for="(data,index) in swiperData" :key="index">
-                     <b-img :src="data.img" fluid class="imagen-thumb" />
-                  </swiper-slide>
-               </swiper>
-
-                  <b-button variant="dark" @click="() => showGallerie = !showGallerie" size="sm" class="btn-gallerie" rounded>
-                     <font-awesome-icon icon="fa-images" class="mr-1" />
-                     Todas las fotos {{ atraccion.imagenes.length }}
-                  </b-button>
-
-            </b-card>   
+           <swiper-gallery :imagenes="atraccion.imagenes" path="/storage/atracciones/imagenes/" />
          </b-col>
 
       </b-row>
@@ -176,7 +148,7 @@
       </b-row>
 
       <horario :horarios="atraccion.horarios" :showHorario.sync="showHorario" />
-      <gallerie :galleries="atraccion.imagenes" :showGallerie.sync="showGallerie" path="/storage/atracciones/imagenes" />  
+      
 
 
 
@@ -185,12 +157,8 @@
 
 <script>
 
-import {toRefs, ref,onMounted,computed,nextTick,watch} from '@vue/composition-api'
+import {toRefs, ref,onMounted,computed,nextTick,watch} from 'vue'
 import store from '@/store'
-
-import { Swiper, SwiperSlide } from 'vue-awesome-swiper'
-import 'swiper/css/swiper.css'
-
 
 
 import {
@@ -229,11 +197,9 @@ export default {
       BButton,
       BImg,
       BFormRating,
-      Gallerie:() => import('components/Gallerie.vue'),
       Horario:() => import('components/Horario.vue'),
       hasLike:() => import('components/HasLike.vue'),
-      Swiper,
-      SwiperSlide,
+   
       BLink,
       BListGroup,
       BListGroupItem,
@@ -243,15 +209,14 @@ export default {
       OpinionForm:() => import('views/opinions/form.vue'),
       ReviewsOpinion:() => import('components/ReviewsOpinion.vue'),
       Atracciones:() => import('components/Atracciones.vue'),
-      Negocios:() => import('components/Negocios.vue')
+      Negocios:() => import('components/Negocios.vue'),
+      SwiperGallery:() => import('components/SwiperGallery.vue')
 
    }, 
 
    setup(props){
-      const swiperTop  =ref(null)
-      const swiperThumbs = ref(null)
+
       const {atraccion} = toRefs(store.state.atraccion)
-      const showGallerie = ref(false)
       const showHorario = ref(false)
       const atraccionesCercanas = ref([])
       const isShowText  = ref(false)
@@ -267,34 +232,6 @@ export default {
          })
       })
 
-      const swiperOptions = ref({
-         loop        : true,
-         // autoplay:{
-         //    delay:5000
-         // },
-         loopedSlides: 5,
-         spaceBetween: 10,
-         navigation: {
-            nextEl: '.swiper-button-next',
-            prevEl: '.swiper-button-prev',
-        },
-      });
-
-      const swiperOptionThumbs = ref({
-         loop               : false,
-         loopedSlides       : 5, // looped slides should be the same
-         spaceBetween       : 10,
-         centeredSlides     : true,
-         slidesPerView      : 6,
-         touchRatio         : 0.2,
-         slideToClickedSlide: true,
-      });
-
-      const  swiperData =  computed(() => {
-         return atraccion.value.imagenes.map(val => ({img:`/storage/atracciones/imagenes/${val.imagen}`}))
-      })
-
-
       const cargarAtraccionesCercanas = () => {
          store.dispatch('atraccion/getAtraccionesCercanas', atraccion.value.id).then((atracciones) => {
             atraccionesCercanas.value = atracciones
@@ -302,16 +239,7 @@ export default {
       }
 
       onMounted(() => {
-
          cargarAtraccionesCercanas()
-
-         nextTick(() => {
-            const swiperTopC = swiperTop.value.$swiper
-            const swiperThumbsC = swiperThumbs.value.$swiper
-            swiperTopC.controller.control = swiperThumbsC
-            swiperThumbsC.controller.control = swiperTopC
-         })
-
       })
       
       const opinionGuardada = (opinion) => {
@@ -324,14 +252,8 @@ export default {
       }
 
       return {
-         swiperTop,
-         swiperThumbs,
-         swiperOptions,
-         swiperOptionThumbs,
          atraccion,
-         showGallerie,
          showHorario,
-         swiperData,
          opinionGuardada,
          porcentajeOpinions: (cal) => store.getters['atraccion/porcentajeOpinions'](cal),
          colorRandon: computed(() => colorRand()),
@@ -350,64 +272,30 @@ export default {
 }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
+
 .titulo{
-      font-size:24pt;
-   }
-
-.swiper-slide{
-   display: flex;
-   justify-content: center;
-   
-   .imagen-gallerie {
-      height: 350px;
-      width:100%;
-      object-fit: cover;
-      margin: auto 0px;
-   }
+   font-size:24pt;
 }
 
-.imagen-thumb{
-   width: 70px;
-   height: 50px;
-   cursor:pointer;
+.table-calificacion tr td{
+padding-left:0px !important;
 }
-  .gallerie {
-   //   flex: 1 1 60%;
-     position: relative;
-   
-      // .swiper-slide-active{
-      .btn-gallerie {
-            position: absolute;
-            left: 2rem;
-            top: 3rem;
-            bottom: auto;
-            right: auto;
-            z-index: 10;
-         }
-      // }
-   
-   }
 
-   .table-calificacion tr td{
-      padding-left:0px !important;
-   }
+.contenido-parrafo{
+   text-overflow: ellipsis;
+   overflow: hidden;
+   -webkit-line-clamp: 7;
+   display: -webkit-box;
+   -webkit-box-orient: vertical;
+   text-align: justify;
+   /* white-space: nowrap; */
+   width: 100%;
+   height: 145px;
+}
 
-   .contenido-parrafo{
-      text-overflow: ellipsis;
-      overflow: hidden;
-      -webkit-line-clamp: 7;
-      display: -webkit-box;
-      -webkit-box-orient: vertical;
-      text-align: justify;
-      /* white-space: nowrap; */
-      width: 100%;
-      height: 145px;
-   }
-
-   .show-text{
-      height:250px !important;
-      overflow-y: scroll !important;
-   }
-
+.show-text{
+   height:250px !important;
+   overflow-y: scroll !important;
+}
 </style>

@@ -9,10 +9,7 @@ export default{
 			rol:{
 				nombre    :null,
 				id      :null,
-<<<<<<< HEAD
-=======
 			
->>>>>>> vite
 				permisos: [],
 			},
 			roles:[],
@@ -46,14 +43,9 @@ export default{
 
 		clearRol(state){
 			state.rol = {
-<<<<<<< HEAD
-				nombre    :null,
-				id      :null,
-=======
 				nombre  : null,
 				id      : null,
 			
->>>>>>> vite
 				permisos: [],
 			}
 
@@ -186,17 +178,12 @@ export default{
 
 		cargarRoles({commit}){
 			
-			commit('toggleLoading',null,{root:true});
-
+			
 			axios.get('/api/listar/roles').then(respon => {
-
 				commit('setRoles',respon.data);
 			}).catch(e => {
 				console.log(e)
-			}).then(() => {
-				commit('toggleLoading',null,{root:true});
-			});
-			
+			})
 
 		},
 

@@ -24,7 +24,7 @@ class Reservacion extends Model
         'negocio_id',
         'usuario_id',
         'operador_id',
-        'observacion',
+        'observaciaon',
         
 
     ];

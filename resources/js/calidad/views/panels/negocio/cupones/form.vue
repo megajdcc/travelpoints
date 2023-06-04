@@ -239,7 +239,7 @@ import {
 import {regresar} from '@core/utils/utils'
 import flatPickr from 'vue-flatpickr-component'
 
-import {toRefs,ref,computed,onMounted,watch} from '@vue/composition-api'
+import {toRefs,ref,computed,onMounted,watch} from 'vue'
 import store from '@/store'
 import {required} from '@validations'
 import { optionsCurrency } from '@core/utils/utils';

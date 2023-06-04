@@ -1,9 +1,5 @@
 <template>
-<<<<<<< HEAD
-   <div class="horizontal-layout" :class="[layoutClasses]" data-col="1-column" style="height:inherit">
-=======
    <div class="horizontal-layout layout-travel" :class="[layoutClasses]"  data-col="1-column" style="min-height:100vh">
->>>>>>> vite
 
       <!-- NAVBAR -->
       <b-navbar :style="{
@@ -12,9 +8,11 @@
       }" :toggleable="false" class="header-navbar navbar-shadow align-items-center navbar-brand-center navbar-fixed"
          :class="{ 'fixed-top': $store.getters['app/currentBreakPoint'] !== 'xl' }">
          <slot name="navbar" :toggleVerticalMenuActive="toggleVerticalMenuActive">
-            <!-- Logo -->
-            <app-navbar-horizontal-layout-travel-brand />
+             <!-- Logo -->
+            <app-navbar-horizontal-layout-travel-brand :toggle-vertical-menu-active="toggleVerticalMenuActive" />
             <app-navbar-horizontal-layout-travel :toggle-vertical-menu-active="toggleVerticalMenuActive" />
+           
+            
 
          </slot>
 
@@ -30,7 +28,7 @@
          <!-- Vertical Nav Menu -->
          <vertical-nav-menu :is-vertical-menu-active="isVerticalMenuActive"
             :toggle-vertical-menu-active="toggleVerticalMenuActive" class="d-block d-xl-none"
-            :navMenuItems="verticalNavMenuItems">
+            :navMenuItems="itemsMenu">
             <template #header="slotProps">
                <slot name="vertical-menu-header" v-bind="slotProps" />
             </template>
@@ -57,19 +55,11 @@
 
       <!-- Footer -->
 
-<<<<<<< HEAD
-      <footer class="footer footer-light" :class="[footerTypeClass]" style="box-shadow: 0 -1rem 3rem rgb(34 41 47 / 8%) !important;">
-=======
       <footer class="footer footer-light footer-static bg-transparent"  style="box-shadow: 0 -1rem 3rem rgb(34 41 47 / 8%) !important;">
->>>>>>> vite
          <slot name="footer">
             <app-travel-footer />
          </slot>
       </footer>
-
-
-
-
    </div>
 </template>
 
@@ -84,7 +74,7 @@ import useAppConfig from '@core/app-config/useAppConfig'
 import { BNavbar } from 'bootstrap-vue'
 import { useScrollListener } from '@core/comp-functions/misc/event-listeners'
 
-import { onUnmounted } from '@vue/composition-api'
+import { onUnmounted,toRefs,ref } from 'vue'
 
 // Content Renderer
 // Vertical Menu
@@ -104,12 +94,11 @@ import HorizontalNavMenu from './components/horizontal-nav-menu/HorizontalNavMen
 import verticalNavMenuItems from '@/navigation/vertical/travel'
 
 
-
-
-
 import {
    BContainer
 } from 'bootstrap-vue'
+
+import store from '@/store'
 
 
 export default {
@@ -142,6 +131,47 @@ export default {
    },
    setup() {
 
+      const {paginas} = toRefs(store.state.pagina)
+      const itemsMenu = ref([
+         ...verticalNavMenuItems,
+      ])
+
+
+      const cargarForm = () => {
+         
+         if(!paginas.value.length){
+            
+            store.dispatch('pagina/getPaginas').then((data) => {
+               itemsMenu.value = [
+                  ...verticalNavMenuItems,
+                  ...data.map((val) => ({
+                        title   : val.nombre,
+                        route   : {path: val.ruta },
+                        action  : 'read',
+                        resource: 'Auth',
+                        fontAwesome:val.icono ? true : false,
+                        icon    : val.icono ? `fa-${val.icono}` : 'MinusIcon',
+                        ExactPath:true
+                  }))
+               ]
+            })
+
+         }else{
+             itemsMenu.value = [
+               ...verticalNavMenuItems,
+               ...paginas.value.map((val) => ({
+                     title: val.nombre,
+                     route: { path: val.ruta },
+                     action: 'read',
+                     resource: 'Auth',
+                     icon: 'PlusSquareIcon',
+               }))
+            ]
+         }
+
+      }
+
+      cargarForm();
 
       const {
          skin,
@@ -198,7 +228,8 @@ export default {
 
          isNavMenuHidden,
          overlayClasses,
-         verticalNavMenuItems
+         verticalNavMenuItems,
+         itemsMenu
 
       }
    },

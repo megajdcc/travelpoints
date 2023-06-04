@@ -1,8 +1,5 @@
-
 import Vue from 'vue'
 import { ToastPlugin, ModalPlugin } from 'bootstrap-vue'
-import VueCompositionAPI from '@vue/composition-api'
-
 import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
 import lang from 'element-ui/lib/locale/lang/es';
@@ -46,7 +43,7 @@ import '@/libs/toastification'
 import '@/libs/sweet-alerts'
 import '@/libs/vue-select'
 import '@/libs/tour'
-import '@/libs/markdown-editor'
+// import '@/libs/markdown-editor'
 
 import VueCurrencyFilter from 'vue-currency-filter'
 import moment from 'moment';
@@ -54,12 +51,11 @@ import moment from 'moment';
 window.moment = require('moment');
 moment.locale('es')
 
-<<<<<<< HEAD
-Vue.filter('fecha',(val,format = 'LL') => {
-  if(val) {
-    return moment(new Date(val)).format(format);
-  }
-=======
+// Swiper
+import { register } from 'swiper/element/bundle'
+
+register();
+
 Vue.filter('fecha',(val,format = 'LL', time= false) => {
   if(val && !time) {
     return moment(new Date(val)).format(format);
@@ -67,13 +63,10 @@ Vue.filter('fecha',(val,format = 'LL', time= false) => {
     return moment(`2020-01-01 ${val}`).format(format);
   }
   
->>>>>>> vite
   return 'error en la fecha';
 
 })
 
-<<<<<<< HEAD
-=======
 Vue.filter('dia',(val) => {
   const dias = ['Lunes','Martes','Miercoles','Jueves','Viernes','Sabado','Domingo'];
 
@@ -81,7 +74,6 @@ Vue.filter('dia',(val) => {
 
 })
 
->>>>>>> vite
 Vue.use(VueCurrencyFilter, {
   symbol: '$',
   thousandsSeparator: ',',
@@ -98,8 +90,6 @@ Vue.use(ModalPlugin)
 Vue.use(ElementUI);
 
 
-// Composition API
-Vue.use(VueCompositionAPI)
 
 
 // Feather font icon - For form-wizard
@@ -144,7 +134,7 @@ window.colorRand = () => {
   let colores = [
     '#397DAD',
     '#4D616C',
-    '#D02412',
+    // '#D02412',
     '#CD960E',
     '#348022',
     '#17B6AA',
@@ -153,9 +143,9 @@ window.colorRand = () => {
     '#6574cd',
     '#9561e2',
     '#f66d9b',
-    '#e3342f',
-    '#f6993f',
-    '#ffed4a',
+    // '#e3342f',
+    // '#f6993f',
+    // '#ffed4a',
     '#38c172',
     '#4dc0b5',
     '#6cb2eb',
@@ -172,19 +162,74 @@ window.colorRand = () => {
 }
 
 window.$ = window.jQuery = require('jquery');
-require('datatables.net-buttons-bs4');
-require('datatables.net-buttons/js/buttons.flash.js');
-require('datatables.net-buttons/js/buttons.html5.js');
-require('datatables.net-buttons/js/buttons.print.js');
-require('datatables.net-buttons/js/dataTables.buttons.min.js');
-require('datatables.net-responsive-bs4');
 
-<<<<<<< HEAD
-=======
+
 import VueMask from 'v-mask'
 
 Vue.use(VueMask);
->>>>>>> vite
+
+import HighchartsVue from 'highcharts-vue';
+import Highcharts from 'highcharts';
+
+import Maps from "highcharts/modules/map";
+
+Maps(Highcharts);
+
+// Opcionalmente, también puedes importar módulos adicionales de Highcharts, como exporting o accessibility
+import exportingInit from 'highcharts/modules/exporting';
+exportingInit(Highcharts);
+
+import accessibilityInit from 'highcharts/modules/accessibility';
+accessibilityInit(Highcharts);
+
+// Registra Highcharts Vue Wrapper como componente global
+Highcharts.setOptions({
+	chart:{
+		backgroundColor:{
+			linearGradient:[0,0,0,0],
+			stops:[
+				[0,'rgb(255,255,255)'],
+				[1,'rgb(255,255,255)']
+			]
+		},
+		// borderWidth:2,
+		borderRadius:10,
+		// options3d:{
+		// 	alfa:10,
+		// 	axisLabelPosition:'auto',
+		// 	beta:0,
+		// 	depth:100,
+		// 	enabled:true,
+		// 	fitToPlot:true,
+		// },
+		borderColor:{
+			linearGradient:[0,0,0,0],
+			stops:[
+				[0,'rgb(46,169,214)'],
+				[0.5,'rgb(228,53,149)'],
+				[1,'rgb(96,167,49)']
+			]
+		},
+		plotBackgroundColor:'rgba(255,255,255,.9)',
+		plotShadow:true,
+		plotBorderWidth:1,
+		style:{
+			"fontFamily":'Myriad Regular',
+
+		},
+		spacingTop:10,
+
+	},
+	credits:{
+		enabled:true,
+		href:"https://travelpoints.es",
+		text:"TravelPoints",
+	},
+});
+
+Vue.use(HighchartsVue,{
+  Highcharts:Highcharts
+});
 
 // Laravel Echo
 
@@ -215,8 +260,6 @@ Vue.use(VueMask);
 // window.conekta = require('conekta');
 // conekta.api_key = 'key_OsW8LuyVL6ESxfQWduVKzEw';
 // conekta.locale = 'es';
-<<<<<<< HEAD
-=======
 
 /* import the fontawesome core */
 import { library } from '@fortawesome/fontawesome-svg-core'
@@ -239,17 +282,13 @@ Vue.config.productionTip = false
 window._ = require('lodash');
 
 
->>>>>>> vite
 let app = new Vue({
   router,
   store,
   i18n,
   render: h => h(App),
-<<<<<<< HEAD
-=======
   provide:() =>  ({swal : Vue.swal})
 
->>>>>>> vite
 }).$mount('#app')
 
 // app.provide();

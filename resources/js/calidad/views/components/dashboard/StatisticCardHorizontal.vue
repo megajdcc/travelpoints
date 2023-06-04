@@ -1,56 +1,44 @@
 <template>
-<<<<<<< HEAD
-  <b-card no-body>
-    <b-card-body class="d-flex justify-content-between align-items-center">
-      <div class="truncate">
-        <h2 class="mb-25 font-weight-bolder">
-          {{ statistic }}
-        </h2>
-        <span v-html="statisticTitle" />
-      </div>
-      <b-avatar
-        :variant="`light-${color}`"
-        size="45"
-      >
-        <feather-icon
-          size="21"
-          :icon="icon"
-          v-if="!fontAwesome"
-        />
+  <b-card no-body :bg-variant="color" class="card-horizontal">
+    <b-card-body class="d-flex justify-content-between align-items-center flex-column"
+      style="position:relative; padding: 1rem;">
 
-        <span v-else :class="`fas ${icon}`" style="font-size:14pt"></span>
-      </b-avatar>
-=======
-  <b-card no-body :bg-variant="color" >
-    <b-card-body class="d-flex justify-content-between align-items-center" style="position:relative; padding: 1rem;">
-      <div class="truncate">
-        <h2 class="mb-25 font-weight-bolder">
+      <section class="d-flex justify-content-between aling-items-center w-100">
+        <div class="truncate">
+          <h2 class="mb-25 font-weight-bolder" :class="[colorText]">
 
-          <slot name="valor" :statistic="statistic">
-            {{ statistic }}
+            <slot :statistic="statistic">
+              {{ statistic }}
+            </slot>
+
+          </h2>
+
+          <slot name="titulo">
+            <span v-html="statisticTitle" :class="[colorText]" />
           </slot>
 
-        </h2>
-        <slot name="titulo">
-          <span v-html="statisticTitle" />
+        </div>
+        <b-avatar :variant="`light-${colorIcon}`" class="avatar-icon">
+
+          <slot name="icon">
+            <font-awesome-icon :icon="['fa-solid', icon]" size="3x" />
+          </slot>
+
+        </b-avatar>
+      </section>
+
+      <div class="filtro-statistic w-100">
+        <slot name="filtro">
         </slot>
-       
       </div>
-      <b-avatar :variant="`light-${colorIcon}`" class="avatar-icon" >
-      
-        <slot name="icon">
-          <font-awesome-icon :icon="['fa-solid',icon]" size="3x" />
-        </slot>
 
-      </b-avatar>
-
->>>>>>> vite
     </b-card-body>
   </b-card>
 </template>
 
 <script>
 import { BCard, BCardBody, BAvatar } from 'bootstrap-vue'
+import { toRefs, computed } from 'vue';
 
 export default {
   components: {
@@ -63,53 +51,62 @@ export default {
       type: String,
       required: true,
     },
-    fontAwesome:{
-      type:Boolean,
-      default:false
-    },
-
-
     statistic: {
       type: [Number, String],
-      required: true,
+      required: false,
+      default: 0,
     },
     statisticTitle: {
       type: String,
       default: '',
     },
     color: {
-<<<<<<< HEAD
       type: String,
-      default: 'primary',
-=======
-      type: String, 
     },
 
     colorIcon: {
       type: String,
-      default:'dark'
->>>>>>> vite
+      default: 'dark'
     },
+    colorText: {
+      type: String,
+      default: 'text-black'
+    }
   },
+
+
+  setup(props) {
+    const { colorText } = toRefs(props)
+
+    return {
+      colorTexto: computed(() => colorText.value)
+    }
+
+  }
 }
 </script>
-<<<<<<< HEAD
-=======
 
-<style lang="scss">
-.avatar-icon{
-      cursor:pointer;
-      transition: 60ms ease;
-      width: 60px;
-      height: 60px;
-      position: absolute;
-      left: auto;
-      right: 1rem;
+<style lang="scss" scoped>
+// $color-text:v-bind(colorTexto);
 
-      &:hover{
-        height:70px !important;
-        width: 70px !important;
-      }
+.avatar-icon {
+  cursor: pointer;
+  transition: 60ms ease;
+  width: 60px;
+  height: 60px;
+  position: absolute;
+  left: auto;
+  right: 1rem;
+
+  &:hover {
+    height: 70px !important;
+    width: 70px !important;
   }
+}
+
+// .card-horizontal{
+//   h2, span{
+//     color: $color-text !important; 
+//   }
+// }
 </style>
->>>>>>> vite

@@ -137,7 +137,7 @@ import {
 import {required} from '@validations'
 
 import { regresar } from '@core/utils/utils'
-import {onMounted,toRefs,ref,computed,watch} from '@vue/composition-api'
+import {onMounted,toRefs,ref,computed,watch} from 'vue'
 import store from '@/store'
 import vSelect from 'vue-select'
 

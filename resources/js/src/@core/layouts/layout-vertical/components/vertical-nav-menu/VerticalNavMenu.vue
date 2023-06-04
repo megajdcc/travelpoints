@@ -83,7 +83,7 @@
 <script>
 import VuePerfectScrollbar from 'vue-perfect-scrollbar'
 import { BLink, BImg } from 'bootstrap-vue'
-import { provide, computed, ref } from '@vue/composition-api'
+import { provide, computed, ref } from 'vue'
 import useAppConfig from '@core/app-config/useAppConfig'
 import { $themeConfig } from '@themeConfig'
 import VerticalNavMenuItems from './components/vertical-nav-menu-items/VerticalNavMenuItems.vue'
@@ -170,10 +170,15 @@ export default {
 @import "~@core/scss/base/core/menu/menu-types/vertical-menu.scss";
 
 .brand-logo img{
-  max-width: 180px !important;
+  max-width: 130px !important;
   height: 50px;
   object-fit: contain;
+}
 
+@media (min-width:1200px){
+  .brand-logo img{
+    max-width: 180px !important;
+  }
 }
 
 

@@ -1,8 +1,3 @@
-<<<<<<< HEAD
-import axios from "axios"
-
-=======
->>>>>>> vite
 export default {
    namespaced: true,
    state() {
@@ -34,16 +29,12 @@ export default {
             solicitud:null,
             ciudad:null,
             estado:null,
-<<<<<<< HEAD
-            usuario:null
-=======
             usuario:null,
 
             divisa_id:null,
             divisa:null,
             iata_id:null,
             iata:null
->>>>>>> vite
 
          },
          solicitudes: [],
@@ -63,7 +54,10 @@ export default {
    mutations: {
 
       setSolicitudes(state, data) {
-         state.solicitudes = data
+
+         if(data.length){
+            state.solicitudes = data
+         }
       },
 
 
@@ -95,9 +89,6 @@ export default {
             solicitud: null,
             ciudad: null,
             estado: null,
-<<<<<<< HEAD
-            usuario: null
-=======
             usuario: null,
 
 
@@ -108,13 +99,23 @@ export default {
             iata: null
             
             
->>>>>>> vite
          }
       },
 
 
       push(state, data) {
-         state.solicitudes.push(data)
+         
+         if(data){
+            
+            if(typeof state.solicitudes === 'object'){
+                state.solicitudes.push(data)
+            }else{
+               state.solicitudes = [data]
+            }
+           
+         }
+
+         
       },
 
       put(state, data_id) {
@@ -163,6 +164,17 @@ export default {
                .then(() => commit('toggleLoading', null, { root: true }))
          })
       },
+
+
+      fetchDataAdmin({commit},filtro){
+         return new Promise((resolve, reject) => {
+            axios.post(`/api/negocio/solicituds/fetch/data/admin`,filtro).then(({data}) => {
+               commit('setSolicitudes',data)
+               resolve(data)
+            }).catch(e => reject(e))
+         })
+      },
+
 
       guardar({ commit }, data) {
 
@@ -236,7 +248,6 @@ export default {
 
       },
 
-
       async getsolicitud({ commit }, data_id) {
          return await new Promise((resolve, reject) => {
             commit('toggleLoading', null, { root: true })
@@ -251,10 +262,8 @@ export default {
                   commit('toggleLoading', null, { root: true })
                })
          })
-<<<<<<< HEAD
-=======
-      },
 
+      },
 
       getSolicitudes({commit}){
          return new Promise((resolve,reject) => {
@@ -267,13 +276,13 @@ export default {
             }).catch(e => reject(e))
 
          })
+      },
 
->>>>>>> vite
+      solicitudesNoaceptadas(){
+         return new Promise((resolve, reject) => {
+            axios.get(`/api/negocio/solicituds/sinaceptar`).then(({data}) => resolve(data)).catch(e => reject(e))
+         })
       }
 
-
    }
-
-
-
 }

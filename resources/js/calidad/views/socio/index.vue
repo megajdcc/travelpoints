@@ -9,17 +9,11 @@
 
                      <b-container fluid>
                         <b-row class="px-0">
-<<<<<<< HEAD
-                           <b-col cols="2" class="px-0">
-                              <b-avatar :src="usuario.avatar" />
-                           </b-col>
-=======
                            
                            <b-col cols="2" class="px-0">
                               <b-avatar :src="usuario.avatar" />
                            </b-col>
 
->>>>>>> vite
                            <b-col cols="10" class="px-0">
                               {{ ` ${usuario.nombre ? usuario.nombre +' ' +usuario.apellido : usuario.username}` }}
                            </b-col>
@@ -35,29 +29,13 @@
 
                   <b-nav-item :to="{ name: 'socio.reservaciones' }" active-class="active">
                      <span class="fas fa-credit-card"></span>
-<<<<<<< HEAD
-
-=======
->>>>>>> vite
                      Reservaciones
                   </b-nav-item>
 
-                  <b-nav-item :to="{ name: 'socio.consumos' }" active-class="active">
-                     <span class="fas fa-concierge-bell"></span>
-                     Consumos
-                  </b-nav-item>
-
-<<<<<<< HEAD
-                  <b-nav-item :to="{ name: 'socio.certificados' }" active-class="active">
-                     <span class="fas fa-gifts"></span>
-                     Certificados
-                  </b-nav-item>
-=======
                   <!-- <b-nav-item :to="{ name: 'socio.cupones' }" active-class="active">
                      <span class="fas fa-ticke"></span>
                      Cupones
                   </b-nav-item> -->
->>>>>>> vite
 
                   <b-nav-item :to="{ name: 'socio.compras' }" active-class="active">
                      <span class="fas fa-weight-hanging"></span>
@@ -96,37 +74,26 @@
                   <b-nav-item :to="{ name: 'socio.negocio.solicitudes' }"  active-class="active">
                      <span class="fas fa-file"></span>
                      Solicitudes enviadas
-<<<<<<< HEAD
-=======
 
                      <b-badge variant="danger" pill>{{ solicitudesSinAceptar  }}</b-badge>
->>>>>>> vite
                   </b-nav-item>
                </b-nav>
             </b-card>
 
             <b-card v-if="route.meta.name == 'perfil'">
-<<<<<<< HEAD
-               <b-nav vertical card-header class="menu-socio">
-
-=======
 
                <b-nav vertical card-header class="menu-socio">
->>>>>>> vite
                   <b-nav-item :to="{ name: 'miperfil' }" exact active-class="active">
                      <span class="fas fa-user"></span>
                      Perfil de socio
                   </b-nav-item>
 
-<<<<<<< HEAD
-=======
                   <b-nav-item :to="{ name: 'micuenta' }" exact active-class="active">
                      <span class="fas fa-money-check"></span>
                      Cuenta y Movimientos
                   </b-nav-item>
 
 
->>>>>>> vite
                   <b-nav-item :to="{ name: 'misreferidos' }" exact active-class="active">
                      <span class="fas fa-user-plus"></span>
                      Mis Referidos
@@ -137,6 +104,10 @@
                      Editar Información
                   </b-nav-item>
 
+                  <b-nav-item :to="{ name: 'perfil.datos_pago' }" exact active-class="active" v-if="$can('write','Datos de pago')">
+                     <font-awesome-icon icon="fas fa-money-check-dollar"/>
+                     Datos de información de pago
+                  </b-nav-item>
 
                   <b-nav-item :to="{ name: 'perfil.password' }" exact active-class="active">
                      <span class="fas fa-key"></span>
@@ -150,8 +121,6 @@
                </b-nav>
             </b-card>
 
-<<<<<<< HEAD
-=======
 
             <b-card v-if="route.meta.name == 'consumos'">
 
@@ -166,7 +135,6 @@
             </b-card>
 
 
->>>>>>> vite
          </b-col>
 
          <b-col cols="12" md="9">
@@ -187,18 +155,15 @@ import {
    BButton,
    BNav,
    BNavItem,
-<<<<<<< HEAD
-   BAvatar
-=======
    BAvatar,
    BBadge
->>>>>>> vite
 
 } from 'bootstrap-vue'
 import store from '@/store'
-import { computed, toRefs,watch,onMounted } from '@vue/composition-api'
+import { computed, toRefs,watch,onMounted } from 'vue'
 
 import { useRoute, } from 'vue2-helpers/vue-router'
+
 export default {
    components: {
       BContainer,
@@ -209,25 +174,13 @@ export default {
       BButton,
       BNav,
       BNavItem,
-<<<<<<< HEAD
-      BAvatar
-=======
       BAvatar,
       BBadge
->>>>>>> vite
 
    },
 
    setup() {
       const route = useRoute();
-<<<<<<< HEAD
-
-      const { usuario } = toRefs(store.state.usuario)
-
-      return {
-         usuario,
-         route
-=======
       const {solicitudes} = toRefs(store.state.solicitud)
       const { usuario } = toRefs(store.state.usuario)
 
@@ -243,7 +196,6 @@ export default {
          usuario,
          route,
          solicitudesSinAceptar:computed(() => `${solicitudes.value.filter(val => val.situacion != 3 ).length}` )
->>>>>>> vite
       }
    },
 }

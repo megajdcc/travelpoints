@@ -1,4 +1,4 @@
-import {computed,onMounted,ref,toRef,toRefs, watch} from '@vue/composition-api'
+import {computed,onMounted,ref,toRef,toRefs, watch} from 'vue'
 import store from '@/store'
 
 /* eslint-disable */

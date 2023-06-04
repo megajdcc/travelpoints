@@ -12,7 +12,7 @@
       <b-card class="mt-1">
 
         <b-table ref="refTable" :items="fetchData" responsive :fields="tableColumns" primary-key="id"
-          :sort-by.sync="sortBy" empty-text="No se encontró ninguna tienda" :sort-desc.sync="isSortDirDesc"
+          :sort-by="sortBy" empty-text="No se encontró ninguna tienda" :sort-desc="isSortDirDesc"
           sticky-header="700px" :no-border-collapse="false" borderless outlined :busy="loading" :perPage="perPage"
           showEmpty small stacked="md">
 
@@ -129,7 +129,7 @@
 
 <script>
 
-import { toRefs, ref, computed, onMounted } from '@vue/composition-api'
+import { toRefs, ref, computed, onMounted } from 'vue'
 
 import useTiendasList from './useTiendasList.js'
 import store from '@/store'

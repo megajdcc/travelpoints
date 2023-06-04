@@ -2,47 +2,87 @@ export default [
   
    {
       title: 'Usuarios',
-      route: 'listar.usuarios',
-      action: 'read',
-      resource: 'usuarios',
       icon: 'UsersIcon',
+      children:[
+         {
+            title: 'Usuarios',
+            route: 'listar.usuarios',
+            action: 'read',
+            resource: 'usuarios',
+            icon: 'UsersIcon',
+         },
+
+          {
+            title: 'Promotores',
+            route: 'promotores.list',
+            action: 'read',
+            resource: 'promotores',
+            icon: 'fa-user-tie',
+            fontAwesome:true
+         },
+
+         {
+            title: 'Lideres',
+            route: 'lideres.list',
+            action: 'read',
+            resource: 'lideres',
+            icon: 'fa-users-rays',
+            fontAwesome:true
+         },
+
+
+         {
+            title: 'Retiros',
+            route: 'retiro.list',
+            action: 'read',
+            resource: 'retiros',
+            fontAwesome:true,
+            icon: 'fa-money-bill-transfer',
+         }
+
+      ]
    },
 
    {
       title: 'Negocios',
-      icon: 'HomeIcon',
+      icon: 'fa-house-chimney',
+      fontAwesome:true,
       children:[
          {
-            title: 'negocios',
-<<<<<<< HEAD
-            route: 'listar.negocios',
-=======
+            title: 'Negocios',
             route: 'negocio.lists',
->>>>>>> vite
             action: 'read',
             resource: 'negocios',
-            icon: 'ListIcon',
+            icon: 'fa-shop',
+            fontAwesome:true,
+            
+            
          },
-<<<<<<< HEAD
-
-=======
->>>>>>> vite
          {
             title: 'Solicitudes',
             route: 'listar.solicitudes.negocios',
             action: 'read',
             resource: 'solicitudes',
-            icon: 'ListIcon',
+            icon: 'fa-table-list',
+            fontAwesome:true
          },
 
       ]
    },
 
-<<<<<<< HEAD
-=======
+   {
+      title:'Reservaciones',
+      route:'reservaciones.list',
+      action:'read',
+      resource:'reservaciones',
+      icon:'fa-calendar-check',
+      fontAwesome:true,
+   },
+
    {
       title:'Eventos',
-      icon:'OctagonIcon',
+      icon:'fa-calendar-day',
+      fontAwesome:true,
       route:'eventos.list',
       resource:'eventos',
       action:'read'
@@ -51,13 +91,15 @@ export default [
    {
       
       title:'Destinos e Iata',
-      icon:'MapPinIcon',
-
+      icon:'fa-map-location-dot',
+      fontAwesome:true,
       children:[
 
          {
             title: 'Destinos',
             route: 'destino.lists',
+            icon:'fa-arrows-turn-to-dots',
+            fontAwesome:true,
             action: 'read',
             resource: 'destinos'
          },
@@ -65,8 +107,28 @@ export default [
          {
             title:'Códigos IATA',
             route:'iata.lists',
+            icon:'fa-plane-departure',
+            fontAwesome:true,
             action:'read',
             resource:'iatas'
+         },
+         {
+            title: 'Paises',
+            route: 'listar.paises',
+            action: 'read',
+            resource: 'pais'
+         },
+         {
+            title: 'Estados',
+            route: 'listar.estados',
+            action: 'read',
+            resource: 'estado'
+         },
+         {
+            title: 'Ciudades',
+            route: 'listar.ciudades',
+            action: 'read',
+            resource: 'ciudad'
          }
       ]
    },
@@ -78,6 +140,8 @@ export default [
       children:[
          { title:'Tiendas',route:'tienda.list',icon:'fa-store',resource:'tiendas',action:'read',fontAwesome:true},
          { title: 'Productos', route: 'producto.list', icon: 'fa-gifts', resource: 'productos', action: 'read', fontAwesome: true, iconFa:'fas'},
+         { title: 'Productos (Almacén)', route: 'producto.cj.list', icon: 'fa-gifts', resource: 'productos', action: 'read', fontAwesome: true, iconFa:'fas'},
+
          {
             title: 'Categorías',
             route: 'categorias',
@@ -96,7 +160,24 @@ export default [
       ]
 
    },
->>>>>>> vite
+
+   {
+      title:'Multimedias',
+      icon:'fa-upload',
+      fontAwesome:true,
+      route:'multimedias',
+      resource:'multimedias',
+      action:'read'
+   },
+
+   {
+      title:'Academia',
+      icon:'fa-play',
+      fontAwesome:true,
+      route:'academia.list',
+      resource:'academias',
+      action:'read'
+   },
 
    {
       title:'Configuraciones',
@@ -104,8 +185,7 @@ export default [
       children:[
          
          {
-<<<<<<< HEAD
-=======
+
             title:'Datos de sistema',
             route:'sistema',
             icon:'SettingsIcon',
@@ -114,7 +194,26 @@ export default [
          },
 
          {
->>>>>>> vite
+
+            title:'Comisiones de Roles',
+            route:'comisiones.list',
+            icon:'fa-percent',
+            fontAwesome:true,
+            resource:'comisiones',
+            action:'read'
+         },
+
+
+          {
+            title:'Sucursales',
+            route:'sucursales.list',
+            icon:'fa-map-location',
+            resource:'sucursales',
+            action:'read',
+            fontAwesome:true,
+         },
+
+         {
             title: 'Roles',
             // exact:false,
             route: 'listar.roles',
@@ -129,8 +228,7 @@ export default [
          },
 
          {
-<<<<<<< HEAD
-=======
+
             title   : 'Paneles',
             route   : 'panel.list',
             action  : 'read',
@@ -138,7 +236,14 @@ export default [
          },
 
          {
->>>>>>> vite
+
+            title   : 'Paginas',
+            route   : 'pagina.list',
+            action  : 'read',
+            resource: 'paginas'
+         },
+
+         {
             title: 'Preguntas Frecuentes (Faqs)',
             route: 'listar.faqs',
             icon:'HelpCircleIcon',
@@ -158,14 +263,8 @@ export default [
             route: 'negocio.categorias.list',
             icon: 'ListIcon',
             action: 'read',
-<<<<<<< HEAD
-            resource: 'Negocio categorías'
-=======
-            resource: 'negocio categorías'
+            resource: 'negocio categorias'
          },
-
-
-        
          {
             title: 'Divisas',
             route: 'divisas.list',
@@ -185,10 +284,7 @@ export default [
             route: 'formasPago.list',
             action: 'read',
             resource: 'formas de pago'
->>>>>>> vite
          }
-
-
       ]
    },
    

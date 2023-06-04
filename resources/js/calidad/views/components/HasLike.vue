@@ -1,6 +1,6 @@
 <template>
       <article class="icon-like">
-         <font-awesome-icon :icon="['fa-solid', iconLike]" :color="is_loggin && isLike ? '#a20000' : '#3f3f3f'" @click.stop="toggleLike" size="2x" />
+         <font-awesome-icon :icon="['fa-solid', iconLike]" :color="is_loggin && isLike ? '#eb5b5e' : '#3f3f3f'" @click.stop="toggleLike" size="2x" />
       </article>
 </template>
 
@@ -12,7 +12,7 @@ import {
 
 import store from '@/store'
 
-import {toRefs,computed,onMounted,watch} from '@vue/composition-api'
+import {toRefs,computed,onMounted,watch} from 'vue'
 import useAuth  from '@core/utils/useAuth'
 import router from '@/router'
 

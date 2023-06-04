@@ -9,7 +9,7 @@
       }" :toggleable="false" class="header-navbar navbar-shadow align-items-center navbar-brand-center navbar-fixed"
       :class="{'fixed-top': $store.getters['app/currentBreakPoint'] !== 'xl'}">
       <slot name="navbar" :toggleVerticalMenuActive="toggleVerticalMenuActive">
-        <app-navbar-horizontal-layout-brand />
+        <app-navbar-horizontal-layout-brand :toggle-vertical-menu-active="toggleVerticalMenuActive" />
         <app-navbar-horizontal-layout :toggle-vertical-menu-active="toggleVerticalMenuActive" />
       </slot>
     </b-navbar>
@@ -73,7 +73,7 @@ import { BNavbar } from 'bootstrap-vue'
 import { useScrollListener } from '@core/comp-functions/misc/event-listeners'
 import verticalNavMenuItems from '@/navigation/vertical'
 
-import { onUnmounted } from '@vue/composition-api'
+import { onUnmounted } from 'vue'
 
 // Content Renderer
 import LayoutContentRendererDefault from '@core/layouts/components/layout-content-renderer/LayoutContentRendererDefault.vue'

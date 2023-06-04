@@ -49,19 +49,18 @@ export default{
   mutations:{
     clear(state) {
       state.reservacion = {
-        id: null,
-        fecha: null,
-        hora: null,
-        personas: 1,
-        observacion: '',
-        status: 1,
-        negocio_id: null,
-        usuario_id: null,
-        operador_id: null,
-
-        negocio: null,
-        usuario: null,
-        operador: null
+         id:null,
+        fecha:null,
+        hora:null,
+        personas:1,
+        status:1,
+        observacion:'',
+        negocio_id:null,
+        usuario_id:null,
+        operador_id:null,
+        negocio:null,
+        usuario:null,
+        operador:null,
       }
     },
 
@@ -83,7 +82,11 @@ export default{
     },
 
     push(state, reservacion) {
-      state.reservaciones.push(reservacion)
+      if(typeof state.reservaciones == 'object'){
+        state.reservaciones.push(reservacion)
+      }else{
+        state.reservaciones = [reservacion]
+      }
 
     },
 
@@ -142,7 +145,11 @@ export default{
          return new Promise((resolve, reject) => {
             axios.post(`/api/reservacions/fetch/data`,datos).then(({data}) => {
 
+              if(data.reservacions){
                commit('setReservacions',data.reservacions)
+              }else if(data.reservaciones){
+               commit('setReservacions',data.reservaciones)
+              }
 
                resolve(data)
             }).catch(e => reject(e))
@@ -156,6 +163,7 @@ export default{
          return new Promise((resolve, reject) => {
             axios.get(`/api/reservacions/${reservacion_id}/fetch/data`).then(({data}) => {
                commit('setReservacion',data)
+               commit('push',data)
                resolve(data)
             }).catch(e => reject(e))
 

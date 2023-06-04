@@ -18,7 +18,7 @@ trait hasPermisos
    }
 
 
-   public function asignarPermisosDefault(string $panel): Collection{
+   public function asignarPermisosDefault(string $panel = 'Negocio'): Collection{
 
       $permisos_asignados = collect([]);
 

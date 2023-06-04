@@ -132,6 +132,7 @@ class Negocio extends Model
             'cargo' => $cargo
         ]);
 
+        $cargo->asignarPermisosDefault();
         return $cargo;
         
     }

@@ -16,12 +16,14 @@
                   <b-input-group size="sm">
                      <b-form-input v-model="searchQuery" type="search" placeholder="..." />
                      <b-input-group-append>
+
                         <b-button variant="dark" size="sm" :to="{ name: 'create.atraccion',params:{destino:destino} }"
-                           v-if="$can('write', 'destino')" class="d-flex">
+                           v-if="$can('write', 'atracciones')" class="d-flex">
                            <span class="d-flex align-items-center py-0">
                               Agregar Atracción
                            </span>
                         </b-button>
+                        
                      </b-input-group-append>
                   </b-input-group>
                </b-col>

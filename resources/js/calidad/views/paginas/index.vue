@@ -41,7 +41,7 @@
             <eventos :destino="destino" v-if="destino_id" />
 
          </b-tab>
-         <b-tab title="Maps">
+         <b-tab title="Maps" lazy>
 
             <template #title>
                <font-awesome-icon icon="fas fa-map-location-dot" class="mr-1"/>
@@ -230,6 +230,8 @@ export default {
          destino_id.value = localStorage.getItem('destino_id')
          cargarForm();
          showDestino.value = false
+
+         window.location.reload();
       }
 
 

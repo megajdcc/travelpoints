@@ -76,4 +76,15 @@ class Atraccion extends Model
         return $atraccions;
     }
 
+    public function cargar(){
+        $this->telefono;
+        $this->destino;
+        $this->ruta = "/Atraccions?q={$this->nombre}";
+        $this->tipo = 'Atracción';
+        $this->imagenes;
+        $this->opinions;
+        $this->modelType = $this->model_type;
+        $this->imagen = $this->imagenes[0] ? "/storage/atracciones/imagenes/{$this->imagenes[0]->imagen}" : '';
+    }
+
 }

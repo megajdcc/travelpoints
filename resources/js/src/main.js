@@ -224,7 +224,7 @@ Highcharts.setOptions({
 	},
 	credits:{
 		enabled:true,
-		href:"https://travelpoints.dev",
+		href:"https://travelpoints.es",
 		text:"TravelPoints",
 	},
 });

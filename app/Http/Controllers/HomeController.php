@@ -15,7 +15,7 @@ class HomeController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth')->except(['searchPublic','searchLocation']);
+        $this->middleware('auth')->except(['searchPublic','searchLocation','getTravels']);
     }
 
     /**
@@ -155,39 +155,25 @@ class HomeController extends Controller
 
 
         $destinos = Destino::where('activo',true)
-        ->when($destino,function($query) use($destino){
-                $query->where('id', $destino->id);
-        })
+        // ->when($destino,function($query) use($destino){
+        //         $query->where('id', $destino->id);
+        // })
         ->get();
 
         foreach ($destinos as $key => $destino) {
             $destino->ruta ="/Destinos?q={$destino->nombre}";
             $destino->tipo = 'Destino';
             $destino->imagenes;
+            $destino->cargar();
             $destino->imagen = $destino->imagenes[0] ? "/storage/destinos/imagenes/{$destino->imagenes[0]->imagen}" : '';
         }
 
-
-        $atracciones = Atraccion::when($destino->id, function ($query) use ($destino) {
-            $query->where('destino_id', $destino->id);
-        })->get();
-
+        $atracciones = Atraccion::get();
         foreach ($atracciones as $key => $atraccion) {
-            $atraccion->ruta = "/Atraccions?q={$atraccion->nombre}";
-            $atraccion->tipo = 'Atracción';
-            $atraccion->imagenes;
-            $atraccion->opinions;
-            $atraccion->imagen = $atraccion->imagenes[0] ? "/storage/atracciones/imagenes/{$atraccion->imagenes[0]->imagen}" : '';
+            $atraccion->cargar();
         }
 
-
-        $negocios = Negocio::when($destino->id, function ($query) use ($destino) {
-            $query->whereHas('iata', function (Builder $q) use ($destino) {
-                $q->whereHas('destinos', function (Builder $query) use ($destino) {
-                    $query->where('id', $destino->id);
-                });
-            });
-        })->get();
+        $negocios = Negocio::where('status',1)->get();
 
         foreach ($negocios as $key => $negocio) {
             $negocio->ruta = "/{$negocio->url}";

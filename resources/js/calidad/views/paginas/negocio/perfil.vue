@@ -34,7 +34,7 @@
                     </td>
 
                     <td>
-                      <b-link :href="`tel:${negocio.telefonos[0].telefono}`" target="_blank">
+                      <b-link :href="`tel:${negocio.telefonos[0].telefono}`" target="_blank" style="overflow-wrap: anywhere;">
                         {{ negocio.telefonos[0].telefono }}
                       </b-link>
                     </td>
@@ -139,7 +139,8 @@
           </b-card>
 
       <b-card>
-        <b-card-body v-html="negocio.descripcion">
+        <b-card-body >
+          <section v-html="negocio.descripcion"></section>
         </b-card-body>
       </b-card>
      <!-- <p class="text-justify">

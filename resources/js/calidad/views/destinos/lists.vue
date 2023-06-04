@@ -81,7 +81,7 @@
                               </b-button>
 
                         </b-button-group>
-                     </template>
+                     </template>s
                   </b-card>
                </b-col>
             </b-row>

@@ -79,7 +79,7 @@
                   </td>
 
                   <td>
-                    <b-link :href="`mailto:${negocio.emails[0].email}`" target="_blank">
+                    <b-link :href="`mailto:${negocio.emails[0].email}`" target="_blank" style="overflow-wrap: anywhere;">
                       {{ negocio.emails[0].email }}
                     </b-link>
                   </td>
@@ -91,7 +91,7 @@
                   </td>
 
                   <td>
-                    <b-link :href="`tel:${negocio.telefonos[0].telefono}`" target="_blank">
+                    <b-link :href="`tel:${negocio.telefonos[0].telefono}`" target="_blank" style="overflow-wrap: anywhere;">
                       {{ negocio.telefonos[0].telefono }}
                     </b-link>
                   </td>

@@ -16,20 +16,13 @@ class convertirNull
      */
     public function handle(Request $request, Closure $next)
     {
-<<<<<<< HEAD
-=======
-
->>>>>>> vite
         foreach($request->all() as $key =>  $valor){
             if($valor == "null"){
                 $request->merge([$key => null]);
             }
         }
 
-<<<<<<< HEAD
-=======
         
->>>>>>> vite
         return $next($request);
     }
 }

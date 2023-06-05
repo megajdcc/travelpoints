@@ -21,7 +21,8 @@ export default {
          }
       }
 
-      onMounted(() => cargarForm())
+      cargarForm();
+      
       watch([id,cupones],() => cargarForm())
 
       return () => h(form,{

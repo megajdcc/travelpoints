@@ -80,7 +80,7 @@
 
               <b-col cols="12"  v-if="sistema.id">
 
-                <PayPal :amount="monto" :currency="iso" :client="credentials" :env="sistema.production_paypal ? 'live' : 'sandbox'" @payment-completed="pagoCompletadoPaypal">
+                <PayPal :amount="getMount" :currency="iso" :client="credentials" :env="sistema.production_paypal ? 'live' : 'sandbox'" @payment-completed="pagoCompletadoPaypal">
                 </PayPal>
 
               </b-col>
@@ -249,15 +249,13 @@ export default {
     
     const formulario = ref({
       tipo:1,
-      monto:0,
+      monto:'0',
       concepto:'',
       model_id:computed(() => negocio.value.id),
       model_type:'App\\Models\\Negocio'
     })
 
     watch(negocio, () => {
-     
-
       setTimeout(() => {
         actions.refetchData()
 
@@ -266,7 +264,6 @@ export default {
     })
 
     const recargarPaypal = () => {
-      console.log('mostrando')
       showRecarga.value = true
     } 
 
@@ -360,7 +357,8 @@ export default {
       consignarSaldo,
       showConsignacion,
       formulario,
-      enviarSolicitud
+      enviarSolicitud,
+      getMount:computed(() => String(monto.value))
     }
 
   }

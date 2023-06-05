@@ -1,20 +1,20 @@
 <template>
-
    <b-container fluid class="px-0 mx-0">
       <!-- Search -->
       <b-row>
          <b-col cols="12">
-            <b-card class="banner-search" body-class="d-flex justify-content-center align-items-center py-3 w-100" :style="{'background-image':`url(${imageBanner})`}" >
+            <b-card class="banner-search" body-class="d-flex justify-content-center align-items-center py-3 w-100"
+               :style="{ 'background-image': `url(${imageBanner})` }">
                <search :destino="destino_id" />
             </b-card>
-            <b-breadcrumb style="margin-top: -20px;" >
-              
+            <b-breadcrumb style="margin-top: -20px;">
+
                <b-breadcrumb-item @click="limpiarDestinos">
                   <font-awesome-icon icon="fas fa-rotate-right" />
                   Destinos
                </b-breadcrumb-item>
 
-              <b-breadcrumb-item :to="rutaDestino" text>{{ getDestinoName }}</b-breadcrumb-item>
+               <b-breadcrumb-item :to="rutaDestino" text>{{ getDestinoName }}</b-breadcrumb-item>
             </b-breadcrumb>
 
          </b-col>
@@ -22,17 +22,17 @@
 
       <!-- Destinos -->
       <!-- <destinos :destinos="destinos" /> -->
-   
-      
+
+
       <b-tabs content-class="mt-3">
          <b-tab active>
-               
+
             <template #title>
-               <font-awesome-icon icon="fas fa-grip-vertical" class="mr-1"/>
+               <font-awesome-icon icon="fas fa-grip-vertical" class="mr-1" />
                Vista principal
             </template>
             <!-- Atracciones -->
-            <atracciones :atracciones="atracciones.filter(val => val.destino_id == destino_id)"  />
+            <atracciones :atracciones="atracciones.filter(val => val.destino_id == destino_id)" />
 
             <!-- Negocios -->
             <negocios :destino="destino" v-if="destino_id" />
@@ -44,26 +44,21 @@
          <b-tab title="Maps" lazy>
 
             <template #title>
-               <font-awesome-icon icon="fas fa-map-location-dot" class="mr-1"/>
+               <font-awesome-icon icon="fas fa-map-location-dot" class="mr-1" />
                Vista Mapa
             </template>
-            
+
             <travel-map :destino="destino_id" v-if="destino_id" />
          </b-tab>
-        
+
       </b-tabs>
 
-      
+
       <!-- Si el usuario no Ha seleccionado un destino, debe hacerlo  -->
-      <el-dialog
-         title="Elija un Destino"
-         :visible.sync="showDestino"
-         width="90%"
-         :show-close="false"
-         :close-on-click-modal="false"
-         :close-on-press-escape="false">
-            <destino-selected isSelected @destinoSelected="destinoSeleccionado" />
-         </el-dialog>
+      <el-dialog title="Elija un Destino" :visible.sync="showDestino" width="90%" :show-close="false"
+         :close-on-click-modal="false" :close-on-press-escape="false">
+         <destino-selected isSelected @destinoSelected="destinoSeleccionado" />
+      </el-dialog>
 
    </b-container>
 </template>
@@ -79,11 +74,14 @@ import {
    BCarouselSlide,
    BImg,
    BLink,
+   BBadge,
+   BFormRating,
+   BBreadcrumb,
    BBreadcrumbItem,
    BTabs,
    BTab
 } from 'bootstrap-vue'
-import {onMounted,onActivated,computed,ref,toRefs} from 'vue'
+import { onMounted, onActivated, computed, ref, toRefs } from 'vue'
 
 // import { Pagination, Navigation } from 'swiper'
 
@@ -96,7 +94,7 @@ import Ripple from 'vue-ripple-directive'
 
 export default {
 
-   components:{
+   components: {
       BContainer,
       BRow,
       BCard,
@@ -110,16 +108,16 @@ export default {
       BLink,
       BBadge,
       BFormRating,
-      SwiperComponent:() => import('@/views/extensions/swiper/Swiper.vue'),
+      SwiperComponent: () => import('@/views/extensions/swiper/Swiper.vue'),
       NabvarPagina: () => import('components/NabvarPagina'),
-      HasLike:() => import('components/HasLike.vue'),
-      FormWizard:() => import('@/views/forms/form-wizard/FormWizard.vue'),
-      Search:() => import('components/Search.vue'),
+      HasLike: () => import('components/HasLike.vue'),
+      FormWizard: () => import('@/views/forms/form-wizard/FormWizard.vue'),
+      Search: () => import('components/Search.vue'),
       Atracciones: () => import('components/Atracciones.vue'),
-      destinoSelected:() => import('components/DestinoSelected.vue'),
-      Negocios:() => import('components/Negocios.vue'),
+      destinoSelected: () => import('components/DestinoSelected.vue'),
+      Negocios: () => import('components/Negocios.vue'),
       Eventos: () => import('components/Eventos.vue'),
-      TravelMap:() => import('components/TravelMap.vue'),
+      TravelMap: () => import('components/TravelMap.vue'),
       BBreadcrumb,
       BBreadcrumbItem,
       BTabs,
@@ -134,26 +132,26 @@ export default {
 
       const search = ref(null)
 
-      const { authGoogle,is_loggin } = useAuth()
+      const { authGoogle, is_loggin } = useAuth()
       const { atracciones } = toRefs(store.state.atraccion)
-      const { destinos,destino:origen } = toRefs(store.state.destino)
+      const { destinos, destino: origen } = toRefs(store.state.destino)
       const { sistema } = toRefs(store.state.sistema)
       const destino_id = ref(localStorage.getItem('destino_id'))
       const showDestino = ref(false)
-      const destino = ref({id:computed(() => destino_id.value)})
+      const destino = ref({ id: computed(() => destino_id.value) })
       destino_id.value = localStorage.getItem('destino_id')
       const cargarForm = () => {
          // if(!atracciones.value.length){
-            store.dispatch('atraccion/getAtracciones')
+         store.dispatch('atraccion/getAtracciones')
          // }
 
          // if (!destinos.value.length) {
-            store.dispatch('destino/getDestinos')
+         store.dispatch('destino/getDestinos')
          // }
 
-         
-         
-         if(!destino_id.value){
+
+
+         if (!destino_id.value) {
             showDestino.value = true
          }
 
@@ -163,22 +161,22 @@ export default {
          authGoogle()
          cargarForm()
       })
-      
+
       const remoteMethod = () => {
 
-      }  
+      }
 
 
-      const swiperOptions =  ref({
+      const swiperOptions = ref({
          slidesPerView: 4,
          // allowSlidePrev:false,
          // allowSlideNext: false,
-         autoplay:{
-            delay:5000,
+         autoplay: {
+            delay: 5000,
          },
          // centeredSlides: true,
          spaceBetween: 30,
-         watchSlidesProgress:true,
+         watchSlidesProgress: true,
          effect: 'creative',
          creativeEffect: {
             prev: {
@@ -190,15 +188,15 @@ export default {
                translate: ['100%', 0, 0],
             },
          },
-       
+
          pagination: {
             el: '.swiper-pagination',
             type: 'fraction',
-            dynamicBullets:true,
+            dynamicBullets: true,
          },
-         navigation:{
-               nextEl:'',
-               prevEl: ''
+         navigation: {
+            nextEl: '',
+            prevEl: ''
 
          },
          breakpoints: {
@@ -219,11 +217,11 @@ export default {
                spaceBetween: 10,
             },
          },
-       
+
       })
 
       const destinoSeleccionado = (dest_id) => {
-         localStorage.setItem('destino_id',dest_id)
+         localStorage.setItem('destino_id', dest_id)
          destino_id.value = localStorage.getItem('destino_id')
          cargarForm();
          showDestino.value = false
@@ -249,24 +247,24 @@ export default {
          destino,
          limpiarDestinos,
          destinoSeleccionado,
-         irAtraccion: (atrac) => router.push({name:'edit.atraccion', params: { id: atrac.id}}),
-         loading:computed(() => store.state.loading),
+         irAtraccion: (atrac) => router.push({ name: 'edit.atraccion', params: { id: atrac.id } }),
+         loading: computed(() => store.state.loading),
          // imageBanner: require('@images/banner/banner-travel.jpg'),
-         imageBanner:computed(() => `/storage/${sistema.value.banner_principal}`),
-         getDestinoName:computed(() => {
-            if(destino_id.value && destinos.value.length){
-              let desti = destinos.value.find(val => val.id == destino_id.value)
-              
+         imageBanner: computed(() => `/storage/${sistema.value.banner_principal}`),
+         getDestinoName: computed(() => {
+            if (destino_id.value && destinos.value.length) {
+               let desti = destinos.value.find(val => val.id == destino_id.value)
+
                return desti != undefined ? desti.nombre : ''
-            }else{
+            } else {
                return 'Elejir Destino'
             }
          }),
          rutaDestino: computed(() => {
             if (destino_id.value && destinos.value.length) {
-               
+
                let desti = destinos.value.find(val => val.id == destino_id.value)
-               return  desti != undefined ? desti.ruta : ''
+               return desti != undefined ? desti.ruta : ''
             } else {
                return '#'
             }
@@ -274,47 +272,41 @@ export default {
       }
 
    },
-
 }
 
 </script>
 
 <style lang="scss">
-.banner-search{
+.banner-search {
    height: 300px;
    background-position: center center !important;
    background-repeat: no-repeat;
    background-size: cover;
    // background-attachment: fixed;
 }
-.title-card{
+
+.title-card {
    font-size: 16pt;
 }
 
-.card-img{
+.card-img {
    height: 200px !important;
    width: 100%;
    object-fit: cover;
 }
 
-.header-card{
-   position:relative;
+.header-card {
+   position: relative;
 }
 
 
 // .swiper-button-prev,.swiper-button-next{
 //    display:none;
 // }
-
 </style>
 
 <style lang="scss">
-.el-dialog{
-   width:80% !important;
-}
-</style>
-<style lang="scss">
-.el-dialog{
-   width:80% !important;
+.el-dialog {
+   width: 80% !important;
 }
 </style>

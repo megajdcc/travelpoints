@@ -44,11 +44,7 @@ class SolicitudNegocioActualizada extends Notification implements ShouldQueue
         
         return (new MailMessage)
                     ->subject("Tu Solicitud de afiliación del negocio {$this->solicitud->nombre}, ha sido {$this->solicitud->getEstatus($this->solicitud->situacion)}")
-<<<<<<< HEAD
-                    ->greeting("Hola $notifiable->getNombreCompleto()!")
-=======
                     ->greeting("Hola {$notifiable->getNombreCompleto()}!")
->>>>>>> vite
                     ->line($this->solicitud->getMensage($this->solicitud->situacion))
                     // ->action('Notification Action', url('/'))
                     ->line('Gracias por seguir usando nuestra aplicacion de TravelPoinst!');
@@ -63,11 +59,7 @@ class SolicitudNegocioActualizada extends Notification implements ShouldQueue
     public function toArray($notifiable)
     {
         return [
-<<<<<<< HEAD
-            'titulo' => "Tu Solicitud de afiliación del negocio {$this->solicitud->nombre}, ha sido {$this->solicitud->getEstatus()}",
-=======
             'titulo' => "Tu Solicitud de afiliación del negocio {$this->solicitud->nombre}, ha sido {$this->solicitud->getEstatus($this->solicitud->situacion)}",
->>>>>>> vite
             'avatar' => null,
             'usuario' => null,
             'mensaje' => [$this->solicitud->getMensage($this->solicitud->situacion)],

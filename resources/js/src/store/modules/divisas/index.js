@@ -118,6 +118,7 @@ export default {
 
 
       getDivisas({commit}){
+         
          return new Promise((resolve, reject) => {
             
             axios.get(`/api/divisas/get/all`).then(({data}) => {

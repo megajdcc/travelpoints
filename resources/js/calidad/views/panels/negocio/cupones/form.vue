@@ -147,7 +147,7 @@
                         
                            <validation-provider nombre="divisa_id" rules="required" #default="{valid,errors}">
                         
-                              <v-select v-model="formulario.divisa_id" :options="divisas" label="nombre" :reduce="(option) => option.id" ></v-select>
+                              <v-select v-model="formulario.divisa_id" :options="divisas.filter(val => !val.principal)" label="nombre" :reduce="(option) => option.id" ></v-select>
                         
                               <b-form-invalid-feedback :state="valid">
                                  {{ errors[0] }}
@@ -272,6 +272,7 @@ export default {
    },
 
    setup(_,{emit}){
+
       const formValidate  = ref(null)
       const {cupon:formulario} = toRefs(store.state.cupones)
       const {divisas} = toRefs(store.state.divisa)
@@ -290,8 +291,8 @@ export default {
          }
 
       }
-
-      onMounted(() => cargarForm())
+      cargarForm();
+      
       watch(formulario,() => cargarForm())
 
       const imagenSeleccionada = (img) => {

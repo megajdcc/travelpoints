@@ -49,11 +49,6 @@ export default {
     const { appName, appLogoImage, applogoImageWhite } = $themeConfig.app
     const { skin } = toRefs(store.state.appConfig.layout)
 
-    onMounted(() => {
-      console.log(skin.value)
-    })
-
-
     return {
       appName,
       logo:computed(() => {

@@ -1,4 +1,5 @@
 <?php
+
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\{AuthController};
 use App\Http\Controllers\{AcademiaVideoController, AmenidadController, ApplicationController, CargoController, CategoriaFaqController, CategoriaProductoController, ComisionController, ConsumoController, CuponController, DashboardController, DatosPagosController, DestinoController, DivisaController, EmpleadoController, EventoController, FaqController, FormaPagoController, HomeController, HorarioController, HorarioReservacionController, IataController, MovimientoController, NegocioCategoriaController, NegocioController, UserController, NotificacionController, RolController, PermisoController, SolicitudController, TelefonoController, OpinionController, PanelController, ProductoController, PublicacionController, ReservacionController, RetiroController, SistemaController, SucursalController, TiendaController, VentaController};
@@ -387,11 +388,12 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     /*****************************/
 
     Route::post('cupons/fetch/data', [CuponController::class, 'fetchData']);
-    Route::get('cupons/{certificado}/fetch/data', [CuponController::class, 'fetch']);
+    Route::get('cupons/{cupon}/fetch/data', [CuponController::class, 'fetch']);
     Route::get('cupons/negocio/{negocio}/get/all', [CuponController::class, 'getAll']);
-
+    Route::post('cupons/reservar',[CuponController::class,'reservar']);
+    
     Route::resource('cupons', CuponController::class);
-
+    
 
     /*****************************/
     /* Ventas de negocio
@@ -726,4 +728,4 @@ Route::get('eventos/fetch-data/url/{url}', [EventoController::class, 'fetchDataU
 Route::post('eventos/fetch-data-public', [EventoController::class, 'fetchDataPublic']);
 
 // Travels
-Route::get('travels/map/destino/{destino}',[HomeController::class,'getTravels']);
+Route::get('travels/map/destino/{destino}', [HomeController::class, 'getTravels']);

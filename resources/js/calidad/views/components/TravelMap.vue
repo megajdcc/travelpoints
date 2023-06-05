@@ -148,7 +148,7 @@ export default {
             return {path:travel.ruta}
             break;
 
-          case 'Atraccion':
+          case 'Atracción':
             return { path: travel.ruta }
           break;
 

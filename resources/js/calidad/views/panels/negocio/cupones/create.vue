@@ -10,8 +10,9 @@ export default {
    
    
    setup(){
+      
       const {negocio} = toRefs(store.state.negocio)
-      onMounted(() => store.commit('cupones/clear'))
+      store.commit('cupones/clear');
 
       return () => h(form,{
 
@@ -31,8 +32,10 @@ export default {
                   
                   if(e.response.status === 422){
                      formValidate.setErrors(e.response.data.errors)
+                  }else{
+                        console.log(e)
                   }
-                  console.log(e)
+               
                })
 
             }

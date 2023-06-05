@@ -42,8 +42,8 @@ class CuponController extends Controller
 
 
     public function fetch(Cupon $cupon){
-        $cupon->load(['negocio','divisa']);
 
+        $cupon->load(['negocio','divisa']);
         return response()->json($cupon);
 
     }
@@ -120,6 +120,8 @@ class CuponController extends Controller
      */
     public function update(Request $request, Cupon $cupon)
     {
+
+        $datos = $this->validar($request,$cupon);
         try {
             DB::beginTransaction();
 
@@ -134,15 +136,14 @@ class CuponController extends Controller
                 Storage::disk('negocio_cupones')->put($imagen_name, File::get($imagen));
 
             }
-
+           
             $cupon->update([
-                ...[$this->validar($request)],
+                ...$datos,
                 ...['imagen' => isset($imagen_name) ? $imagen_name : $cupon->imagen]
             ]);
-
-
+            
+            $cupon->refresh();
            
-
             DB::commit();
             $result = true;
             $cupon->load(['negocio', 'divisa']);
@@ -178,6 +179,32 @@ class CuponController extends Controller
         }
 
         return response()->json(['result' => $result]);
+    }
+
+    public function reservar(Request $request){
+
+
+        $datos = $request->validate([
+            'cupon_id' => 'required',
+            'usuario_id' => 'required',
+        ]);
+
+        try {
+            DB::beginTransaction();
+                $cupon = Cupon::find($datos['cupon_id']);
+
+                $cupon->usuarios()->attach($datos['usuario_id'],['status' => 1]);
+                $cupon->disponibles--;
+                $cupon->save();
+            DB::commit();
+            $result =true;
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            $result = false;
+        }
+
+        return response()->json(['result' => $result ]);
+
     }
 
 }

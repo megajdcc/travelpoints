@@ -109,7 +109,12 @@ export default{
 
   props:{
     negocios:Array,
-    destino:Object,
+    destino:{
+      type:Object,
+      default:{
+        id:null
+      }
+    },
     atraccion: Object,
     titulo:{
       type:String,
@@ -138,14 +143,12 @@ export default{
       if(portada){
         return `/storage/negocios/fotos/${portada.imagen}`
       }
-
-
       return imagenes.length ? `/storage/negocios/fotos/${imagenes[0].imagen}` : ''
     }   
 
 
     onMounted(() => actions.refetchData());
-    watch(() => destino.value.id,() => actions.refetchData());
+    watch(() => destino.value.id, () => actions.refetchData());
 
     return {
       promedioCalificacion: computed({

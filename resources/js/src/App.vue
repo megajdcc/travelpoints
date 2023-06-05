@@ -1,13 +1,12 @@
 <template>
-  
-  <div id="app" :class="{ 'h-100' : route.meta.layout !=  'travel', ...skinClasses }" style="min-height:100%" >
+  <div id="app" :class="{ 'h-100': route.meta.layout != 'travel', ...skinClasses }" style="min-height:100%">
 
-      <component :is="layout">
-        <router-view />
-      </component>
-    
-      <scroll-to-top v-if="enableScrollToTop" />
-  
+    <component :is="layout">
+      <router-view />
+    </component>
+
+    <scroll-to-top v-if="enableScrollToTop" />
+
   </div>
 </template>
 
@@ -16,8 +15,15 @@
 import ScrollToTop from '@core/components/scroll-to-top/ScrollToTop.vue'
 
 import { $themeColors, $themeBreakpoints, $themeConfig } from '@themeConfig'
-import { watch,onMounted,toRefs,onActivated,computed } from 'vue'
+import { watch, onMounted, toRefs, onActivated, computed } from 'vue'
 
+import useAppConfig from '@core/app-config/useAppConfig'
+
+import { useWindowSize, useCssVar, useNetwork } from '@vueuse/core'
+
+import store from '@/store'
+
+import { Notification } from 'element-ui'
 
 import { useRoute } from 'vue2-helpers/vue-router';
 
@@ -55,7 +61,7 @@ export default {
     document.documentElement.setAttribute('dir', isRTL ? 'rtl' : 'ltr')
 
   },
- 
+
 
   setup(props) {
 
@@ -63,7 +69,7 @@ export default {
     const contentLayoutType = computed(() => store.state.appConfig.layout.type)
 
     const layout = computed(() => {
-      
+
       if (route.meta.layout === 'full') return 'layout-full'
       if (route.meta.layout === 'travel') return 'layout-travel'
       if (route.meta.layout === 'negocio') return 'layout-negocio'
@@ -71,6 +77,7 @@ export default {
       return `layout-${contentLayoutType.value}`
 
     })
+
     const { skin, skinClasses } = useAppConfig()
     const { enableScrollToTop } = $themeConfig.layout
     const { isOnline } = useNetwork();
@@ -81,7 +88,7 @@ export default {
     // Set Window Width in store
     store.commit('app/UPDATE_WINDOW_WIDTH', window.innerWidth)
     const { width: windowWidth } = useWindowSize()
-    
+
     watch(windowWidth, (val) => {
       store.commit('app/UPDATE_WINDOW_WIDTH', val)
     })
@@ -94,19 +101,20 @@ export default {
     // Cargar Sistema
     store.dispatch('sistema/fetch')
 
-  
-    watch(isOnline,(val) => {
 
-        if(!val){
-          Notification.info({
-            title:'Sin Internet',
-            message:"La conexíón ha caido, informalo a tú operadora",
-            position:'bottom-right'
-          })
+    watch(isOnline, (val) => {
 
-        }
+      if (!val) {
+        Notification.info({
+          title: 'Sin Internet',
+          message: "La conexíón ha caido, informalo a tú operadora",
+          position: 'bottom-right'
+        })
+
+      }
+
     })
-    
+
     return {
       skinClasses,
       enableScrollToTop,

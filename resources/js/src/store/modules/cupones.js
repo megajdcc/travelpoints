@@ -183,7 +183,17 @@ export default{
 
          })
 
+      },
+
+      reservar({commit},datos){
+         return new Promise((resolve, reject) => {
+            axios.post(`/api/cupons/reservar`,datos).then(({data}) => {
+               resolve(data)
+            }).catch(e => reject(e))
+
+         })
       }
+
    }
 
 }

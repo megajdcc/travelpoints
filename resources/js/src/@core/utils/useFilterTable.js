@@ -2,6 +2,7 @@ import {ref,watch,computed}  from 'vue'
 
 export default function useFilterTable(){
 
+   const items = ref([])
 
    const refTable = ref(null)
    const isSortDirDesc = ref(true)
@@ -37,6 +38,7 @@ export default function useFilterTable(){
 
    const dataMeta = computed(() => {
 
+      
       const localItemsCount = refTable.value ? refTable.value.localItems.length : 0
       
       return {
@@ -48,7 +50,8 @@ export default function useFilterTable(){
    })
 
    const refetchData = () => {
-      if (refTable.value) {
+
+      if(refTable.value){
          refTable.value.refresh()
       }
    }
@@ -69,6 +72,7 @@ export default function useFilterTable(){
       total,
       dataMeta,
       refetchData,
+      items,
       
    }
 

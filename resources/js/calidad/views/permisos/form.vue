@@ -1,7 +1,7 @@
 <template>
 	<b-card>
 
-		<validation-observer ref="formValidate" #default="{handleSubmit}">
+		<validation-observer ref="formValidate" #default="{ handleSubmit }">
 			<b-form @submit.prevent="handleSubmit(guardar)">
 				<b-container fluid>
 					<b-row>
@@ -11,7 +11,7 @@
 									Nombre del permiso | <span class="text-danger">*</span>
 								</template>
 
-								<validation-provider name="nombre" rules="required" #default="{errors}">
+								<validation-provider name="nombre" rules="required" #default="{ errors }">
 									<b-form-input v-model="formulario.nombre" :state="errors.length ? false : null" />
 									<b-form-invalid-feedback>
 										{{ errors[0] }}
@@ -22,13 +22,14 @@
 						</b-col>
 
 						<b-col cols="12" md="6">
-							<b-form-group >
+							<b-form-group>
 								<template #label>
 									Panel | <span class="text-danger">*</span>
 								</template>
-						
-								<validation-provider name="panel_id" rules="required" #default="{errors,valid}">
-									<v-select v-model="formulario.panel_id" :reduce="(option) => option.id" :options="panels" label="panel" />
+
+								<validation-provider name="panel_id" rules="required" #default="{ errors, valid }">
+									<v-select v-model="formulario.panel_id" :reduce="(option) => option.id" :options="panels"
+										label="panel" />
 									<b-form-invalid-feedback :state="valid">
 										{{ errors[0] }}
 									</b-form-invalid-feedback>
@@ -59,90 +60,103 @@
 			</b-form>
 		</validation-observer>
 	</b-card>
-
-
 </template> 
 
 
 <script>
 
 import {
-  BButton,
-  BMedia,
-  BAvatar,
-  BRow,
-  BCol,
-  BFormGroup,
-  BFormInput,
-  BForm,
-  BTable,
-  BCard,
-  BCardHeader,
-  BCardTitle,
-  BFormCheckbox,
-  BButtonGroup,
-  BFormInvalidFeedback,
-  BContainer,
+	BButton,
+	BMedia,
+	BAvatar,
+	BRow,
+	BCol,
+	BFormGroup,
+	BFormInput,
+	BForm,
+	BTable,
+	BCard,
+	BCardHeader,
+	BCardTitle,
+	BFormCheckbox,
+	BButtonGroup,
+	BFormInvalidFeedback,
+	BContainer,
 } from 'bootstrap-vue'
-	import { ValidationObserver,ValidationProvider } from 'vee-validate';
-	import {required } from '@validations'
-	import { regresar } from '@core/utils/utils';
-	import { ref,computed,toRefs,onMounted} from 'vue'
-	import store from '@/store'
-	import vSelect from 'vue-select'
+import { ValidationObserver, ValidationProvider } from 'vee-validate';
+import { required } from '@validations'
+import { regresar } from '@core/utils/utils';
 
-	export default{  
+import { ref, computed, toRefs, onMounted } from 'vue'
+import store from '@/store'
 
-		components: {
-			BButton,
-			BMedia,
-			BAvatar,
-			BRow,
-			BCol,
-			BFormGroup,
-			BFormInput,
-			BForm,
-			BTable,
-			BCard,
-			BCardHeader,
-			BCardTitle,
-			BFormCheckbox,
-			BButtonGroup,
-			BFormInvalidFeedback,
-			BContainer,
-			ValidationObserver,
-			ValidationProvider,
-			vSelect
-		},
+import vSelect from 'vue-select'
 
-		setup(props,{emit}){
+export default {
 
-				const formValidate = ref(null)
+	components: {
+		BButton,
+		BMedia,
+		BAvatar,
+		BRow,
+		BCol,
+		BFormGroup,
+		BFormInput,
+		BForm,
+		BTable,
+		BCard,
+		BCardHeader,
+		BCardTitle,
+		BFormCheckbox,
+		BButtonGroup,
+		BFormInvalidFeedback,
+		BContainer,
+		ValidationObserver,
+		ValidationProvider,
+		vSelect
+	},
 
-				const { permiso:formulario } = toRefs(store.state.permiso)
+	setup(props, { emit }) {
 
-				const {panels} = toRefs(store.state.panel)
-
-
-				const guardar = () => emit('save', formulario.value, formValidate.value)
-
-				const cargarForm = () => {
-
-					if(!panels.value.length){
-						store.dispatch('panel/getPanels')
-					}
-
-				}
-				cargarForm();
-
-				return{
-					required,
-					regresar,
-					guardar,
-					formulario,
-					loading:computed(() => store.state.loading),
-				}
+		const PickerOptions = ref({
+			disabledDate(time) {
+				return time.getTime() > Date.now()
 			}
-	} 
+		})
+		const formValidate = ref(null)
+
+		const { permiso: formulario } = toRefs(store.state.permiso)
+
+		const { panels } = toRefs(store.state.panel)
+
+
+		const guardar = () => {
+
+			emit('save', formulario.value, formValidate.value)
+
+		}
+
+		const cargarForm = () => {
+
+			if (!panels.value.length) {
+				store.dispatch('panel/getPanels')
+			}
+
+		}
+
+		onMounted(() => cargarForm())
+
+		return {
+			required,
+			regresar,
+			guardar,
+			formulario,
+			loading: computed(() => store.state.loading),
+			PickerOptions,
+			panels
+		}
+	}
+
+}
 
 </script>

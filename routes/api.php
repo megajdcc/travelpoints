@@ -389,9 +389,10 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
 
     Route::post('cupons/fetch/data', [CuponController::class, 'fetchData']);
     Route::get('cupons/{cupon}/fetch/data', [CuponController::class, 'fetch']);
+    Route::post('cupons/reservas/fetch-data',[CuponController::class,'fetchDataReservas']);
     Route::get('cupons/negocio/{negocio}/get/all', [CuponController::class, 'getAll']);
     Route::post('cupons/reservar',[CuponController::class,'reservar']);
-    
+    Route::get('cupons/reservas/{cupon}/cancelar/usuario/{usuario}',[CuponController::class,'cancelarReserva']);
     Route::resource('cupons', CuponController::class);
     
 

@@ -192,7 +192,21 @@ export default{
             }).catch(e => reject(e))
 
          })
+      },
+
+      fetchDataReservas({commit},datos) {
+         return new Promise((resolve, reject) => {
+            axios.post('/api/cupons/reservas/fetch-data',datos).then(({data}) => resolve(data))
+            .catch(e => reject(e));
+         })
+      },
+
+      reservaCancelar({commit},{cupon,usuario}){
+         return new Promise((resolve, reject) => {
+            axios.get(`/api/cupons/reservas/${cupon}/cancelar/usuario/${usuario}`).then(({data}) => resolve(data)).catch(e => reject(e))
+         })
       }
+
 
    }
 

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Negocio\Negocio;
 use App\Models\Negocio\Cupon;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
@@ -39,6 +40,35 @@ class CuponController extends Controller
         ]);
 
     }
+
+    public function fetchDataReservas(Request $request){
+
+        $filtro = $request->all();
+
+
+        $paginator = DB::table('cupon_usuario','cu')
+                        ->join('users as u','cu.usuario_id','u.id')
+                        ->when($filtro['cupon'] && !empty($filtro['cupon']), function($q) use($filtro){
+                            $q->where('cupon_id',$filtro['cupon']);
+                        })
+                        ->whereIn('status',[1,2])
+                        ->orderBy('usuario_id','asc')
+                        ->paginate($filtro['perPage']?: 10000);
+
+
+        $reservas = collect($paginator->items())->each(function($reserva,$key){
+            $reserva->id = $key;
+            $reserva->usuario = User::find($reserva->usuario_id);
+            $reserva->usuario->cargar();
+        });
+
+
+        return response()->json([
+            'reservas' => $reservas,
+            'total' => $paginator->total()
+        ]);
+    }
+
 
 
     public function fetch(Cupon $cupon){
@@ -186,7 +216,13 @@ class CuponController extends Controller
 
         $datos = $request->validate([
             'cupon_id' => 'required',
-            'usuario_id' => 'required',
+            'usuario_id' => ['required',function($attributo,$valor,$fail) use($request){
+                $cupon = Cupon::find($request->get('cupon_id'));
+
+                if($cupon->disponibles == 0){
+                    $fail('Este cupón no puede reservarse, no hay disponibilidad');
+                }
+            }],
         ]);
 
         try {
@@ -205,6 +241,23 @@ class CuponController extends Controller
 
         return response()->json(['result' => $result ]);
 
+    }
+
+    public function cancelarReserva(Cupon $cupon,User $usuario){
+
+        try {
+            DB::beginTransaction();
+            $usuario->cupones()->updateExistingPivot($cupon->id,['status' => 3]);
+            $cupon->disponibles++;
+            $cupon->save();
+            DB::commit();
+            $result = true;
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            $result = false;
+        }
+
+        return response()->json(['result' => $result]);
     }
 
 }

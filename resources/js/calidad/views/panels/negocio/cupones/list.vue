@@ -29,9 +29,11 @@
                      
                            <b-button-group size="sm">
 
-                              <b-button variant="warning" @click="reservarCupon(cupon)" title="Reservar Cupón" v-if="cupon.disponibles > 0 && $can('read', 'negocio cupones')">
+                              <b-button variant="warning" @click="reservarCupon(cupon)" title="Reservar Cupón" v-if="cupon.disponibles > 0 && $can('write', 'cupones reservaciones') && cupon.disponibles > 0">
                                  <font-awesome-icon icon="fas fa-user-check" />
                               </b-button>
+
+                              <b-button @click="mostrarModal(cupon)" variant="dark" v-if="$can('read','cupones reservaciones')">Reservaciones</b-button>
                         
                               <b-button :to="{ name: 'negocio.cupon.edit', params: { id: cupon.id } }" v-if="$can('update', 'negocio cupones')"
                                  variant="primary">
@@ -85,6 +87,8 @@
 
                         </section>
 
+                      
+
                      </b-card>
                   </b-col>
                </b-row>
@@ -126,6 +130,48 @@
         
       </b-sidebar>
 
+      <b-modal v-model="showReservas" centered size="xl" @hide="actions.refetchData()" hide-footer title="Reservaciones del cupón"> 
+            <listado :actions="reservasActions" hideFooter>
+               <template #contenido="{ fetchData, perPage, sortBy, isSortDirDesc, tableColumns }">
+                  <b-table ref="refTable" :items="fetchData" responsive :fields="tableColumns" primary-key="id" :sort-by="sortBy"
+                     empty-text="No se encontró ningúna reservación" :sort-desc="isSortDirDesc" sticky-header="700px"
+                     :no-border-collapse="false" borderless outlined :busy="loading" :perPage="perPage" showEmpty small stacked="md">
+               
+                     <template #cell(usuario_id)="{ item }">
+                        <b-media vertical-align="center">
+                           <template #aside>
+                              <b-avatar size="32" :src="item.usuario.avatar"
+                              :text="avatarText(`${item.usuario.nombre} ${item.usuario.apellido}`)" :variant="`light-primary`"
+                              :to="{ name: 'mostrar.usuario', params: { id: item.usuario.id } }" disabled />
+                           </template>
+                           <b-link :to="{ name: 'mostrar.usuario', params: { id: item.usuario.id } }" disabled
+                              class="font-weight-bold d-block text-nowrap">
+                              {{ `${item.usuario.nombre} ${item.usuario.apellido}` }}
+                           </b-link>
+                           <small class="text-muted" v-if="item.usuario.username">{{ item.usuario.username }}</small>
+                        </b-media>
+                     </template>
+               
+                     <template #cell(status)="{ item }">
+                        <span class="text-nowrap">{{ reservasActions.getStatus(item.status) }}</span>
+                     </template>
+               
+               
+                     <template #cell(actions)="{ item }">
+               
+                        <b-button-group size="sm">
+                  
+                           <b-button @click="reservasActions.eliminar(item.cupon_id,item.usuario_id)" variant="danger" v-if="$can('delete', 'cupones reservaciones') && item.status == 1">
+                              Cancelar
+                           </b-button>
+                        </b-button-group>
+                     </template>
+               
+                  </b-table>
+               </template>
+            </listado>
+      </b-modal>
+
    </section>
 
 </template>
@@ -137,6 +183,9 @@ import { toRefs, watch,ref,computed } from 'vue'
 
 import Listado from 'components/Listado.vue'
 import useCuponesList from './useCuponesList.js'
+import useReservaCuponList from './useReservaCuponList.js'
+import { avatarText } from '@core/utils/filter'
+
 import store from '@/store'
 import {
    ValidationObserver,
@@ -157,7 +206,14 @@ import {
    BSidebar,
    BForm,
    BFormGroup,
-   BFormInvalidFeedback
+   BFormInvalidFeedback,
+   BCollapse,
+   VBToggle,
+   BTable,
+   BMedia,
+   BLink,
+   BAvatar,
+   BModal
 
 
 } from 'bootstrap-vue'
@@ -184,15 +240,28 @@ export default {
       BForm,
       BFormGroup,
       BFormInvalidFeedback,
+      BCollapse,
+      BTable,
+      BMedia,
+      BLink,
+      BAvatar,
+      BModal,
       SelectUsuario:() => import('components/SelectUsuario.vue')
+   },
+
+   directives:{
+      'b-toggle':VBToggle
    },
 
    setup() {
 
       const { negocio } = toRefs(store.state.negocio)
       const actions = useCuponesList(negocio)
+    
       const cupon = ref({})
+      const reservasActions = useReservaCuponList(cupon);
       const showReserva = ref(false)
+      const showReservas = ref(false)
       const formValidate = ref(null)
       const {windowWidth} = toRefs(store.state.app)
       const formulario = ref({
@@ -237,6 +306,7 @@ export default {
 
       return {
          actions,
+         reservasActions,
          cupon,
          showReserva,
          reservarCupon,
@@ -244,6 +314,8 @@ export default {
          required,
          formValidate,
          formulario,
+         showReservas,
+         avatarText,
          loading:computed(() => store.state.loading),
          getVariantStatus:(cupo) => {
             let fecha_actual = moment();
@@ -270,8 +342,15 @@ export default {
 
          sidWidth:computed(() => {
             return windowWidth.value < 550 ? '320px' :'420px';
-         })
+         }),
 
+         mostrarModal: (cup) => {
+            cupon.value = cup 
+           
+            showReservas.value = !showReservas.value
+             reservasActions.refetchData();
+         },
+         refTable:reservasActions.refTable
 
       }
 

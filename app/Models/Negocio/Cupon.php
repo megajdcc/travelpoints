@@ -46,6 +46,12 @@ class Cupon extends Model
         return $this->belongsToMany(User::class, 'cupon_usuario', 'cupon_id', 'usuario_id')->withPivot(['status']);
     }
 
+    public function cargar(){
+        $this->divisa;
+        $this->usuarios;
+        $this->negocio;
+    }
+
     
 
 }

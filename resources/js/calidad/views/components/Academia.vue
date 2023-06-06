@@ -29,11 +29,15 @@
 
 
     <b-modal v-model="showContenido" size="lg" centered hide-footer lazy>  
-      <section class="d-flex justify-content-center flex-column flex-wrap w-100 align-items-center" v-if="contenido">
+      <section class="d-flex justify-content-center flex-wrap" v-if="contenido">
           <h3 class="text-uppercase" > {{  contenido.titulo  }}</h3>
-          <video class="mx-1 mb-1" height="300" v-for="(video, e) in contenido.videos" :key="e" controls >
+
+           <b-embed  class="mx-1 mb-1" type="iframe" :aspect="relation" v-for="(video, e) in contenido.videos" :key="e" :src="`/storage/multimedias/${video.url}`"
+                    allowfullscreen>
+            </b-embed>
+          <!-- <video class="mx-1 mb-1" height="300" v-for="(video, e) in contenido.videos" :key="e" controls >
               <source :src="`/storage/multimedias/${video.url}`">
-          </video>
+          </video> -->
           
           <el-divider content-position="left">Descripción</el-divider>
           <span class="" v-html="contenido.descripcion">
@@ -54,7 +58,8 @@ import {
   BRow,
   BCol,
   BNavItem,
-  BButton
+  BButton,
+  BEmbed
 } from 'bootstrap-vue'
 
 import {computed,ref,toRefs,onMounted} from 'vue'
@@ -69,8 +74,8 @@ export default{
     BRow,
     BCol,
     BNavItem,
-    BButton
-
+    BButton,
+    BEmbed
   },
 
   props:{
@@ -84,6 +89,8 @@ export default{
     const {usuario} = toRefs(store.state.usuario)
     const showContenido = ref(false)
     const academia = ref([])
+    const { windowWidth } = toRefs(store.state.app)
+
 
     const toggleAcademia = () => {
       show.value = !show.value
@@ -124,7 +131,10 @@ export default{
       academia,
       verVideo,
       showContenido,
-      contenido
+      contenido,
+      relation: computed(() => {
+        return windowWidth.value < 762 ? '4by3' : '21by9'
+      })
     }
 
   },

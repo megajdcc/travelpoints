@@ -24,7 +24,8 @@ export default{
          cliente:null,
          personas:1,
          reservacion_id:null,
-         reservacion:null
+         reservacion:null,
+         cupon_id:null
       },
 
 
@@ -63,7 +64,8 @@ export default{
 
             personas: 1,
             reservacion_id: null,
-            reservacion: null
+            reservacion: null,
+            cupon_id:null
          }
       },
 

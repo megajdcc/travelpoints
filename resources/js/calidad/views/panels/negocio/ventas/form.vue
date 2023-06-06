@@ -142,7 +142,90 @@
 
             </b-row>
 
+            <el-divider content-position="left" v-if="cupones.length">Cupones</el-divider>
+            
+            <b-row>
+               <b-col cols="12"  v-for="(cupon, i) in cupones" :key="i">
+                       <b-card no-body class="p-1 d-flex flex-column">
+
+                          <section class="d-flex justify-content-between align-items-md-center flex-wrap flex-column flex-md-row">
+                             <section class="d-flex align-items-md-center flex-md-row flex-column">
+                                <b-badge :variant="getVariantStatus(cupon)" class="mr-1">
+                                   {{ getStatusCupon(cupon) }}
+                                </b-badge>
+                                <strong class="text-warning">
+                                   Inicia: {{ cupon.expide | fecha('LL') }} & Termina: {{ cupon.vence | fecha('LL') }} | Disponibles: {{
+                                     cupon.disponibles }} | Valor: {{ cupon.precio | currency(cupon ? cupon.divisa.iso : '') }}
+                                </strong>
+
+                             </section>
+                     
+                             <b-button-group size="sm">
+
+                                <b-button variant="success" @click="aplicarCupon(cupon.id)" title="Aplicar Cupón" v-if="!formulario.cupon_id" >
+                                   <font-awesome-icon icon="fas fa-check" />
+                                   Aplicar Cupón
+                                </b-button>
+
+                                <b-button variant="danger" @click="quitarCupon(cupon.id)" title="Quitar Cupón" v-else >
+                                    <font-awesome-icon icon="fas fa-trash" />
+                                    Quitar Cupón
+                                </b-button>
+
+                               
+
+                             </b-button-group>
+
+                          </section>
+                          <hr>
+
+                          <section class="d-flex align-items-center justify-content-between flex-wrap flex-md-nowrap">
+
+                             <article class="d-flex justify-content-center flex-grow-0 flex-shrink-1">
+                                   <b-img :src="`/storage/negocios/cupones/${cupon.imagen}`" class="img-card" style="max-width:320px"/>
+                             </article>
+
+                             <main class="flex-grow-1 flex-chrink-0 mt-1 mt-md-0 ml-1">
+                           
+                                <h4 :title="cupon.nombre" class="text-warning">
+                                   {{ cupon.nombre }}
+                                </h4>
+                           
+                                <p class="text-justify" :title="cupon.nombre" >
+                                   {{ cupon.descripcion }}
+                                </p>
+
+                                <section class="d-flex justify-content-between flex-wrap flex-md-nowrap">
+                                   <article class="d-flex flex-column mr-md-1">
+                                      <strong class="text-warning font-weight-bolder">Condiciones</strong>
+                                      <p class="text-justify">
+                                         {{ cupon.condiciones }}
+                                      </p>
+                                   </article>
+
+                                   <article class="d-flex flex-column ">
+                                      <strong class="text-warning font-weight-bolder ">Restricciones</strong>
+                                      <p class="text-break text-justify">
+                                         {{ cupon.restricciones }}
+                                      </p>
+                                   </article>
+                             
+                                </section>
+
+                        
+                             </main>
+
+                          </section>
+
+                      
+
+                       </b-card>
+                    </b-col>
+            </b-row>
+
           </b-container>
+
+        
 
           <template #footer>
             <b-button-group size="sm">
@@ -175,6 +258,7 @@ import {ValidationObserver, ValidationProvider} from 'vee-validate'
 import {
   BForm,
   BCard,
+  BBadge,
   BContainer,
   BCol,
   BRow,
@@ -187,6 +271,7 @@ import {
   BInputGroupPrepend,
   VBTooltip,
   BFormSpinbutton,
+  BImg
 } from 'bootstrap-vue'
 
 import {required} from '@validations'
@@ -208,6 +293,7 @@ export default {
     BCard, BContainer,
     BCol,
     BRow,
+    BImg,
     BFormInvalidFeedback,
     BButtonGroup,
     BButton,
@@ -218,6 +304,7 @@ export default {
     BInputGroup,
     BInputGroupPrepend,
     BFormSpinbutton,
+    BBadge,
     vSelect,
     CurrencyInput:() => import('components/CurrencyInput.vue'),
 
@@ -235,8 +322,9 @@ export default {
   },
 
   setup(props,{emit}){
-    const formValidate = ref(null)
 
+    const formValidate = ref(null)
+    const cupones = ref([]);
     const {venta:formulario} = toRefs(store.state.venta)
     const {negocio} = toRefs(store.state.negocio)
     const search = ref('')
@@ -337,10 +425,13 @@ export default {
 
     } 
 
+
     const usuarioSeleccionado = (user) => {
+      cupones.value = [];
       formulario.value.cliente_id  = user.id
 
       verificarReservaciones(user.reservaciones)
+      cupones.value = user.cupones
     } 
     const cargarForm =() => {
 
@@ -390,6 +481,16 @@ export default {
 
     })
 
+    const aplicarCupon = (cupn) => {
+        formulario.value.cupon_id = cupn
+        toast.success("Cupón Aplicado con éxito")
+    }
+
+    const quitarCupon = () => {
+      formulario.value.cupon_id = null
+      toast.info("Cupón Quitado")
+    }
+
     return {
       reserva,
       search,
@@ -403,7 +504,9 @@ export default {
       optionsCurrency,
       negocio,
       tps,
+      cupones,
       cargarForm,
+      quitarCupon,
       getCurrency:computed(() => {
 
         const divisa = divisas.value.find(val => val.id === formulario.value.divisa_id)
@@ -422,7 +525,30 @@ export default {
 
       imageBanner: require('@images/banner/banner-travel.jpg'),
       comision_travel,
-      saldo_pos_venta
+      saldo_pos_venta,
+      aplicarCupon,
+      getVariantStatus: (cupo) => {
+        let fecha_actual = moment();
+
+        let fecha_inicio = moment(cupo.expide);
+        let fecha_termina = moment(cupo.vence);
+
+        return fecha_actual.isBetween(fecha_inicio, fecha_termina) ? 'success' : 'danger'
+
+      },
+      getStatusCupon: (cupo) => {
+        let fecha_actual = moment();
+
+        let fecha_inicio = moment(cupo.expide);
+        let fecha_termina = moment(cupo.vence);
+
+        if (fecha_actual.isAfter(fecha_termina)) {
+          return 'Expirado';
+        }
+
+        return fecha_actual.isBetween(fecha_inicio, fecha_termina) ? 'Activo' : 'No activo'
+
+      },
       
 
     }
@@ -432,10 +558,11 @@ export default {
 
 <style lang="scss">
 .altura-container-search{
-    height:160px;
+    height: auto;
     display: flex;
     align-items: stretch;
     flex-direction: column;
     justify-content: center;
+    max-height: 200px;
   }
 </style>

@@ -119,7 +119,8 @@ class VentaController extends Controller
             'reservacion_id' => 'nullable',
             'model_id' => 'required',
             'model_type' => 'required',
-            'cantidad' => 'nullable'
+            'cantidad' => 'nullable',
+            'cupon_id' => 'nullable'
         ]);
     }
 
@@ -143,7 +144,12 @@ class VentaController extends Controller
             if($venta->empleado_id = Empleado::where('negocio_id',$venta->model_id)->where('usuario_id', $request->user()->id)->first()?->id){
                 $venta->save();
             }
-        
+            
+            // Aplicar Cupon
+            if(isset($datos['cupon_id']) && !is_null($datos['cupon_id'])){
+                $venta->cliente->cupones()->updateExistingPivot($datos['cupon_id'],['status' => 2]);
+            }
+
             $monto = number_format((float) $venta->monto,2,'.',',') .' '.$venta->divisa->iso;
 
             // Comision Viajero Tps

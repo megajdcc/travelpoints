@@ -795,7 +795,7 @@ class User extends Authenticatable
         $this->reservacionesOperadas;
         $this->recomendaciones;
         $this->seguidos;
-        $this->cupones;
+        $this->cupones->each(fn($cupon) => $cupon->cargar());
         $this->carritoCompra;
         $this->datosPago?->cargar();
         $this->retiros;

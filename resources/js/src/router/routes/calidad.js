@@ -381,6 +381,56 @@ export default [
    },
 
    /*****************************************/
+   /* Promotores
+   /*************************************** */
+   {
+      path:'/promotores',
+      name:'promotores',
+      component:() => import('views/promotores/index.vue'),
+      children:[
+         {
+            path:'',
+            name:'promotores.list',
+            component:() => import('views/promotores/list.vue'),
+            meta:{
+               pageTitle:'Promotores',
+               resource:'promotores',
+               action:'read',
+               breadcrumb:[
+                  {text:'Listado',active:true}
+               ]
+            }
+         }
+      ]
+   },
+
+   /*****************************************/
+   /* Lideres
+   /*************************************** */
+   {
+      path:'/lideres',
+      name:'lideres',
+      component:() => import('views/promotores/index.vue'),
+      children:[
+         {
+            path:'',
+            name:'lideres.list',
+            component:() => import('views/lideres/list.vue'),
+            meta:{
+               pageTitle:'Lideres',
+               resource:'lideres',
+               action:'read',
+               breadcrumb:[
+                  {text:'Listado',active:true}
+               ]
+            }
+         }
+      ]
+   },
+
+
+
+   /*****************************************/
    /* Movimientos de Cuenta del sistema
    /*************************************** */
    {
@@ -3111,10 +3161,6 @@ export default [
          action:"read"
       }
    },
-
-
-
-
 
    /*****************************************/
    /* PAGINA DE Mantenimiento

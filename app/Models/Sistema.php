@@ -55,7 +55,6 @@ class Sistema extends Model
         $this->imagenes;
         $this->videos;
         $this->sucursales->load(['estado.pais','iata','telefonos']);
-
     }
 
 
@@ -152,12 +151,12 @@ class Sistema extends Model
 
 
     
-    public function adjudicarComisiones($tps, Venta $venta){
+    public function adjudicarComisiones($comision, Venta $venta){
 
         $monto = number_format((float) $venta->monto, 2, '.', ',') . ' ' . $venta->divisa->iso;
         
         $movimiento = $this->generarMovimiento(
-            $this->divisa->convertir($venta->divisa, $tps),
+            $this->divisa->convertir($venta->divisa, $comision),
             "Consumo de cliente {$venta->cliente->nombre} {$venta->cliente->apellido} por un monto de:{$monto}.", 
             Movimiento::TIPO_INGRESO);
         

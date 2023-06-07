@@ -173,8 +173,6 @@ class VentaController extends Controller
             $sistema->adjudicarComisiones($comision_travel,$venta);
             // dd($venta);
             $sistema->refresh();
-
-
           
             $venta->cargar();
 

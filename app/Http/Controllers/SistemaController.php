@@ -291,10 +291,9 @@ class SistemaController extends Controller
             'CJ-Access-Token' => $token
             ])
             ->get('https://developers.cjdropshipping.com/api2.0/v1/setting/get');
-
             if($response->ok()){
                 $data = $response->object();
-
+               
                 if($data->result){
 
                     $sistema->cjdropshipping = [
@@ -349,7 +348,6 @@ class SistemaController extends Controller
         if ($response->ok()) {
             $result = true;
             $data = $response->object();
-
             if($data->result){
                 $sistema->cjdropshipping = [
                     'accessToken'            => $data->data->accessToken,

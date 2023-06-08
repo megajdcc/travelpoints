@@ -3,7 +3,7 @@
     <b-row class="auth-inner m-0">
 
       <!-- Brand logo-->
-      <logo :url="{name:'inicio'}"/>
+      <logo :url="{ name: 'inicio' }" />
       <!-- /Brand logo-->
 
       <!-- Left Text-->
@@ -12,12 +12,12 @@
           <!-- Cambiar a imagen nueva de travelpoints esperando por Mario -->
           <!-- <b-img fluid :src="imgUrl" alt="Login V2" />
            -->
-           <section class="video-travel">
-              <!-- <video loop muted autoplay controls="false">
+          <section class="video-travel">
+            <!-- <video loop muted autoplay controls="false">
                   <source src="/storage/animation_travel.webm" type="video/webm">
                 
               </video> -->
-            </section>
+          </section>
 
         </div>
       </b-col>
@@ -37,12 +37,12 @@
           </b-alert>
 
           <!-- form -->
-          <validation-observer ref="formValidate" #default="{invalid,handleSubmit}">
+          <validation-observer ref="formValidate" #default="{ invalid, handleSubmit }">
             <b-form class="auth-login-form mt-2" @submit.prevent="handleSubmit(iniciar)">
               <!-- email -->
               <b-form-group label="Email" label-for="login-email">
                 <validation-provider #default="{ errors }" name="Email" vid="email" rules="required|email">
-                  <b-form-input id="login-email" v-model="formulario.email" :state="errors.length > 0 ? false:null"
+                  <b-form-input id="login-email" v-model="formulario.email" :state="errors.length > 0 ? false : null"
                     name="login-email" placeholder="david@example.com" autocomplete="username" />
                   <small class="text-danger">{{ errors[0] }}</small>
                 </validation-provider>
@@ -52,22 +52,21 @@
               <b-form-group>
                 <div class="d-flex justify-content-between">
                   <label for="login-password">Contraseña</label>
-                  <b-link :to="{name:'auth-forgot-password'}">
+                  <b-link :to="{ name: 'auth-forgot-password' }">
                     <small>Olvidaste la contraseña?</small>
                   </b-link>
                 </div>
                 <validation-provider #default="{ errors }" name="Password" vid="password" rules="required">
-                  <b-input-group class="input-group-merge" :class="errors.length > 0 ? 'is-invalid':null">
+                  <b-input-group class="input-group-merge" :class="errors.length > 0 ? 'is-invalid' : null">
                     <b-form-input id="login-password" v-model="formulario.password"
-                      :state="errors.length > 0 ? false:null" class="form-control-merge" :type="passwordFieldType"
+                      :state="errors.length > 0 ? false : null" class="form-control-merge" :type="passwordFieldType"
                       name="login-password" placeholder="Password" autocomplete="current-password" />
                     <b-input-group-append is-text>
-                      <feather-icon class="cursor-pointer" :icon="passwordToggleIcon"
-                        @click="togglePasswordVisibility" />
+                      <feather-icon class="cursor-pointer" :icon="passwordToggleIcon" @click="togglePasswordVisibility" />
                     </b-input-group-append>
                   </b-input-group>
                   <b-form-invalid-feedback>
-                    {{errors[0]}}
+                    {{ errors[0] }}
                   </b-form-invalid-feedback>
 
                 </validation-provider>
@@ -87,12 +86,15 @@
               <b-button type="submit" variant="primary" block :disabled="invalid" v-loading="loading">
                 Iniciar
               </b-button>
-              <b-button @click="authenticarGoogle(optionsAuth)"  variant="primary" block  v-loading="loading">
+
+              <b-button @click="authenticarGoogle(optionsAuth)" variant="primary" block v-loading="loading">
                 Google Auth
               </b-button>
-              <b-button :to="{ name: 'register' }" variant="warning" v-loading="loading" block >
-                  Registrate
+
+              <b-button :to="{ name: 'register' }" variant="warning" v-loading="loading" block>
+                Registrate
               </b-button>
+
             </b-form>
           </validation-observer>
 
@@ -107,6 +109,10 @@
       </b-col>
       <!-- /Login-->
     </b-row>
+
+
+
+
   </div>
 </template>
 
@@ -136,8 +142,9 @@ import {
 import { required, email } from '@validations'
 import { togglePasswordVisibility } from '@core/mixins/ui/forms'
 import store from '@/store/index'
-import {computed} from 'vue';
+import { computed, toRefs, onMounted } from 'vue';
 import useAuth from '@core/utils/useAuth'
+
 import '@core/scss/vue/libs/toastification.scss'
 import ToastificationContent from '@core/components/toastification/ToastificationContent'
 import router from '@/router'
@@ -166,7 +173,7 @@ export default {
     ValidationProvider,
     ValidationObserver,
     BFormInvalidFeedback,
-    Logo:() => import('components/Logo')
+    Logo: () => import('components/Logo')
   },
   mixins: [togglePasswordVisibility],
   data() {
@@ -189,8 +196,10 @@ export default {
     },
   },
 
-  setup(props){
-    
+
+
+  setup(props) {
+
     const usuario = computed(() => store.state.usuario.usuario)
     const { appName, appLogoImage, applogoImageWhite } = $themeConfig.app
 
@@ -203,66 +212,65 @@ export default {
       optionsAuth
     } = useAuth();
 
-     onMounted(() => localStorage.removeItem('destino_id'))
+    onMounted(() => localStorage.removeItem('destino_id'))
 
-    const iniciar  = ()  => {
+    const iniciar = () => {
 
 
       login().then((result) => {
 
-        if(result){
+        if (result) {
 
           router.replace(getHomeRouteForLoggedInUser(usuario.value.rol.nombre)).then(
             () => {
-            toast({
-                 component: ToastificationContent,
-                 props: {
-                    title: `Bienvenido ${ usuario.value.nombre || usuario.value.username}`,
-                    icon: 'CoffeeIcon',
-                    variant: 'success',
-                    text: `Ha iniciado sesión correctamente como ${usuario.value.rol.nombre}. ¡Ahora puedes empezar a explorar!`,
-                 },
+              toast({
+                component: ToastificationContent,
+                props: {
+                  title: `Bienvenido ${usuario.value.nombre || usuario.value.username}`,
+                  icon: 'CoffeeIcon',
+                  variant: 'success',
+                  text: `Ha iniciado sesión correctamente como ${usuario.value.rol.nombre}. ¡Ahora puedes empezar a explorar!`,
+                },
               }, {
-                 position: 'bottom-right',
-                 timeout: 4000
+                position: 'bottom-right',
+                timeout: 4000
               })
             })
 
-        }else{
+        } else {
 
-            toast({
-                component: ToastificationContent,
-                props: {
-                  title: `No pudimos autenticarte, inténtelo de nuevo`,
-                  icon: 'HelpCircleIcon',
-                  variant: 'danger',
-                },
-            }, {
-                position: 'bottom-right',
-                timeout: 4000
-            })
-        
+          toast({
+            component: ToastificationContent,
+            props: {
+              title: `No pudimos autenticarte, inténtelo de nuevo`,
+              icon: 'HelpCircleIcon',
+              variant: 'danger',
+            },
+          }, {
+            position: 'bottom-right',
+            timeout: 4000
+          })
+
         }
-
 
 
       }).catch(e => {
 
-        if(e.response.status === 401){
-          if(!e.response.data.result){
-             toast.info(e.response.data.message)
+        if (e.response.status === 401) {
+          if (!e.response.data.result) {
+            toast.info(e.response.data.message)
           }
-         
+
         }
 
       })
     }
 
-    return{
+    return {
       login,
       required,
-      loading:computed(() => store.state.loading),
-      auth:computed(() => store.state.auth),
+      loading: computed(() => store.state.loading),
+      auth: computed(() => store.state.auth),
       formValidate,
       formulario,
       iniciar,
@@ -270,35 +278,35 @@ export default {
       appName,
       authenticarGoogle,
       optionsAuth
-     
+
 
     }
   }
 
-  
+
 }
 </script>
 
 <style lang="scss">
 @import '~@core/scss/vue/pages/page-auth.scss';
 
-.brand-logo img{
+.brand-logo img {
   width: auto;
   height: auto;
 }
 
-.video-travel{
-  
+.video-travel {
+
   width: 100%;
   height: 500px;
-  background-image:url('/storage/animation_travel.gif');
-  background-repeat:no-repeat;
-  background-position:center center;
-  background-size:contain;
+  background-image: url('/storage/animation_travel.gif');
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: contain;
 
-  video{
-    height:100%;
-    width:100%;
+  video {
+    height: 100%;
+    width: 100%;
   }
 }
 
@@ -313,6 +321,4 @@ video::-webkit-media-controls-enclosure {
 video::-webkit-media-controls-panel {
   display: none !important;
 }
-
-
 </style>

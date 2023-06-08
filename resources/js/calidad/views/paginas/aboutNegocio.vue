@@ -70,7 +70,7 @@ import {
 import useAuth from '@core/utils/useAuth';
 
 import { onMounted } from 'vue'
-
+import sales from '@/assets/images/illustration/marketing.svg'
 export default {
    components: {
       BContainer,
@@ -91,7 +91,7 @@ export default {
       onMounted(() => authGoogle())
 
       return {
-         sales: require('@/assets/images/illustration/marketing.svg')
+         sales
       }
 
    },

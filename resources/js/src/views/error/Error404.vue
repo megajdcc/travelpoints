@@ -71,5 +71,5 @@ export default {
 </script>
 
 <style lang="scss">
-@import '~@core/scss/vue/pages/page-misc.scss';
+@import '@core/scss/vue/pages/page-misc.scss';
 </style>

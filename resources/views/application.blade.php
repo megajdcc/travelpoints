@@ -10,13 +10,8 @@
   <link rel="manifest" href="/manifest.json">
 
   <title>TravelPoints</title>
-
-  <!-- Splash Screen/Loader Styles -->
-  <link rel="stylesheet" type="text/css" href="{{ mix('css/loader.css') }}" />
-
   <!-- Styles -->
-  <link rel="stylesheet" href="{{ mix('css/app.css') }}">
-
+  @vite(['resources/scss/app.scss','resources/scss/loader.css', 'resources/js/app.js'])
   <!-- Favicon -->
   <link rel="shortcut icon" href="{{ asset('favicons/favicon-8x8.png') }}">
   <script src="https://accounts.google.com/gsi/client" async defer ></script>
@@ -52,9 +47,9 @@
 
   @endif
 
-    <script src="{{ mix('js/manifest.js')}}"></script>
+    {{-- <script src="{{ mix('js/manifest.js')}}"></script>
     <script src="{{ mix('js/vendor.js')}}"></script>
-    <script src="{{ mix('js/app.js')}}"></script>
+    <script src="{{ mix('js/app.js')}}"></script> --}}
   
   </body>
 

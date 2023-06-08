@@ -216,5 +216,5 @@ export default {
 </script>
 
 <style lang="scss">
-@import '~@core/scss/vue/pages/page-auth.scss';
+@import '@core/scss/vue/pages/page-auth.scss';
 </style>

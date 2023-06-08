@@ -253,7 +253,7 @@
 
 import {ValidationObserver, ValidationProvider} from 'vee-validate'
 
-
+import imageBanner from '@images/banner/banner-travel.jpg'
 
 import {
   BForm,
@@ -523,7 +523,7 @@ export default {
       divisa:computed(() => negocio.value.divisa),
       loading:computed(() => store.state.loading),
 
-      imageBanner: require('@images/banner/banner-travel.jpg'),
+      imageBanner,
       comision_travel,
       saldo_pos_venta,
       aplicarCupon,

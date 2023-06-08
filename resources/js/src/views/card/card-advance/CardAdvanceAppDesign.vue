@@ -33,7 +33,7 @@
         Members
       </h6>
       <b-avatar
-        :src="require('@/assets/images/portrait/small/avatar-s-9.jpg')"
+        :src="avatarS9"
         size="34"
         class="mr-1"
       />
@@ -44,12 +44,12 @@
         class="mr-1"
       />
       <b-avatar
-        :src="require('@/assets/images/portrait/small/avatar-s-14.jpg')"
+        :src="avatarS14"
         size="34"
         class="mr-1"
       />
       <b-avatar
-        :src="require('@/assets/images/portrait/small/avatar-s-20.jpg')"
+        :src="avatarS20"
         size="34"
         class="mr-1"
       />
@@ -105,7 +105,9 @@ import {
   BCard, BBadge, BCardTitle, BCardText, BAvatar, BButton,
 } from 'bootstrap-vue'
 import Ripple from 'vue-ripple-directive'
-
+import avatarS9 from  '@/assets/images/portrait/small/avatar-s-9.jpg'
+import avatarS14 from '@/assets/images/portrait/small/avatar-s-14.jpg'
+import avatarS20 from '@/assets/images/portrait/small/avatar-s-20.jpg'
 export default {
   components: {
     BCard,
@@ -118,5 +120,14 @@ export default {
   directives: {
     Ripple,
   },
+
+  setup(){
+
+    return {
+      avatarS9,
+      avatarS14,
+      avatarS20
+    }
+  }
 }
 </script>

@@ -4,7 +4,7 @@ import router from '@/router'
 import {ref,computed} from 'vue'
 import { initialAbility } from '@/libs/acl/config'
 import ability from '@/libs/acl/ability'
-import ToastificationContent from '@core/components/toastification/ToastificationContent'
+import ToastificationContent from '@core/components/toastification/ToastificationContent.vue'
 
 export default function useAuth(){
 

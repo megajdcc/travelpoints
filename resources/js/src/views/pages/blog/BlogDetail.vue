@@ -446,5 +446,5 @@ export default {
 </script>
 
 <style lang="scss">
-@import '~@core/scss/vue/pages/page-blog.scss';
+@import '@core/scss/vue/pages/page-blog.scss';
 </style>

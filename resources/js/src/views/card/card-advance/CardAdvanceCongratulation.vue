@@ -5,11 +5,11 @@
   >
     <!-- images -->
     <b-img
-      :src="require('@/assets/images/elements/decore-left.png')"
+      :src="decoreleft"
       class="congratulations-img-left"
     />
     <b-img
-      :src="require('@/assets/images/elements/decore-right.png')"
+      :src="decoreRight"
       class="congratulations-img-right"
     />
     <!--/ images -->
@@ -37,6 +37,8 @@
 import {
   BCard, BImg, BAvatar, BCardText,
 } from 'bootstrap-vue'
+import decoreleft from '@/assets/images/elements/decore-left.png'
+import decoreRight from '@/assets/images/elements/decore-right.png'
 
 export default {
   components: {
@@ -45,5 +47,13 @@ export default {
     BImg,
     BCardText,
   },
+
+
+  setup(){
+    return {
+      decoreleft,
+      decoreRight
+    }
+  }
 }
 </script>

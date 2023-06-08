@@ -73,8 +73,8 @@
 
 
       </b-container>
-      <vue-gallery-slideshow v-if="imagenes" :images="imagenes.map(val => `${pathImagenes}${val.imagen}`)"
-         :index="index" @close="index = null"></vue-gallery-slideshow>
+      <!-- <vue-gallery-slideshow v-if="imagenes" :images="imagenes.map(val => `${pathImagenes}${val.imagen}`)"
+         :index="index" @close="index = null"></vue-gallery-slideshow> -->
    </b-card>
 </template>
 
@@ -83,7 +83,7 @@
 import { computed, toRefs, ref, onMounted } from 'vue'
 
 import store from '@/store'
-import VueGallerySlideshow from 'vue-gallery-slideshow';
+// import VueGallerySlideshow from 'vue-gallery-slideshow';
 import { ValidationProvider, ValidationObserver } from 'vee-validate'
 import VuePerfectScrollbar from 'vue-perfect-scrollbar'
 import {regresar} from '@core/utils/utils'

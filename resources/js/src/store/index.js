@@ -163,6 +163,7 @@ import pagina from './modules/pagina.js';
 
 Vue.use(Vuex)
 
+
 export default new Vuex.Store({
 
   
@@ -314,6 +315,6 @@ export default new Vuex.Store({
     academiaVideos,
     pagina
   },
-  strict: process.env.DEV,
+  strict:import.meta.env.DEV,
 
 })

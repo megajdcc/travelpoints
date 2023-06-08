@@ -15,7 +15,7 @@ import store from '@/store'
 const router = new VueRouter({
   
   mode: 'history',
-  base: process.env.BASE_URL,
+  base: import.meta.env.BASE_URL,
   // base:'/',
   scrollBehavior() {
     return { x: 0, y: 0 }

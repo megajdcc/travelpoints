@@ -382,5 +382,5 @@ export default {
 </script>
 
 <style lang="scss">
-@import '~@core/scss/vue/pages/ui-feather.scss';
+@import '@core/scss/vue/pages/ui-feather.scss';
 </style>

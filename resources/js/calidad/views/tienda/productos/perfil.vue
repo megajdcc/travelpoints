@@ -411,7 +411,6 @@ import {
 import vSelect from 'vue-select'
 
 import {required} from '@validations'
-import * as VueGoogleMaps from 'vue2-google-maps'
 import {
   BCard, BCardBody, BRow, BCol, BImg, BCardText, BLink, BButton, BDropdown, BDropdownItem, BAlert,
   BCarousel,

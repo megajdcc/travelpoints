@@ -40,6 +40,9 @@ import VuexyLogo from '@core/layouts/components/Logo.vue'
 import store from '@/store/index'
 import { getHomeRouteForLoggedInUser } from '@/auth/utils'
 import { mapState } from 'vuex';
+import downImg from '@/assets/images/pages/not-authorized.svg'
+import downImgDark from '@/assets/images/pages/not-authorized-dark.svg'
+import {computed,toRefs} from 'vue';
 
 export default {
   components: {
@@ -48,36 +51,34 @@ export default {
     BButton,
     VuexyLogo,
   },
-  data() {
+
+  setup(){
+    const {layout} = toRefs(store.state.appConfig)
+    const {usuario}  = toRefs(store.state.usuario)
+
+    const  loginRoute = () => {
+
+      if(usuario.value.id){
+        router.push('/home')
+      }else{
+        router.push({ name: 'login' })
+      }
+    }
+
     return {
-      downImg: require('@/assets/images/pages/not-authorized.svg'),
+      downImg,
+      imgUrl:computed(() => {
+        return layout.value.skin === 'dark' ? downImgDark : downImg
+      }),
+      usuario,
+      loginRoute
+      
     }
   },
-  computed: {
-    ...mapState('usuario',['usuario']),
-    imgUrl() {
-      if (store.state.appConfig.layout.skin === 'dark') {
-        // eslint-disable-next-line vue/no-side-effects-in-computed-properties
-        this.downImg = require('@/assets/images/pages/not-authorized-dark.svg')
-        return this.downImg
-      }
-      return this.downImg
-    },
-  },
-  methods: {
-    loginRoute() {
 
-      if(this.usuario.id){
-         this.$router.push('/home')
-      }else{
-         this.$router.push({name:'login'})
-      }
-     
-    },
-  },
 }
 </script>
 
 <style lang="scss">
-@import '~@core/scss/vue/pages/page-misc.scss';
+@import '@core/scss/vue/pages/page-misc.scss';
 </style>

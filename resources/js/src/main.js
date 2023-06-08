@@ -46,9 +46,9 @@ import '@/libs/tour'
 // import '@/libs/markdown-editor'
 
 import VueCurrencyFilter from 'vue-currency-filter'
-import moment from 'moment';
 
-window.moment = require('moment');
+import moment from 'moment'
+window.moment = moment
 moment.locale('es')
 
 // Swiper
@@ -90,22 +90,17 @@ Vue.use(ModalPlugin)
 Vue.use(ElementUI);
 
 
-
-
 // Feather font icon - For form-wizard
 // * Shall remove it if not using font-icons of feather-icons - For form-wizard
-require('@core/assets/fonts/feather/iconfont.css') // For form-wizard
+import '@core/assets/fonts/feather/iconfont.css' // For form-wizard
 
 // import core styles
-require('@core/scss/core.scss')
+import '@core/scss/core.scss'
 
 // import assets styles
-require('@/assets/scss/style.scss')
+import '@/assets/scss/style.scss'
 
 Vue.config.productionTip = false
-
-
-
 
 window.clone = function (obj) {
   return JSON.parse(JSON.stringify(obj));
@@ -161,7 +156,8 @@ window.colorRand = () => {
 
 }
 
-window.$ = window.jQuery = require('jquery');
+import jQuery from 'jquery';
+window.$ = window.jQuery = jQuery
 
 
 import VueMask from 'v-mask'
@@ -231,36 +227,6 @@ Vue.use(HighchartsVue,{
   Highcharts:Highcharts
 });
 
-// Laravel Echo
-
-// import Echo from 'laravel-echo';
-
-// window.Pusher = require('pusher-js');
-
-
-// window.Echo = new Echo({
-//   broadcaster: 'pusher',
-//   key: process.env.MIX_PUSHER_APP_KEY,
-//   cluster: process.env.MIX_PUSHER_APP_CLUSTER,
-//   encrypted:true,
-//   wsPort: 6001,
-//   wssPort:6001,
-//   wsHost:'ws.bodayplaya.com',
-//   disableStats: true,
-//   forceTLS: true,
-//   enabledTransports: ['ws','wss']
-// });
-
-// import VueEcho from 'vue-echo-laravel';
-
-// Vue.use(VueEcho, lecho);
-
-// Conekta
-
-// window.conekta = require('conekta');
-// conekta.api_key = 'key_OsW8LuyVL6ESxfQWduVKzEw';
-// conekta.locale = 'es';
-
 /* import the fontawesome core */
 import { library } from '@fortawesome/fontawesome-svg-core'
 
@@ -279,8 +245,8 @@ library.add(fas,fab,far)
 Vue.component('font-awesome-icon', FontAwesomeIcon)
 Vue.config.productionTip = false
 
-window._ = require('lodash');
-
+import _ from 'lodash';
+window._ = _;
 
 let app = new Vue({
   router,

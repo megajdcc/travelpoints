@@ -249,7 +249,6 @@ export default {
          destinoSeleccionado,
          irAtraccion: (atrac) => router.push({ name: 'edit.atraccion', params: { id: atrac.id } }),
          loading: computed(() => store.state.loading),
-         // imageBanner: require('@images/banner/banner-travel.jpg'),
          imageBanner: computed(() => `/storage/${sistema.value.banner_principal}`),
          getDestinoName: computed(() => {
             if (destino_id.value && destinos.value.length) {

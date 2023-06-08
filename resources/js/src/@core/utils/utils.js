@@ -15,6 +15,11 @@ import { Pagination, Navigation } from "swiper";
 
 const modules = [Pagination,Navigation] ;
 
+
+import xlsImg from '@/assets/images/icons/xls.png';
+import pdfImg from '@/assets/images/icons/pdf.png'
+import docImg from '@/assets/images/icons/doc.png'
+import unknownImg from '@/assets/images/icons/unknown.png'
 export const isToday = date => {
   const today = new Date()
   return (
@@ -277,23 +282,23 @@ export const getImage = (archivo) => {
       break;
 
     case 'xls':
-      return require('@/assets/images/icons/xls.png')
+      return xlsImg
     break;
 
     case 'xlsx':
-      return require('@/assets/images/icons/xls.png')
+      return xlsImg
     break;
 
     case 'pdf':
-      return require('@/assets/images/icons/pdf.png')
+      return pdfImg
     break;
 
     case 'doc':
-      return require('@/assets/images/icons/doc.png')
+      return docImg
     break;
   
     default:
-      return require('@/assets/images/icons/unknown.png')
+      return unknownImg
     break;
   }
 

@@ -347,5 +347,5 @@ export default {
 </script>
 
 <style lang="scss">
-@import '~@core/scss/vue/pages/page-pricing.scss';
+@import '@core/scss/vue/pages/page-pricing.scss';
 </style>

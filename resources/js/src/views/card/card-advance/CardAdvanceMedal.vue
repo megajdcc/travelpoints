@@ -14,7 +14,7 @@
       View Sales
     </b-button>
     <b-img
-      :src="require('@/assets/images/illustration/badge.svg')"
+      :src="badgeImg"
       class="congratulation-medal"
       alt="Medal Pic"
     />
@@ -26,7 +26,7 @@ import {
   BCard, BCardText, BLink, BButton, BImg,
 } from 'bootstrap-vue'
 import Ripple from 'vue-ripple-directive'
-
+import badgeImg from '@/assets/images/illustration/badge.svg'
 export default {
   components: {
     BCard,
@@ -38,5 +38,12 @@ export default {
   directives: {
     Ripple,
   },
+
+
+  setup(){
+    return{
+      badgeImg  
+    }
+  }
 }
 </script>

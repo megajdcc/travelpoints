@@ -32,6 +32,8 @@
 
 <script>
 import { BNavItemDropdown, BDropdownItem, BImg } from 'bootstrap-vue'
+import esImg from '@/assets/images/flags/es.png'
+import enImg from '@/assets/images/flags/en.png'
 
 export default {
   components: {
@@ -51,15 +53,15 @@ export default {
 
       {
         locale: 'es',
-        img: require('@/assets/images/flags/es.png'),
+        img: esImg,
         name: 'Español',
       },
 
-      // {
-      //   locale: 'en',
-      //   img: require('@/assets/images/flags/en.png'),
-      //   name: 'English',
-      // },
+      {
+        locale: 'en',
+        img: enImg,
+        name: 'English',
+      },
     
     ]
     /* eslint-disable global-require */

@@ -4,8 +4,8 @@
             <b-img v-for="({imagen},i) in imagenes" :key="i" :src="imagen" thumbnail @click="index = i" class="imagen"></b-img>
          </vue-perfect-scrollbar>
 
-         <vue-gallery-slideshow v-if="imagenes" :images="imagenes.map(val => val.imagen)" :index="index"
-            @close="index = null"></vue-gallery-slideshow>
+         <!-- <vue-gallery-slideshow v-if="imagenes" :images="imagenes.map(val => val.imagen)" :index="index"
+            @close="index = null"></vue-gallery-slideshow> -->
       </b-modal>
 </template>
 
@@ -21,7 +21,7 @@ import {
 } from 'bootstrap-vue'
 
 import {computed,toRefs,ref} from 'vue'
-import VueGallerySlideshow from 'vue-gallery-slideshow';
+// import VueGallerySlideshow from 'vue-gallery-slideshow';
 import VuePerfectScrollbar from 'vue-perfect-scrollbar'
 
 export default {

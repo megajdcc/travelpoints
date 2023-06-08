@@ -67,7 +67,7 @@ import {
 } from 'bootstrap-vue'
 import useAuth from '@core/utils/useAuth';
 import { onMounted } from 'vue'
-
+import sales from '@/assets/images/illustration/sales.svg'
 export default {
    components: {
       BContainer,
@@ -88,7 +88,7 @@ export default {
 
 
       return {
-         sales: require('@/assets/images/illustration/sales.svg')
+         sales
       }
 
    },

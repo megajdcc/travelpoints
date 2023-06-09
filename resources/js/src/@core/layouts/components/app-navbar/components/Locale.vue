@@ -55,11 +55,11 @@ export default {
         name: 'Español',
       },
 
-      // {
-      //   locale: 'en',
-      //   img: require('@/assets/images/flags/en.png'),
-      //   name: 'English',
-      // },
+      {
+        locale: 'en',
+        img: require('@/assets/images/flags/en.png'),
+        name: 'English',
+      },
     
     ]
     /* eslint-disable global-require */

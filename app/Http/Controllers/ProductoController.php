@@ -56,7 +56,7 @@ class ProductoController extends Controller
         ->whereBetween('precio',$datos['precios'])
         ->with(['categoria','imagenes','opinions','tiendas','consumos','divisa'])
         ->orderBy('precio', $datos['sortBy'] == 'price-asc' ? 'asc' : 'desc')
-        ->paginate($datos['perPage'] ?: 10000);
+        ->paginate($datos['perPage'] ?: 10000,pageName: 'currentPage');
 
         $productos = collect($paginator->items());
 

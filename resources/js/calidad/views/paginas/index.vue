@@ -24,7 +24,7 @@
       <!-- <destinos :destinos="destinos" /> -->
 
 
-      <b-tabs content-class="mt-3">
+      <b-tabs content-class="mt-3" nav-class="fixed-top">
          <b-tab active>
 
             <template #title>
@@ -35,10 +35,10 @@
             <atracciones :atracciones="atracciones.filter(val => val.destino_id == destino_id)" />
 
             <!-- Negocios -->
-            <negocios :destino="destino" v-if="destino_id" />
+            <negocios :destino="destino" v-if="destino_id" id="negocios-list" ref="negociosElem"/>
 
             <!-- Eventos -->
-            <eventos :destino="destino" v-if="destino_id" />
+            <eventos :destino="destino" v-if="destino_id" id="eventos-list" ref="eventosElem"/>
 
          </b-tab>
          <b-tab title="Maps" lazy>
@@ -50,6 +50,22 @@
 
             <travel-map :destino="destino_id" v-if="destino_id" />
          </b-tab>
+
+         <template #tabs-end>
+            <li role="presentacion" class="nav-item">
+               <b-button class="nav-link" variant="text" v-ripple.400="'rgba(255, 255, 255, 0.15)'" @click="scrollIr('negocios-list')">
+                  <font-awesome-icon icon="fas fa-store" />
+                  Negocios
+               </b-button>
+            </li>
+
+            <li role="presentacion" class="nav-item">
+               <b-button class="nav-link" variant="text" v-ripple.400="'rgba(255, 255, 255, 0.15)'" @click="scrollIr('eventos-list')">
+                  <font-awesome-icon icon="fas fa-grip" />
+                  Eventos
+               </b-button>
+            </li>
+         </template>
 
       </b-tabs>
 
@@ -79,9 +95,10 @@ import {
    BBreadcrumb,
    BBreadcrumbItem,
    BTabs,
-   BTab
+   BTab,
+   BButton
 } from 'bootstrap-vue'
-import { onMounted, onActivated, computed, ref, toRefs } from 'vue'
+import { onMounted, onActivated, computed, ref, toRefs, watch } from 'vue'
 
 // import { Pagination, Navigation } from 'swiper'
 
@@ -91,6 +108,7 @@ import useAuth from '@core/utils/useAuth';
 import router from '@/router'
 import Ripple from 'vue-ripple-directive'
 
+import { useElementBounding } from '@vueuse/core'
 
 export default {
 
@@ -103,7 +121,7 @@ export default {
       vSelect,
       BCarousel,
       BCarouselSlide,
-
+      BButton,
       BImg,
       BLink,
       BBadge,
@@ -140,6 +158,10 @@ export default {
       const showDestino = ref(false)
       const destino = ref({ id: computed(() => destino_id.value) })
       destino_id.value = localStorage.getItem('destino_id')
+
+      const negociosElem = ref(null)
+      const eventosElem = ref(null)
+
       const cargarForm = () => {
          // if(!atracciones.value.length){
          store.dispatch('atraccion/getAtracciones')
@@ -235,6 +257,20 @@ export default {
          showDestino.value = true
       }
 
+      const scrollIr = (to) => {
+
+         const elem  = document.getElementById(to)
+
+         window.scrollTo({
+            top: elem.offsetTop - 80,
+            behavior: 'smooth',
+         })
+
+      }
+
+
+
+
       return {
          showDestino,
          search,
@@ -244,6 +280,9 @@ export default {
          destinos,
          is_loggin,
          destino_id,
+         scrollIr,
+         eventosElem,
+         negociosElem,
          destino,
          limpiarDestinos,
          destinoSeleccionado,

@@ -38,13 +38,12 @@ class Divisa extends Model
 
 
     /**
-     * @param App\Models\Divisa $divisa La divisa en la que se quiere convertir 
+     * @param App\Models\Divisa $divisa La divisa de la que se quiere convertir 
      * @param int|float $monto  El monto a convertir
      * @return float|int;
      */
     public function convertir(Divisa $divisa, $monto) : int|float{
 
-       
         if($divisa->id === $this->id){
             return $monto;
         }
@@ -52,7 +51,6 @@ class Divisa extends Model
         $monto_convertir = $monto / $divisa->tasa;
 
         return $monto_convertir *  $this->tasa;
-
 
     }
 
@@ -99,4 +97,31 @@ class Divisa extends Model
     }
 
 
+    /**
+     * Realiza la conversión de una divisa a otra utilizando una divisa principal como intermediaria.
+     *
+     * @param Divisa $divisaOrigen La divisa de origen.
+     * @param Divisa $divisaDestino La divisa de destino.
+     * @param float $monto El monto a convertir.
+     * @return float El monto convertido a la divisa de destino.
+     */
+    public static function cambiar(Divisa $divisaOrigen, Divisa $divisaDestino, float $monto): float
+    {
+        if ($divisaOrigen->id === $divisaDestino->id) {
+            return $monto;
+        }
+
+        $divisaPrincipal = Divisa::where('principal', true)->first();
+
+        if (!$divisaPrincipal) {
+            throw new \RuntimeException('No se ha encontrado una divisa principal');
+        }
+
+        $montoIntermedio = $monto / $divisaOrigen->tasa;
+        $montoDestino = $montoIntermedio * $divisaDestino->tasa;
+
+        return $montoDestino;
+    }
 }
+
+

@@ -31,6 +31,7 @@ class Venta extends Model
         'personas',
         'reservacion_id',
         'cantidad',
+        'tps_bonificados'
     ];
 
 

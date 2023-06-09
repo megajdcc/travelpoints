@@ -27,9 +27,6 @@ class Negocio extends Model
     public function __construct()
     {
         $this->model_type = 'App\Models\Negocio\Negocio';
-
-       
-
     }
 
 
@@ -62,7 +59,8 @@ class Negocio extends Model
         'precios', // [precio_minimo => 0,precio_maximo => 0]
         'tipo_menu', // 1 => URL , 2=> PDF 3 => image
         'menu',
-        'tps_referido' // Comision en tps que se paga a los usuarios viajeros por consumir, es una propiedad se calcula convirtiendo la comision en su divisa a la divisa principal tps 
+        'tps_referido', // Comision en tps que se paga a los usuarios viajeros por consumir, es una propiedad se calcula convirtiendo la comision en su divisa a la divisa principal tps 
+        
     ];
 
     public $casts = [

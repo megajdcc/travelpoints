@@ -108,12 +108,14 @@ export default{
   },
 
   props:{
-    negocios:Array,
+    negocios:{
+      type:Array,
+      required:false,
+      default:() => []
+    },
     destino:{
       type:Object,
-      default:{
-        id:null
-      }
+      default:() => ({id:null})
     },
     atraccion: Object,
     titulo:{

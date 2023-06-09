@@ -26,11 +26,11 @@
             </article>
 
             <article class="imagenes-principales">
-               <b-img v-for="({imagen},i) in destino.imagenes.filter(val => !val.portada)" :key="i"
-                  :src="`/storage/destinos/imagenes/${imagen}`" class="w-100" v-if="i <= 1"></b-img>
+               <template v-for="({imagen},i) in destino.imagenes.filter(val => !val.portada)">
+                   <b-img :key="i"
+                     :src="`/storage/destinos/imagenes/${imagen}`" class="w-100" v-if="i <= 1"></b-img>
+               </template>
             </article>
-            
-
          </b-col>
 
          <b-col cols="12">
@@ -46,6 +46,7 @@
             </h3>
             <p class="text-justify">{{ destino.descripcion  }}</p>
          </b-col>
+       
       </b-row>
 
       <el-divider></el-divider>

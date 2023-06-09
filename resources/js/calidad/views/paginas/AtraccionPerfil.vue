@@ -62,6 +62,16 @@
                      </strong>
                   </li>
 
+                  <li class="list-inline-item mr-2"  >
+                        <strong class="font-weight-bolder">
+                              <b-button size="sm" variant="outline-dark" @click="comoLlegar">
+                                 <font-awesome-icon icon="fas fa-map-location-dot"/>
+                                 ¿Como llegar?
+                              </b-button>
+                              
+                        </strong>
+                     </li>
+
 
                   <li class="list-inline-item mr-2">
                    
@@ -119,7 +129,7 @@
 
       <!-- Negocios cercanos a la atraccion -->
       <b-row>
-         <b-col cols="12">
+         <b-col cols="12" v-if="atraccion">
             <negocios :atraccion="atraccion" subTitulo="Con negocios cercanos a tí..."></negocios>
          </b-col>
       </b-row>
@@ -149,9 +159,7 @@
 
       <horario :horarios="atraccion.horarios" :showHorario.sync="showHorario" />
       
-
-
-
+      <show-directions v-model="showDirections" :showDirections.sync="showDirections" :origin="{lng:miLng,lat:miLat}" :destination="destination" :destinoName="atraccion.nombre" ></show-directions>
    </b-container>
 </template>
 
@@ -159,8 +167,7 @@
 
 import {toRefs, ref,onMounted,computed,nextTick,watch} from 'vue'
 import store from '@/store'
-
-
+import { useGeolocation } from '@vueuse/core'
 import {
 
    BContainer,
@@ -210,7 +217,8 @@ export default {
       ReviewsOpinion:() => import('components/ReviewsOpinion.vue'),
       Atracciones:() => import('components/Atracciones.vue'),
       Negocios:() => import('components/Negocios.vue'),
-      SwiperGallery:() => import('components/SwiperGallery.vue')
+      SwiperGallery:() => import('components/SwiperGallery.vue'),
+      ShowDirections:() => import('components/ShowDirections.vue')
 
    }, 
 
@@ -221,6 +229,8 @@ export default {
       const atraccionesCercanas = ref([])
       const isShowText  = ref(false)
       const {query} = toRefs(props)
+      const showDirections = ref(false)
+      const { coords, locatedAt, error, resume, pause } = useGeolocation()
 
       watch(query,() => {
          store.dispatch('atraccion/fetchName',query.value).then(({result}) => {
@@ -240,6 +250,7 @@ export default {
 
       onMounted(() => {
          cargarAtraccionesCercanas()
+     
       })
       
       const opinionGuardada = (opinion) => {
@@ -251,7 +262,28 @@ export default {
          isShowText.value = !isShowText.value;
       }
 
+      const comoLlegar = () => {
+        
+         if (error.code == 1 && error.message == 'User denied Geolocation') {
+            toast.info('No podemos procesar tu solicitud , sin saber cual es tu ubicación, permite a la aplicación el uso de geolocalización')
+            resume()
+         }else{
+            showDirections.value = true
+         }
+      }
+
+      watch(error,({message,code}) => {
+         console.log(message,code)
+         
+         if(code == 1 && message == 'User denied Geolocation'){
+            toast.info('No podemos procesar tu solicitud , sin saber cual es tu ubicación, permite a la aplicación el uso de geolocalización')
+            resume()
+         }
+
+      }) 
+
       return {
+         comoLlegar,
          atraccion,
          showHorario,
          opinionGuardada,
@@ -263,7 +295,14 @@ export default {
          promedioCalificacion:computed(() => store.getters['atraccion/promedioCalificacion'](atraccion.value)),
          atraccionesCercanas,
          isShowText,
-         toggleShowDescription
+         toggleShowDescription,
+         showDirections,
+         miLng:computed(() => coords.value.longitude),
+         miLat: computed(() => coords.value.latitude),
+         destination:computed(() => ({
+            lng:Number(atraccion.value.lng), 
+            lat:Number(atraccion.value.lat)
+         }))
       }
       
    }

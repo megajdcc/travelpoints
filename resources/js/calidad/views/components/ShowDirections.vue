@@ -1,76 +1,97 @@
 <template>
-  <b-modal v-model="show" size="lg" centered title="Como llegar" hide-footer @show="getDirections()" lazy>
-    <div>
-      <GmapMap :zoom="zoom"
-              :center="origin"
-              map-type-id="roadmap"
-              style="width: 100%; height: 400px"
-              :options="{ styles: stylosMap }"
-              ref="refMap"
-              :streetViewControl="true"
-              >
-              <GmapMarker
-              :visible="true"
-              :draggable="false"
-              :icon="iconMapa"
-              :clickable="true"
-              :position="origin"
-            >
-              <GmapInfoWindow :options="optionsPlace('Yo')" >
-              </GmapInfoWindow>
-          </GmapMarker>
+  <b-modal v-model="show" size="xl"  centered title="Como llegar" hide-footer @show="getDirections()" lazy >
+      <b-container fluid>
+        <b-row>
+          <b-col cols="12" md="8">
+                <GmapMap :zoom="zoom"
+                    :center="origen"
+                    map-type-id="roadmap"
+                    style="width: 100%; height: 400px"
+                    :options="{ styles: stylosMap }"
+                    ref="refMap"
+                    :streetViewControl="true"
+                    :draggable="true"
+                    >
+                    <GmapMarker
+                    :visible="true"
+                    :draggable="true"
+                    :icon="iconMapa"
+                    :clickable="true"
+                    :position="origen"
+                    @mouseup="moviendomapa($event, 'origin')" @position_changed="posicionCambiada()">
+                    <GmapInfoWindow :options="optionsPlace(usuario.id ? `${usuario.username}` :'Yo') " >
+                    </GmapInfoWindow>
+                </GmapMarker>
 
-            <GmapMarker
-                :visible="true"
-                :draggable="false"
-                :icon="iconMapa"
-                :clickable="true"
-                :position="destination"
-              >
-              <GmapInfoWindow :options="optionsPlace(destinoName)" >
-              </GmapInfoWindow>
-            </GmapMarker>
-        <DirectionsRenderer :options="directionsOptions" :directions="directions" v-if="directions" />
-      </GmapMap>
+                <GmapMarker
+                      :visible="true"
+                      :draggable="false"
+                      :icon="iconMapa"
+                      :clickable="true"
+                      :position="destination"
+                      @mouseup="moviendomapa($event, 'destino')" @position_changed="posicionCambiada()"
+                    >
+                    <GmapInfoWindow :options="optionsPlace(destinoName)" >
+                    </GmapInfoWindow>
+                  </GmapMarker>
+              <DirectionsRenderer :options="directionsOptions" :directions="directions" v-if="directions" />
+            </GmapMap>
+          </b-col>
 
-      <b-tabs content-class="mt-3">
-        <b-tab title="Ver detalles de la ruta " active>
-          <div>
-          
-            <div v-if="direcciones">
-              <h2>{{ direcciones.summary }}</h2>
-              <ul>
-                <li v-for="step in direcciones.steps" :key="step.instructions" v-html="step.instructions"></li>
-              </ul>
-            </div>
-          </div>
-        </b-tab>
-         <template #tabs-end>
-            <li role="presentacion" class="nav-item">
-                <b-button class="nav-link" variant="text" @click="openDirections">
-                  <font-awesome-icon icon="fas fa-map-location-dot" />
-                    Abrir en Google Maps
-                </b-button>
-            </li>
-           </template>
-      </b-tabs>
-      
-    </div>
+          <b-col cols="12" md="4">
+              <b-tabs class="show-directions" active-tab-class="mt-0" >
+                <b-tab title="Ver detalles de la ruta " active>
+                  <div class="datails-direction">
+                
+                    <div v-if="direcciones">
+                      <h2>{{ direcciones[0].summary }}</h2>
+                      <ul>
+                        <li v-for="({instructions, iconClass }, i) in direcciones[0].legs[0].steps" :key="i" style="text-decoration: none; list-style:none" >
+                          <font-awesome-icon :icon="['fas', iconClass]" size="lg" class="mr-1" />
+                          <span v-html="instructions"></span>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                </b-tab>
+                <template #tabs-end>
+                    <li role="presentacion" class="nav-item">
+                        <b-button class="nav-link" variant="text" @click="openDirections">
+                          <font-awesome-icon icon="fas fa-map-location-dot" />
+                            Abrir en Google Maps
+                        </b-button>
+                    </li>
+                  </template>
+              </b-tabs>
+          </b-col>
+        </b-row>
+      </b-container>
   </b-modal>
 </template>
 
 <script>
-import { BModal,BButton,BTabs,BTab } from 'bootstrap-vue';
+import { 
+  BModal,
+  BButton,
+  BTabs,
+  BTab,
+  BContainer,
+  BRow,
+  BCol
+} from 'bootstrap-vue';
 import DirectionsRenderer from './DirectionsRenderer.js';
 import { gmapApi } from 'vue2-google-maps';
 import {computed,ref,toRefs,watch,onMounted} from 'vue';
 import useMap from '@core/utils/useMap';
-
+import store from "@/store"
 export default {
   components: {
     BModal,
     BButton,
-    BTabs, BTab, 
+    BTabs, BTab,
+    BContainer,
+    BRow,
+    BCol, 
     DirectionsRenderer
   },
   props: {
@@ -101,8 +122,22 @@ export default {
 
   setup(props,{emit}){
     const {showDirections,destination,origin} = toRefs(props);
+    const { usuario } = toRefs(store.state.usuario)
     const show = ref(false)
     const goog = computed(() => gmapApi());
+    const origen = ref({
+      lat:0,
+      lng:0
+    })
+
+    onMounted(() => {
+      setTimeout(() => {
+          origen.value = origin.value
+          
+      }, 600);
+    })
+   
+
     const center = ref({
       lat: 0, 
       lng: 0
@@ -118,7 +153,7 @@ export default {
         strokeWeight: 4
       }
     })
-    const zoom = ref(12)
+    const zoom = ref(14)
     const directions = ref(null)
     const direcciones = ref(null)
 
@@ -129,43 +164,143 @@ export default {
       stylosMap
     } = useMap();
 
-     const getDirections = () => {
+    //  const getDirections = () => {
 
+    //   setTimeout(() => {
+
+    //       if (goog.value) {
+
+    //       const directionsService = new goog.value.maps.DirectionsService();
+    //       const placeOrigin = new goog.value.maps.LatLng(origen.value.lat, origen.value.lng)
+    //       const placeDestination = new goog.value.maps.LatLng(destination.value.lat, destination.value.lng)
+
+    //       const response = directionsService.route({
+    //         origin: placeOrigin,
+    //         destination: placeDestination,
+    //         provideRouteAlternatives: false,
+    //         travelMode: 'DRIVING',
+    //       })
+
+    //       response.then(res => {
+    //         if (res.status == 'OK') {
+    //           directions.value = res;
+    //           console.log(directions.value)
+    //           direcciones.value= res.routes;
+
+    //         } else {
+    //           console.error('Error al obtener las direcroutes[0].legs[0]ciones.');
+    //         }
+    //       }).catch(e => {
+    //         if(e.code && e.code == "ZERO_RESULTS"){
+    //           toast.info(e.message)
+    //         }
+    //         console.log(e)
+    //       })
+
+    //     } else {
+    //       console.error('La API de Google Maps no se ha cargado correctamente.');
+    //     }
+
+    //   }, 300);
+      
+
+    // }
+
+    const getDirections = () => {
+      
       setTimeout(() => {
-
-          if (goog.value) {
-
+           if (goog.value) {
           const directionsService = new goog.value.maps.DirectionsService();
-
-          const placeOrigin = new goog.value.maps.LatLng(origin.value.lat, origin.value.lng)
-          const placeDestination = new goog.value.maps.LatLng(destination.value.lat, destination.value.lng)
+          const placeOrigin = new goog.value.maps.LatLng(origen.value.lat, origen.value.lng);
+          const placeDestination = new goog.value.maps.LatLng(destination.value.lat, destination.value.lng);
 
           const response = directionsService.route({
             origin: placeOrigin,
             destination: placeDestination,
             provideRouteAlternatives: false,
             travelMode: 'DRIVING',
-          })
-
+          });
 
           response.then(res => {
-            console.log(res.routes)
             if (res.status == 'OK') {
               directions.value = res;
-              direcciones.value= res.routes[0].legs[0];
-            } else {
-              console.error('Error al obtener las direcroutes[0].legs[0]ciones.');
-            }
-          }).catch(e => console.log(e))
+              direcciones.value = res.routes;
 
+              // Recorrer los pasos de dirección y asignar el nombre de la clase de Font Awesome
+              direcciones.value[0].legs[0].steps.forEach(step => {
+                const maneuver = step.maneuver;
+                let iconClass = '';
+
+                // Asignar el nombre de la clase de Font Awesome según la maniobra
+                switch (maneuver) {
+                  case 'turn-left':
+                    iconClass = 'fa-arrow-left';
+                    break;
+                  case 'turn-right':
+                    iconClass = 'fa-arrow-right';
+                    break;
+                  case 'turn-sharp-left':
+                    iconClass = 'fa-undo-alt';
+                    break;
+                  case 'turn-sharp-right':
+                    iconClass = 'fa-redo-alt';
+                    break;
+                  case 'turn-slight-left':
+                    iconClass = 'fa-angle-left';
+                    break;
+                  case 'turn-slight-right':
+                    iconClass = 'fa-angle-right';
+                    break;
+                  case 'uturn-left':
+                    iconClass = 'fa-undo';
+                    break;
+                  case 'uturn-right':
+                    iconClass = 'fa-redo';
+                    break;
+                  case 'merge':
+                    iconClass = 'fa-compress-arrows-alt';
+                    break;
+                  case 'roundabout-left':
+                    iconClass = 'fa-undo-alt';
+                    break;
+                  case 'roundabout-right':
+                    iconClass = 'fa-redo-alt';
+                    break;
+                  case 'fork-left':
+                    iconClass = 'fa-code-branch';
+                    break;
+                  case 'fork-right':
+                    iconClass = 'fa-code-branch';
+                    break;
+                  case 'straight':
+                    iconClass = 'fa-arrow-up';
+                    break;
+                  default:
+                    iconClass = 'fa-map-marker-alt'; // Clase predeterminada si no hay coincidencia
+                    break;
+                }
+
+                // Agregar la propiedad "iconClass" al paso de dirección
+                step.iconClass = iconClass;
+              });
+
+            } else {
+              console.error('Error al obtener las direcciones.');
+            }
+          }).catch(e => {
+            if (e.code && e.code == "ZERO_RESULTS") {
+              toast.info(e.message);
+            }
+            console.log(e);
+          });
         } else {
           console.error('La API de Google Maps no se ha cargado correctamente.');
         }
-
-      }, 500);
+      }, 300);
+       
       
-
     }
+
 
     const  openDirections = () =>  {
       const originStr = `${origin.value.lat},${origin.value.lng}`;
@@ -186,10 +321,36 @@ export default {
       emit('update:showDirections',value)
     })
 
-   
+    // watch(origin,() => {
+    //   getDirections()
+    // })
+
+    const moviendomapa = (dato,to) => {
       
+      if(to == 'origin'){
+        // emit('originChange',{lat: Number(dato.latLng.lat()) ,lng: Number(dato.latLng.lng())})
+
+        origen.value = { lat: Number(dato.latLng.lat()), lng: Number(dato.latLng.lng()) };
+        getDirections();
+      }else{
+        // emit('destinoChange', { lat: Number(dato.latLng.lat()), lng: Number(dato.latLng.lng())})
+        // origen.value = { lat: Number(dato.latLng.lat()), lng: Number(dato.latLng.lng()) };
+        // getDirections();
+      }
+     
+    }
+
+    const posicionCambiada = (dato) => { }
+
+    
+    watch(origin,() => {
+      origen.value = origin.value
+    })
+
 
     return {
+      moviendomapa,
+      posicionCambiada,
       getDirections,
       show,
       directions,
@@ -203,13 +364,29 @@ export default {
       refMap,
       openDirections,
       directionsOptions,
-       optionsPlace: (to) => ({
+      usuario,
+      optionsPlace: (to) => ({
+
         content: `<strong>${to}</strong>`,
         disableAutoPan: true
       }),
+      origen
       
     }
   }
  
 };
 </script>
+
+<style lang="scss" scoped>
+  .datails-direction{
+    max-height: 300px;
+    overflow-y: auto;
+  }
+
+  .show-directions >>> .tab-content{
+    margin-top:.1rem !important;
+  }
+
+
+</style>

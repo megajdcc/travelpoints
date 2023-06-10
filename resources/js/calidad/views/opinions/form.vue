@@ -1,11 +1,20 @@
 <template>
       <section >
-         
-         <b-button @click=" () => showOpinion = true" variant="outline-info" size="sm" v-if="is_loggin" >
-            <slot name="labelButton">
-               Escribe una opinión
+         <b-button-group size="sm">
+             <slot name="btn-prepend">
+               
             </slot>
-         </b-button>
+            <b-button @click="() => showOpinion = true" variant="outline-info" size="sm" v-if="is_loggin" >
+               <slot name="labelButton">
+                  Escribe una opinión
+               </slot>
+            </b-button>
+
+            <slot name="btn-append">
+
+            </slot>
+         </b-button-group>
+         
 
          <b-modal :visible="showOpinion" @hide="cerrar" hide-footer centered lazy no-close-on-backdrop title="Agregar Opinión">
             <validation-observer ref="formValidate" #default="{ handleSubmit }">

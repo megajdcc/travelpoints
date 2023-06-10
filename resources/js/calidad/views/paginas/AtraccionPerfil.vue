@@ -62,20 +62,19 @@
                      </strong>
                   </li>
 
-                  <li class="list-inline-item mr-2"  >
-                        <strong class="font-weight-bolder">
-                              <b-button size="sm" variant="outline-dark" @click="comoLlegar">
-                                 <font-awesome-icon icon="fas fa-map-location-dot"/>
-                                 ¿Como llegar?
-                              </b-button>
-                              
-                        </strong>
-                     </li>
+                  
 
 
                   <li class="list-inline-item mr-2">
                    
-                    <OpinionForm :model-type="atraccion.modelType" :model-id="atraccion.id" @opinionGuardada="opinionGuardada" />
+                     <OpinionForm :model-type="atraccion.modelType" :model-id="atraccion.id" @opinionGuardada="opinionGuardada" >
+                        <template #btn-prepend>
+                           <b-button size="sm" variant="outline-dark" @click="comoLlegar">
+                              <font-awesome-icon icon="fas fa-map-location-dot"/>
+                              ¿Como llegar?
+                           </b-button>
+                        </template>
+                     </OpinionForm>
                   
                   </li>
 
@@ -159,7 +158,7 @@
 
       <horario :horarios="atraccion.horarios" :showHorario.sync="showHorario" />
       
-      <show-directions v-model="showDirections" :showDirections.sync="showDirections" :origin="{lng:miLng,lat:miLat}" :destination="destination" :destinoName="atraccion.nombre" ></show-directions>
+      <show-directions v-model="showDirections" :showDirections.sync="showDirections" :origin="origin" :destination="destination" :destinoName="atraccion.nombre"  @originChange="cambiarOrigin"></show-directions>
    </b-container>
 </template>
 
@@ -250,6 +249,7 @@ export default {
 
       onMounted(() => {
          cargarAtraccionesCercanas()
+         console.log(coords.value.latitude,coords.value.longitude)
      
       })
       
@@ -280,7 +280,11 @@ export default {
             resume()
          }
 
-      }) 
+      })
+
+      const cambiarOrigin = (dato) => {
+
+      }
 
       return {
          comoLlegar,
@@ -297,12 +301,15 @@ export default {
          isShowText,
          toggleShowDescription,
          showDirections,
-         miLng:computed(() => coords.value.longitude),
-         miLat: computed(() => coords.value.latitude),
+         origin:computed(() => ({
+            lat: coords.value.latitude,
+            lng:coords.value.longitude
+         })),
          destination:computed(() => ({
             lng:Number(atraccion.value.lng), 
             lat:Number(atraccion.value.lat)
-         }))
+         })),
+         cambiarOrigin
       }
       
    }

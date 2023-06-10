@@ -3,13 +3,12 @@
       <b-card>
          <template #header>
             <header class="d-flex justify-content-between align-items-center w-100">
-               <h2 class="font-weight-bolder">Mi código de referidor</h2>
+               <h2 class="font-weight-bolder">Invita a un amigo</h2>
             </header>
          </template>
           
-
-         <h2>Gana puntos (Tp$) en tu cartera de Travel Points.</h2>
-         <p class="text-justify">Cada vez que cualquiera de los amigos que se hayan registrado usando tu link, registren un consumo.</p>
+         <h4>Comparte tu link a tus amigos para que se afilien a Travel Points, y ganarás puntos por cada uno de sus registros.</h4>
+         <!-- <p class="text-justify">Cada vez que cualquiera de los amigos que se hayan registrado usando tu link, registren un consumo.</p> -->
 
          <validation-observer ref="formValidate" #default="{ handleSubmit }">
             <b-form @submit.prevent="handleSubmit(guardar)">
@@ -119,8 +118,6 @@ export default {
    },
    
    setup() {
-      
-    
 
       const formulario = ref(store.getters['usuario/draftUsuario'])
       const formValidate  = ref(null)
@@ -138,7 +135,7 @@ export default {
       }
 
       const compartirWhatsapp = () => {
-         url.value = `https://wa.me/?text=Registrate en ${url_app.value} y gana puntos $Tp  con TravelPoint. ${link_referido.value}`
+         url.value = `https://wa.me/?text=Registrate en ${url_app.value} y ganarás puntos $TP; Cada vez que reserves y vayas a un negocio afiliado a Travel Points. ${link_referido.value}`
          window.open(url.value, '_blank');
       }
       const copiarLink = () => {

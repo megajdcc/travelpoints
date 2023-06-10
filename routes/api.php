@@ -675,7 +675,7 @@ Route::get('atraccions/{atraccion}/otras/cercanas', [AtraccionController::class,
 Route::post('search/public', [HomeController::class, 'searchPublic']);
 Route::post('search/location', [HomeController::class, 'searchLocation']);
 Route::post('destinos/obtener/por-nombre', [DestinoController::class, 'getPorNombre']);
-
+Route::get('destinos/{destino}/fetch/data-public',[DestinoController::class,'fetch']);
 Route::post('atraccions/obtener/por-nombre', [AtraccionController::class, 'getPorNombre']);
 
 Route::post('opinions/fetch/data/model', [OpinionController::class, 'fetchDataModel']);

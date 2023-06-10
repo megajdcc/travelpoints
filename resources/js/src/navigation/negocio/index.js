@@ -107,15 +107,19 @@ export default [
             action: 'read',
          },
 
-         {
-            title: 'Eventos',
-            route: 'negocio.eventos',
-            resource: 'negocio eventos',
-            action: 'read',
-         }
+        
 
       ]
 
+   },
+
+   {
+      title: 'Eventos',
+      route: 'negocio.eventos',
+      resource: 'negocio eventos',
+      action: 'read',
+      fontAwesome:true,
+      icon:'fa-calendar-week'
    },
 
    // Personal

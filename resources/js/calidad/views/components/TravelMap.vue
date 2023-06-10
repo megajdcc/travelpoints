@@ -4,8 +4,8 @@
         <b-col cols="12">
 
           <GmapMap
-              :center="{ lat: promedioLatitud, lng: promedioLongitud }"
-              :zoom="3"
+              :center="origenMap"
+              :zoom="10"
               map-type-id="terrain"
               style="width: 100%; height: 600px"
               :options="{ styles: stylosMap }"
@@ -107,10 +107,11 @@ export default {
   setup(props,{emit}){
 
     const {destino} = toRefs(props)
+    const {destino:origen} = toRefs(store.state.destino)
     const options_map = ref({})
     const refMap = ref(null); 
     const travels = ref([]);
-    const showInfoWindow = ref(false);
+    const showInfoWindow = ref(true);
 
     const cargarForm = () => {
       axios.get(`/api/travels/map/destino/${destino.value}`).then(({data}) => {
@@ -172,6 +173,7 @@ export default {
       refMap,
       travels,
       travelSelected,
+      origen,
       locations:computed(() => {
         return travels.value.map(val => ({
           lng:val.lng,
@@ -209,7 +211,11 @@ export default {
           let result = sum / travels.value.length;
           return Number.isFinite(result) ? result : 0; // Verificar si el resultado es finito
         }),
-        showInfoWindow
+        showInfoWindow,
+        origenMap:computed(() => ({
+          lat:Number(origen.value.lat),
+          lng:Number(origen.value.lng)
+        }))
 
     }
   }

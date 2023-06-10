@@ -25,7 +25,7 @@ use App\Models\Negocio\Negocio;
 use App\Models\Negocio\Reservacion;
 use App\Models\Usuario\Permiso;
 use Carbon\Carbon;
-use Illuminate\Support\Collection;
+use Illuminate\Support\{Collection,Str};
 
 class User extends Authenticatable
 {
@@ -772,6 +772,13 @@ class User extends Authenticatable
            
         return ['porcentaje' => (float) $porcentaje->porcentaje, 'total_viajeros' => $total_viajeros->total_viajeros];
 
+    }
+
+    public function generateLink(){
+        if(!$this->codigo_referidor){
+            Str::slug($this->username);
+            $this->save();
+        }
     }
 
     public function cargar(): User{

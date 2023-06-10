@@ -644,7 +644,7 @@ export default [
 
                         meta: {
                               resource: "negocio eventos",
-                              action: 'read',
+                              action: 'write',
                               layout: 'negocio',
                               pageTitle: 'Crear Evento',
                               navActiveLink:'negocio.eventos',

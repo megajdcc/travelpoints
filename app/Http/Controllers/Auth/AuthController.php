@@ -206,6 +206,7 @@ class AuthController extends Controller
 
          $user = $request->user();
          $user->ultimo_login = now();
+         $user->generateLink();
          $user->save();
 
          $token = (!is_null($user->getTokenText())) ? $user->getTokenText() : ($user->createToken($user->nombre.'-'.$user->id))->plainTextToken;

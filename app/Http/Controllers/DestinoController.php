@@ -65,12 +65,8 @@ class DestinoController extends Controller
 
     public function fetch(Destino $destino){
 
-        $destino->iata;
-        $destino->imagenes;
-        $destino->ciudad;
-        $destino->estado?->pais;
-        $destino->likes;
-
+        $destino->cargar();
+        
         return response()->json($destino);
         
     }
@@ -121,7 +117,8 @@ class DestinoController extends Controller
             'iata_id'     => 'required',
             'lat' => 'nullable',
             'lng' => 'nullable',
-            'imagenes' => 'nullable'
+            'imagenes' => 'nullable',
+            'about_travel' => 'nullable'
         ]));
 
     }

@@ -29,8 +29,12 @@
           <b-card-title class="mb-1 font-weight-bold" title-tag="h2">
             Bienvenido a {{ appName }} 👋
           </b-card-title>
+           <b-card-title class="mb-2 text-primary ">
+            Travel Points una nueva forma de descubrir destinos, registra tu visita y gana regalos.
+          </b-card-title>
+
           <b-card-text class="mb-2">
-            Inicie sesión en su cuenta y comience la aventura
+            Inicia sesión y comience la aventura
           </b-card-text>
 
           <b-alert variant="primary" show>

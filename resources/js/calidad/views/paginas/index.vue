@@ -8,12 +8,10 @@
                <search :destino="destino_id" />
             </b-card>
             <b-breadcrumb style="margin-top: -20px;">
-
                <b-breadcrumb-item @click="limpiarDestinos">
                   <font-awesome-icon icon="fas fa-rotate-right" />
                   Destinos
                </b-breadcrumb-item>
-
                <b-breadcrumb-item :to="rutaDestino" text>{{ getDestinoName }}</b-breadcrumb-item>
             </b-breadcrumb>
 
@@ -31,6 +29,9 @@
                <font-awesome-icon icon="fas fa-grip-vertical" class="mr-1" />
                Vista principal
             </template>
+            <!-- Destino Perfil -->
+
+            <destino-perfil :destino="origen" isHome v-if="destino_id && origen.id" />
             <!-- Atracciones -->
             <atracciones :atracciones="atracciones.filter(val => val.destino_id == destino_id)" />
 
@@ -72,7 +73,16 @@
 
       <!-- Si el usuario no Ha seleccionado un destino, debe hacerlo  -->
       <el-dialog title="Elija un Destino" :visible.sync="showDestino" width="90%" :show-close="false"
-         :close-on-click-modal="false" :close-on-press-escape="false">
+         :close-on-click-modal="false" :close-on-press-escape="false" class="dialogo-seleccion-destino">
+
+         <template #title>
+            <h3 class="card-title">
+               <strong class="text-primary">
+                  Comencemos
+               </strong>
+               por elegir un destino
+            </h3>
+         </template>
          <destino-selected isSelected @destinoSelected="destinoSeleccionado" />
       </el-dialog>
 
@@ -82,6 +92,7 @@
 <script>
 import {
    BContainer,
+   BCardTitle,
    BRow,
    BCol,
    BCard,
@@ -139,7 +150,8 @@ export default {
       BBreadcrumb,
       BBreadcrumbItem,
       BTabs,
-      BTab
+      BTab,
+      DestinoPerfil:() => import('views/paginas/DestinoPerfil.vue')
    },
 
    directives: {
@@ -170,8 +182,10 @@ export default {
          // if (!destinos.value.length) {
          store.dispatch('destino/getDestinos')
          // }
-
-
+         
+         if(destino_id.value){
+            store.dispatch('destino/fetchPublic', destino_id.value)
+         }
 
          if (!destino_id.value) {
             showDestino.value = true
@@ -244,11 +258,12 @@ export default {
 
       const destinoSeleccionado = (dest_id) => {
          localStorage.setItem('destino_id', dest_id)
+
          destino_id.value = localStorage.getItem('destino_id')
          cargarForm();
          showDestino.value = false
 
-         window.location.reload();
+         // window.location.reload();
       }
 
 
@@ -269,6 +284,9 @@ export default {
       }
 
 
+      watch(destino_id, () => {
+         store.dispatch('destino/fetchPublic',destino_id.value)
+      })
 
 
       return {
@@ -283,6 +301,7 @@ export default {
          scrollIr,
          eventosElem,
          negociosElem,
+         origen,
          destino,
          limpiarDestinos,
          destinoSeleccionado,
@@ -348,4 +367,12 @@ export default {
 .el-dialog {
    width: 80% !important;
 }
+
+
+</style>
+
+<style lang="scss" scoped>
+   .dialogo-seleccion-destino::v-deep .el-dialog__body {
+      padding-top: 0px !important;
+   }
 </style>

@@ -190,7 +190,7 @@ export default{
   -webkit-backface-visiblity: hidden;
 }
 
-.card-simple:hover .card-simple-label {
+.card-simple:hover .card-simple-label{
   margin-top: -25px;
 }
 

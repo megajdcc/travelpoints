@@ -73,7 +73,7 @@ export default function useNegocioList({destino = null , atraccion = null}) {
     }).then(({ total: all, negocios }) => {
 
       total.value = all
-      next(negocios)
+      next(store.state.negocio.negocios)
     }).catch(e => {
       toast.info('Error trayendo Data', { position: 'bottom-right' })
     })

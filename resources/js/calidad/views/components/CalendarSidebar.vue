@@ -8,7 +8,7 @@
         variant="primary"
         block
         :to="{name:negocio ? 'negocio.evento.create' : 'create.evento'}"
-        v-if="$can('write','eventos')" >
+        v-if="$can('write','eventos') || $can('write','negocio eventos')" >
         Agregar Evento
       </b-button>
 

@@ -17,8 +17,9 @@
                         <li>Al especificar el horario de un d&iacute;a, es necesario ingresar la hora de entrada y la
                            hora de salida (ambas).
                         </li>
-                        <li>Para indicar un d&iacute;a cerrado basta con dejar en blanco el horario de entrada</li>
+                        <li>Para indicar un d&iacute;a cerrado basta con dejar en blanco el horario de entrada, o siplemente al pulsar sobre el status se alterna entre cerrado o abierto</li>
                         <li>Ejemplos: Entrada: 08:30, Salida: 22:00.</li>
+                        
                      </ul>
                   </b-col>
 
@@ -52,8 +53,10 @@
                                         <label class="font-weight-bolder">{{ horarioDia(horario) }}</label>
                                     </td>
                                     <td>
-                                        <b-badge variant="success" v-if="horario.apertura[0] && horario.cierre[0]">Abierto</b-badge>
-                                       <b-badge variant="danger" v-else>Cerrado</b-badge>
+                                       <b-button size="sm" @click="alternarHorario(i)" :variant="horario.apertura[0] && horario.cierre[0] ? 'success' : 'danger'">
+                                          {{  horario.apertura[0] && horario.cierre[0] ? 'Abierto' : 'Cerrado'  }}
+                                       </b-button>
+                                       
                                     </td>
                                     <td>
                                        <b-form-checkbox v-model="horario.doble_turno" switch :value="true" :unchecked-value="false"></b-form-checkbox>
@@ -276,7 +279,7 @@ export default {
 
 
       const formValidate = ref(null)
-
+      const {horarios} = toRefs(props)
       const {  
          aperturarHorario,
          guardarHorario,
@@ -290,6 +293,19 @@ export default {
          end: '23:00',
       })
 
+      const alternarHorario = (i) => {
+         if(horarios.value[i].apertura[0] && horarios.value[i].cierre[0]){
+            horarios.value[i].apertura[0] = null
+            horarios.value[i].cierre[0] = null
+         }else{
+            horarios.value[i].apertura[0] = '08:00:00'
+            horarios.value[i].cierre[0] = '18:00:00'
+         }
+         guardarHorario(horarios.value[i]);
+
+      }
+
+
       return {
          formValidate,
          loading: computed(() => store.state.loading),
@@ -298,7 +314,8 @@ export default {
          optionsApertura,
          guardarHorario,
          quitarHorario,
-         horarioDia
+         horarioDia,
+         alternarHorario
       }
    }
 

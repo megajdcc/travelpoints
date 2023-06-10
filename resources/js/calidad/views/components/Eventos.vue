@@ -1,8 +1,8 @@
 <template>
   <b-row>
     <b-col cols="12">
-      <h3>{{ titulo }}</h3>
-      <p>{{ subTitulo }}</p>
+      <p>{{ titulo }}</p>
+      <h3>{{ subTitulo }}</h3>
     </b-col>
     <b-col cols="12">
       <listado :actions="actions" hideFooter hideHeader>
@@ -100,12 +100,12 @@ export default {
     atraccion: Object,
     titulo: {
       type: String,
-      default: 'Eventos'
+      default: 'Lo que no te puedes perder'
     },
 
     subTitulo: {
       type: String,
-      default: 'Suma momentos memorables con nuestros eventos turísticos de primer nivel'
+      default: 'Eventos, Fiestas y Actividades'
     }
   },
 

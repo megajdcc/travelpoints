@@ -293,6 +293,52 @@ export default{
 
       quitarVideos(state) {
          state.negocio.videos = [];
+      },
+
+      toggleRecomendacion(state,{negocio,usuario}){
+         let bussines = state.negocios.find(val => val.id == negocio)
+
+         if(bussines != undefined){
+           let recomendacion = bussines.recomendaciones.find(val => val.usuario_id === usuario)
+            
+           if(recomendacion != undefined){
+               bussines.recomendaciones.splice(
+                  bussines.recomendaciones.findIndex(val => val.usuario_id === usuario),
+                  1
+               )
+           }else{
+               bussines.recomendaciones.push({
+                  modelType:"App\\Models\\Negocio\\Negocio",
+                  model_id:negocio,
+                  usuario_id:usuario
+             })
+           }
+
+         }
+
+      },
+
+      toggleSeguidor(state,{negocio,usuario}){
+         let bussines = state.negocios.find(val => val.id == negocio)
+
+         if(bussines != undefined){
+           let seguidor = bussines.seguidores.find(val => val.usuario_id === usuario)
+            
+           if(seguidor != undefined){
+               bussines.seguidores.splice(
+                  bussines.seguidores.findIndex(val => val.usuario_id === usuario),
+                  1
+               )
+           }else{
+               bussines.seguidores.push({
+                  modelType:"App\\Models\\Negocio\\Negocio",
+                  model_id:negocio,
+                  usuario_id:usuario
+             })
+           }
+
+         }
+
       }
 
    },
@@ -749,10 +795,11 @@ export default{
 
       toggleRecomendacions({commit,state},{negocio,usuario}){
 
+         commit('toggleRecomendacion',{negocio,usuario});
          return new Promise((resolve, reject) => {
             axios.get(`/api/negocios/${negocio}/recomendacions/toggle/user/${usuario}`).then(({data}) => {
 
-               commit('update',data.negocio);
+               // commit('update',data.negocio);
 
                resolve(data)
             }).catch(e => reject(e))
@@ -761,11 +808,12 @@ export default{
       },
 
       toggleSeguidor({ commit, state }, {usuario,negocio}) {
+         commit('toggleSeguidor',{negocio,usuario});
 
          return new Promise((resolve, reject) => {
             axios.get(`/api/negocios/${negocio}/seguidors/toggle/user/${usuario}`).then(({ data }) => {
 
-               commit('update', data.negocio);
+               // commit('update', data.negocio);
 
                resolve(data)
             }).catch(e => reject(e))

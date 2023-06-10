@@ -2,7 +2,7 @@
     <b-row>
       <b-col cols="12" >
         <h3>{{ titulo  }}</h3>
-        <p>{{  subTitulo  }}</p>
+        <p v-html="subTitulo"></p>
       </b-col>
       <b-col cols="12" >
         <listado :actions="actions" hideFooter hideHeader>
@@ -89,7 +89,7 @@ export default{
 
     subTitulo: {
       type: String,
-      default: 'Descubre los negocios que regalan Travel Points en estos destinos'
+      default: '<strong class="text-warning">Descubre</strong> lo que cada destino tiene para ti y los <strong class="text-warning"> negocios </strong> que te ofrecen Travel Points.'
     },
     isSelected:Boolean
   },

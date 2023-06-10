@@ -32,7 +32,8 @@ class Destino extends Model
         'lat',
         'lng',
         'titulo',
-        'activo'
+        'activo',
+        'about_travel'
     ];
 
 
@@ -104,7 +105,19 @@ class Destino extends Model
         $this->modelType = $this->model_type;
         $this->ruta = "/Destinos?q={$this->nombre}";
         $this->negocios = $this->negocios();
-        
+
+        $this->estado?->pais;
+
+        foreach ($this->atracciones as $atraccion) {
+            $atraccion->ruta = "/Atraccions?q={$atraccion->nombre}";
+            $atraccion->opinions;
+            $atraccion->telefono;
+            $atraccion->imagenes;
+            $atraccion->destino;
+            $atraccion->horarios;
+            $atraccion->likes;
+            $atraccion->modelType = $atraccion->model_type;
+        }
         
 
     }

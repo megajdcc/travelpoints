@@ -20,8 +20,7 @@
   <!-- Favicon -->
   <link rel="shortcut icon" href="{{ asset('favicons/favicon-8x8.png') }}">
   <script src="https://accounts.google.com/gsi/client" async defer ></script>
-  {{-- <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCnsLa_yFH7kb5s5GdIaE_P9aGKLkeVIUQ&libraries=directions"></script> --}}
-  {{-- <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCnsLa_yFH7kb5s5GdIaE_P9aGKLkeVIUQ"></script> --}}
+ 
 
 </head>
 

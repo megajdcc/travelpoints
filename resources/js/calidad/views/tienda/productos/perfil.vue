@@ -563,7 +563,10 @@ export default {
 
     const getImagenSeleccionada = () => {
           let foto = producto.value.imagenes.find(val => val.portada);
-          return foto;
+          if(foto != undefined){
+            return foto
+          }
+          return producto.value.imagenes[0];
     }
 
    const cargarForm = () => {

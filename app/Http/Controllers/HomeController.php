@@ -146,7 +146,6 @@ class HomeController extends Controller
 
     public function searchLocation(Request $request)
     {
-
         $datos = $request->all();
         return response()->json(collect([...Destino::getLocation($datos), ...Atraccion::getLocation($datos)]));
     }

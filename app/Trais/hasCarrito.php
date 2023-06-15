@@ -94,6 +94,7 @@ trait hasCarrito{
       ['monto', 'like', "%{$datos['q']}%", "OR"],
       ['precio_unitario', 'like', "%{$datos['q']}%", "OR"],
     ])
+    ->where('cliente_id',$this->id)
       ->with(['producto.divisa','tienda','cliente'])
       ->orderBy('producto_id', $datos['isSortDirDesc'] ? 'desc' : 'asc')
       ->paginate($datos['perPage'] ?: 10000);

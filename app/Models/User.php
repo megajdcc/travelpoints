@@ -79,7 +79,8 @@ class User extends Authenticatable
         'ciudad_id' ,
         'codigo_referidor',
         'lider_id',
-        'coordinador_id'
+        'coordinador_id',
+        'tarjeta_id'
     ];
 
     /**
@@ -781,6 +782,11 @@ class User extends Authenticatable
         }
     }
 
+
+    public function tarjeta(){
+        return $this->belongsTo(Tarjeta::class,'tarjeta_id','id');
+    }
+    
     public function cargar(): User{
         $this->tokens;
         $this->rol?->permisos;

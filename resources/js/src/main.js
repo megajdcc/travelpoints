@@ -281,6 +281,40 @@ Vue.config.productionTip = false
 
 window._ = require('lodash');
 
+Vue.directive('number-format', {
+  bind: function(el) {
+    // el.addEventListener('input', function() {
+    //   // Remover caracteres no numéricos
+    //   el.value = el.value.replace(/\D/g, '');
+
+    //   // Agregar ceros a la izquierda si es necesario
+    //   while (el.value.length < 5) {
+    //     el.value = '0' + el.value;
+    //   }
+
+    //   // Asegurarse de que no se exceda la longitud máxima
+    //   if (el.value.length > 5) {
+    //     el.value = el.value.slice(0, 5);
+    //   }
+    // });
+
+    el.addEventListener('blur', function() {
+      // Remover caracteres no numéricos
+      el.value = el.value.replace(/\D/g, '');
+
+      // Agregar ceros a la izquierda si es necesario
+      while (el.value.length < 5) {
+        el.value = '0' + el.value;
+      }
+
+      // Asegurarse de que no se exceda la longitud máxima
+      if (el.value.length > 5) {
+        el.value = el.value.slice(0, 5);
+      }
+    });
+  },
+});
+
 
 let app = new Vue({
   router,

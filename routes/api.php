@@ -11,7 +11,7 @@ use App\Models\Divisa;
 use App\Http\Controllers\ImagenController;
 use App\Models\Negocio\HorarioReservacion;
 
-use App\Http\Controllers\{PaisController, CiudadController, EstadoController, PaginaController};
+use App\Http\Controllers\{PaisController, CiudadController, EstadoController, LoteController, PaginaController, TarjetaController};
 
 /*
 |--------------------------------------------------------------------------
@@ -639,6 +639,24 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::post('paginas/fetch-data', [PaginaController::class, 'fetchData']);
     Route::get('paginas/{pagina}/fetch-data', [PaginaController::class, 'fetch']);
     Route::resource('paginas', PaginaController::class);
+
+
+
+    /**************************/
+    /* Lote
+    /**************************/
+    Route::get('get/lotes', [LoteController::class, 'getLotes']);
+    Route::post('fetch/lotes', [LoteController::class, 'fetchData']);
+    Route::resource('lotes', LoteController::class);
+    Route::get('fetch/lote/{lote}', [LoteController::class, 'fetch']);
+
+    /**************************/
+    /* Tarjeta
+    /**************************/
+    Route::get('get/tarjetas', [TarjetaController::class, 'getLotes']);
+    Route::post('fetch/tarjetas', [TarjetaController::class, 'fetchData']);
+    Route::resource('tarjetas', TarjetaController::class);
+    Route::get('fetch/tarjeta/{tarjeta}', [TarjetaController::class, 'fetch']);
 });
 
 Route::put('usuario/{usuario}/establecer/contrasena', [UserController::class, 'EstablecerContrasena'])->name('establecercontrasena');

@@ -3059,7 +3059,88 @@ export default [
       ]
    },
 
+   /*****************************************/
+   /* Lotes
+   /*************************************** */
+   {
+      path:'/lotes',
+      name:'lotes',
+      component:() => import('views/lotes/index.vue'),
+      children:[
+         {
+            path:'',
+            name:'lotes.list',
+            component:() => import('views/lotes/list.vue'),
+            meta:{
+               resource:'lotes',
+               action:'read',
+               pageTitle:'Lotes',
+               breadcrumb:[
+                  {text:'Listado',active:true}
+               ]
+            }
+         },
+          {
+            path:'create',
+            name:'lotes.create',
+            component:() => import('views/lotes/create.vue'),
+            meta:{
+               resource:'lotes',
+               action:'read',
+               pageTitle:'Lotes',
+               navActiveLink:'lotes.list',
+               breadcrumb:[
+                  {text:'Listado',active:false,to:{name:'lotes.list'}},
+                  {text:'Crear',active:true},
+               ]
+            }
+         },
+          {
+            path:':id/update',
+            props:true,
+            name:'lotes.edit',
+            component:() => import('views/lotes/edit.vue'),
+            meta:{
+               resource:'lotes',
+               action:'read',
+               pageTitle:'Lotes',
+               navActiveLink:'lotes.list',
+               breadcrumb:[
+                  {text:'Listado',active:false,to:{name:'lotes.list'}},
+                  {text:'Actualizar',active:true},
+               ]
+            }
+         }
+      ]
+   },
 
+
+   /*****************************************/
+   /* tarjetas
+   /*************************************** */
+   {
+      path:'/tarjetas',
+      name:'tarjetas',
+      component:() => import('views/tarjetas/index.vue'),
+      children:[
+         {
+            path:':lote?',
+            props:true,
+            name:'tarjetas.list',
+            component:() => import('views/tarjetas/list.vue'),
+            meta:{
+               resource:'tarjetas',
+               action:'read',
+               pageTitle:'Tarjetas',
+               breadcrumb:[
+                  {text:'Listado',active:true}
+               ]
+            }
+         },
+         
+         
+      ]
+   },
    /*****************************************/
    /* PAGINA DE perfil de negocios
    /*************************************** */

@@ -187,7 +187,7 @@
 
                                        <validation-provider name="tipo_recurrencia" rules="required" #default="{valid,errors}">
                                           <b-form-radio-group v-model="formulario.tipo_recurrencia" 
-                                          :options="tipoRecurrencias" :state="valid">
+                                          :options="tipoRecurrencias" :state="valid" @change="cambiarDias">
                                           </b-form-radio-group>
                                           <b-form-invalid-feedback :state="valid">
                                              {{ errors[0] }}
@@ -368,6 +368,13 @@ export default {
       ])
 
 
+      const cambiarDias = (tipo) => {
+         if(tipo == 0){
+            formulario.value.recurrencia.dia_semana = [0,1,2,3,4,5,6];
+         }
+         
+      } 
+
       return {
          formValidate,
          guardar,
@@ -381,6 +388,7 @@ export default {
          url_app: computed(() => `${window.location.origin}/evento/`),
          tipoRecurrencias,
          diasSemana,
+         cambiarDias
       }
    }
 

@@ -48,9 +48,7 @@ class Destino extends Model
 
     public static function getLocation($datos) : Collection{
         
-        $destinos = Destino::where('activo',true)->all()->filter(function($val) use($datos) {
-            return Destino::cerca($datos,$val,$datos['km']);
-        });
+        $destinos = Destino::where('activo',true)->get()->filter(fn($val) => Destino::cerca($datos, $val, $datos['km']));
 
         foreach ($destinos as $key => $destino) {
             $destino->ruta = "/Destinos?q={$destino->nombre}";

@@ -9,7 +9,7 @@
                <swiper-container class="swiper-centered-slides px-0 py-1" ref="swiperRef" init="false" >
          
                   <!-- slides -->
-                  <swiper-slide v-for="(atraccion, i) in atracciones" :key="i" class="rounded ">
+                  <swiper-slide v-for="(atraccion, i) in atracciones" :key="i" class="rounded " >
          
                      <b-card class="cursor-pointer" header-class="p-0 header-card" body-class="mt-1 px-1 contenido-card"
                       @click="$router.push(atraccion.ruta)" style="height:370px !important; max-width:350px"> 
@@ -94,11 +94,10 @@ import {
 
 } from 'bootstrap-vue'
 
-import {ref,computed,onMounted,toRefs} from 'vue'
+import {ref,computed,onMounted,toRefs,watch} from 'vue'
 import useAuth from '@core/utils/useAuth'
 import store from '@/store'
 import {optionsSwiper} from '@core/utils/utils'
-
 export default {
    
    props:{
@@ -138,6 +137,7 @@ export default {
       
       const swiperRef = ref(null)
       
+      const {atracciones} = toRefs(props)
       const {
          is_loggin
       } = useAuth();
@@ -146,12 +146,25 @@ export default {
       onMounted(() => {
          Object.assign(swiperRef.value, optionsSwiper.value)
          swiperRef.value.initialize();
+         // setTimeout(() => console.log(swiperRef.value) , 4000)
+         
 
+      }) 
+
+
+      watch(atracciones,() => {
+
+         if(swiperRef.value.swiper){
+            swiperRef.value.swiper.update();
+         }
+         
       })
+
 
       return {
          swiperRef,
          is_loggin,
+         loading:computed(() => store.state.loading),
          promedioCalificacion:(atraccion) => store.getters['atraccion/promedioCalificacion'](atraccion),
       }
 

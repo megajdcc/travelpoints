@@ -132,6 +132,15 @@ export default [
          }
       ]
    },
+   {
+      title:'Tarjetas',
+      icon:'fa-credit-card',
+      fontAwesome:true,
+      children:[
+         { title:'Registrar lote',route:'lotes.list',icon:'fa-plus',resource:'lotes',action:'read',fontAwesome:true},
+         { title:'Tarjetas',route:'tarjetas.list',icon:'fa-rectangle-list',resource:'tarjetas',action:'read',fontAwesome:true},
+      ]
+   },
 
    {
       title:'Tiendas Y Productos',

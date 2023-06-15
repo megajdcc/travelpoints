@@ -49,9 +49,9 @@ export default{
 
        getRecurrencia(state){
          return (event) => {
-            let tipo_recurrencia = ['Semanalmente','Mensual','Anual'];
+            let tipo_recurrencia = ['Diariamente','Semanalmente','Mensual','Anual'];
 
-            return tipo_recurrencia[event.tipo_recurrencia - 1];
+            return tipo_recurrencia[event.tipo_recurrencia];
          }
       }
    },

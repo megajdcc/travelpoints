@@ -50,8 +50,8 @@
 
                           <b-col cols="12" sm="6" lg="3">
                             <b-form-group >
-                                <validation-provider name="asunto" rules="required" #default="{ errors }">
-                                  <b-form-input v-model="formulario.asunto" :state="errors.length ? false : null" placeholder="Asunto" />
+                                <validation-provider name="asunto" rules="required" #default="{ errors,valid }">
+                                  <b-form-input v-model="formulario.asunto" :state="valid" placeholder="Asunto" />
 
                                   <b-form-invalid-feedback>
                                     {{ errors[0] }}
@@ -59,6 +59,18 @@
                                 </validation-provider>
                             </b-form-group>
                         </b-col>
+
+                        <b-col cols="12" sm="6" lg="3">
+                          <b-form-group >
+                              <validation-provider name="perfil" rules="required" #default="{ errors,valid }">
+                              <v-select v-model="formulario.perfil" :options="perfiles" placeholder="Perfil de socio TravelPoints" :reduce="option => option.value" />
+
+                                <b-form-invalid-feedback :state="valid">
+                                  {{ errors[0] }}
+                                </b-form-invalid-feedback>
+                              </validation-provider>
+                          </b-form-group>
+                       </b-col>
                   </b-row>
              
                   <b-row>
@@ -70,13 +82,14 @@
                             <b-form-invalid-feedback>
                               {{ errors[0] }}
                             </b-form-invalid-feedback>
+                            
                           </validation-provider>
                         </b-form-group>
                     </b-col>
 
                     <b-col cols="12">
                         <b-form-checkbox id="checkbox-1" v-model="politicas">
-                          Usted acepta nuestras <b-link :to="{ path: pagePolitica }"> Políticas de Privacidad ?</b-link>
+                          Usted acepta nuestras <b-link :to="{ path: pagePolitica }"> Políticas de Privacidad </b-link>
                         </b-form-checkbox>
                     </b-col>
                   </b-row>
@@ -160,6 +173,7 @@ import {
 import { ValidationObserver, ValidationProvider } from 'vee-validate'
 import { required, email } from '@validations'
 import useMap from '@core/utils/useMap';
+import vSelect from 'vue-select'
 
 export default {
   
@@ -184,6 +198,7 @@ export default {
     VBTooltip,
     BFormRadioGroup,
     BFormCheckbox,
+    vSelect,
   },
 
   setup(props){
@@ -219,7 +234,8 @@ export default {
             nombre: '',
             telefono: null,
             asunto: '',
-            mensaje: ''
+            mensaje: '',
+            perfil:null
           }
 
         } else {
@@ -250,6 +266,14 @@ export default {
       iconMapa,
       stylosMap
     } = useMap();
+    
+
+    const perfiles = ref([
+      {label:'Soy un Viajero',value:1},
+      {label:'Soy un Negocio',value:2},
+      {label:'No estoy registrado',value:3},
+      {label:'Otro',value:4},
+    ])
 
 
     return {
@@ -268,7 +292,7 @@ export default {
       options_map,
       refMap,
       politicas,
-
+      perfiles,
       iconMapa,
       promedioLatitud: computed(() => {
 

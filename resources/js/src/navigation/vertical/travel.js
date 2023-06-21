@@ -1,6 +1,15 @@
 
 export default [
 
+   {
+      title: 'Inicio',
+      route: 'inicio',
+      action: 'read',
+      resource: 'Auth',
+      icon: 'HomeIcon',
+   },
+
+
    // {
    //    title: '¿Qué es TravelPoints?',
    //    route: 'about',

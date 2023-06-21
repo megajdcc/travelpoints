@@ -14,6 +14,8 @@ class NuevoMensaje extends Notification implements ShouldQueue
 
   public Sistema $sistema;
   public $datos;
+
+  public $perfiles = ['Viajero','Negocio','No registrado','otro'];
   /**
    * Create a new notification instance.
    *
@@ -51,6 +53,7 @@ class NuevoMensaje extends Notification implements ShouldQueue
       ->subject('Nuevo mensaje en contacto | ' . $this->datos['asunto'])
       // ->bcc($bcc)
       ->greeting("Hola {$notifiable->getNombreCompleto()}!")
+      ->line('Perfil: '.$this->perfiles[$this->datos['perfil'] - 1])
       ->line('Tienes un mensaje desde contacto')
       ->line("El mensaje lo ha enviado {$this->datos['nombre']} y te quiere hacer saber lo siguiente:")
       ->line($this->datos['mensaje'])
@@ -70,7 +73,7 @@ class NuevoMensaje extends Notification implements ShouldQueue
       'titulo' => 'Nuevo mensaje en contacto | ' . $this->datos['asunto'],
       'avatar' => null,
       'usuario' => null,
-      'mensaje' => ['Tienes un mensaje desde contacto:', "El mensaje lo ha enviado {$this->datos['nombre']} y te quiere hacer saber lo siguiente:", $this->datos['mensaje'], ($this->datos['telefono']) ? "Te ha dejado su número de contacto por si quieres contáctarlo: {$this->datos['telefono']} " : ''],
+      'mensaje' => ['Tienes un mensaje desde contacto:', "El mensaje lo ha enviado {$this->datos['nombre']} y te quiere hacer saber lo siguiente:", $this->datos['mensaje'], ($this->datos['telefono']) ? "Te ha dejado su número de contacto por si quieres contáctarlo: {$this->datos['telefono']} " : '', 'Perfil:' . $this->perfiles[$this->datos['perfil'] - 1]],
       'type' => 'light-success', // light-info , light-success, light-danger, light-warning
       'btn' => false,
       'btnTitle' => 'Ir a mi perfil',

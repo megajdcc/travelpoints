@@ -59,6 +59,18 @@
                               </validation-provider>
                           </b-form-group>
                       </b-col>
+
+                      <b-col cols="12" sm="6" lg="3">
+                        <b-form-group >
+                            <validation-provider name="perfil" rules="required" #default="{ errors }">
+                             <v-select v-model="formulario.perfil" :options="perfiles" placeholder="Perfil de socio TravelPoints" :reduce="option => option.value"></v-select>
+
+                              <b-form-invalid-feedback>
+                                {{ errors[0] }}
+                              </b-form-invalid-feedback>
+                            </validation-provider>
+                        </b-form-group>
+                    </b-col>
                 </b-row>
              
                 <b-row>
@@ -143,6 +155,7 @@ import { toRefs, ref, computed } from 'vue'
 import { ValidationObserver, ValidationProvider } from 'vee-validate'
 import { required, email } from '@validations'
 import iconMapa from '@images/icons/icon_map.png' 
+import vSelect from 'vue-select'
 
 export default {
 
@@ -163,6 +176,7 @@ export default {
     VBTooltip,
     BFormRadioGroup,
     BFormCheckbox,
+    vSelect
   },
 
 
@@ -188,7 +202,8 @@ export default {
       nombre: '',
       telefono: null,
       asunto: '',
-      mensaje: ''
+      mensaje: '',
+      perfil:null
     })
 
     const cargarForm = () => {
@@ -227,7 +242,14 @@ export default {
       })
 
 
-    }
+    } 
+
+    const perfiles = ref([
+      {label:'Soy un Viajero',value:1},
+      {label:'Soy un Negocio',value:2},
+      {label:'No estoy registrado',value:3},
+      {label:'Otro',value:4},
+    ])
 
 
     const iconMap =  ref({
@@ -251,10 +273,12 @@ export default {
       windowWidth,
       sistema,
       required,
+      perfiles,
       formulario,
       enviar,
       email,
       formValidate,
+      perfiles,
       options_map,
       loading: computed(() => store.state.loading),
       iconMap,

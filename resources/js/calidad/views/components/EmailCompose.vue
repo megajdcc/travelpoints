@@ -36,7 +36,6 @@
       <!-- Modal: Body -->
       <b-form>
 
-         <!-- Field: Bodas -->
 
          <div class="compose-mail-form-field">
             <label for="email-bodas" class="form-label">Boda: </label>

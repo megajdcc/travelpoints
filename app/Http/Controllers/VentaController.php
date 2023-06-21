@@ -159,13 +159,12 @@ class VentaController extends Controller
                 // multiplicamos el monto tps correspondido por la tasa de la divisa de la venta correspondiente a la divisa principal TP
                 $comision_cliente = $datos['tps'] / $venta->divisa->tasa; 
 
-                
-                // GEneramos el movimiento en la billetera del cliente 
-                $venta->cliente->generarMovimiento($comision_cliente, "Consumo en {$venta->model->nombre} por un monto de:{$monto}.");
-                $venta->update([
-                    'tps_bonificados' => $comision_cliente
-                ]);
 
+                // GEneramos el movimiento en la billetera del cliente 
+                $movimiento = $venta->cliente->generarMovimiento($comision_cliente, "Consumo en {$venta->model->nombre} por un monto de:{$monto}.");
+
+                $venta->tps_bonificados = $comision_cliente;
+                $venta->save();
                 // dd($comision_cliente,$venta);
             }
 

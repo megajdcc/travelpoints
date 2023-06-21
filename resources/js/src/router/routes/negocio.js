@@ -845,36 +845,7 @@ export default [
                         }
                   },
 
-                  {
-                        path: ':id/edit',
-                        props: true,
-                        component: () => import('views/panels/negocio/cupones/edit.vue'),
-                        name: 'negocio.cupon.edit',
-                        meta: {
-                              resource: 'negocio cupones',
-                              action: 'update',
-                              pageTitle: 'Edit Cupón',
-                              layout: 'negocio',
-                              navActiveLink: 'negocio.cupones',
-                              breadcrumb: [
-                                    {
-                                          text: 'Home',
-                                          to: {name:'negocio.home'},
-                                          active: false
-                                    },
-
-                                    {
-                                          text: 'Cupones ',
-                                          active: false,
-                                          to: { name: 'negocio.cupones' }
-                                    },
-                                    {
-                                          text: 'Editar ',
-                                          active: true,
-                                    }
-                              ]
-                        }
-                  },
+            
 
                   {
                         path: ':id/reservar/cupon',

@@ -25,7 +25,7 @@ class RolController extends Controller
 
         $paginator = Rol::where([
             ['nombre','LIKE','%'.$datos['q'].'%','OR'],            
-        ])->where('nombre','!=','Desarrollador')
+        ])
         ->with(['permisos','usuarios'])
         ->orderBy($datos['sortBy'], $datos['isSortDirDesc'] ? 'desc' : 'asc')
         ->paginate($datos['perPage']  == 0 ? 10000 : $datos['perPage']);

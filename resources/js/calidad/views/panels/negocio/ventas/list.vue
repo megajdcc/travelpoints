@@ -44,7 +44,7 @@
 
                      <b-col cols="12" md="4">
                         <strong>Travel Points Bonificados</strong>
-                        <p class="text-mute">Tp${{ redondear(venta.tps_bonificados) }} </p>
+                        <p class="text-mute">Tp${{ venta.tps_bonificados }} </p>
                      </b-col>
                   </b-row>
                </b-container>

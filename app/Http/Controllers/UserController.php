@@ -240,6 +240,7 @@ class UserController extends Controller
             $usuario->cargar();
 
             $result = true;
+
         } catch (Exception $e) {
             DB::rollBack();
             $result = false;
@@ -823,6 +824,7 @@ class UserController extends Controller
         $usuario->cargar();
 
         return response()->json(['result' => $result, 'usuario' => $usuario]);
+        
     }
 
     public function cambiarStatus(User $usuario)

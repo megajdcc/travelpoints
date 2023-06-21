@@ -5,9 +5,7 @@
       <b-link class="brand-logo">
         
          <img src="/storage/logotipo.png" alt="Logo" />
-        <!-- <h2 class="brand-text text-primary ml-1">
-          Boda y Playa
-        </h2> -->
+       
       </b-link>
 
     <div class="misc-inner p-2 p-sm-3">

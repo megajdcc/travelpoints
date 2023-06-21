@@ -26,8 +26,7 @@ class EventoController extends Controller
     public function fetchEventos(Request $request){
 
         $datos = $request->all();
-
-        $eventos = Evento::when(isset($datos['model_type']), function($query) use($datos) {
+        $eventos = Evento::when(isset($datos['model_type']) && !empty($datos['model_type']), function($query) use($datos) {
                 $query->where('model_id', $datos['model_id'])->where('model_type', $datos['model_type']);
         })
         ->when(count($datos['filterOption']) > 0 , function($query) use($datos){
@@ -36,14 +35,16 @@ class EventoController extends Controller
         ->when(isset($datos['negocio']),function($query) use($datos){
             $query->where('model_id',$datos['negocio'])->where('model_type',"App\Models\Negocio\Negocio");
         })
-                ->where('status',isset($datos['perfil']) && $datos['perfil'] == true ? 1 :  '>', 0)
+        ->when(isset($datos['perfil']),function($q) use($datos){
+            $q->where('status',$datos['perfil'] == 1 ? true : false);
+        })
                 ->with(['imagenes'])
                 ->orderBy('fecha_inicio','asc')
-                ->get()
-                ->each(fn($event) => $event->cargar());
+                ->get();
 
+        $eventos->each(fn ($event) => $event->cargar());
             
-        return response()->json($eventos);
+        return response()->json([...$eventos]);
 
     }
 

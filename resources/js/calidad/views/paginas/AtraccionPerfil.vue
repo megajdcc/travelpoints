@@ -205,7 +205,6 @@ export default {
       BFormRating,
       Horario:() => import('components/Horario.vue'),
       hasLike:() => import('components/HasLike.vue'),
-   
       BLink,
       BListGroup,
       BListGroupItem,
@@ -218,7 +217,6 @@ export default {
       Negocios:() => import('components/Negocios.vue'),
       SwiperGallery:() => import('components/SwiperGallery.vue'),
       ShowDirections:() => import('components/ShowDirections.vue')
-
    }, 
 
    setup(props){

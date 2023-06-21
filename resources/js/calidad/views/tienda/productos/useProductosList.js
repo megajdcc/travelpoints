@@ -12,7 +12,8 @@ export default function useProductosList() {
   const items = ref([])
   const categoria_id = ref([])
   const precios = ref([0, 20000])
-
+  const {tiendas}  = toRefs(store.state.tienda)
+  const tienda_id = ref([])
   const sortBy = ref('price-asc')
 
   const sortByOptions = [
@@ -29,6 +30,10 @@ export default function useProductosList() {
     
     if(!categorias.value.length){
       store.dispatch('categoriaProducto/getCategorias')
+    }
+
+    if(!tiendas.value.length){
+      store.dispatch('tienda/getTiendas')
     }
   }
 
@@ -74,7 +79,7 @@ export default function useProductosList() {
     fetchData((vals) => items.value = vals)
   }
 
-  watch([currentPage, perPage, searchQuery,categoria_id,sortBy,precios], () => {
+  watch([currentPage, perPage, searchQuery,categoria_id,sortBy,precios,tienda_id], () => {
     refetchData()
   })
 
@@ -90,8 +95,7 @@ export default function useProductosList() {
       isSortDirDesc: isSortDirDesc.value,
       categoria_id:categoria_id.value,
       precios: precios.value,
-
-
+      tienda_id:tienda_id.value
     }).then(({ total: all, productos }) => {
       total.value = all
       next(productos)
@@ -134,7 +138,9 @@ export default function useProductosList() {
     categorias,
     categoria_id,
     precios,
-    sortByOptions
+    sortByOptions,
+    tienda_id,
+    tiendas
 
 
   }

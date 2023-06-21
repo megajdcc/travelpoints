@@ -94,7 +94,9 @@ class Destino extends Model
     public function cargar(){
         
         $this->atracciones;
+
         $this->iata;
+        $this->iata->pais = $this->pais();
         $this->ciudad;
         $this->estado;
         $this->imagenes;

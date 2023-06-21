@@ -41,7 +41,7 @@ export default{
 
       getStatus(state){
          return (event) => {
-            let status = ['Activo','Vencido','Prorrateado'];
+            let status = ['Activo','Vencido','Aun no inicia'];
 
             return status[event.status - 1];
          }
@@ -176,7 +176,10 @@ export default{
             axios.post(`/api/eventos/fetch/eventos`,datos).then(({data}) => {
                commit('setEventos',data)
                resolve(data)
-            }).catch(e => reject(e))
+            }).catch(e => {
+               console.log(e)
+               reject(e)
+            })
 
 
          })

@@ -37,6 +37,7 @@ mix.webpackConfig({
   },
   module: {
     rules: [
+
       {
         test: /\.s[ac]ss$/i,
         use: [

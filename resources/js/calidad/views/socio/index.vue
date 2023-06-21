@@ -94,6 +94,11 @@
                   </b-nav-item>
 
 
+                  <b-nav-item :to="{ name: 'mi.tarjetas' }" exact active-class="active">
+                     <span class="fas fa-credit-card"></span>
+                     Tarjetas asociadas
+                  </b-nav-item>
+
                   <b-nav-item :to="{ name: 'misreferidos' }" exact active-class="active">
                      <span class="fas fa-user-plus"></span>
                      Mis Referidos

@@ -128,13 +128,13 @@ class NegocioController extends Controller
 
             $negocio->update($datos);
 
-            if(!$negocio->tps_referido){
+            // if($negocio->tps_referido != $datos[]){
 
                 $tps_referido = Divisa::convertirToTravel($negocio->comision,$negocio->divisa);
 
                 $negocio->tps_referido = $tps_referido;
                 $negocio->save();
-            }
+            // }
 
             foreach($datos['telefonos'] as $telefono){
                 $negocio->actualizarTelefono($telefono);
@@ -661,7 +661,7 @@ class NegocioController extends Controller
             $atraccion = Atraccion::find($datos['atraccion']);
 
             $negocios = $negocios->filter(function($negocio) use($atraccion){
-                return $negocio->cercanos(['lat' => $atraccion->lat,'lng' => $atraccion->lng],300);
+                return $negocio->cercanos(['lat' => $atraccion->lat,'lng' => $atraccion->lng],80);
             });
             
         }   

@@ -34,8 +34,8 @@ class User extends Authenticatable
     use Has_roles;
     use hasCuenta,hasTelefonos,hasCarrito;
     public readonly string $model_type;
-    public readonly int $divisa_id;
-
+    public readonly int $divisa_id; 
+    public $porcentajePerfil = 0;
     public function __construct(
         string $model_type = 'App\Models\User')
     {
@@ -45,7 +45,7 @@ class User extends Authenticatable
 
         $this->divisa_id = Divisa::where('principal', true)->first()->id;
 
-       
+       $this->porcentajePerfil = $this->getFillPercentage();
 
     }
 
@@ -786,6 +786,24 @@ class User extends Authenticatable
     public function tarjeta(){
         return $this->belongsTo(Tarjeta::class,'tarjeta_id','id');
     }
+
+    public function getFillPercentage()
+    {
+        $fillableProperties = $this->getFillable();
+        $totalProperties = count($fillableProperties);
+        $filledProperties = 0;
+
+        foreach ($fillableProperties as $property) {
+            if (!empty($this->$property)) {
+                $filledProperties++;
+            }
+        }
+
+        $percentageFilled = ($filledProperties / $totalProperties) * 100;
+        
+        return $percentageFilled;
+    }
+
     
     public function cargar(): User{
         $this->tokens;
@@ -816,7 +834,9 @@ class User extends Authenticatable
         $this->promotores;
         $this->coordinador;
         $this->lideres;
+        $this->porcentajePerfil = $this->getFillPercentage();
 
+        // dd($this->porcentajePerfil);
         return $this;
     }
 

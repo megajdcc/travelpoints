@@ -60,10 +60,9 @@ export default function useEventosList(negocio = null) {
          end:info.end.valueOf(),
          filterOption:filterOption.value,
          negocio:negocio ? negocio.value.id: null
-      }).then((eventos) => {
+      }).then((eventos) => {h
 
-         next(eventos.map(val => {
-
+         const events = eventos.map(val => {
             if(val.recurrente){
                return {
                   title:val.titulo,
@@ -97,14 +96,13 @@ export default function useEventosList(negocio = null) {
                allDay:val.all_dia,
                backgroundColor:colorRand(),
                eventColor:colorRand(),
-
                classNames:[`evento-${val.id}`],
                extendedProps:val,
-
-
             }
+         });
 
-         }))
+         next(events);
+        
       }).catch(e => {
          console.log(e)
          failure(e)
@@ -138,36 +136,16 @@ export default function useEventosList(negocio = null) {
       },
 
       events:fetchEvents,
+      editable: false,
+      eventResizableFromStart: false,
+      dragScroll: false,
+      dayMaxEvents: 4,
 
       /*
-         Enable dragging and resizing event
-         ? Docs: https://fullcalendar.io/docs/editable
-      */
-      editable: true,
-
-      /*
-         Enable resizing event from start
-         ? Docs: https://fullcalendar.io/docs/eventResizableFromStart
-      */
-      eventResizableFromStart: true,
-
-      /*
-         Automatically scroll the scroll-containers during event drag-and-drop and date selecting
-         ? Docs: https://fullcalendar.io/docs/dragScroll
-      */
-      dragScroll: true,
-
-      /*
-         Max number of events within a given day
-         ? Docs: https://fullcalendar.io/docs/dayMaxEvents
-      */
-      //  dayMaxEvents: 2,
-
-      /*
-         Determines if day names and week names are clickable
+         Determina si se puede hacer clics en los nombres de dias y semanas
          ? Docs: https://fullcalendar.io/docs/navLinks
       */
-      navLinks: true,
+      navLinks: false,
 
       eventClick({ event: clickedEvent }) {
          // isEventHandlerSidebarActive.value = true
@@ -175,23 +153,17 @@ export default function useEventosList(negocio = null) {
          showEvent.value = true
       },
 
-      eventMouseEnter({el}){
-
-      },
-
       customButtons: {
          sidebarToggle: {
-         text: 'sidebar',
-         click() {
-            isCalendarOverlaySidebarActive.value = !isCalendarOverlaySidebarActive.value
-         },
+            text: 'sidebar',
+            click() {
+               isCalendarOverlaySidebarActive.value = !isCalendarOverlaySidebarActive.value
+            },
          },
       },
 
       dateClick(info) {
          isEventHandlerSidebarActive.value = true
-
-         
       },
 
 
@@ -199,29 +171,7 @@ export default function useEventosList(negocio = null) {
 
       },
 
-      /*
-         Handle event resize
-         ? Docs: https://fullcalendar.io/docs/eventResize
-      */
-      eventResize({ event: resizedEvent }) {
-
-      },
-
-
-      eventDidMount:function(info){
-         // // console.log(info)
-
-         // const h2 = () => h('h2','hola')
-         // let elemnt = info.el
-         // createPopper(info.el,h2(), {
-         // placement: 'right',
-         // })
-      }
-   ,
-
-   //   eventContent: ({event}) => (h('div', { id: 'foo' }, 'hello')),
-
-   rerenderDelay: 350,
+      rerenderDelay: 350,
    })
 
 

@@ -26,7 +26,7 @@
          </b-nav-item>
 
 
-         <b-nav-item v-for="(pagina,i) in paginas.filter(val => val.showHeader && val.icono)"  :to="{ path: pagina.ruta }" v-b-tooltip.hover.bottom :title="pagina.nombre" :key="i" class="d-none d-md-flex">
+         <b-nav-item v-for="(pagina,i) in paginas.filter(val => val.showHeader && val.icono)"  :to="{ path: `/${pagina.ruta}` }" v-b-tooltip.hover.bottom :title="pagina.nombre" :key="i" class="d-none d-md-flex">
                <font-awesome-icon :icon="['fas',`fa-${pagina.icono}`]" size="lg"/>
          </b-nav-item>
 

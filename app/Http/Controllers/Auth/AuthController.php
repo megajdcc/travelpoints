@@ -135,6 +135,8 @@ class AuthController extends Controller
             'email'=>'required|string|unique:users',
             'password'=>'required|string',
             'c_password' => 'required|same:password'
+        ],[
+         'email.unique' => 'El email ya está registrado, inténte con otro'
         ]);
 
         $user = User::create([
@@ -235,7 +237,7 @@ class AuthController extends Controller
          $result = false;
       }
       
-      
+      $user->porcentajePerfil = $user->getFillPercentage();
       return response()->json([
          'result' => $result,
          'accessToken' => $token,

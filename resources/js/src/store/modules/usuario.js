@@ -44,7 +44,9 @@ export default {
 				carrito_compra:[],
 				status:3,
 				lider:null,
-				promotores:[]
+				promotores:[],
+				tarjeta_id:null,
+				tarjeta:null
 			},
 
 			user: {
@@ -80,7 +82,9 @@ export default {
 				referidos: [],
 				referidor: [],
 				negocios: [],
-				cupones: []
+				cupones: [],
+				tarjeta_id:null,
+				tarjeta:null
 			},
 
 			usuarios: [],
@@ -147,7 +151,9 @@ export default {
 				referidos: [],
 				referidor: [],
 				negocios: [],
-				cupones: []
+				cupones: [],
+				tarjeta_id:null,
+				tarjeta:null
 			}
 		},
 
@@ -241,7 +247,9 @@ export default {
 				likes:[],
 				status:3,
 				lider:null,
-				promotores:[]
+				promotores:[],
+				tarjeta_id:null,
+				tarjeta:null
 			}
 		},
 

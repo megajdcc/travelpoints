@@ -13,8 +13,9 @@
                   <div class="card-simple" :style="`background-image:url(${portada(item.imagenes)});cursor:pointer;`" @click="seleccionarDestino(item.id,item.ruta)">
                     <div class="card-simple-background">
                       <div class="card-simple-content">
-                        <h2 @click="seleccionarDestino(item.id, item.ruta)">
-                              {{ item.nombre }}
+                        <h2 @click="seleccionarDestino(item.id, item.ruta)" class="d-flex flex-column">
+                              <span class="text-uppercase"> {{ item.nombre }}</span>
+                             <strong>{{ item.iata.pais.pais }}</strong>
                         </h2>
                         <!-- <div class="card-simple-rating">
                           <el-rate :value="promedioCalificacion(item)" disabled disabled-void-color="#4f4f4f"

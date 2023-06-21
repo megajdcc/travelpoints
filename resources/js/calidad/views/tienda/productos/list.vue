@@ -122,6 +122,7 @@
                               </div>
                               
                               <h6 class="item-name">
+                                
                                 <b-link class="text-body" :to="{ name: !isStore ? 'producto.show' : 'tienda.travel.show.producto', 
                                 params: { id: product.id } }">
                                   {{ product.nombre }}
@@ -228,10 +229,6 @@
       
 
       </template>
-
-       
-     
-
     </listado-productos>
 
 </template>
@@ -423,9 +420,6 @@ export default {
       return product.value.variants;
     })
 
-
-
-
     return {
       is_loggin,
       variantColor,
@@ -449,8 +443,6 @@ export default {
 
         return product.value.tiendas.find(val => val.id === formulario.value.tienda_id).pivot.cantidad || 0
       }),
-
-
       getImagenPrincipal: (produc) => {
 
         const imagen_principal = produc.imagenes.find(val => val.portada)

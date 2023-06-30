@@ -2,7 +2,7 @@
   <validation-observer ref="formValidate" #default="{handleSubmit}">
 
     <b-form @submit.prevent="handleSubmit(enviarReserva)">
-      <b-modal :visible="isShowDialog" centered @hide="cerrarModal" title="Crea tu reserva">
+      <b-modal :visible="isShowDialog" centered @hide="cerrarModal" title="Crea tu reserva" @show="cargarForm">
         <b-form-group>
           <template #label>
             Fecha de la reserva: <span class="text-danger">*</span>
@@ -171,8 +171,6 @@ export default {
 
 
     const enviarReserva = () => {
-
-
       formValidate.value.validate().then(result => {
 
           if(result){
@@ -216,9 +214,6 @@ export default {
           }
 
       })
-
-      
-
     }
 
     const consultarHoras = (fecha) => {

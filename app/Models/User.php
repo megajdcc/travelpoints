@@ -33,9 +33,11 @@ class User extends Authenticatable
     use HasApiTokens,HasFactory, Notifiable;
     use Has_roles;
     use hasCuenta,hasTelefonos,hasCarrito;
+    
     public readonly string $model_type;
     public readonly int $divisa_id; 
     public $porcentajePerfil = 0;
+
     public function __construct(
         string $model_type = 'App\Models\User')
     {
@@ -804,6 +806,7 @@ class User extends Authenticatable
         return $percentageFilled;
     }
 
+   
     
     public function cargar(): User{
         $this->tokens;
@@ -835,7 +838,7 @@ class User extends Authenticatable
         $this->coordinador;
         $this->lideres;
         $this->porcentajePerfil = $this->getFillPercentage();
-
+        $this->tarjeta?->lote;
         // dd($this->porcentajePerfil);
         return $this;
     }

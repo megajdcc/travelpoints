@@ -18,6 +18,7 @@ class Lote extends Model
         'monto', //El monto en el que se van a vender las tarjetas
         'divisa_id',//la divisa en la se venderan
         'tps', //los tps que va aplicar esa tarjeta cuando el usuario la asocie 
+        'usuario_id'
     ];
 
     // El lote de tarjeta puede ser vendido en una divisa
@@ -33,7 +34,11 @@ class Lote extends Model
     {
         $this->divisa;
         $this->tarjetas;
+        $this->usuario?->cargar();
     }
 
     
+    public function usuario(){
+        return $this->belongsTo(User::class,'usuario_id','id');
+    }
 }

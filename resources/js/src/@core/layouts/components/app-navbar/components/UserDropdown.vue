@@ -31,6 +31,11 @@
       <span>Mi Perfil</span>
     </b-dropdown-item>
 
+    <b-dropdown-item :to="{ name: 'mi.tarjetas' }" link-class="d-flex align-items-center" v-if="is_loggin">
+      <font-awesome-icon icon="fas fa-credit-card" class="mr-1"/>
+      <span>Mis Tarjetas</span>
+    </b-dropdown-item>
+
     <b-dropdown-item :to="{ name: 'faqs' }" link-class="d-flex align-items-center">
       <feather-icon size="16" icon="HelpCircleIcon" class="mr-50" />
       <span>Faq</span>

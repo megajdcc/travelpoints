@@ -83,6 +83,7 @@ class LoteController extends Controller
                     $numero_tarjeta = $codigo_lada . $correlativo;
 
                     if($tarjeta = Tarjeta::where('numero',$numero_tarjeta)->first()){
+
                         $fail('Una de las tarjetas ya estan registrada en el sistema, verifica los números iniciales y finales');
                     }
 
@@ -92,7 +93,8 @@ class LoteController extends Controller
             'numero_final'   => ['required', $lote ? Rule::unique('lotes', 'numero_final')->ignore($lote) : 'unique:lotes,numero_final'],
             'monto'          => 'required',
             'divisa_id'      => 'required',
-            'tps'           => 'required'
+            'tps'           => 'required',
+            'usuario_id' => 'nullable'
         ],[
             'numero_inicial.unique' => 'El número inicial de la tarjeta en este lote, es repetido , ya hay uno en nuestro servidor con el mismo número, intente con otro',
             'numero_final.unique' => 'El número final de la tarjeta en este lote, es repetido , ya hay uno en nuestro servidor con el mismo número, intente con otro',
@@ -186,4 +188,26 @@ class LoteController extends Controller
 
         return response()->json(['result' => $result]);
     }
+
+    public function asociarLote(Request $request,Lote $lote){
+
+        $datos = $request->validate([
+            'usuario_id' => 'required',
+        ]);
+
+        try {
+            DB::beginTransaction();
+            $lote->update($datos);
+            DB::commit();
+            $result = true;
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            $result = false;
+        }   
+
+        $lote->cargar();
+
+        return response()->json(['result' => $result,'lote' => $lote]);
+    }
+
 }

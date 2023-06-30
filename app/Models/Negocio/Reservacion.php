@@ -9,7 +9,9 @@ use Illuminate\Database\Eloquent\Model;
 
 use Illuminate\Database\Eloquent\Casts\Attribute;
 
-use Carbon\Carbon;
+
+use Illuminate\Support\Carbon;
+
 
 class Reservacion extends Model
 {
@@ -25,8 +27,6 @@ class Reservacion extends Model
         'usuario_id',
         'operador_id',
         'observaciaon',
-        
-
     ];
 
     // public function fecha() : Attribute{
@@ -53,6 +53,19 @@ class Reservacion extends Model
         return $this->hasOne(Venta::class,'reservacion_id','id');
     }
 
+    public function getDia(){
+        $dt =  Carbon::parse($this->fecha.' '.$this->hora);
+        return $dt->isoFormat('LL [a las] h:mm A');
+    }
+
+    public function getPersonas(){
+
+        if($this->personas > 1){
+            return $this->personas .' Personas';
+        }
+
+        return $this->personas .' Persona';
+    }
     
     
 }

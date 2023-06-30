@@ -167,7 +167,8 @@ import lote from './modules/lote.js';
 // Tarjeta  
 import tarjeta from './modules/tarjeta.js'
 
-
+// vonage
+import vonage from './modules/vonage.js'
 
 Vue.use(Vuex)
 
@@ -322,7 +323,8 @@ export default new Vuex.Store({
     academiaVideos,
     pagina,
     lote,
-    tarjeta
+    tarjeta,
+    vonage
   },
   strict: process.env.DEV,
 

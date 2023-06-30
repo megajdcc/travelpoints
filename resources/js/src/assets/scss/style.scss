@@ -260,3 +260,7 @@ body {
     border: 3px solid #f1f2f3;
 }
 
+.dropdown-menu {
+   max-height: 450px;
+   overflow-y: scroll;
+}

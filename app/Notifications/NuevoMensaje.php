@@ -7,7 +7,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 use App\Models\Sistema;
-
+use Illuminate\Notifications\Messages\VonageMessage;
 class NuevoMensaje extends Notification implements ShouldQueue
 {
   use Queueable;
@@ -80,4 +80,16 @@ class NuevoMensaje extends Notification implements ShouldQueue
       'url' => ['name' => 'perfil',]
     ];
   }
+
+
+  /**
+   * Get the Vonage / SMS representation of the notification.
+   */
+  public function toVonage(object $notifiable): VonageMessage
+  {
+    return (new VonageMessage)
+      ->content('Nuevo mensaje prueba Jhonatan...');
+  }
+
+
 }

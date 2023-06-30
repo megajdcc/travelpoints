@@ -11,7 +11,7 @@ use App\Models\Divisa;
 use App\Http\Controllers\ImagenController;
 use App\Models\Negocio\HorarioReservacion;
 
-use App\Http\Controllers\{PaisController, CiudadController, EstadoController, LoteController, PaginaController, TarjetaController};
+use App\Http\Controllers\{PaisController, CiudadController, EstadoController, LoteController, MensajesVonageController, PaginaController, TarjetaController};
 
 /*
 |--------------------------------------------------------------------------
@@ -142,6 +142,9 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::post('usuarios/promotor/save', [UserController::class, 'guardarPromotor']);
     Route::post('usuarios/lider/save', [UserController::class, 'guardarLider']);
 
+    Route::put('usuarios/{usuario}/asociar/tarjeta',[UserController::class,'asociarTarjeta']);
+    Route::delete('usuarios/{usuario}/cancelar/tarjeta/{tarjeta}',[UserController::class,'cancelarTarjeta']);
+
 
     /*****************************/
     /* TELEFONOS
@@ -218,7 +221,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::resource('negocio/solicituds', SolicitudController::class)->middleware(convertirNull::class);
     Route::get('negocio/solicituds/get/all', [SolicitudController::class, 'getAll']);
     Route::get('negocio/solicituds/{solicitud}/get', [SolicitudController::class, 'getSolicitud']);
-
+    Route::get('negocio/mis-solicitudes',[SolicitudController::class,'misSolicitudes']);
     /*****************************/
     /* Negocios
     /*****************************/
@@ -650,6 +653,8 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::resource('lotes', LoteController::class);
     Route::get('fetch/lote/{lote}', [LoteController::class, 'fetch']);
 
+    Route::put('lotes/{lote}/asociar/lote',[LoteController::class,'asociarLote']);
+
     /**************************/
     /* Tarjeta
     /**************************/
@@ -657,6 +662,14 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::post('fetch/tarjetas', [TarjetaController::class, 'fetchData']);
     Route::resource('tarjetas', TarjetaController::class);
     Route::get('fetch/tarjeta/{tarjeta}', [TarjetaController::class, 'fetch']);
+    Route::get('tarjetas/{tarjeta}/toggle-validation',[TarjetaController::class,'toggleValidation']);
+
+    /**************************/
+    /* Vonage
+    /**************************/
+    Route::post('vonages/sms/fetchData',[MensajesVonageController::class,'fetchDataSms']);
+    Route::delete('vonages/sms/{mensaje}/eliminar',[MensajesVonageController::class,'eliminarSMS']);
+
 });
 
 Route::put('usuario/{usuario}/establecer/contrasena', [UserController::class, 'EstablecerContrasena'])->name('establecercontrasena');

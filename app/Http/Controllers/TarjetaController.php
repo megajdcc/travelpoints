@@ -148,4 +148,25 @@ class TarjetaController extends Controller
 
         return response()->json(['result' => $result]);
     }
+
+    public function toggleValidation(Tarjeta $tarjeta){
+
+        try {
+            DB::beginTransaction();
+
+            $tarjeta->update([
+                'validada' => !$tarjeta->validada
+            ]);
+
+            $tarjeta->cargar();
+
+            DB::commit();
+            $result = true;
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            $result = false;
+        }
+
+        return response()->json(['result' => $result,'tarjeta' => $tarjeta]);
+    }
 }

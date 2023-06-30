@@ -6,9 +6,11 @@ export default function useTarjetaList(lote){
 
   const tableColumns = ref([
     {key:'id',label:'#',sortable:true},
-    {key:'numero',label:'Número de la tarjeta',sortable:true},
+    {key:'numero',label:'Número de la tarjeta',sortable:true,sortKey:'numero'},
     {key:'monto',label:'Monto de Venta',sortable:true},
     {key:'tps',label:'TPS a adjudicar',sortable:true},
+    {key:'validada',label:'¿Validada por el vendedor?',sortable:true},
+    {key:'aplicada',label:'Aplicada',sortable:true},
     {key:'usuario',label:'Viajero Asociado',sortable:true},
   ])
 
@@ -54,6 +56,22 @@ export default function useTarjetaList(lote){
     })
   }
 
+  const toggleValidar = (tarjeta_id) => {
+
+      store.dispatch('tarjeta/toggleValidacion',tarjeta_id).then(({result}) => {
+        if(result){
+          toast.success('Se ha validado con éxito, la tarjeta ya puede ser asociada por el viajero')
+
+          refetchData();
+
+        }else{
+          toast.info('No se pudo asociar la tarjeta, inténtelo de nuevo mas tarde')
+        }
+      })
+
+
+  }
+
   return {
       perPageOptions,
       currentPage,
@@ -67,6 +85,7 @@ export default function useTarjetaList(lote){
       tableColumns,
       refetchData,
       fetchData,
-      eliminar
+      eliminar,
+      toggleValidar
   }
 }

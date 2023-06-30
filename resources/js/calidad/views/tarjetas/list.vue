@@ -14,7 +14,7 @@
       <b-card class="mt-1">
         <b-table ref="refTable" :items="fetchData" responsive :fields="tableColumns" primary-key="id" :sort-by="sortBy"
           empty-text="No se encontró ningúna tarjeta" :sort-desc="isSortDirDesc" sticky-header="700px"
-          :no-border-collapse="false" borderless outlined :busy="loading" :perPage="perPage" showEmpty small stacked="md">
+          :no-border-collapse="false" borderless outlined :busy="loading" :perPage="perPage" showEmpty small stacked="md" @sort-changed="sortChange">
 
 
           <template #cell(id)="{ item }">
@@ -43,6 +43,22 @@
             </span>
           </template>
 
+          <template #cell(validada)="{ item }">
+
+              <b-button variant="primary" @click="toggleValidar(item.id)"  size="sm" >
+                <span class="text-nowrap">
+                  {{ item.validada ? 'Sí, ¿Invalidar?' : 'No, ¿Validar?' }}
+                </span>
+              </b-button>
+             
+          </template>
+
+          <template #cell(aplicada)="{ item }">
+            <span class="text-nowrap">
+              {{ item.aplicada ? 'Sí' : 'No' }}
+            </span>
+          </template>
+
           <template #cell(usuario)="{ item }">
               <b-media vertical-align="center" v-if="item.usuario">
                 <template #aside> 
@@ -61,6 +77,9 @@
                 NO ASOCIADA
               </span>
           </template>
+
+
+          
         </b-table>
       </b-card>
 
@@ -148,11 +167,20 @@ export default {
       }, 1000);
     })
 
+    const sortChange = ({sortBy,sortDesc}) => {
+      
+      actions.sortBy.value = sortBy,
+      actions.isSortDirDesc.value = sortDesc
+
+    }
+
     return {
       actions: actions,
       refTable: actions.refTable,
       loading: computed(() => store.state.loading),
-      avatarText
+      avatarText,
+      sortChange,
+      toggleValidar:actions.toggleValidar
     }
 
   }

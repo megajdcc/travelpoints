@@ -24,8 +24,10 @@ use App\Models\Telefono;
 use App\Models\Like;
 use App\Models\Pais;
 use App\Models\Producto;
+use App\Models\Tarjeta;
 use App\Notifications\NuevaAsignacionCoordinador;
 use App\Notifications\NuevaAsignacionLider;
+use App\Notifications\validarVentaTarjeta;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 use Illuminate\Support\Collection;
 
@@ -1260,4 +1262,87 @@ class UserController extends Controller
 
         return response()->json(['result' => $result, 'monto' => $monto, 'mensaje' => $mensaje]);
     }
+
+    public function asociarTarjeta(Request $request, User $usuario){
+        
+        $datos  = $request->validate([
+            'codigo' => ['required','min:8','max:8',function($atr,$val,$fail) use($request,$usuario){
+                
+                if($tarjeta = Tarjeta::where('numero',$val)->first()){
+                    if(!$tarjeta->aplicada && $tarjeta->validada){
+                        if ($usuario = $tarjeta->usuario) {
+                            $fail('El número de tarjeta no es Valido');
+                        }
+                    }else{
+                        $fail('El número de tarjeta no es Valido');
+                    }
+
+                }else{  
+                    $fail('El número de tarjeta no es Valido');
+                }
+
+
+            }]
+        ],[
+            'codigo.min' => 'El código debe tener 8 caractares',
+        ]);
+
+        try{
+            DB::beginTransaction();
+            $result = false;
+            if( $tarjeta = Tarjeta::where('numero',$datos['codigo'])->first()){
+                 $usuario->update([
+                    'tarjeta_id' => $tarjeta->id
+                 ]);
+                 $tarjeta->aplicada = true;
+                 $tarjeta->save();
+
+                 $result = true;    
+
+                //  $usuario->notify(new validarVentaTarjeta($tarjeta));
+
+                if($usuario->cuenta->divisa->iso == 'Tp'){
+                    $usuario->generarMovimiento($tarjeta->lote->tps, 'Nueva Tarjeta asociada a su cuenta');
+                }else{
+                    $usuario->generarMovimiento($tarjeta->lote->tps * $usuario->cuenta->divisa->tasa, 'Nueva Tarjeta asociada a su cuenta');
+                }
+                 
+            }
+           
+            DB::commit();
+        }catch (\Throwable $th) {
+            DB::rollBack();
+            $result = false;
+        }
+
+
+        $usuario->cargar();
+        
+        return response()->json(['result' => $result,'usuario' => $usuario,'tarjeta' => $result ? $tarjeta : null]);
+
+
+    }
+
+
+    public function cancelarTarjeta(User $usuario, Tarjeta $tarjeta){
+        
+        try {
+            DB::beginTransaction();
+
+            $usuario->tarjeta_id = null;
+            $usuario->save();
+
+            DB::commit();
+            $result = true;
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            $result = false;
+        }
+        $usuario->cargar();
+        
+        return response()->json(['result' => $result,'usuario' => $usuario]);
+
+    }
+
+
 }

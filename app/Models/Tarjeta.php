@@ -12,8 +12,14 @@ class Tarjeta extends Model
     public $fillable = [
         'lote_id',
         'numero',
+        'aplicada',
+        'validada'
     ];
 
+    public $casts = [
+        'aplicada' => 'boolean',
+        'validada' => 'boolean'
+    ];
 
     public function lote(){
         return $this->belongsTo(Lote::class,'lote_id','id');

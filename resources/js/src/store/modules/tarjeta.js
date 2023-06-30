@@ -6,10 +6,10 @@ export default{
         lote_id: null,
         lote   : null,
         numero : '',
-        usuario:null
-
+        aplicada:false,
+        usuario:null,
+        validada:false,
       },
-
 
       tarjetas:[]
 
@@ -28,11 +28,14 @@ export default{
 
       clear(state){
          state.tarjeta = {
-          id      : null,
-          lote_id: null,
-          lote   : null,
-          numero : '',
-          usuario:null
+          id        : null,
+          lote_id   : null,
+          lote      : null,
+          numero    : '',
+          aplicada  : false,
+          usuario   : null,
+          validada: false,
+
 
          }
       },
@@ -185,6 +188,14 @@ export default{
 
             }).catch(e => reject(e))
 
+         })
+      },
+
+      toggleValidacion({commit},tarjeta_id){
+         return new Promise((resolve, reject) => {
+            axios.get(`/api/tarjetas/${tarjeta_id}/toggle-validation`).then(({data}) => {
+               resolve(data)
+            }).catch(e => reject(e))
          })
       }
 

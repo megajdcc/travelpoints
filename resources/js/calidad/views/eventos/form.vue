@@ -253,6 +253,17 @@
                         </b-container>
                      </tab-content>
 
+                     <tab-content title="Imagenes" icon="feather icon-image" v-if="formulario.id || !negocio">
+                           <b-container fluid>
+                              <el-divider content-position="left">Asociar imagenes al evento</el-divider>
+                              <b-row>
+                              <b-col cols="12">
+                                 <multimedia hideVideos seleccionable />
+                              </b-col>
+                              </b-row>
+                           </b-container>
+                     </tab-content>
+
 
                </form-wizard>
 
@@ -294,7 +305,7 @@ import {
 import { optionsEditor,dateOption,regresar, diasSemana } from '@core/utils/utils'
 import flatPickr from 'vue-flatpickr-component'
 
-import {computed,onMounted,watch,toRefs,ref} from 'vue'
+import {computed,onMounted,watch,toRefs,ref,provide} from 'vue'
 
 import store from '@/store'
 
@@ -322,9 +333,8 @@ export default {
       BFormCheckboxGroup,
       TabContent,
       FormWizard,
-   BFormTimepicker
-
-
+      BFormTimepicker,
+      multimedia: () => import('views/multimedias/multimedia.vue'),
 
    },
 
@@ -341,8 +351,15 @@ export default {
       const { evento:formulario } = toRefs(store.state.evento)
       const optionsEventos = ref([])
       const formValidate = ref(null)
+      const seleccionados = ref([])
 
+      provide('seleccionados', seleccionados)
       const guardar = () => {
+
+         if (seleccionados.value.length) {
+            formulario.value.imagenes = seleccionados.value
+         }
+
          emit('save',formulario.value,formValidate.value)
       }
 

@@ -2,18 +2,16 @@ import {ref} from 'vue'
 import useFilterTable from '@core/utils/useFilterTable'
 import store from '@/store'
 
-export default function useLoteList(){
+export default function useVonageList(){
 
   const tableColumns = ref([
     {key:'id',label:'#',sortable:true},
-    {key:'fecha_llegada',label:'Fecha llegada',sortable:true},
-    {key:'cantidad',label:'Cantidad de tarjetas',sortable:true},
-    {key:'monto',label:'Monto de Venta',sortable:true},
-    {key:'tps',label:'Tps en la tarjeta',sortable:true},
-    {key:'numero_inicial',label:'Número Inicial',sortable:true},
-    {key:'numero_final',label:'Número Final',sortable:true},
-    {key:'usuario_id',label:'¿Asignado a?',sortable:false},
-    {key:'actions',label:'Actions',sortable:false,sortKey:'id'},
+    {key:'msisdn',label:'msisdn',sortable:true,sortKey:'numero'},
+    {key:'to',label:'Para',sortable:true},
+    {key:'text',label:'mensaje',sortable:true},
+    {key:'type',label:'Tipo',sortable:true},
+    {key:'actions',label:'Actions',sortable:true},
+
   ])
 
   const {
@@ -32,16 +30,16 @@ export default function useLoteList(){
 
   const fetchData = (ctx,next) => {
 
-    store.dispatch('lote/fetchData',{
+    store.dispatch('vonage/fetchData',{
       page:currentPage.value,
       q:searchQuery.value,
       sortBy:sortBy.value,
       isSortDirDesc:isSortDirDesc.value,
       perPage:perPage.value,
-    }).then(({total:all,lotes}) => {
+    }).then(({total:all,mensajes}) => {
 
       total.value = all
-      next(lotes)
+      next(mensajes)
     }).catch((e) => {
       toast.info('Error trayendo data')
     })
@@ -49,11 +47,16 @@ export default function useLoteList(){
 
   } 
 
-  const eliminar = (lote_id) => {
-    store.dispatch('lote/eliminar',lote_id).then(({result}) => {
-        if(result){
-          refetchData();
-        }
+  const eliminar = (mensaje_id) => {
+    
+    store.dispatch('vonage/eliminar',mensaje_id).then(({result}) => {
+
+      if(result){
+        toast.success('Mensaje eliminado con éxito')
+        refetchData()
+      }else{
+        toast.info('No se pudo eliminar el mensaje, inténtelo de nuevo')
+      }
     })
   }
 

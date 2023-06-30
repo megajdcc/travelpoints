@@ -135,6 +135,4 @@ class Solicitud extends Model
         $this->divisa;
         $this->iata;
     }
-    
-
 }

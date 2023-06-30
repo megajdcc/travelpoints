@@ -3154,6 +3154,33 @@ export default [
          
       ]
    },
+
+
+   /*****************************************/
+   /* Vonages
+   /*************************************** */
+   {
+      path:'/vonages/sms',
+      component:() => import('views/vonages/index.vue'),
+
+      children:[
+         {
+            path:'',
+            component:() => import('views/vonages/list.vue'),
+            name:'mensajes.list',
+            meta:{
+               resource:'vonage',
+               action:'read',
+               pageTitle:'Mensajes (vonage)',
+               breadcrumb:[
+                  {text:'Listado' ,active:true}
+               ]
+            }
+         }
+      ]
+   },
+
+   
    /*****************************************/
    /* PAGINA DE perfil de negocios
    /*************************************** */

@@ -12,6 +12,8 @@ export default{
          codigo_lada:null,
          tps           : 5,
          divisa:null,
+         usuario_id:null,
+         usuario:null
 
       },
 
@@ -43,6 +45,8 @@ export default{
          divisa_id     : null,
          tps           : 5,
          divisa:null,
+         usuario_id:null,
+         usuario:null
          }
       },
 
@@ -194,6 +198,21 @@ export default{
 
             }).catch(e => reject(e))
 
+         })
+      },
+
+      asociarLote({commit,state},form){
+         return new Promise((resolve, reject) => {
+            axios.put(`/api/lotes/${state.lote.id}/asociar/lote`,form).then(({data}) => {
+
+               if(data.result){
+                  commit('update',data.lote)
+               }
+
+               resolve(data)
+
+            }).catch(e => reject(e))
+            
          })
       }
 

@@ -22,7 +22,7 @@ export default {
 
                   if(result){
                      toast.success('Se ha creado con éxito el evento',{position:'bottom-right'})
-                     router.push({name:'edit.evento',params:{id:evento.id}})
+                     router.push({name:'eventos.list'})
                   }else{
                      toast.info('NO se pudo crear el registro, inténtelo de nuevo')
                   }

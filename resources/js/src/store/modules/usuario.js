@@ -912,7 +912,35 @@ export default {
 				}).catch(e => reject(e))
 
 			})
+		},
+
+		asociarTarjeta({state,commit},tarjeta){
+
+			return new Promise((resolve, reject) => {
+				axios.put(`/api/usuarios/${state.usuario.id}/asociar/tarjeta`,tarjeta).then(({data}) => {
+					if(data.result){
+						commit('updatePerfil',data.usuario)
+					}
+
+					resolve(data)
+					
+				}).catch(e => reject(e))
+			})
+		},
+
+		cancelarTarjeta({state,commit},tarjeta_id){
+			return new Promise((resolve, reject) => {
+				axios.delete(`/api/usuarios/${state.usuario.id}/cancelar/tarjeta/${tarjeta_id}`).then(({data}) => {
+					if(data.result){
+						commit('updatePerfil',data.usuario)
+					}
+
+					resolve(data)
+				}).catch(e => reject(e))
+				
+			})
 		}
+
 
 	}
 

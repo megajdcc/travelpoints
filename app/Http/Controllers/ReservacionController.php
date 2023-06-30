@@ -4,10 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Models\Negocio\Negocio;
 use App\Models\Negocio\Reservacion;
+use App\Notifications\nuevaReservacion;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Notification;
 
 class ReservacionController extends Controller
 {
@@ -170,7 +172,16 @@ class ReservacionController extends Controller
             $result = true;
             $reservacion->load(['negocio','usuario','operador']);
             
+            // Notificar al negocio de su Reservación
+
+            $empleados = $reservacion->negocio->empleados;
+            $encargado = $reservacion->negocio->encargado;
+            $users_negocio = collect([...$empleados,$encargado]);
+
+            Notification::send($users_negocio,new nuevaReservacion($reservacion,1));
+             
             // Notificar al usuario de su Reservación
+            $reservacion->usuario->notify(new nuevaReservacion($reservacion,2));
 
         } catch (\Throwable $th) {
            DB::rollBack();

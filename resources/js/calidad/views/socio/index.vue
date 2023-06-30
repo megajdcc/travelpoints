@@ -42,6 +42,11 @@
                      Compras
                   </b-nav-item>
 
+                  <b-nav-item :to="{ name: 'socio.consumos' }" active-class="active">
+                     <font-awesome-icon icon="fas fa-concierge-bell" />
+                     Consumos
+                  </b-nav-item>
+
 
 
                </b-nav>
@@ -192,7 +197,7 @@ export default {
       onMounted(() => {
 
          if(!solicitudes.value.length){
-               store.dispatch('solicitud/getSolicitudes');
+               store.dispatch('solicitud/getMisSolicitudes');
          }
       })
 

@@ -189,9 +189,11 @@ export default{
 
          return new Promise((resolve, reject) => {
             
+
+           
             if(datos.id){
-               
                axios.put(`/api/eventos/${datos.id}`,datos).then(({data}) => {
+
                   if(data.result){
                      commit('update',data.evento)
                   }

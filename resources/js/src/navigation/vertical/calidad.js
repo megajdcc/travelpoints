@@ -293,6 +293,12 @@ export default [
             route: 'formasPago.list',
             action: 'read',
             resource: 'formas de pago'
+         },
+         {
+            title: 'Mensajes (Vonages)',
+            route: 'mensajes.list',
+            action: 'read',
+            resource: 'vonage'
          }
       ]
    },

@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ApplicationController;
 use App\Models\User;
 use App\Http\Controllers\Auth\AuthController;
+use App\Http\Controllers\MensajesVonageController;
 use App\Mail\NuevoConsumo;
 use App\Models\Consumo;
 
@@ -46,7 +47,7 @@ Route::get('/reset-password/{token}', function ($token) {
 
 Route::get('/auth/redirect',[AuthController::class, 'redirectGoogle']);
 Route::get('/auth/google',[AuthController::class, 'callbackGoogle']);
-
+Route::post('/vonage/sms-entrante',[MensajesVonageController::class,'smsEntrante']);
 
 Route::get('/{any}', [ApplicationController::class, 'index'])->where('any', '.*');
 

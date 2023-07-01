@@ -125,12 +125,12 @@ class ReservacionController extends Controller
     public function fetch(Reservacion $reservacion){
 
         $reservacion->load(['negocio','operador','usuario']);
-        $reservacion->usuario->avatar = $reservacion->usuario->getAvatar();
+        // $reservacion->usuario->avatar = $reservacion->usuario->getAvatar();
+        $reservacion->usuario->cargar();
 
         if ($reservacion->operador) {
             $reservacion->operador->avatar = $reservacion->operador->getAvatar();
         }
-
         
         return response()->json($reservacion);
 

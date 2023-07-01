@@ -1016,7 +1016,8 @@ export default [
                   },
 
                   {
-                        path: 'create',
+                        path: 'create/:reserva?',
+                        props:true,
                         name: 'negocio.venta.create',
                         component: () => import('views/panels/negocio/ventas/create.vue'),
                         meta: {

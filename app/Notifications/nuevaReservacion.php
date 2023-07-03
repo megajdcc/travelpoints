@@ -33,7 +33,7 @@ class nuevaReservacion extends Notification implements ShouldQueue
      */
     public function via($notifiable)
     {
-        return $this->tipoUser == 1 ? ['mail','database','vonage'] : ['mail','database'];
+        return ['mail','database','vonage'] ;
     }
 
     /**
@@ -44,6 +44,7 @@ class nuevaReservacion extends Notification implements ShouldQueue
      */
     public function toMail($notifiable)
     {   
+
 
         if($this->tipoUser == 1){
             return (new MailMessage)
@@ -58,9 +59,9 @@ class nuevaReservacion extends Notification implements ShouldQueue
             return (new MailMessage)
                 ->subject('Reserva realizada con éxito')
                 ->greeting("Hola {$notifiable->getNombreCompleto()}")
-                ->line("Hemos asociado a tu cuenta una reservación al negocio {$this->reservacion->negocio->nombre}, para el día {$this->reservacion->getDia()}, para {$this->reservacion->getPersonas()}.")
-                ->line("Y nos has hecho saber la siguiente observación:{$this->reservacion->observacion}")
-                ->line('Si tu no has realizado está acción, te invitamos a que no los haga saber, de igual modo que sepas que puedes entrar a tu cuenta y usted mismo cancelar la reservación')
+                ->line("Tienes una reserva en el negocio {$this->reservacion->negocio->nombre}, para el día {$this->reservacion->getDia()}, para {$this->reservacion->getPersonas()}.")
+                ->line("Nos has hecho saber la siguiente observación:\"{$this->reservacion->observacion}\"")
+                ->line('Si no fuiste tú, por favor avísanos.')
                 ->action('Mis reservaciones', url('/socio/reservaciones'))
                 ->salutation('Gracias por usar TravelPoints.');
         }
@@ -79,7 +80,7 @@ class nuevaReservacion extends Notification implements ShouldQueue
             $mensaje = ["Hola {$notifiable->getNombreCompleto()}", "El viajero {$this->reservacion->usuario->getNombreCompleto()} a realizado una reservación a tu negocio ({$this->reservacion->negocio->nombre}), para el día {$this->reservacion->getDia()}, para {$this->reservacion->getPersonas()}.", "Y te ha enviado la siguiente observación:{$this->reservacion->observacion}", 'Puedes ver esta y otras reservaciones en tu panel'];
         } else {
 
-            $mensaje = ["Hola {$notifiable->getNombreCompleto()}", "Hemos asociado a tu cuenta una reservación al negocio {$this->reservacion->negocio->nombre}, para el día {$this->reservacion->getDia()}, para {$this->reservacion->getPersonas()}.", "Y nos has hecho saber la siguiente observación:{$this->reservacion->observacion}", 'Si tu no has realizado está acción, te invitamos a que no los haga saber, de igual modo que sepas que puedes entrar a tu cuenta y usted mismo cancelar la reservación'];
+            $mensaje = ["Hola {$notifiable->getNombreCompleto()}", "Tienes una reserva en el negocio {$this->reservacion->negocio->nombre}, para el día {$this->reservacion->getDia()}, para {$this->reservacion->getPersonas()}.", "Nos has hecho saber la siguiente observación:\"{$this->reservacion->observacion}\"",'Si no fuiste tú, por favor avísanos.'];
         }
 
          return [
@@ -100,8 +101,14 @@ class nuevaReservacion extends Notification implements ShouldQueue
      */
     public function toVonage(object $notifiable): VonageMessage
     {
+        $mensaje = "El viajero {$this->reservacion->usuario->getNombreCompleto()} a realizado una reservación a tu negocio ({$this->reservacion->negocio->nombre}), para el día {$this->reservacion->getDia()}, para {$this->reservacion->getPersonas()}.";
+
+        if($this->tipoUser == 2){
+            $mensaje = "Reserva realizada con éxito al negocio ({$this->reservacion->negocio->nombre}),para el día {$this->reservacion->getDia()}, para {$this->reservacion->getPersonas()}. LLega a tiempo y anuncia que vas de Parte de TravelPoints.";
+        }
+
         return (new VonageMessage)
-            ->content("El viajero {$this->reservacion->usuario->getNombreCompleto()} a realizado una reservación a tu negocio ({$this->reservacion->negocio->nombre}), para el día {$this->reservacion->getDia()}, para {$this->reservacion->getPersonas()}.")
+            ->content($mensaje)
             ->unicode();
     }
 

@@ -58,7 +58,8 @@ class UserController extends Controller
             'genero'           => 'nullable',
             'codigo_postal'    => 'nullable',
             'ciudad_id'        => 'nullable',
-            'codigo_referidor' => 'nullable'
+            'codigo_referidor' => 'nullable',
+            'bio' => 'nullable'
         ], [
             'username.unique' => 'El nombre de usuario ya está siendo usado, inténta con otro',
             'email.unique'    => 'El email ya está siendo usado, el mismo debe ser único',

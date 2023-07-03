@@ -34,6 +34,7 @@
 
          <notification-dropdown v-if="is_loggin" />
          <academia v-if="is_loggin && usuario.rol.academia.length" />
+         <billetera v-if="is_loggin"  />
          <user-dropdown />
       </b-navbar-nav>
    </div>
@@ -64,7 +65,8 @@ export default {
       UserDropdown,
       BNavItem,
       carritoCompra:() => import('components/carritoCompra.vue'),
-    Academia: () => import('components/Academia.vue')
+      Academia: () => import('components/Academia.vue'),
+      billetera:() => import('components/billetera.vue')
 
    },
    directives:{

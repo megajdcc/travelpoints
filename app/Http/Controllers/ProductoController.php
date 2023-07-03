@@ -45,7 +45,8 @@ class ProductoController extends Controller
             ['envio', 'like', "%{$datos['q']}%", "OR"],
         ])
         ->when($is_categorias,function($q) use($datos,$is_tiendas){
-            if(CategoriaProducto::whereIn('id',$datos['categoria_id'])->where('nombre','Km 0')->first()->nombre == 'Km 0'){
+
+            if(CategoriaProducto::whereIn('id',$datos['categoria_id'])->where('nombre','Km 0')->first()?->nombre == 'Km 0'){
                 $q->whereIn('categoria_id', $datos['categoria_id'])
                 ->when($is_tiendas, function($que) use($datos){
 

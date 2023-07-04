@@ -778,8 +778,8 @@ class User extends Authenticatable
     }
 
     public function generateLink(){
-        if(!$this->codigo_referidor){
-            Str::slug($this->username);
+        if(is_null($this->codigo_referidor) || empty($this->codigo_referidor)){
+            $this->codigo_referidor = Str::slug($this->username);
             $this->save();
         }
     }

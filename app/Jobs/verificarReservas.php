@@ -34,7 +34,7 @@ class verificarReservas implements ShouldQueue
     public function handle()
     {   
         // Traer todas las reservas que esten pasada un día despues de la fecha pautada, pero que su estado sea sin consumar todavía
-        $reservaciones = Reservacion::where('fecha', '>', Carbon::now()->addDay())->where('status',1)
+        $reservaciones = Reservacion::where('status',1)->where('fecha', '<', Carbon::now()->subDay())
             ->get();
 
         foreach ($reservaciones as $reservacion) {
@@ -43,6 +43,7 @@ class verificarReservas implements ShouldQueue
             $reservacion->save();
             // Notificar al reservante que se le ha cancelado su reserva
             $reservacion->usuario->notify(new reservaCancelada($reservacion));
+            
         }
     }
 }

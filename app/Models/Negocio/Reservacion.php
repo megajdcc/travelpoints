@@ -29,6 +29,11 @@ class Reservacion extends Model
         'observaciaon',
     ];
 
+
+    protected $casts = [
+        'fecha' => 'date:Y-m-d'
+    ];
+
     // public function fecha() : Attribute{
     //     return Attribute::make(
     //         get:fn($val) => new Carbon(new \DateTime($val))

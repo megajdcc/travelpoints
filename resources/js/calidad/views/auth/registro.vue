@@ -13,6 +13,10 @@
                No mas de 2 minutos te tomará registrarte.
             </b-card-text>
 
+            <b-card-text class="mb-2">
+               <b-button variant="outline-primary" @click="mostrarPreguntas" size="sm">¿Quieres saber mas de Travel Points?</b-button>
+            </b-card-text>
+
             <!-- form -->
             <validation-observer ref="formValidate" #default="{handleSubmit}">
                <b-form class="auth-register-form mt-2" @submit.prevent="handleSubmit(guardar)">
@@ -106,6 +110,10 @@
          </b-card>
          <!-- /Register v1 -->
       </div>
+
+      <b-modal v-model="showPreguntas" title="Preguntas Frecuentes" size="xl" centered hide-footer>
+         <faqs />
+      </b-modal>
    </div>
 
 </template>
@@ -124,6 +132,7 @@ import {
    BInputGroup,
    BInputGroupAppend,
    BFormCheckbox,
+   BModal
 } from 'bootstrap-vue'
 import { required, email,password } from '@validations'
 import useTogglePassword from '@core/utils/useTogglePassword';
@@ -154,7 +163,10 @@ export default {
       // validations
       ValidationProvider,
       ValidationObserver,
-      Logo:() => import('components/Logo')
+      Logo:() => import('components/Logo'),
+      BModal,
+      faqs:() => import('views/paginas/faqs.vue')
+
    },
 
    props:{
@@ -168,7 +180,7 @@ export default {
 
       const {codigo } = toRefs(props)
       const { paginas } = toRefs(store.state.pagina)
-
+      const showPreguntas = ref(false)
       
       
       const {
@@ -242,7 +254,10 @@ export default {
 
       watch(codigo,() => cargarForm())
 
-      
+      const mostrarPreguntas = () => {
+         showPreguntas.value = true
+      }
+
       return {
          formulario,
          formValidate,
@@ -259,6 +274,8 @@ export default {
          authenticarGoogle,
          guardar,
          pageTermino: computed(() => store.getters['pagina/pageTermino']),
+         showPreguntas,
+         mostrarPreguntas
 
       }
    }

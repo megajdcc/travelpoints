@@ -107,7 +107,6 @@
 
             <template #header>
               <h3>Consignar o remover saldo</h3>
-
             </template>
 
             <b-container fluid>

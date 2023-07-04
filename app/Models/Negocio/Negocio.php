@@ -163,7 +163,8 @@ class Negocio extends Model
         $this->recomendaciones;
         $this->seguidores;
         // $this->precios = $this->precios ?: ['precio_minimo' => 0, 'precio_maximo' => 0];
-
+        $this->cuenta?->divisa;
+        
         if(!$this->cuenta){
             
             $sistema = Sistema::first();

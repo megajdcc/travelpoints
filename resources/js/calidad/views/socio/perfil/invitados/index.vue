@@ -19,7 +19,7 @@
                            {{ url }}
                         </b-input-group-prepend>
                         <b-form-input v-model="formulario.codigo_referidor" :state="valid"
-                           :disabled="usuario.codigo_referidor ? true : false" />
+                           :disabled="usuario.codigo_referidor ? true : false" placeholder="Escriba un slug, de como desea que sea su link de referido. Ejemplo pantera-negra" />
 
                         <b-input-group-append>
                            <b-button @click="copiarLink" size="sm" v-if="usuario.codigo_referidor ? true : false">

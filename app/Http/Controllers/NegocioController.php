@@ -30,6 +30,7 @@ class NegocioController extends Controller
     public function getNegocios(){
         $negocios = Negocio::all();
 
+        $negocios->each(fn($val) => $val->cargar());
         return response()->json($negocios);
         
     }
@@ -126,8 +127,16 @@ class NegocioController extends Controller
         try{
             DB::beginTransaction();
 
+            if($datos['divisa_id'] != $negocio->cuenta->divisa->id){
+                    $negocio->changeDivisa(
+                     Divisa::find($datos['divisa_id'])
+                    );
+            }
+           
+            
             $negocio->update($datos);
 
+           
             // if($negocio->tps_referido != $datos[]){
 
                 $tps_referido = Divisa::convertirToTravel($negocio->comision,$negocio->divisa);
@@ -551,7 +560,6 @@ class NegocioController extends Controller
         // dd($dia_fecha);
         $horarios = HorarioReservacion::where('negocio_id' ,$negocio->id)->where('dia' , $dia_fecha)->get();
 
-
         return response()->json($horarios);
  
         
@@ -585,10 +593,13 @@ class NegocioController extends Controller
         $reservaciones_mes = $negocio->reservaciones->filter(
             fn($value) => (new Carbon(new DateTime($value->fecha)))->month == Carbon::now()->month )->count();
 
+        $tps_bonificados = $negocio->ventas->sum('tps_bonificados');
 
         return response()->json([
             'reservasMes' => $reservaciones_mes,
-
+            'tps' => $tps_bonificados,
+            'seguidores' => $negocio->seguidores->count(),
+            'recomendaciones' => $negocio->recomendaciones->count(),
 
         ]);
 
@@ -788,5 +799,22 @@ class NegocioController extends Controller
         return response()->json(['result' => $result, 'negocio' => $negocio]);
     }
 
+
+    public function aumentarVistas(Request $request, Negocio $negocio){
+
+        try {
+            DB::beginTransaction();
+
+            $negocio->vistas++;
+            $negocio->save();
+            DB::commit();
+            $result =true;
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            $result = false;
+        }
+
+        return response()->json(['result' => $result]);
+    }
 
 }

@@ -35,6 +35,7 @@
 
       <academia v-if="is_loggin" is-negocio />
       
+      <billetera isNegocio v-if="is_loggin" :negocioId="negocio_id"/>
       <user-dropdown panel="negocio" :negocioId="negocio_id"/>
 
     </b-navbar-nav>
@@ -75,7 +76,8 @@ export default {
     UserDropdown,
     BNavItem,
     vSelect,
-    Academia:() => import('components/Academia.vue')
+    Academia:() => import('components/Academia.vue'),
+    billetera:() => import('components/billetera.vue')
   },
 
   props: {

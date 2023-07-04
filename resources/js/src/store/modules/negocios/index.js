@@ -163,8 +163,13 @@ export default{
          }
       },
 
+      
       setNegocio(state,negocio){
          state.negocio = negocio
+
+         if(!state.negocios.length){
+            state.negocios.push(negocio)
+         }
       },
 
 
@@ -296,6 +301,7 @@ export default{
       },
 
       toggleRecomendacion(state,{negocio,usuario}){
+         
          let bussines = state.negocios.find(val => val.id == negocio)
 
          if(bussines != undefined){
@@ -316,6 +322,23 @@ export default{
 
          }
 
+
+          if(state.negocio.id == negocio){
+            let recomendacion = state.negocio.recomendaciones.find(val => val.usuario_id === usuario)
+            if(recomendacion != undefined){
+               state.negocio.recomendaciones.splice(
+                  state.negocio.recomendaciones.findIndex(val => val.usuario_id === usuario),
+                  1
+               )
+           }else{
+               state.negocio.recomendaciones.push({
+                  modelType:"App\\Models\\Negocio\\Negocio",
+                  model_id:negocio,
+                  usuario_id:usuario
+               })
+           }
+         }
+
       },
 
       toggleSeguidor(state,{negocio,usuario}){
@@ -329,6 +352,8 @@ export default{
                   bussines.seguidores.findIndex(val => val.usuario_id === usuario),
                   1
                )
+            
+
            }else{
                bussines.seguidores.push({
                   modelType:"App\\Models\\Negocio\\Negocio",
@@ -337,6 +362,22 @@ export default{
              })
            }
 
+         }
+
+         if(state.negocio.id == negocio){
+            let seguidor = state.negocio.seguidores.find(val => val.usuario_id === usuario)
+            if(seguidor != undefined){
+               state.negocio.seguidores.splice(
+                  state.negocio.seguidores.findIndex(val => val.usuario_id === usuario),
+                  1
+               )
+           }else{
+               state.negocio.seguidores.push({
+                  modelType:"App\\Models\\Negocio\\Negocio",
+                  model_id:negocio,
+                  usuario_id:usuario
+               })
+           }
          }
 
       }
@@ -812,9 +853,7 @@ export default{
 
          return new Promise((resolve, reject) => {
             axios.get(`/api/negocios/${negocio}/seguidors/toggle/user/${usuario}`).then(({ data }) => {
-
                // commit('update', data.negocio);
-
                resolve(data)
             }).catch(e => reject(e))
 
@@ -900,7 +939,22 @@ export default{
                resolve(data)
             }).catch(e => reject(e))
          })
-      }
+      },
+
+     aumentarVisita({state,commit},negocio_id){
+
+      return new Promise((resolve, reject) => {
+         axios.get(`/api/negocios/${negocio_id}/aumentar-vistas`).then(({data}) => {
+
+            if(data.result){
+               // commit('update',data.negocio)
+            }
+
+            resolve(data)
+
+         }).catch(e => reject(e))
+      })
+     }
 
    }
 

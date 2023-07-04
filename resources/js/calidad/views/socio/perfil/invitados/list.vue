@@ -1,7 +1,7 @@
 <template>
    <b-card v-if="usuarios.length">
       <template #header>
-         <h2 class="font-weight-bolder">Mis Referidos</h2>
+         <h2 class="font-weight-bolder">Mis invitados</h2>
       </template>
 
       <b-container fluid>

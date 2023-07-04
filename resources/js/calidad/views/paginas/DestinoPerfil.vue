@@ -46,7 +46,9 @@
             </h3>
             <div v-html="destino.descripcion"></div>
 
-            <b-button v-b-toggle.collapse-1 variant="primary" v-if="destino.about_travel">Lo que te recomendamos durante tu viaje</b-button>
+            <b-button v-b-toggle.collapse-1 variant="primary" v-if="destino.about_travel">
+               {{ $t('Información de Interés sobre el Destino') }}
+            </b-button>
                <b-collapse id="collapse-1" class="mt-2">
                   <b-card>
                      <b-card-body >

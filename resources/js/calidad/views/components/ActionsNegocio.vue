@@ -21,7 +21,6 @@
           <span class="d-none d-md-inline">
               {{ legendRecomendacion }}
           </span>
-       
       </template>
     </b-button>
 

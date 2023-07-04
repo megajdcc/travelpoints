@@ -179,7 +179,7 @@ export default {
           lng:val.lng,
           lat:val.lat,
           nombre:val.nombre ? val.nombre : 'Sin definir',
-          direccion:val.direccion ? val.direccion : 'Sin definir',
+          direccion:val.direccion ? val.direccion : '',
           ruta:getRutaTravel(val),
           tipo:val.tipo,
         }))

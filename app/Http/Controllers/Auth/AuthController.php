@@ -54,6 +54,7 @@ class AuthController extends Controller
 
             $usuario->asignarPermisosPorRol();
          }
+         $usuario->generateLink();
          
          $usuario->ultimo_login = now();
          $usuario->save();
@@ -146,7 +147,7 @@ class AuthController extends Controller
             'password' => $request->password,
             'rol_id' => Rol::where('nombre','Invitado')->first()->id
         ]);
-
+        $user->generateLink();
         if($user->save()){
 
             $tokenResult = $user->createToken($user->nombre.'-'.$user->id);
@@ -196,7 +197,7 @@ class AuthController extends Controller
 
          
          if($user_verify = User::where('email',$credentials['email'])->first()){
-
+            $user_verify->generateLink();
             if(!$user_verify->activo){
                return response()->json(['result' => false, 'message' => 'No te encuentras activos en el sistema, comunicate con soporte, si deseas reactivación de cuenta.'], 401);
             }
@@ -208,7 +209,7 @@ class AuthController extends Controller
 
          $user = $request->user();
          $user->ultimo_login = now();
-         $user->generateLink();
+       
          $user->save();
 
          $token = (!is_null($user->getTokenText())) ? $user->getTokenText() : ($user->createToken($user->nombre.'-'.$user->id))->plainTextToken;

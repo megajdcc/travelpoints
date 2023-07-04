@@ -106,7 +106,7 @@
 
                   <b-nav-item :to="{ name: 'misreferidos' }" exact active-class="active">
                      <span class="fas fa-user-plus"></span>
-                     Mis Referidos
+                     Mis amigos
                   </b-nav-item>
 
                   <b-nav-item :to="{ name: 'perfil.editar' }" exact active-class="active">

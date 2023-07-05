@@ -7,6 +7,7 @@ use App\Models\Movimiento;
 use App\Models\Negocio\Empleado;
 use App\Models\Sistema;
 use App\Models\Venta;
+use App\Notifications\consumoInvitado;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -157,16 +158,47 @@ class VentaController extends Controller
             // Comision Viajero Tps
             if(in_array($venta->cliente->rol->nombre, ['Viajero'])){
                 // multiplicamos el monto tps correspondido por la tasa de la divisa de la venta correspondiente a la divisa principal TP
-                $comision_cliente = $datos['tps'] / $venta->divisa->tasa; 
+                $comision_cliente = $datos['tps'] / $venta->divisa->tasa;
 
-
-                // GEneramos el movimiento en la billetera del cliente 
+                //  Generamos el movimiento en la billetera del cliente 
+                if (!$venta->cliente->cuenta) {
+                    $venta->cliente->aperturarCuenta(0, 'Tp');
+                }
                 $movimiento = $venta->cliente->generarMovimiento($comision_cliente, "Consumo en {$venta->model->nombre} por un monto de:{$monto}.");
 
                 $venta->tps_bonificados = $comision_cliente;
                 $venta->save();
-                // dd($comision_cliente,$venta);
 
+                
+                // Adjudicar Comision a referidor
+                if($venta->cliente->referidor->first() && $venta->cliente->referidor->first()->activo){
+                    
+                    $porcentaje_referidor  = Sistema::first()->porcentaje_referido;
+                    $referidor = $venta->cliente->referidor->first();
+                   
+                    if($porcentaje_referidor > 0){
+                       
+                       $comision_referidor = round($comision_cliente * $porcentaje_referidor / 100,2);
+                        
+                       if(!$referidor->cuenta){
+                        $referidor->aperturarCuenta(0,'Tp');
+                       }
+
+                       $movimiento_referidor = $referidor->generarMovimiento($comision_referidor,
+                       "Consumo de un invitado ({$venta->cliente->getNombreCompleto()}) en el negocio {$venta->model->nombre}.");
+
+                        // Descontamos al sistema el monto adjudicado al Referidor
+
+                        $sistema = Sistema::first();
+                        
+                        $monto_descontar = $comision_referidor * $sistema->cuenta->divisa->tasa;
+
+                        $sistema->generarMovimiento($monto_descontar,"Comisión adjudicada al viajero {$referidor->getNombreCompleto()}, por consumo de su invitado ({$venta->cliente->getNombreCompleto()}) en el negocio ({$venta->model->nombre}), por un monto de:{$monto}",Movimiento::TIPO_EGRESO);
+
+                        // Se le notifica al invitador de la nueva comisión.
+                        $referidor->notify(new consumoInvitado($venta,$comision_referidor));
+                    }
+                }
                 
             }
 

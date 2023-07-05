@@ -69,7 +69,7 @@
                   </b-form-group>
 
                   <!-- password -->
-                  <b-form-group label="Password" label-for="password">
+                  <b-form-group label="Password" label-for="password" description="La contraseña debe contener al menos una mayúscula, una minúscula, un carácter especial(@ # $ % & / ( ) = + ? [ ] ~ – ^) y un dígito que sea facil de recordar">
                      <validation-provider #default="{ errors,valid }" name="password" rules="required|password">
                         <b-input-group class="input-group-merge" :class="errors.length > 0 ? 'is-invalid' : null">
                            <b-form-input id="password" v-model="formulario.password" :type="passwordFieldType"

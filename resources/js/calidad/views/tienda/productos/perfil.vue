@@ -94,7 +94,7 @@
                         </b-badge>
 
                         <b-badge class="" varaint="success">
-                            {{ disponibles > 1 ? `${disponibles} productos disponible` : `${disponibles} producto disponible` }}
+                            {{ disponibles > 1 ? `${disponibles}` + $t('productos disponible') : `${disponibles}`+ $t('producto disponible') }}
                         </b-badge>
 
                         <b-card-title>
@@ -122,12 +122,12 @@
                         <template v-if="producto.envio">
 
                           <el-divider content-position="left">
-                            Información sobre envíos
+                            {{ $t('Información sobre envíos') }}
                           </el-divider>
 
                           <section class="d-flex flex-column">
-                            <h3>Costo de envío:  <strong class="text-primary">USD {{ producto.envio.precio | currency }}</strong> </h3>
-                            <strong class="">Condiciones que aplican </strong>
+                            <h3>{{ $t('Costo de envío') }}:  <strong class="text-primary">USD {{ producto.envio.precio | currency }}</strong> </h3>
+                            <strong class="">{{ $t('Condiciones que aplican') }} </strong>
                             <p class="text-justify">
                               {{ producto.envio.condiciones }}
                             </p>
@@ -138,7 +138,7 @@
                         <template v-if="producto.caracteristicas.length">
                            <hr>
 
-                            <el-divider content-position="left">Características</el-divider>
+                            <el-divider content-position="left">{{ $t('Características') }}</el-divider>
 
                             <table class="table table-hover table-borderless w-auto" >
                               <tr v-for="({ nombre, valor }, i) in producto.caracteristicas" :key="i">
@@ -175,14 +175,14 @@
                         <b-button-group size="lg" v-else>
                           <b-button @click="agregarCarrito" variant="success">
                             <font-awesome-icon icon="fas fa-paper-plane"/>
-                            Comprar
+                            {{ $t('Comprar') }}
                           </b-button>
                         </b-button-group>
 
                         <section class="w-100 mt-1">
-                          <strong class="text-danger">Nota:</strong>
+                          <strong class="text-danger">{{ $t('Nota') }}:</strong>
                           <span class="text-justify">
-                            Todos los productos fisicos se recogen en tienda; Los productos Digitales son enviados vía correo electrónico.
+                            {{ $t('nota-despacho') }}
                           </span>
 
                         </section>
@@ -308,7 +308,7 @@
 
                           <b-form-group v-if="!producto.isChino">
                             <template #label>
-                              Tienda que ofrece el producto y/o servicio.
+                              {{  $t('Tienda que ofrece el producto y/o servicio.') }}
                             </template>
 
                             <validation-provider name="tienda_id" rules="required" #default="{ valid, errors }">
@@ -327,7 +327,7 @@
 
                           <b-form-group v-else description="Puede ser el color y el tamaño, elija el que desee">
                               <template #label>
-                                Elija la variación deseada 
+                                {{ $t('Elija la variación deseada') }}
                               </template>
 
                               <validation-provider name="vid" rules="required" #default="{errors,valid}">
@@ -345,7 +345,7 @@
                                       </template>
 
                                       <template #no-options>
-                                        Sin Variante
+                                        {{ $t('Sin Variante') }}
                                       </template>
 
                                   </v-select>
@@ -358,7 +358,7 @@
 
                             <b-form-group v-if="formulario.tienda_id || formulario.vid">
                               <template #label>
-                                Cantidad de productos
+                                {{ $t('Cantidad de productos') }}
                               </template>
 
                               <validation-provider name="cantidad" rules="required" #default="{ valid, errors }">
@@ -381,15 +381,13 @@
 
                         <b-button variant="primary" @click="guardarCarrito" v-loading="loading" :disabled="formulario.cantidad < 1 || loading">
                               <font-awesome-icon icon="fas fa-cart-plus"/>
-                              Comprar
+                              {{ $t('Comprar') }}
                         </b-button>
 
                         <b-button variant="dark" @click="hide">
                           <font-awesome-icon icon="fas fa-times"/>
-                          Cerrar
+                          {{ $t('Cerrar') }}
                         </b-button>
-
-                      
                     </b-button-group>
                   </template>
 

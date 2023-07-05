@@ -175,6 +175,11 @@ export default {
       const eventosElem = ref(null)
 
       const cargarForm = () => {
+         
+         if(destino_id.value){
+            store.dispatch('destino/fetchPublic', destino_id.value)
+         }
+
          // if(!atracciones.value.length){
          store.dispatch('atraccion/getAtracciones')
          // }
@@ -183,9 +188,7 @@ export default {
          store.dispatch('destino/getDestinos')
          // }
          
-         if(destino_id.value){
-            store.dispatch('destino/fetchPublic', destino_id.value)
-         }
+       
 
          if (!destino_id.value) {
             showDestino.value = true
@@ -195,8 +198,10 @@ export default {
 
       onMounted(() => {
          authGoogle()
-         cargarForm()
+         // cargarForm()
       })
+
+      cargarForm();
 
       const remoteMethod = () => {
 

@@ -1,5 +1,6 @@
 
 
+
 /**
  * Return if user is logged in
  * This is completely up to you and how you want to store the token in your frontend application
@@ -7,10 +8,12 @@
  */
 // eslint-disable-next-line arrow-body-style
 export const isUserLoggedIn = () => {
-  return localStorage.getItem('userData') && localStorage.getItem('accessToken')
+  return localStorage.getItem('usuarioId') && localStorage.getItem('accessToken')
 }
 
-export const getUserData = () => JSON.parse(localStorage.getItem('userData'))
+export const getUserData = () => {
+  
+}
 
 /**
  * This function is used for demo purpose route navigation

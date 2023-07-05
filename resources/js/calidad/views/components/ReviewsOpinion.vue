@@ -13,14 +13,14 @@
                   <el-rate v-model="promedioCalificacion" disabled disabled-void-color="#4f4f4f" void-color="#000000" class="d-flex flex-nowrap" />
       
                   <p class="my-0 font-weight-bolder">
-                     {{ cantidad }} <small>Opiniones</small>
+                     {{ cantidad }} <small>{{ $t('Opiniones') }}</small>
                   </p>
       
                </section>
       
                <table class="table table-sm table-hover table-borderless table-calificacion sticky-top" style="top:7rem">
                   <tr>
-                     <td class="w-25">Excelente</td>
+                     <td class="w-25">{{ $t('Excelente') }}</td>
                      <td class="w-75 d-flex align-items-center">
                         <el-progress :percentage="porcentajeOpinions(5).porcentaje" :color="colorRandon" :show-text="false"
                            class="mr-1 w-100" />
@@ -31,7 +31,7 @@
                   </tr>
       
                   <tr>
-                     <td class="w-25">Muy Bueno</td>
+                     <td class="w-25">{{ $t('Muy Bueno') }}</td>
                      <td class="w-75 d-flex align-items-center">
                         <el-progress :percentage="porcentajeOpinions(4).porcentaje" :color="colorRandon" :show-text="false"
                            class="mr-1 w-100" />
@@ -42,7 +42,7 @@
                   </tr>
       
                   <tr>
-                     <td class="w-25">Promedio</td>
+                     <td class="w-25">{{ $t('Promedio') }}</td>
                      <td class="w-75 d-flex align-items-center">
                         <el-progress :percentage="porcentajeOpinions(3).porcentaje" :color="colorRandon" :show-text="false"
                            class="w-100" />
@@ -53,7 +53,7 @@
                   </tr>
       
                   <tr>
-                     <td class="w-25">Mala</td>
+                     <td class="w-25">{{ $t('Mala') }}</td>
                      <td class="w-75 d-flex align-items-center">
                         <el-progress :percentage="porcentajeOpinions(2).porcentaje" :color="colorRandon" :show-text="false"
                            class="w-100" />
@@ -64,7 +64,7 @@
                   </tr>
       
                   <tr>
-                     <td class="w-25">Horrible</td>
+                     <td class="w-25">{{ $t('Horrible') }}</td>
                      <td class="w-75 d-flex align-items-center">
                         <el-progress :percentage="porcentajeOpinions(1).porcentaje" :color="colorRandon" :show-text="false"
                            class="w-100" />
@@ -81,7 +81,7 @@
             <b-col cols="12" sm="8" md="9">
                <b-card>
                   <template #header>
-                     <b-form-input v-model="searchQuery" type="search" placeholder="Buscar Opinión" />
+                     <b-form-input v-model="searchQuery" type="search" :placeholder="$t('Buscar Opinión')" />
                   </template>
                   <b-list-group>
                      <b-list-group-item v-for="({usuario,opinion,calificacion,titulo,asistencia,created_at},i) in items" :key="i" >
@@ -112,11 +112,10 @@
                                     <p>{{ opinion }}</p>
                                  </section>
 
-                                 <small>Escrita el {{ created_at | fecha('DD MMMM YYYY h:mm A') }}</small>
+                                 <small>{{ $t('Escrita el') }} {{ created_at | fecha('DD MMMM YYYY h:mm A') }}</small>
 
                                  <small>
-                                    Esta opinión es la opinión subjetiva de un miembro de Travelpoints, no de TravelPoints. TravelPoints les hace controles
-                                    a todas las opiniones.
+                                    {{ $t('Esta opinión es la opinión subjetiva de un miembro, no de TravelPoints. TravelPoints les hace controles a todas las opiniones.') }}
                                  </small>
                               </b-col>
                            </b-row>

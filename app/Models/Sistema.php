@@ -30,7 +30,8 @@ class Sistema extends Model
         'banner_principal',
         'empresa_digital',
         'negocio',
-        'cjdropshipping'
+        'cjdropshipping',
+        'porcentaje_referido'
     ];
 
     protected $casts = [

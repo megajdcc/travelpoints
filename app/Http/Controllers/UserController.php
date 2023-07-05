@@ -27,6 +27,7 @@ use App\Models\Producto;
 use App\Models\Tarjeta;
 use App\Notifications\NuevaAsignacionCoordinador;
 use App\Notifications\NuevaAsignacionLider;
+use App\Notifications\nuevoAmigo;
 use App\Notifications\validarVentaTarjeta;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 use Illuminate\Support\Collection;
@@ -115,6 +116,8 @@ class UserController extends Controller
 
         $datos = $request->validate([
             'username'       => 'required|unique:users,username',
+            'nombre'         => 'required',
+            'apellido'       => 'required',
             'email'          => 'required|unique:users,email',
             'password'       => 'required|min:6',
             'retypePassword' => 'required|same:password',
@@ -125,7 +128,8 @@ class UserController extends Controller
             'password.required' => 'La contraseña es importante no lo olvides',
             'password.min' => 'La contraseña debe tener mínimo 6 caracteres',
             'retypePassword.required' => 'La contraseña es importante no lo olvides',
-            'retypePassword.same' => 'La contraseñas deben ser iguales'
+            'retypePassword.same' => 'La contraseñas deben ser iguales',
+            'email.unique' => 'Este email, ya está registrado en nuestra base de datos, inténte con otro'
         ]);
 
 
@@ -133,6 +137,8 @@ class UserController extends Controller
             DB::beginTransaction();
             $usuario = User::create([
                 'username'    => Str::slug($datos['username']),
+                'nombre' => $datos['nombre'],
+                'apellido' => $datos['apellido'],
                 'email'       => $datos['email'],
                 'password'    => $datos['password'],
                 'is_password' => true,
@@ -145,12 +151,16 @@ class UserController extends Controller
             if ($datos['referidor'] && $datos['referidor'] != 'null') {
 
                 $usuario_referidor = User::where('codigo_referidor', $datos['referidor'])->first();
+
                 if ($usuario_referidor) {
                     $usuario->referidor()->attach($usuario_referidor->id, [
                         'codigo' => $datos['referidor'],
                         'created_at' => now()
                     ]);
                 }
+
+                // Notificar al usuario referidor del nuevo amigo
+                $usuario_referidor->notify(new nuevoAmigo($usuario));
             }
 
             $usuario->cargar();

@@ -257,11 +257,7 @@ class AuthController extends Controller
    {
 
       $usuario = $request->user();
-
-      $usuario->tokens;
-      $usuario->rol;
-      $usuario->habilidades = $usuario->getHabilidades();
-      $usuario->avatar = $usuario->getAvatar();
+      $usuario->cargar();
       
       return response()->json($usuario);
    }

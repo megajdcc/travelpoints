@@ -11,8 +11,6 @@
              <!-- Logo -->
             <app-navbar-horizontal-layout-travel-brand :toggle-vertical-menu-active="toggleVerticalMenuActive" />
             <app-navbar-horizontal-layout-travel :toggle-vertical-menu-active="toggleVerticalMenuActive" />
-           
-            
 
          </slot>
 

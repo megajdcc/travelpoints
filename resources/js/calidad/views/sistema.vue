@@ -424,6 +424,31 @@
           </b-row>
 
 
+          <el-divider content-position="left">
+              Invitados
+          </el-divider>
+
+          <b-row>
+            <b-col cols="12" md="6">
+              <b-form-group description="El porcentaje por invitado, es el margen de ganancia que el invitador gana cuando un negocio le registre consumo a su invitado, tenga en cuenta que este porcentaje se aplica sobre los tps obtenidos del invitado, es decir que si el invitado ganó 10 tps y usted establece 10%, entonces el invitador se ganará 1tps.">
+
+                <template #label>
+                  Porcentaje por invitado: {{ formulario.porcentaje_referido }}%
+                </template>
+
+                <validation-provider name="porcentaje_referido" #default="{errors,valid}">
+                  <b-form-input v-model="formulario.porcentaje_referido" type="range" :step="1" :min="1" :max="100" :state="valid" />
+
+                  <b-form-invalid-feedback :state="valid">
+                    {{ errors[0] }}
+                  </b-form-invalid-feedback>
+
+                </validation-provider>
+
+              </b-form-group>
+            </b-col>
+          </b-row>
+
 
         </b-container>
 

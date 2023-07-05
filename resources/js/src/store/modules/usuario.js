@@ -178,11 +178,9 @@ export default {
 		},
 
 		updateAvatar(state,avatar){
-			const user = JSON.parse(localStorage.getItem('userData'))
-
-			user.avatar = avatar;
-
-			localStorage.setItem('userData',JSON.stringify(user))
+			// const user = JSON.parse(localStorage.getItem('userData'))
+			// user.avatar = avatar;
+			// localStorage.setItem('userData',JSON.stringify(user))
 			state.usuario.avatar = avatar;
 		},
 
@@ -196,14 +194,14 @@ export default {
 		},
 
 		updatePerfil(state,data){
-			localStorage.setItem('userData',JSON.stringify(data))
+			// localStorage.setItem('userData',JSON.stringify(data))
 			state.usuario = data
 		},
 
 		desactivarCuenta(state, result) {
-			const user = JSON.parse(localStorage.getItem('userData'))
-			user.activo = !result;
-			localStorage.setItem('userData', JSON.stringify(user))
+			// const user = JSON.parse(localStorage.getItem('userData'))
+			// user.activo = !result;
+			// localStorage.setItem('userData', JSON.stringify(user))
 
 			state.usuario.activo = !result;
 
@@ -502,7 +500,7 @@ export default {
 		},
 
 
-		async cargarUsuario({state,commit,dispatch}){
+		cargarUsuario({state,commit,dispatch}){
 
 				// return await axios.get('/app/get/data');
 				let options = {
@@ -510,7 +508,13 @@ export default {
 						'WWW-Authenticate': 'Bearer', 'Authorization': localStorage.getItem('token')
 					}
 				}
-				return await axios.get('/api/auth/user',null,options);
+				return new Promise((resolve, reject) => {
+					axios.get(`/api/auth/user/`,null,options).then(({data}) => {
+						commit('cargarUser',data)
+						resolve(data)
+					}).catch(e => reject(e))
+
+				})
 
 		},
 

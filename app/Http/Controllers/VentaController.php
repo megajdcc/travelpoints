@@ -166,6 +166,8 @@ class VentaController extends Controller
                 $venta->tps_bonificados = $comision_cliente;
                 $venta->save();
                 // dd($comision_cliente,$venta);
+
+                
             }
 
             // descontamos al negocio El monto correspondiente por haber realizado la venta

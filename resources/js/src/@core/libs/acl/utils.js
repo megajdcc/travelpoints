@@ -8,7 +8,12 @@ import { getCurrentInstance } from 'vue'
  * @param {String} subject CASL Subject // https://casl.js.org/v4/en/guide/intro#basics
  */
 export const can = (action, subject) => {
+  // console.log(action,subject);
   const vm = getCurrentInstance().proxy
+  if(subject == 'personal negocio' && action == 'read'){
+    // console.log(vm.$can ? vm.$can(action, subject) : true);
+  }
+  
   return vm.$can ? vm.$can(action, subject) : true
 }
 
@@ -27,8 +32,11 @@ export const canViewVerticalNavMenuLink = item => can(item.action, item.resource
 // eslint-disable-next-line arrow-body-style
 export const canViewVerticalNavMenuGroup = item => {
   // ! This same logic is used in canViewHorizontalNavMenuGroup and canViewHorizontalNavMenuHeaderGroup. So make sure to update logic in them as well
-  const hasAnyVisibleChild = item.children.some(i => can(i.action, i.resource))
-
+  const hasAnyVisibleChild = item.children.some(i => {
+    // console.log(i)
+    return can(i.action, i.resource)
+  })
+  
   // If resource and action is defined in item => Return based on children visibility (Hide group if no child is visible)
   // Else check for ability using provided resource and action along with checking if has any visible child
   if (!(item.action && item.resource)) {

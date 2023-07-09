@@ -1,8 +1,7 @@
 <script>
 import form from './form.vue'
-import {h,onMounted,toRefs,watch} from 'vue'
+import {h,toRefs,watch} from 'vue'
 import store from '@/store'
-import router from '@/router'
 
 export default {
    
@@ -22,7 +21,8 @@ export default {
 
       }
 
-      onMounted(() => cargarForm())
+      cargarForm();
+
       watch([id,empleados],() => cargarForm())
 
       return () => h(form,{

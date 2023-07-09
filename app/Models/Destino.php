@@ -90,6 +90,12 @@ class Destino extends Model
 
     }
 
+    /**
+     * Un destino puede tener muchos promotores
+     */
+    public function promotores(){
+        return $this->hasMany(User::class,'destino_id','id');
+    }
 
     public function cargar(){
         
@@ -105,7 +111,8 @@ class Destino extends Model
         $this->modelType = $this->model_type;
         $this->ruta = "/Destinos?q={$this->nombre}";
         $this->negocios = $this->negocios();
-
+        $this->promotores;
+        
         $this->estado?->pais;
 
         foreach ($this->atracciones as $atraccion) {

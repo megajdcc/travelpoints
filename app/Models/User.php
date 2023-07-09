@@ -82,7 +82,8 @@ class User extends Authenticatable
         'codigo_referidor',
         'lider_id',
         'coordinador_id',
-        'tarjeta_id'
+        'tarjeta_id',
+        'destino_id'
     ];
 
     /**
@@ -234,6 +235,8 @@ class User extends Authenticatable
         return $this->hasMany(Like::class,'usuario_id','id');
     }
 
+
+    
     public function negocios(){
         return $this->belongsToMany(Negocio::class,'empleados','usuario_id','negocio_id')->withPivot(['cargo_id']);
     }
@@ -806,7 +809,9 @@ class User extends Authenticatable
         return $percentageFilled;
     }
 
-   
+    public function destino(){
+        return $this->belongsTo(Destino::class,'destino_id','id');
+    }
     
     public function cargar(): User{
         $this->tokens;
@@ -815,12 +820,14 @@ class User extends Authenticatable
         $this->habilidades = $this->getHabilidades();
         $this->avatar = $this->getAvatar();
         $this->ciudad?->estado?->pais;
+        $this->cuenta;
         $this->cuenta?->divisa;
         $this->cuenta?->movimientos;
         $this->telefonos;
         $this->likes;
         $this->negocios;
         $this->solicitudes;
+        $this->destino;
         $this->faqs;
         $this->referidor;
         $this->referidos;

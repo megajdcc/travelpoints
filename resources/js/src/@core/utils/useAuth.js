@@ -210,7 +210,12 @@ export default function useAuth(){
    }  
 
 
-   const isNegocios = computed(() => usuario.value.negocios.length > 0 ? true : false);
+   const isNegocios = computed(() => {
+      if(usuario.value.negocios){
+         return usuario.value.negocios.length > 0 ? true : false
+      }
+      return false
+   });
 
 
    return {

@@ -101,44 +101,44 @@ mix.after(webpackStats => {
   
 mix.copy('resources/scss/loader.css', 'public/css');
 
-if (mix.inProduction()) {
+// if (mix.inProduction()) {
 
-  mix.generateSW({
-    // Do not precache images
-    exclude: [/\.(?:png|jpg|jpeg|svg)$/],
+//   mix.generateSW({
+//     // Do not precache images
+//     exclude: [/\.(?:png|jpg|jpeg|svg)$/],
 
-    // Define runtime caching rules.
-    runtimeCaching: [{
-      // Match any request that ends with .png, .jpg, .jpeg or .svg.
-      urlPattern: /\.(?:png|jpg|jpeg|svg)$/,
+//     // Define runtime caching rules.
+//     runtimeCaching: [{
+//       // Match any request that ends with .png, .jpg, .jpeg or .svg.
+//       urlPattern: /\.(?:png|jpg|jpeg|svg)$/,
 
-      handler: "NetworkFirst",
+//       handler: "NetworkFirst",
 
-      // Apply a cache-first strategy.
-      handler: 'CacheFirst',
+//       // Apply a cache-first strategy.
+//       handler: 'CacheFirst',
 
-      options: {
-        // Use a custom cache name.
-        cacheName: 'images',
+//       options: {
+//         // Use a custom cache name.
+//         cacheName: 'images',
 
-        // Only cache 10 images.
-        expiration: {
-          maxEntries: 10,
-        },
-      },
-    }],
+//         // Only cache 10 images.
+//         expiration: {
+//           maxEntries: 10,
+//         },
+//       },
+//     }],
 
-    ignoreURLParametersMatching: [
-      /^utm_/,
-      /^fbclid$/
-    ],
+//     ignoreURLParametersMatching: [
+//       /^utm_/,
+//       /^fbclid$/
+//     ],
 
-    skipWaiting: true,
-    maximumFileSizeToCacheInBytes: 20 * 1024 * 1024,
-  });
+//     skipWaiting: true,
+//     maximumFileSizeToCacheInBytes: 20 * 1024 * 1024,
+//   });
 
  
-}
+// }
 
  mix.version();
 // mix.browserSync('https://byp.com')

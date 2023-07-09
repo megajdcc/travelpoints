@@ -70,7 +70,7 @@
                         <td colspan="2">
                           <b-button :href="negocio.menu" target="_blank" style="text-decoration:none;" block variant="warning">
                             <font-awesome-icon icon="fas fa-book-open"/>
-                            Ver menú
+                            {{  $t('Ver menú / Lista de Precios') }}
                           </b-button>
                         </td>
                       </tr>
@@ -161,7 +161,7 @@
 
   <template v-if="negocio.tipo_menu == 2 || negocio.tipo_menu == 3">
       <hr>
-      <h2>Menú</h2>
+      <h2>{{ $t('Menú / Lista de Precios') }}</h2>
       <section class="d-flex justify-content-center">
           <mi-pdf  v-if="negocio.tipo_menu == 2" :pdf="negocio.menu" height="600px" />
           <b-img v-if="negocio.tipo_menu == 3" :src="`/storage/negocios/menu/${negocio.menu}`" class="w-100 h-auto rounded-sm" style="max-height:600px; object-fit: contain;"></b-img>

@@ -55,8 +55,12 @@ class DestinoController extends Controller
         ->orderBY($datos['sortBy'] ?: 'id', $datos['isSortDirDesc'] ? 'desc' : 'asc')
         ->paginate($datos['perPage'] ?: 10000);
 
-        $destinos = collect($pagination->items())->each(fn($destino) => $destino->cargar());
+        $destinos = collect($pagination->items())->each(function($destino){
+            $destino->cargar();
+            $destino->about_travel = '';
+        });
 
+        
         return response()->json([
             'destinos' => $destinos,
             'total' => $pagination->total()

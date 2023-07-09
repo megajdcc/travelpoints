@@ -96,16 +96,16 @@ class EmpleadoController extends Controller
                     array_push($actions, 'read');
                 }
 
-                if ($permiso['write']) {
+                if ($permiso['write']){
                     array_push($actions, 'write');
                 }
 
-                if ($permiso['update']) {
+                if ($permiso['update']){
                     array_push($actions, 'update');
                 }
 
-                if ($permiso['delete']) {
-                    array_push($actions, 'delete');
+                if ($permiso['delete']){
+                    array_push($actions,'delete');
                 }   
 
                 $empleado->usuario->addPermiso($permision,$actions);

@@ -325,6 +325,7 @@ class SolicitudController extends Controller
                 $negocio->asignarEmpleado($negocio->encargado, $negocio->primerCargo());
                 $permisos = Permiso::whereHas('panel', fn (Builder $q) => $q->where('panel', 'Negocio'))->get();
                 $negocio->encargado->asignarPermisos($permisos);
+                
             }
         } catch (\Exception $e) {
 

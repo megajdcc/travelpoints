@@ -14,6 +14,7 @@ export default function usePromotoresList(lider){
       { key: 'rol', sortable: true,label:'rol',sortKey:'rol_id' },
       { key: 'lider_id', sortable: true,label:'Lider',sortKey:'lider_id' },
       { key: 'status', sortable: true,label:'Status',sortKey:'username' },
+      { key: 'destino_id', sortable: true,label:'Destino',sortKey:'destino_id' },
       { key: 'actions',sortable:true, sortKey:'id',sortBy:'id' },
    ]
 

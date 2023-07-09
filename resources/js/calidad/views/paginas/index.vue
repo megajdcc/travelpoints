@@ -22,7 +22,7 @@
       <!-- <destinos :destinos="destinos" /> -->
 
 
-      <b-tabs content-class="mt-3" nav-class="fixed-top">
+      <b-tabs content-class="mt-3" nav-class="fixed-top" ref="refTabs">
          <b-tab active>
 
             <template #title>
@@ -170,7 +170,7 @@ export default {
       const showDestino = ref(false)
       const destino = ref({ id: computed(() => destino_id.value) })
       destino_id.value = localStorage.getItem('destino_id')
-
+      const refTabs = ref(null)
       const negociosElem = ref(null)
       const eventosElem = ref(null)
 
@@ -178,14 +178,15 @@ export default {
          
          if(destino_id.value){
             store.dispatch('destino/fetchPublic', destino_id.value)
+            store.dispatch('atraccion/getAtracciones')
          }
 
          // if(!atracciones.value.length){
-         store.dispatch('atraccion/getAtracciones')
+         // store.dispatch('atraccion/getAtracciones')
          // }
 
          // if (!destinos.value.length) {
-         store.dispatch('destino/getDestinos')
+         // store.dispatch('destino/getDestinos')
          // }
          
        
@@ -198,7 +199,6 @@ export default {
 
       onMounted(() => {
          authGoogle()
-         // cargarForm()
       })
 
       cargarForm();
@@ -279,18 +279,24 @@ export default {
 
       const scrollIr = (to) => {
 
-         const elem  = document.getElementById(to)
+         refTabs.value.firstTab();
 
-         window.scrollTo({
-            top: elem.offsetTop - 80,
-            behavior: 'smooth',
-         })
+         setTimeout(() => {
+            const elem = document.getElementById(to)
+            window.scrollTo({
+               top: elem.offsetTop - 80,
+               behavior: 'smooth',
+            })
+         }, 200);
+         
 
       }
 
 
       watch(destino_id, () => {
-         store.dispatch('destino/fetchPublic',destino_id.value)
+          store.dispatch('destino/fetchPublic', destino_id.value).then((data) => {
+            store.dispatch('atraccion/getAtracciones')
+         })
       })
 
 
@@ -298,6 +304,7 @@ export default {
          showDestino,
          search,
          remoteMethod,
+         refTabs,
          swiperOptions,
          atracciones,
          destinos,

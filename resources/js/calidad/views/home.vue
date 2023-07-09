@@ -22,26 +22,33 @@
             :legendTooltip="getLegendaStatusCoordinador(usuario.status)"
             :text-footer="getLegendaStatusCoordinador(usuario.status)" legend="Lideres" />
 
-          <statistic-card-horizontal icon="fa-money-bill" statisticTitle="Balance TravelPoints" color="success"
-            colorIcon="dark" colorText="text-white" v-if="$can('read', 'Tablero balance travelpoints')">
+          <statistic-card-horizontal icon="fa-money-bill" statisticTitle="Balance" color="success"
+            colorIcon="dark" colorText="text-white" :statistic="saldoSistema" v-if="$can('read', 'Tablero balance travelpoints')">
 
-            {{ saldoSistema | currency }}
+            <template #statistic="{statistic}">
+               {{ statistic | currency }}
+            </template>
 
           </statistic-card-horizontal>
 
           <statistic-card-horizontal icon="fa-money-bill" statisticTitle="Mi saldo" color="success" colorIcon="dark"
             colorText="text-white"
-            v-if="['Promotor', 'Coordinador', 'Lider'].includes(usuario.rol ? usuario.rol.nombre : '')">
+            v-if="['Promotor', 'Coordinador', 'Lider'].includes(usuario.rol ? usuario.rol.nombre : '')" :statistic="miSaldo">
 
-            {{ miSaldo | currency({ currency: miDivisa }) }}
+             <template #statistic="{statistic}">
+               {{ statistic |  currency({ currency: miDivisa }) }}
+            </template>
 
           </statistic-card-horizontal>
 
 
           <statistic-card-horizontal icon="fa-percent" statisticTitle="Viajeros Activos" color="dark" colorIcon="success"
-            colorText="text-white" v-if="$can('read', 'Tablero viajeros activos')">
+            colorText="text-white" v-if="$can('read', 'Tablero viajeros activos')" :statistic="viajerosActivos">
 
-            {{ viajerosActivos }} %
+            <template #statistic="{ statistic }">
+               {{ statistic }} %
+            </template>
+           
 
             <template #filtro>
               <flat-pickr v-model="filtro.rango_fecha" :config="configRangoFecha"
@@ -52,14 +59,22 @@
           </statistic-card-horizontal>
 
           <statistic-card-horizontal icon="fa-map-location" statisticTitle="Destinos Activos" color="dark"
-            colorIcon="success" colorText="text-white" v-if="$can('read', 'Tablero destinos activos')">
-            {{ destinosActivos }}
+            colorIcon="success" colorText="text-white" v-if="$can('read', 'Tablero destinos activos')" :statistic="destinosActivos">
+
+            <template #statistic="{ statistic }">
+                 {{ statistic }} 
+            </template>
+
           </statistic-card-horizontal>
 
 
           <statistic-card-horizontal icon="fa-users-gear" statisticTitle="Total operaciones TravelPoints" color="danger"
-            colorIcon="dark" colorText="text-white" v-if="$can('read', 'Tablero total operaciones travelpoints')">
-            {{ operacionesTravel }}
+            colorIcon="dark" colorText="text-white" v-if="$can('read', 'Tablero total operaciones travelpoints')" :statistic="operacionesTravel">
+
+            <template #statistic="{ statistic }">
+                  {{ statistic }} 
+            </template>
+           
           </statistic-card-horizontal>
 
           <statistic-card-horizontal icon="fa-sack-dollar" statisticTitle="Comisiones" color="warning" colorIcon="dark"

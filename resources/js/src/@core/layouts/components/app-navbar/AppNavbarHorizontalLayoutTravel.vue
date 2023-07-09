@@ -33,7 +33,7 @@
          <dark-Toggler class="d-none d-lg-block" />
 
          <notification-dropdown v-if="is_loggin" />
-         <academia v-if="is_loggin && usuario.rol.academia.length" />
+         <academia v-if="is_loggin && usuario.rol && usuario.rol.academia && (usuario.rol.academia.length > 0)" />
          <billetera v-if="is_loggin"  />
          <user-dropdown />
       </b-navbar-nav>

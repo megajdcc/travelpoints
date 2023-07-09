@@ -13,7 +13,7 @@
 
                         <template #title>
                            <feather-icon icon="UserIcon" size="16" class="mr-0 mr-sm-50" />
-                           <span class="d-none d-sm-inline">Cuenta</span>
+                           <span class="d-none d-sm-inline">{{ $t('Cuenta') }}</span>
                         </template>
 
                         <!-- Avatar -->
@@ -30,21 +30,21 @@
 
                               <b-row>
                                  <b-col>
-                                    <h4 class="mb-1" v-text="title(`${form.nombre} ${form.apellido}`)"></h4>
+                                    <h4 class="mb-1" v-text="title(getNombre)"></h4>
                                  </b-col>
                               </b-row>
                               <b-row>
                                  <!-- upload button -->
                                  <b-button v-ripple.400="'rgba(255, 255, 255, 0.15)'" variant="primary" size="sm"
                                     class="mb-75 mr-75" @click="$refs.refInputEl.$el.click()">
-                                    Actualizar
+                                    {{ $t('Actualizar') }}
                                  </b-button>
 
                                  <b-form-file ref="refInputEl" v-model="profileFile" accept=".jpg, .png, .gif, .jpeg"
                                     :hidden="true" plain @input="cargarImagen" />
                                  <!--/ upload button -->
                                  <!--/ reset -->
-                                 <b-card-text>Solo se permiten imagen del tipo JPG, GIF o PNG. Max tamaño de 800kB
+                                 <b-card-text>{{ $t('Solo se permiten imagen del tipo JPG, GIF o PNG. Max tamaño de 800kB') }}
                                  </b-card-text>
                               </b-row>
                            </b-media-body>
@@ -367,6 +367,27 @@
                         </b-row>
                      </b-tab>
 
+                     <b-tab :title="$t('Destino')" v-if="isPromotor" @click="cargarDestinos">
+                        <template #title>
+                              <font-awesome-icon icon="fas fa-map"/>
+                              <span class="d-none d-sm-inline">{{ $t('Destino') }}</span>
+                        </template>
+
+                        <b-row>
+                           <b-col cols="12" md="6">
+                              <b-form-group label="Destino" description="Seleccione un destino">
+                                 <validation-provider name="destino_id" rules="required" #default="{valid,errors}">
+                                    <v-select v-model="form.destino_id" :options="destinos" label="nombre" :reduce="option => option.id"></v-select>
+
+                                    <b-form-invalid-feedback :state="valid">
+                                       {{  errors[0]  }}
+                                    </b-form-invalid-feedback>
+                                 </validation-provider>
+                              </b-form-group>
+                           </b-col>
+                        </b-row>
+                     </b-tab>
+
                   </b-tabs>
                </b-col>
             </b-row>
@@ -503,7 +524,7 @@ export default {
       
       const {usuario} = toRefs(store.state.usuario)
       const {divisas} = toRefs(store.state.divisa)
-
+      const { destinos } = toRefs(store.state.destino)
 
       const { resolveUserRoleVariant } = useUsersList()
       const getRols = computed(() => store.getters['rol/getRols'])
@@ -616,6 +637,13 @@ export default {
 
 
       }
+      const cargarDestinos = () => {
+         
+         if(!destinos.value.length){
+            store.dispatch('destino/getDestinos')
+         }
+
+      }
 
       return {
          refFormObserver,
@@ -634,6 +662,7 @@ export default {
          regresar,
          required,
          alphaNum,
+         destinos,
          email,
          profileFile,
          loading:computed(() => store.state.loading),
@@ -646,7 +675,24 @@ export default {
          guardarTelefono,
          divisas,
          changeDivisa,
+         cargarDestinos,
+
+         isPromotor:computed(() => {
+            
+            if(form.value.rol_id){
+                return getRols.value.find(val => val.id == form.value.rol_id).label == 'Promotor'
+            }else{
+               return false
+            }
+         }),
          form,
+         getNombre:computed(() => {
+            if(form.value.nombre){
+               return `${form.value.nombre} ${form.value.apellido}`
+            }else{
+               return form.value.username
+            }
+         }),
          verificarRol:(option) => {
 
             if(option.label == 'Viajero' && usuario.value.rol.nombre == 'Promotor'){

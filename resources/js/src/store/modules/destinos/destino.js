@@ -22,7 +22,8 @@ export default{
          atracciones:[],
          negocios:[],
          activo:false,
-         about_travel:null
+         about_travel:null,
+         promotores:[]
 
       },
 
@@ -80,7 +81,9 @@ export default{
             imagenes: [],
             negocios: [],
             activo:false,
-            about_travel:null
+            about_travel:null,
+            promotores:[]
+
 
          }
       },

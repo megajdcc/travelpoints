@@ -7,6 +7,9 @@
         <div class="truncate">
           <h2 class="mb-25 font-weight-bolder" :class="[colorText]">
 
+            <slot>
+              
+            </slot>
             <slot name="statistic" :statistic="statistic" >
               {{ statistic }}
             </slot>

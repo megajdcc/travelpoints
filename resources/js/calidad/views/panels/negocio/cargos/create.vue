@@ -18,7 +18,7 @@ export default {
                   if(result){
                      toast.success('Se ha creado el Cargo con éxito ')
                      store.commit('cargo/push',cargo)
-                     router.push({name:'cargo.edit',params:{id:cargo.id}})
+                     router.push({name:'cargos.list'})
                   }else{
                      toast.info('NO se pudo crear el cargo, inténtelo de nuevo')
                   }

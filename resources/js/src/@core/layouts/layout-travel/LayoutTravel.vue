@@ -71,7 +71,6 @@ import AppNavbarHorizontalLayoutTravelBrand from '@core/layouts/components/app-n
 import useAppConfig from '@core/app-config/useAppConfig'
 import { BNavbar } from 'bootstrap-vue'
 import { useScrollListener } from '@core/comp-functions/misc/event-listeners'
-
 import { onUnmounted,toRefs,ref } from 'vue'
 
 // Content Renderer

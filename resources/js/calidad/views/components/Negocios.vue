@@ -149,7 +149,7 @@ export default{
     }   
 
 
-    onMounted(() => actions.refetchData());
+    // onMounted(() => actions.refetchData());
     watch(() => destino.value.id, () => actions.refetchData());
 
     return {

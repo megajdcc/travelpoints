@@ -8,10 +8,10 @@
     </template>
 
     <b-dropdown-item :to="{ name: !isNegocio ?  'micuenta' : 'negocio.movimientos' }" link-class="d-flex align-items-center"
-      v-if="is_loggin && $can('read', !isNegocio ? 'micuenta' : 'movimientos negocio')">
+      v-if="is_loggin && $can('read', !isNegocio ? 'Auth' : 'movimientos negocio')">
       <feather-icon size="16" icon="DollarSign" class="mr-50" />
       <span v-if="!isNegocio">
-        Tp{{ saldo | currency(currencyIso) }}
+        Tp{{ saldo | currency }}
       </span>
       <span v-else>
         {{ saldo | currency(currencyIso) }}
@@ -21,7 +21,7 @@
     <template v-if="isNegocio">
        <b-dropdown-item @click="recargar" >
         <font-awesome-icon icon="fab fa-paypal"/>
-        Recargar
+        {{  $t('Recargar') }}
       </b-dropdown-item>
      
     </template>
@@ -76,7 +76,8 @@ export default {
 
 
   setup(props) {
-    const usuario = computed(() => store.state.usuario.usuario)
+    const { usuario } = toRefs(store.state.usuario)
+
     const { panel, negocioId,isNegocio } = toRefs(props)
     const  showRecarga = ref(false)
     const { negocio } = toRefs(store.state.negocio)
@@ -137,7 +138,7 @@ export default {
             return 'EUR'
           }
         }else{
-          return 'USD'
+          return ''
         }
 
       }),
@@ -151,7 +152,7 @@ export default {
             return 0;
           }
         }else{
-          return usuario.value.cuenta.saldo
+          return usuario.value.cuenta ? Number(usuario.value.cuenta.saldo) : 0
         }
 
       })

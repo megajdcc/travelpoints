@@ -48,7 +48,7 @@
             </template>
             <b-link :to="{ name: 'mostrar.usuario', params: { id: item.id } }" disabled
               class="font-weight-bold d-block text-nowrap">
-              {{ `${item.nombre} ${item.apellido}` }}
+              {{ item.nombre ? `${item.nombre} ${item.apellido}` : 'Sin definir nombre'  }}
             </b-link>
             <small class="text-muted" v-if="item.username">{{ item.username }}</small>
           </b-media>

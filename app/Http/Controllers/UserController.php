@@ -22,9 +22,11 @@ use Illuminate\Support\Str;
 use App\Models\Telefono;
 
 use App\Models\Like;
+use App\Models\Negocio\Cargo;
 use App\Models\Pais;
 use App\Models\Producto;
 use App\Models\Tarjeta;
+use App\Models\Usuario\Permiso;
 use App\Notifications\NuevaAsignacionCoordinador;
 use App\Notifications\NuevaAsignacionLider;
 use App\Notifications\nuevoAmigo;
@@ -60,7 +62,8 @@ class UserController extends Controller
             'codigo_postal'    => 'nullable',
             'ciudad_id'        => 'nullable',
             'codigo_referidor' => 'nullable',
-            'bio' => 'nullable'
+            'bio' => 'nullable',
+            'destino_id' => 'nullable'
         ], [
             'username.unique' => 'El nombre de usuario ya está siendo usado, inténta con otro',
             'email.unique'    => 'El email ya está siendo usado, el mismo debe ser único',
@@ -152,7 +155,7 @@ class UserController extends Controller
 
                 $usuario_referidor = User::where('codigo_referidor', $datos['referidor'])->first();
 
-                if ($usuario_referidor) {
+                if ($usuario_referidor){
                     $usuario->referidor()->attach($usuario_referidor->id, [
                         'codigo' => $datos['referidor'],
                         'created_at' => now()
@@ -291,13 +294,7 @@ class UserController extends Controller
 
     public function getUsuarios()
     {
-
-        $usuarios = User::get();
-        foreach ($usuarios as $key => $usuario) {
-            $usuario->cargar();
-        }
-
-        return response()->json($usuarios);
+        return response()->json(User::where('activo',true)->get()->each(fn ($val) => $val->cargar()));
     }
 
     public function getLideres()

@@ -17,7 +17,6 @@ trait hasPermisos
       return $this->morphMany(PermisosAsignados::class, 'model');
    }
 
-
    public function asignarPermisosDefault(string $panel = 'Negocio'): Collection{
 
       $permisos_asignados = collect([]);

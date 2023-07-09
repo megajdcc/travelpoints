@@ -122,30 +122,27 @@ export default [
       icon:'fa-calendar-week'
    },
 
+
+
    // Personal
    {
       title:'Personal y Cargos',
       icon:'fas fa-people-group',
-     
       children:[
 
          {
             icon: 'fas fa-people-group',
             title: 'Personal',
             route: 'personal.list',
-            action: 'read',
-            rosource: 'personal negocio',
-
+            resource:'personal negocio',
+            action:'read',
          },
 
          {
-         
             title:'Cargos',
             route:'cargos.list',
-            action: 'read',
-            rosource: 'cargos negocio',
-            
-
+            resource:'cargos negocio',
+            action:'read',
          }
       ]
    },
@@ -228,25 +225,25 @@ export default [
 
    // Reportes
 
-   {
-      title:'Reportes',
-      icon:'fas fa-file-csv',
+   // {
+   //    title:'Reportes',
+   //    icon:'fas fa-file-csv',
 
-      children:[
-         {
-            title:'Ventas',
-            resource: 'reportes negocio',
-            action: 'read'
-         },
+   //    children:[
+   //       {
+   //          title:'Ventas',
+   //          resource: 'reportes negocio',
+   //          action: 'read'
+   //       },
 
-         {
-            title: 'Cupones',
-            action: 'read',
-            resource: 'reportes negocio' ,
-         },
-      ]
+   //       {
+   //          title: 'Cupones',
+   //          action: 'read',
+   //          resource: 'reportes negocio' ,
+   //       },
+   //    ]
 
-   }
+   // }
 
 
 

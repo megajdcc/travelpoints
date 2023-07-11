@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Atraccion;
+use App\Models\Destino;
 use App\Models\Divisa;
 use App\Models\Negocio\Negocio;
 use Illuminate\Http\Request;
@@ -48,6 +49,12 @@ class NegocioController extends Controller
             ['codigo_postal', 'LIKE', "%{$datos['q']}%", "OR"],
 
         ])
+        ->when(isset($datos['destinoId']) && !empty($datos['destinoId']),function(Builder $q) use($datos){
+            $q->whereHas('iata',function(Builder $query) use($datos){
+                    $destino = Destino::find($datos['destinoId']);
+                    $query->where('id',$destino->iata->id);
+            });
+        })
         ->with(['cuenta.divisa'])
         ->orderBy($datos['sortBy'] ?: 'id',$datos['isSortDirDesc'] ? 'desc' : 'desc')
         ->paginate($datos['perPage']?: 10000,pageName:'currentPage');

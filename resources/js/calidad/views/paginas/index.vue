@@ -324,7 +324,6 @@ export default {
          getDestinoName: computed(() => {
             if (destino_id.value && destinos.value.length) {
                let desti = destinos.value.find(val => val.id == destino_id.value)
-
                return desti != undefined ? desti.nombre : ''
             } else {
                return 'Elejir Destino'

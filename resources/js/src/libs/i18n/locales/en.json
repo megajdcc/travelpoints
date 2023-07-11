@@ -241,7 +241,45 @@
    "Recargar":"Reload",
    "Actualizar":"Update",
    "Solo se permiten imagen del tipo JPG, GIF o PNG. Max tamaño de 800kB":"Only JPG, GIF or PNG images are allowed. Max size of 800kB",
-   "Cuenta":"Account"
+   "Cuenta":"Account",
+   "Fecha de la reserva":"Reservation date",
+   "Horas Disponibles":"Available Hours",
+   "Sin horas disponibles":"No hours available",
+   "Número de Personas":"Number of people",
+   "Observación":"Observation",
+   "Agregue una observación o requerimiento a la reserva":"Add an observation or requirement to the reservation",
+   "Reservar":"Reserve",
+   "Siguiente":"Next",
+   "AL seleccionar la hora, buscaremos la cantidad de lugares":"By selecting the time, we will search for the number of places",
+   "Fecha y Hora":"Date and Time",
+   "Usuario":"User",
+   "Negocio":"Business",
+   "Destinos":"Destinations",
+   "Crear Reservación":"Create Reservation",
+    "listado":"list",
+   "crear":"create",
+   "Entradas":"Entries",
+   "Mostrar":"Show",
+   "Escriba el nombre del negocio si no lo encuentra en el listado...":"Write the name of the business if you can't find it on the list...",
+   "Seleccionado":"Selected",
+   "Seleccionar":"Select"
+
+
+
+
+
+
+
+
+
+   
+
+
+
+
+
+
+
    
 
    

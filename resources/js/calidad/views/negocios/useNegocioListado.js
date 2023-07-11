@@ -2,7 +2,7 @@
 import store from '@/store'
 import { ref, computed, onMounted, watch } from 'vue'
 
-export default function useNegocioListado() {
+export default function useNegocioListado(destino_id) {
 
   const items = ref([])
    const isSortDirDesc = ref(true)
@@ -38,7 +38,7 @@ export default function useNegocioListado() {
 
    const dataMeta = computed(() => {
 
-      const localItemsCount = items.length;
+      const localItemsCount = items.value.length;
       
       return {
          from: perPage.value * (currentPage.value - 1) + (localItemsCount ? 1 : 0),
@@ -64,7 +64,8 @@ export default function useNegocioListado() {
          currentPage: currentPage.value,
          sortBy: sortBy.value,
          q: searchQuery.value,
-         isSortDirDesc: isSortDirDesc.value
+         isSortDirDesc: isSortDirDesc.value,
+         destinoId:destino_id.value ? destino_id.value : null
       }).then(({ total: all, negocios }) => {
 
          total.value = all

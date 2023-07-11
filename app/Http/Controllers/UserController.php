@@ -523,11 +523,11 @@ class UserController extends Controller
             ->when(!in_array($request->user()->rol->nombre, ['Desarrollador', 'Administrador']), function ($query) {
                 $query->whereHas('rol', fn (Builder $q) => $q->whereNotIn('nombre', ['Desarrollador', 'Administrador']));
             })
-            ->when(in_array($request->user()->rol->nombre, ['Promotor']), function ($query) use ($usuario) {
-                $query->whereHas('referidor', function (Builder $q) use ($usuario) {
-                    $q->where('usuario_id', $usuario->id);
-                });
-            })
+            // ->when(in_array($request->user()->rol->nombre, ['Promotor']), function ($query) use ($usuario) {
+            //     $query->whereHas('referidor', function (Builder $q) use ($usuario) {
+            //         $q->where('usuario_id', $usuario->id);
+            //     });
+            // })
 
             ->orderBy($datos['sortBy'], $datos['sortDesc'] ? 'desc' : 'asc')
             ->paginate($datos['perPage'] == 0 ? 10000 : $datos['perPage']);

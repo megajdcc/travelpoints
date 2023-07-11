@@ -242,7 +242,28 @@
    "Recargar":"Recargar",
    "Actualizar":"Actualizar",
    "Solo se permiten imagen del tipo JPG, GIF o PNG. Max tamaño de 800kB":"Solo se permiten imagen del tipo JPG, GIF o PNG. Max tamaño de 800kB",
-   "Cuenta":"Cuenta"
+   "Cuenta":"Cuenta",
+   "Fecha de la reserva":"Fecha de la reserva",
+   "Horas Disponibles":"Horas Disponibles",
+   "Sin horas disponibles":"Sin horas disponibles",
+   "Número de Personas":"Número de Personas",
+   "Observación":"Observación",
+   "Agregue una observación o requerimiento a la reserva":"Agregue una observación o requerimiento a la reserva",
+   "Reservar":"Reservar",
+   "Siguiente":"Siguiente",
+   "AL seleccionar la hora, buscaremos la cantidad de lugares":"AL seleccionar la hora, buscaremos la cantidad de lugares",
+   "Fecha y Hora":"Fecha y Hora",
+   "Usuario":"Usuario",
+   "Negocio":"Negocio",
+   "Destinos":"Destinos",
+   "Crear Reservación":"Crear Reservación",
+   "listado":"listado",
+   "crear":"crear",
+   "Entradas":"Entradas",
+   "Mostrar":"Mostrar",
+   "Escriba el nombre del negocio si no lo encuentra en el listado...":"Escriba el nombre del negocio si no lo encuentra en el listado...",
+   "Seleccionado":"Seleccionado",
+   "Seleccionar":"Seleccionar"
 
    
 

@@ -34,7 +34,7 @@ export default function useAuth(){
       store.dispatch('cerrarSesion').then(({data}) => {
          localStorage.removeItem('token')
          localStorage.removeItem('habilidades');
-         // localStorage.removeItem('userData');
+         localStorage.removeItem('userData');
          localStorage.removeItem('usuarioId')
 
          store.commit('usuario/limpiarUsuario')
@@ -75,8 +75,8 @@ export default function useAuth(){
 
                   localStorage.setItem('token', data.accessToken);
                   localStorage.setItem('habilidades', JSON.stringify(data.usuario.habilidades));
-                  // localStorage.setItem('userData', JSON.stringify(data.usuario));
-                  localStorage.setItem('usuarioId',data.usuario.id)
+                  localStorage.setItem('userData', JSON.stringify(data.usuario));
+                  // localStorage.setItem('usuarioId',data.usuario.id)
 
                   ability.update(JSON.parse(localStorage.getItem('habilidades')));
 
@@ -179,13 +179,13 @@ export default function useAuth(){
          localStorage.setItem('token', data.accessToken);
          localStorage.setItem('habilidades', JSON.stringify(data.usuario.habilidades));
          localStorage.setItem('usuarioId',data.usuario.id);
-         // localStorage.setItem('userData', JSON.stringify(data.usuario));
+         localStorage.setItem('userData', JSON.stringify(data.usuario));
 
          ability.update(JSON.parse(localStorage.getItem('habilidades')));
 
          if (localStorage.getItem('token')) {
-            // store.commit('usuario/cargarUser', JSON.parse(localStorage.getItem('userData')));
-            store.commit('usuario/cargarUser',data.usuario)
+            store.commit('usuario/cargarUser', localStorage.getItem('userData') ? JSON.parse(localStorage.getItem('userData')) : data.usuario);
+            // store.commit('usuario/cargarUser',data.usuario)
          }
 
          toast({

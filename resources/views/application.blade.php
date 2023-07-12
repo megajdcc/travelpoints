@@ -18,7 +18,7 @@
   <link rel="stylesheet" href="{{ mix('css/app.css') }}">
 
   <!-- Favicon -->
-  <link rel="shortcut icon" href="{{ asset('favicons/favicon-8x8.png') }}">
+  <link rel="shortcut icon" href="{{ asset('favicons/favicon-57x57.png') }}">
   <script src="https://accounts.google.com/gsi/client" async defer ></script>
  
 

@@ -97,7 +97,8 @@ export default {
 
 	mutations:{
 
-		cargarUser(state,data){			
+		cargarUser(state,data){
+			localStorage.setItem('userData',JSON.stringify(data))			
 			state.usuario = data;
 		},
 
@@ -187,9 +188,9 @@ export default {
 		},
 
 		updateAvatar(state,avatar){
-			// const user = JSON.parse(localStorage.getItem('userData'))
-			// user.avatar = avatar;
-			// localStorage.setItem('userData',JSON.stringify(user))
+			const user = JSON.parse(localStorage.getItem('userData'))
+			user.avatar = avatar;
+			localStorage.setItem('userData',JSON.stringify(user))
 			state.usuario.avatar = avatar;
 		},
 
@@ -203,14 +204,14 @@ export default {
 		},
 
 		updatePerfil(state,data){
-			// localStorage.setItem('userData',JSON.stringify(data))
+			localStorage.setItem('userData',JSON.stringify(data))
 			state.usuario = data
 		},
 
 		desactivarCuenta(state, result) {
-			// const user = JSON.parse(localStorage.getItem('userData'))
-			// user.activo = !result;
-			// localStorage.setItem('userData', JSON.stringify(user))
+			const user = JSON.parse(localStorage.getItem('userData'))
+			user.activo = !result;
+			localStorage.setItem('userData', JSON.stringify(user))
 
 			state.usuario.activo = !result;
 

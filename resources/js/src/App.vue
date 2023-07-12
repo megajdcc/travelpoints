@@ -97,14 +97,13 @@ export default {
 
 
     if (localStorage.getItem('token')) {
-      if(localStorage.getItem('usuarioId')){
-        
-        if(!usuario.value.id){
+      if(localStorage.getItem('userData') != undefined){
+       store.commit('usuario/cargarUser', JSON.parse(localStorage.getItem('userData')));
+      }else{
+        if (!usuario.value.id) {
           store.dispatch('usuario/cargarUsuario')
         }
-
       }
-      // store.commit('usuario/cargarUser', JSON.parse(localStorage.getItem('userData')));
     }
 
     // Cargar Sistema

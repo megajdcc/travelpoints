@@ -665,16 +665,17 @@ class UserController extends Controller
             ->join('users as u', 'ur.referido_id', 'u.id')
             ->where('ur.usuario_id', $datos['usuario_id'])
             ->orderBy('u.id', 'desc')
-            ->paginate($datos['perPage']);
+            ->paginate($datos['perPage'],pageName:'currentPage');
 
 
+        // $usuarios = collect($paginator->items())->each(fn($val) => $val->cargar());
         $usuarios = $paginator->items();
 
         foreach ($usuarios as $key => $usuario) {
             if (empty($usuario->imagen)) {
                 $usuario->imagen =  asset('storage/img-perfil/default.jpg');
             } else {
-                $usuario->imagen =  asset('storage/img-perfil/') . $usuario->imagen;
+                $usuario->imagen =  asset('storage/img-perfil') .'/'.$usuario->imagen;
             }
 
             // $usuario->cargar();

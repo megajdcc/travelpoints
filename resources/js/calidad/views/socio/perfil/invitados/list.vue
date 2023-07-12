@@ -16,6 +16,9 @@
                <b-media vertical-align="center" style="cursor:pointer;border-radius:10px ; border:1px dotted rgba(0,0,0,0.5);padding: .5rem;" class="shadow-lg">
                   <template #aside>
                      <b-avatar :src="usuario.imagen" :alt="usuario.nombre_completo || usuario.username" size="md" />
+                     <!-- <b-avatar size="md"  :alt="usuario.nombre_completo || usuario.username" :src="item.avatar" :text="avatarText(`${item.nombre} ${item.apellido}`)"
+                   :variant="`light-${resolveUserRoleVariant(item.rol.nombre)}`"
+                   :to="{ name: 'mostrar.usuario', params: { id: item.id } }" disabled /> -->
                   </template>
 
                   <h3>{{ usuario.nombre_completo || usuario.username }}</h3>

@@ -822,13 +822,15 @@ class User extends Authenticatable
         $this->ciudad?->estado?->pais;
         $this->cuenta;
         $this->cuenta?->divisa;
-        $this->cuenta?->movimientos;
         $this->telefonos;
         $this->likes;
-        $this->negocios;
+        foreach ($this->negocios as $key => $negocio) {
+            $negocio->descripcion = '';
+        }
+        
         $this->solicitudes;
         $this->destino;
-        $this->faqs;
+        // $this->faqs;
         $this->referidor;
         $this->referidos;
         $this->permisos;

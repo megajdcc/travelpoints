@@ -229,7 +229,6 @@ class AuthController extends Controller
          
          $user->cargar();
 
-
          // broadcast(new UsuarioConectado($user))->toOthers();
 
          $result = true;
@@ -255,8 +254,7 @@ class AuthController extends Controller
     */
    public function user(Request $request)
    {
-
-      $usuario = $request->user();
+      $usuario = User::find($request->user()->id);
       $usuario->cargar();
       
       return response()->json($usuario);

@@ -40,18 +40,21 @@
   </div>
 
   
-  @if(env('APP_ENV') == 'production')
+  {{-- @if(env('APP_ENV') == 'production') --}}
     <script>
-      // Check that service workers are supported
-      if ('serviceWorker' in navigator) {
-        // Use the window load event to keep the page load performant
-        window.addEventListener('load', () => {
-          navigator.serviceWorker.register('/service-worker.js');
-        });
-      }
+      window.addEventListener('load',() => {
+          if('serviceWorker' in navigator){
+            navigator.serviceWorker.register('/service-worker.js').then(() => {
+              console.log('Service Worker registrado!')
+            }).catch(e => {
+              console.log('Service Worker no pudo ser registrado')
+              console.log(e)
+            });
+          }
+      });
     </script> 
 
-  @endif
+  {{-- @endif --}}
 
     <script src="{{ mix('js/manifest.js')}}"></script>
     <script src="{{ mix('js/vendor.js')}}"></script>

@@ -10,7 +10,7 @@
             <b-breadcrumb style="margin-top: -20px;">
                <b-breadcrumb-item @click="limpiarDestinos">
                   <font-awesome-icon icon="fas fa-rotate-right" />
-                  Destinos
+                  {{ $t('Destinos') }}
                </b-breadcrumb-item>
                <b-breadcrumb-item :to="rutaDestino" text>{{ getDestinoName }}</b-breadcrumb-item>
             </b-breadcrumb>
@@ -324,7 +324,7 @@ export default {
          getDestinoName: computed(() => {
             if (destino_id.value && destinos.value.length) {
                let desti = destinos.value.find(val => val.id == destino_id.value)
-               return desti != undefined ? desti.nombre : ''
+               return desti != undefined ? desti.nombre : destino.value.nombre
             } else {
                return 'Elejir Destino'
             }

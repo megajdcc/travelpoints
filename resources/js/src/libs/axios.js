@@ -53,8 +53,9 @@ axiosIns.interceptors.response.use((response) => {
         if (window.location.pathname != '/login') {
 
           router.push({ name: 'login' })
-          useAuth().logout();
-        
+          if(useAuth().is_loggin){
+            useAuth().logout();
+          }
         }
 
       } else if (response.data.message == 'Unauthorized.') {
@@ -65,7 +66,7 @@ axiosIns.interceptors.response.use((response) => {
 
         localStorage.removeItem('habilidades');
 
-        console.log('Cerrando')
+        // console.log('Cerrando')
         if (window.location.pathname != '/login') {
           router.push({ name: 'login' })
           useAuth().logout();

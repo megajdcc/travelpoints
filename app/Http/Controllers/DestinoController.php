@@ -53,10 +53,21 @@ class DestinoController extends Controller
             ]);
         })
         ->orderBY($datos['sortBy'] ?: 'id', $datos['isSortDirDesc'] ? 'desc' : 'asc')
-        ->paginate($datos['perPage'] ?: 10000);
+        ->paginate(4);
 
         $destinos = collect($pagination->items())->each(function($destino){
-            $destino->cargar();
+            // $destino->cargar();
+            $destino->imagenes;
+            $destino->iata;
+            $destino->iata->pais = $destino->pais();
+            $destino->ciudad;
+            $destino->estado;
+            $destino->likes;
+            $destino->estado?->pais;
+            $destino->modelType = $destino->model_type;
+            $destino->likes;
+            $destino->ruta = "/Destinos?q={$destino->nombre}";
+
             $destino->about_travel = '';
         });
 

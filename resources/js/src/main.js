@@ -42,7 +42,7 @@ import '@/libs/clipboard'
 import '@/libs/toastification'
 import '@/libs/sweet-alerts'
 import '@/libs/vue-select'
-import '@/libs/tour'
+// import '@/libs/tour'
 // import '@/libs/markdown-editor'
 
 import VueCurrencyFilter from 'vue-currency-filter'

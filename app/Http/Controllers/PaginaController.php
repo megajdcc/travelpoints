@@ -27,6 +27,8 @@ class PaginaController extends Controller
     public function getAll(){
         $paginas = Pagina::where('activo', true)->with('usuario')->get();
 
+        $paginas->each(fn($val) => $val->contenido = '');
+
         return response()->json($paginas);
     }
 

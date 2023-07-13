@@ -249,7 +249,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::put('negocios/{negocio}/cargar/saldo', [NegocioController::class, 'agregarSaldo']);
 
     Route::get('negocios/{negocio}/datos/home', [NegocioController::class, 'datosHome']);
-    Route::get('negocios/{negocio}/aumentar-vistas',[NegocioController::class,'aumentarVistas']);
+    
     Route::get('negocios/{negocio}/recomendacions/toggle/user/{usuario}', [NegocioController::class, 'togleRecomendacion']);
     Route::get('negocios/{negocio}/seguidors/toggle/user/{usuario}', [NegocioController::class, 'toggleSeguidor']);
 
@@ -723,7 +723,7 @@ Route::post('negocio/obtener-por-url', [NegocioController::class, 'capturarPorUr
 Route::post('publicacions/fetch/data', [PublicacionController::class, 'fetchData']);
 
 // perfil Negocio Eventos
-
+Route::get('negocios/{negocio}/aumentar-vistas', [NegocioController::class, 'aumentarVistas']);
 Route::post('eventos/fetch/data', [EventoController::class, 'fetchData']);
 Route::post('eventos/fetch/eventos', [EventoController::class, 'fetchEventos']);
 

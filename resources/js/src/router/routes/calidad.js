@@ -312,14 +312,13 @@ export default [
       path:'/usuarios',
       // name:'usuarios',
       component: () => import(
-         /*  webpackChunkName: "group-usuario"  */ 
-         /* webpackPreload:true  */ 'views/usuarios'),
+        'views/usuarios'),
 
       children:[
          {
             path:'',
             name:'listar.usuarios',
-            component: () => import(/*  webpackChunkName: "group-usuario" */ 'views/usuarios/lists'),
+            component: () => import('views/usuarios/lists'),
           
             meta:{
                resource: 'usuarios',
@@ -336,7 +335,7 @@ export default [
          {
             path:'create',
             name:'create.usuario',
-            component: () => import( /*  webpackChunkName: "group-usuario" */ 'views/usuarios/create'),
+            component: () => import('views/usuarios/create'),
            
 
             meta: {
@@ -365,7 +364,7 @@ export default [
             path: ':id/edit',
             props:true,
             name: 'edit.usuario',
-            component: () => import( /*  webpackChunkName: "group-usuario" */ 'views/usuarios/edit'),
+            component: () => import('views/usuarios/edit'),
             
 
             meta: {

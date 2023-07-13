@@ -4,17 +4,6 @@ require('laravel-mix-workbox');
 const path = require('path');
 const ASSET_PATH = process.env.MIX_SENTRY_DSN_PUBLIC || 'public';
 
-/*
- |--------------------------------------------------------------------------
- | Mix Asset Management
- |--------------------------------------------------------------------------
- |
- | Mix provides a clean, fluent API for defining some Webpack build steps
- | for your Laravel applications. By default, we are compiling the CSS
- | file for the application as well as bundling up all the JS files.
- |
- */
-
 mix.webpackConfig({
  
 
@@ -35,53 +24,48 @@ mix.webpackConfig({
       '@images':path.resolve(__dirname,'resources/js/src/assets/images/')
     }
   },
+
   module: {
     rules: [
 
       {
-        test: /\.s[ac]ss$/i,
-        use: [
+      test: /\.s[ac]ss$/i,
+      use: [
           {
             loader: 'resolve-url-loader',
             options: {
               sassOptions: {
-                includePaths: ['node_modules', 'resources/js/src/assets']
-              }
-            }
-          },
-          
-          {
-            loader:'sass-loader',
-            options: {
-              sassOptions: {
-                includePaths: ['node_modules', 'resources/js/src/assets']
+                includePaths: ['node_modules', 'resources/js/src/assets'],
               },
-              sourceMap:true
-            }
-          }
-        ]
+            },
+          },
+          {
+            loader: 'sass-loader',
+            options: {
+              sourceMap: true,
+              sassOptions: {
+                includePaths: ['node_modules', 'resources/js/src/assets'],
+              },
+            },
+          },
+        ],
       },
-
   
     ]
     
   },
 
   output: {
-    asyncChunks:false,
+    publicPath: '/',
+    asyncChunks:true,
     path:path.resolve(__dirname,'public'),
-    chunkFilename:`js/chunks/[name].[chunkhash].js`
+    chunkFilename:`js/chunks/[chunkhash].js`
   },
 
   watchOptions: { 
     aggregateTimeout: 600,
     ignored: [
     '**/node_modules',
-    // path.resolve(__dirname,'resources/app.scss'),
-    // path.resolve(__dirname,'resources/loader.css')
-    // path.resolve(__dirname, 'storage'),
-    // path.resolve(__dirname, 'vendor'),
-    // path.resolve(__dirname, 'public/storage')
     ]
   },
 
@@ -93,6 +77,7 @@ mix.js('resources/js/app.js','js')
   .options({
     postCss: [require('autoprefixer')]
   })
+  
   .extract();
 
 mix.after(webpackStats => {
@@ -102,44 +87,25 @@ mix.after(webpackStats => {
 mix.copy('resources/scss/loader.css', 'public/css');
 
 if (mix.inProduction()) {
-
-  mix.generateSW({
-
-    // Do not precache images
-    // exclude: [/\.(?:png|jpg|jpeg|svg)$/],
-
-    // Define runtime caching rules.
-    runtimeCaching: [{
-      // Match any request that ends with .png, .jpg, .jpeg or .svg.
-      urlPattern: /\.(?:png|jpg|jpeg|svg)$/,
-
-      handler: "NetworkFirst",
-
-      // Apply a cache-first strategy.
-      handler: 'CacheFirst',
-
-      options: {
-        // Use a custom cache name.
-        cacheName: 'images',
-
-        // Only cache 10 images.
-        expiration: {
-          maxEntries: 10,
-        },
+  
+  mix.injectManifest({
+    swSrc: './resources/js/service-worker.js'
+  })
+  .generateSW({
+      //  directoryIndex: 'https://travelpoints.dev',
+      exclude: [/\.(?:js)$/],
+      cleanupOutdatedCaches:true,
+      maximumFileSizeToCacheInBytes: 2097152 * 6 ,
+      swDest: path.resolve(__dirname, 'public', 'service-worker.js'), 
+      modifyURLPrefix: {
+      '': ASSET_PATH,
       },
-    }],
-
-    ignoreURLParametersMatching: [
-      /^utm_/,
-      /^fbclid$/
-    ],
-
-    skipWaiting: true,
-    maximumFileSizeToCacheInBytes: 20 * 1024 * 1024,
+      clientsClaim: true,
+      skipWaiting: true,
+   
   });
 
  
 }
 
- mix.version();
-// mix.browserSync('https://byp.com')
+// mix.version();

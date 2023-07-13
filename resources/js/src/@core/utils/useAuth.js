@@ -44,13 +44,8 @@ export default function useAuth(){
          router.push({name:'login'})
 
       }).catch(e => {
-
-         console.log(e)
-
          if(e.response.status === 419 ){
-
             router.push({name:'login'})
-
          }
 
       })

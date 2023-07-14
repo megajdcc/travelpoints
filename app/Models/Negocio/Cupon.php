@@ -36,7 +36,6 @@ class Cupon extends Model
         return $this->belongsTo(Divisa::class,'divisa_id','id');
     }
 
-
     public function negocio(){
         return $this->belongsTo(Negocio::class,'negocio_id','id');
     }

@@ -46,7 +46,7 @@ trait hasTelefonos
      */
     public function routeNotificationForVonage(Notification $notification): string
     {
-        return $this->telefonos->where('principal',true)->first()?->telefono;
+        return $this->telefonos->first()?->telefono;
     }
 
 

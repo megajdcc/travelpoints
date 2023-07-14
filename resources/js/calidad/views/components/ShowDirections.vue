@@ -55,8 +55,8 @@
                   </div>
                 </b-tab>
                 <template #tabs-end>
-                    <li role="presentacion" class="nav-item">
-                        <b-button class="nav-link" variant="text" @click="openDirections">
+                    <li  class="nav-item">
+                        <b-button role="button"  class="nav-link" variant="text" @click="openDirections">
                           <font-awesome-icon icon="fas fa-map-location-dot" />
                             Abrir en Google Maps
                         </b-button>

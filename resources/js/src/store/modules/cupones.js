@@ -205,6 +205,14 @@ export default{
          return new Promise((resolve, reject) => {
             axios.get(`/api/cupons/reservas/${cupon}/cancelar/usuario/${usuario}`).then(({data}) => resolve(data)).catch(e => reject(e))
          })
+      },
+
+      fetchDataPublic({commit},datos){
+         return new Promise((resolve,reject) => {
+            axios.post(`/api/cupons/fetch-data/public`,datos).then(({data}) => {
+               resolve(data)
+            }).catch( e => reject(e))
+         })
       }
 
 

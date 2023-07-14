@@ -62,25 +62,26 @@ class Sistema extends Model
     private function asignarComisionPerfiles(Venta $venta,Movimiento $movimiento){
 
         $cliente = $venta->cliente;
-  
-        if(!($cliente->referidor instanceof \Illuminate\Database\Eloquent\Collection)){
+        
+        // Si la venta proviene de una reservacion y esta tiene un operador (promotor), le asignamos la comisión correspondiente por promotor
+        if($operador = $venta?->reservacion?->operador){
             
-            if($referidor = $cliente->referidor){
+            // Verificamos si el operador en realidad es un Promotor
+            if (\in_array($operador->rol->nombre, ['Promotor'])) {
+                $this->asignarComisionPromotor($operador, $venta, $movimiento); // procedemos con la asignación de la comisión
+            }
+        }else if($cliente->referidor instanceof \Illuminate\Database\Eloquent\Collection){ 
+            // en el caso de que no sea por reserva la operacion de venta, se verifica si el usuario tiene un referidor (invitador)
+            
+            if($referidor = $cliente->referidor->first()){
+                // si tiene un referidor, se verifica que este se promotor , para asignarle la comision al promotor
                 if (\in_array($referidor->rol->nombre, ['Promotor'])) {
                     $this->asignarComisionPromotor($referidor, $venta, $movimiento);
                 }
-            } else if ($operador = $venta->reservacion->operador) {
-                if (\in_array($operador->rol->nombre, ['Promotor'])) {
-                    $this->asignarComisionPromotor($operador, $venta, $movimiento);
-                }
-            }
-
-        }else if($operador = $venta?->reservacion?->operador){
-            if(\in_array($operador->rol->nombre, ['Promotor'])) {
-                $this->asignarComisionPromotor($operador, $venta, $movimiento);
+                
+              
             }
         }
-
     }
 
 

@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Destino;
 use App\Models\Negocio\Negocio;
 use App\Models\Negocio\Cupon;
 use App\Models\User;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
@@ -13,6 +15,30 @@ use Illuminate\Support\Facades\Storage;
 class CuponController extends Controller
 {
     
+
+    public function fetchDataPublic(Request $request){
+        $filtro = $request->all();
+
+        $destinoId = $request->get('destino');
+
+
+        $paginator = Cupon::where(function ($query) use ($destinoId) {
+
+            $query->whereHas('negocio',function(Builder $query) use ($destinoId){
+                $query->whereHas('iata', function (Builder $q) use ($destinoId) {
+                    $q->where('id', (Destino::find($destinoId))?->iata->id);
+                });
+            });
+        })
+            ->where('activo', true)
+            ->orderBy('expide', 'asc')
+            ->paginate($filtro['perPage'] ?: 1000);
+
+        $cupones = collect($paginator->items())->each(fn ($val) => $val->cargar());
+
+        return response()->json(['total' => $paginator->total(), 'cupones' => $cupones]);
+
+    }
 
     public function fetchData(Request $request){
 

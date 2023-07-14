@@ -1,11 +1,8 @@
 const mix = require('laravel-mix');
 require('laravel-mix-workbox');
-
 const path = require('path');
 const ASSET_PATH = process.env.MIX_SENTRY_DSN_PUBLIC || 'public';
-
 mix.webpackConfig({
- 
 
   resolve: {
     alias: {
@@ -75,10 +72,13 @@ mix.js('resources/js/app.js','js')
   .sass('resources/scss/app.scss','css')
   .vue({version:2})
   .options({
-    postCss: [require('autoprefixer')]
+    postCss: [require('autoprefixer')],
   })
-  
   .extract();
+  // .compress({
+  //   productionOnly: true,
+  //   minRatio: 1,
+  // })
 
 mix.after(webpackStats => {
   console.log('Compilación completada..');
@@ -87,12 +87,11 @@ mix.after(webpackStats => {
 mix.copy('resources/scss/loader.css', 'public/css');
 
 if (mix.inProduction()) {
-  
+
   mix.injectManifest({
     swSrc: './resources/js/service-worker.js'
   })
   .generateSW({
-      //  directoryIndex: 'https://travelpoints.dev',
       exclude: [/\.(?:js)$/],
       cleanupOutdatedCaches:true,
       maximumFileSizeToCacheInBytes: 2097152 * 6 ,
@@ -104,8 +103,6 @@ if (mix.inProduction()) {
       skipWaiting: true,
    
   });
-
- 
 }
 
-// mix.version();
+mix.version();

@@ -111,7 +111,7 @@ export default {
     const options_map = ref({})
     const refMap = ref(null); 
     const travels = ref([]);
-    const showInfoWindow = ref(true);
+    const showInfoWindow = ref(false);
 
     const cargarForm = () => {
       axios.get(`/api/travels/map/destino/${destino.value}`).then(({data}) => {
@@ -186,7 +186,7 @@ export default {
       }),
 
       optionsPlace: (travel) => ({
-        content: `<strong>${travel.tipo.toUpperCase()}: ${travel.nombre}<br>${travel.direccion}</strong>`,
+        content: `<small>${travel.tipo.toUpperCase()}: ${travel.nombre}<br>${travel.direccion}</small>`,
         disableAutoPan:true
       }),
 

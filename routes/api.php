@@ -761,3 +761,7 @@ Route::post('eventos/fetch-data-public', [EventoController::class, 'fetchDataPub
 
 // Travels
 Route::get('travels/map/destino/{destino}', [HomeController::class, 'getTravels']);
+
+// Cupones
+
+Route::post('cupons/fetch-data/public',[CuponController::class,'fetchDataPublic']);

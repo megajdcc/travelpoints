@@ -31,7 +31,7 @@
 
           </statistic-card-horizontal>
 
-          <statistic-card-horizontal icon="fa-money-bill" statisticTitle="Mi saldo" color="success" colorIcon="dark"
+          <statistic-card-horizontal icon="fa-money-bill" :statisticTitle="$t('Mi saldo')" color="success" colorIcon="dark"
             colorText="text-white"
             v-if="['Promotor', 'Coordinador', 'Lider'].includes(usuario.rol ? usuario.rol.nombre : '')" :statistic="miSaldo">
 

@@ -27,7 +27,7 @@
 
             <template #title>
                <font-awesome-icon icon="fas fa-grip-vertical" class="mr-1" />
-               Vista principal
+               {{ $t('Vista principal') }}
             </template>
             <!-- Destino Perfil -->
 
@@ -41,46 +41,58 @@
             <!-- Eventos -->
             <eventos :destino="destino" v-if="destino_id" id="eventos-list" ref="eventosElem"/>
 
+            <!-- Cupones -->
+
+            <cupones :destino="destino" v-if="destino_id" id="cupones-list" ref="destinoElem"  />
+
          </b-tab>
          <b-tab title="Maps" lazy>
 
             <template #title>
                <font-awesome-icon icon="fas fa-map-location-dot" class="mr-1" />
-               Vista Mapa
+               {{ $t('Vista Mapa') }}
             </template>
 
             <travel-map :destino="destino_id" v-if="destino_id" />
          </b-tab>
 
          <template #tabs-end>
-            <li role="presentacion" class="nav-item">
-               <b-button class="nav-link" variant="text" v-ripple.400="'rgba(255, 255, 255, 0.15)'" @click="scrollIr('negocios-list')">
+            <li  class="nav-item">
+               <b-button class="nav-link" variant="text" role="button"  v-ripple.400="'rgba(255, 255, 255, 0.15)'" @click="scrollIr('negocios-list')">
                   <font-awesome-icon icon="fas fa-store" />
-                  Negocios
+                  {{ $t('Negocios') }}
                </b-button>
             </li>
 
-            <li role="presentacion" class="nav-item">
-               <b-button class="nav-link" variant="text" v-ripple.400="'rgba(255, 255, 255, 0.15)'" @click="scrollIr('eventos-list')">
+            <li class="nav-item">
+               <b-button class="nav-link" variant="text" role="button"  v-ripple.400="'rgba(255, 255, 255, 0.15)'" @click="scrollIr('eventos-list')">
                   <font-awesome-icon icon="fas fa-grip" />
-                  Eventos
+                  {{ $t('Eventos') }}
                </b-button>
             </li>
+
+             <li class="nav-item">
+               <b-button class="nav-link" variant="text" role="button" v-ripple.400="'rgba(255, 255, 255, 0.15)'" @click="scrollIr('cupones-list')">
+                  <font-awesome-icon icon="fas fa-tags" />
+                  {{ $t('Cupones') }}
+               </b-button>
+            </li>
+
          </template>
 
       </b-tabs>
 
 
       <!-- Si el usuario no Ha seleccionado un destino, debe hacerlo  -->
-      <el-dialog title="Elija un Destino" :visible.sync="showDestino" width="90%" :show-close="false"
+      <el-dialog :title="$t('Elija un Destino')" :visible.sync="showDestino" width="90%" :show-close="false"
          :close-on-click-modal="false" :close-on-press-escape="false" class="dialogo-seleccion-destino">
 
          <template #title>
             <h3 class="card-title">
                <strong class="text-primary">
-                  Comencemos
+                  {{ $t('Comencemos') }}
                </strong>
-               por elegir un destino
+               {{ $t('por elegir un destino') }}
             </h3>
          </template>
          <destino-selected isSelected @destinoSelected="destinoSeleccionado" />
@@ -109,7 +121,7 @@ import {
    BTab,
    BButton
 } from 'bootstrap-vue'
-import { onMounted, onActivated, computed, ref, toRefs, watch } from 'vue'
+import { onMounted, onActivated, computed, ref, toRefs, watch,inject } from 'vue'
 
 // import { Pagination, Navigation } from 'swiper'
 
@@ -120,7 +132,6 @@ import router from '@/router'
 import Ripple from 'vue-ripple-directive'
 
 import { useElementBounding } from '@vueuse/core'
-
 export default {
 
    components: {
@@ -146,6 +157,8 @@ export default {
       destinoSelected: () => import('components/DestinoSelected.vue'),
       Negocios: () => import('components/Negocios.vue'),
       Eventos: () => import('components/Eventos.vue'),
+      Cupones: () => import('components/Cupones.vue'),
+
       TravelMap: () => import('components/TravelMap.vue'),
       BBreadcrumb,
       BBreadcrumbItem,
@@ -173,7 +186,8 @@ export default {
       const refTabs = ref(null)
       const negociosElem = ref(null)
       const eventosElem = ref(null)
-
+      const i18n = inject('i18n')
+      
       const cargarForm = () => {
          
          if(destino_id.value){
@@ -322,18 +336,21 @@ export default {
          // imageBanner: require('@images/banner/banner-travel.jpg'),
          imageBanner: computed(() => `/storage/${sistema.value.banner_principal}`),
          getDestinoName: computed(() => {
-            if (destino_id.value && destinos.value.length) {
-               let desti = destinos.value.find(val => val.id == destino_id.value)
-               return desti != undefined ? desti.nombre : destino.value.nombre
+            if (destino_id.value) {
+               // let desti = destinos.value.find(val => val.id == destino_id.value)
+               // return desti != undefined ? desti.nombre : destino.value.nombre
+               return origen.value.nombre 
             } else {
-               return 'Elejir Destino'
+               return i18n.t('Elejir Destino')
             }
          }),
          rutaDestino: computed(() => {
-            if (destino_id.value && destinos.value.length) {
+            if (destino_id.value && origen.value.ruta) {
 
-               let desti = destinos.value.find(val => val.id == destino_id.value)
-               return desti != undefined ? desti.ruta : ''
+               // let desti = destinos.value.find(val => val.id == destino_id.value)
+               // return desti != undefined ? desti.ruta : ''
+
+               return origen.value.ruta
             } else {
                return '#'
             }

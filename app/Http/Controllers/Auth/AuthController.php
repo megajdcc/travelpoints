@@ -199,8 +199,8 @@ class AuthController extends Controller
          if($user_verify = User::where('email',$credentials['email'])->first()){
             $user_verify->generateLink();
             if(!$user_verify->activo){
-               return response()->json(['result' => false, 'message' => 'No te encuentras activos en el sistema, comunicate con soporte, si deseas reactivación de cuenta.'], 401);
-            }
+               return response()->json(['result' => false, 'message' => 'Tu usuario no está activo. Para reactivarlo por favor contacta con soporte técnico.'], 401);
+            }  
          }
 
          if (!Auth::attempt($datos,$data['remember'])){

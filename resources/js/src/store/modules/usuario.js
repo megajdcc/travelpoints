@@ -462,6 +462,10 @@ export default {
 				})
 			}
 		},
+
+		miSaldo(state){
+			return state.usuario.cuenta ? state.usuario.cuenta.saldo : 0
+		}
 	},
 
 	actions:{

@@ -59,7 +59,7 @@ class Reservacion extends Model
     }
 
     public function getDia(){
-        $dt =  Carbon::parse($this->fecha.' '.$this->hora);
+        $dt =  Carbon::parse(date('Y-m-d',strtotime($this->fecha)).' '.$this->hora);
         return $dt->isoFormat('LL [a las] h:mm A');
     }
 

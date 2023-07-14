@@ -65,7 +65,7 @@
                               {{ $t('Monto') }}: <span class="text-danger">*</span>
                            </template>
 
-                           <validation-provider name="monto" rules="required" #default="{ valid, errors }">
+                           <validation-provider name="monto" :rules="`required|mountMax:${getSaldo}`" #default="{ valid, errors }">
                               <currency-input v-model="formulario.monto" :options="{
                                  ...optionsCurrency, ...currencyOptions
                               }" InputClass="form-control" />
@@ -136,7 +136,7 @@ import { useRoute } from 'vue2-helpers/vue-router'
 
 import { ValidationObserver, ValidationProvider } from 'vee-validate'
 
-import { required } from '@validations'
+import { required, mountMax } from '@validations'
 import { optionsCurrency } from '@core/utils/utils'
 
 import vSelect from 'vue-select'
@@ -245,6 +245,10 @@ export default {
          required,
          optionsCurrency,
          getCurrency,
+         mountMax,
+         getSaldo:computed(() => {
+            return usuario.value.cuenta ? usuario.value.cuenta.saldo : 0
+         }), 
          currencyOptions:computed(() => ({
             currency:getCurrency.value == 'Tp' ? 'USD' : getCurrency.value,
             currencyDisplay: getCurrency.value == 'Tp' ? 'hidden' : 'symbol'

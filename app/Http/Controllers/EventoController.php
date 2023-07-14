@@ -5,9 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Evento;
 use Illuminate\Http\Request;
 use App\Models\{Atraccion,Destino,Imagen};
-use App\Models\Negocio\Negocio;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\{DB,Storage,File};
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Str;
@@ -28,7 +26,8 @@ class EventoController extends Controller
     public function fetchEventos(Request $request){
 
         $datos = $request->all();
-        $eventos = Evento::when(isset($datos['model_type']) && !empty($datos['model_type']), function($query) use($datos) {
+
+        $eventos = Evento::when(isset($datos['model_type']), function($query) use($datos) {
                 $query->where('model_id', $datos['model_id'])->where('model_type', $datos['model_type']);
         })
         ->when(count($datos['filterOption']) > 0 , function($query) use($datos){
@@ -37,16 +36,14 @@ class EventoController extends Controller
         ->when(isset($datos['negocio']),function($query) use($datos){
             $query->where('model_id',$datos['negocio'])->where('model_type',"App\Models\Negocio\Negocio");
         })
-        ->when(isset($datos['perfil']),function($q) use($datos){
-            $q->where('status',$datos['perfil'] == 1 ? true : false);
-        })
+                ->where('status',isset($datos['perfil']) && $datos['perfil'] == true ? 1 :  '>', 0)
                 ->with(['imagenes'])
                 ->orderBy('fecha_inicio','asc')
-                ->get();
+                ->get()
+                ->each(fn($event) => $event->cargar());
 
-        $eventos->each(fn ($event) => $event->cargar());
             
-        return response()->json([...$eventos]);
+        return response()->json($eventos);
 
     }
 
@@ -93,9 +90,9 @@ class EventoController extends Controller
     }
 
 
-    private function validar(Request $request,Evento $evento = null) : Collection{
+    private function validar(Request $request,Evento $evento = null) : array{
 
-        return collect($request->validate([
+        return $request->validate([
             'titulo' => 'required',
             'fecha_inicio' => 'required',
             'fecha_fin' => 'nullable',
@@ -106,9 +103,8 @@ class EventoController extends Controller
             'contenido' => 'required',
             'model_type' => 'nullable',
             'model_id' => 'nullable',
-            'url' => ['required',$evento ? Rule::unique('eventos','url')->ignore($evento) : 'unique:eventos,url'],
-            'imagenes' => 'nullable'
-        ]));
+            'url' => ['required',$evento ? Rule::unique('eventos','url')->ignore($evento) : 'unique:eventos,url']
+        ]);
 
 
     }
@@ -128,24 +124,13 @@ class EventoController extends Controller
         try{    
             DB::beginTransaction();
 
-            $evento = Evento::create([...$datos->except('imagenes'),...[
+            $evento = Evento::create([...$datos,...[
                 'model_type' => isset($datos['model_type']) ? $datos['model_type'] : $model['model_type'],
                 'model_id' => isset($datos['model_id']) ? $datos['model_id'] : $model['model_id'],
                 'url' => Str::slug($datos['url'])
             ]]);
-
-            if (isset($datos['imagenes']) && count($datos['imagenes']) > 0) {
-
-                foreach ($datos['imagenes'] as $imagen) {
-                    $img = Imagen::find($imagen);
-                    Storage::copy("/public/multimedias/{$img->imagen}", "/public/eventos/imagenes/{$img->imagen}");
-                    $evento->addImagen([
-                        'imagen' => $img->imagen,
-                    ]);
-                }
-            }
             
-            $evento->refresh();
+            // $evento->establecerEstaus();
 
             $evento->load(['imagenes','model']);
 
@@ -302,36 +287,42 @@ class EventoController extends Controller
     public function fetchDataPublic(Request $request){
 
         $filtro = $request->all();
+        $destino = $request->get('destino');
 
-        $destinoId = $request->get('destino');
+        $paginator = Evento::where([
+            ['titulo','LIKE',"%{$filtro['q']}%",'OR'],
+            ['contenido', 'LIKE', "%{$filtro['q']}%", 'OR'],
+            ['fecha_inicio', 'LIKE', "%{$filtro['q']}%", 'OR'],
+            ['fecha_fin', 'LIKE', "%{$filtro['q']}%", 'OR'],
+            ['url', 'LIKE', "%{$filtro['q']}%", 'OR'],
+        ])->whereIn('status',[1,3])
+    
+        ->orderBy('fecha_inicio','asc')
+        ->paginate($filtro['perPage']?: 1000);
 
+          
 
-        $paginator = Evento::where(function ($query) use ($destinoId) {
-                $query->whereHasMorph('model', [Destino::class, Atraccion::class,Negocio::class], function ($query, $modelType) use ($destinoId) {
+        $eventos = collect($paginator->items())->each(fn($event) => $event->cargar())
+        ->filter(function($event) use($destino){
+                switch ($event->model->model_type) {
+                    case "App\\Models\\Destino":
+                        return $event->model->id == $destino ;
+                        break;
 
+                    case "App\\Models\\Atraccion":
+                        return $event->model->destino_id == $destino;
+                        break;
+
+                    case "App\\Models\\Negocio\\Negocio":
+                        return $event->model->iata->id == (Destino::find($destino))?->iata->id;
+                        break;
                     
-                    $query->where(function ($query) use ($destinoId, $modelType) {
-
-                       
-                        if ('App\Models\Destino' ==  $modelType) {
-                            $query->where('id', $destinoId);
-                        }
-                        if ('App\Models\Atraccion' == $modelType) {
-                            $query->where('destino_id', $destinoId);
-                        }
-                        if ('App\Models\Negocio\Negocio' == $modelType) {
-                            $query->whereHas('iata',function(Builder $q) use($destinoId){
-                                $q->where('id',(Destino::find($destinoId))?->iata->id);
-                            }); 
-                        }
-                    });
-                });
-            })
-            ->whereIn('status',[1,3])
-            ->orderBy('fecha_inicio', 'asc')
-            ->paginate($filtro['perPage'] ?: 1000);
-
-        $eventos = collect($paginator->items())->each(fn($val) => $val->cargar());
+                    default:
+                        return false;
+                        break;
+                }
+        });
+        
 
         return response()->json(['total' => $paginator->total(),'eventos' => $eventos]);
 

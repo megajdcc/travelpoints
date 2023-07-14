@@ -47,6 +47,11 @@
                      Consumos
                   </b-nav-item>
 
+                  <b-nav-item :to="{ name: 'socio.cupones' }" active-class="active">
+                     <font-awesome-icon icon="fas fa-tags" />
+                     Mis Cupones
+                  </b-nav-item>
+
 
 
                </b-nav>

@@ -40,7 +40,7 @@
   </div>
 
   
-  {{-- @if(env('APP_ENV') == 'production') --}}
+  @if(env('APP_ENV') == 'production')
     <script>
       window.addEventListener('load',() => {
           if('serviceWorker' in navigator){
@@ -54,7 +54,7 @@
       });
     </script> 
 
-  {{-- @endif --}}
+  @endif
 
     <script src="{{ mix('js/manifest.js')}}"></script>
     <script src="{{ mix('js/vendor.js')}}"></script>

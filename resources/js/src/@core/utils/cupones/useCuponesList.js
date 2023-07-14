@@ -4,7 +4,7 @@ import store from '@/store'
 import { ref, computed, onMounted, watch } from 'vue'
 
 
-export default function useCuponesList({destino = null}) {
+export default function useCuponesList({destino = null,usuario = null}) {
 
   const isSortDirDesc = ref(true)
   const sortBy = ref('id')
@@ -69,6 +69,7 @@ export default function useCuponesList({destino = null}) {
       q: searchQuery.value,
       isSortDirDesc: isSortDirDesc.value,
       destino: destino ? destino.value.id : null,
+      usuario:usuario ? usuario.value : null
     }).then(({ total: all, cupones }) => {
 
       total.value = all

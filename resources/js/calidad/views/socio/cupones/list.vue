@@ -1,12 +1,11 @@
 <template>
   <b-row>
-    <b-col cols="12" v-if="cupones.length > 0">
-     
+    <b-col cols="12">
       <h3>{{ titulo }}</h3>
-      <p>{{ subTitulo }}</p>
+      <!-- <p>{{ subTitulo }}</p> -->
     </b-col>
     <b-col cols="12">
-      <listado :actions="actions" hideFooter hideHeader>
+      <listado :actions="actions" hideFooter>
         <template #contenido="{ items }">
           <b-container fluid class="px-0 mx-0">
             <b-row>
@@ -22,13 +21,15 @@
 
                       <div class="card-simple-actions">
 
-                        <b-button-group >
+                        <b-button-group>
+                          
                           <b-button @click="showCupon(item)" variant="outline-primary">
-                            <font-awesome-icon icon="fas fa-eye"/>
+                            <font-awesome-icon icon="fas fa-eye" />
                           </b-button>
 
-                          <b-button @click="loQuiero(item)" title="Quiero el Cupón" v-b-tooltip.hover variant="outline-success" v-if="is_loggin">
-                            <font-awesome-icon icon="fas fa-check-to-slot"/>
+                          <b-button @click="cancelarCupon(item)" title="Cancelar el Cupón" v-b-tooltip.hover
+                            variant="outline-danger" v-if="is_loggin">
+                            <font-awesome-icon icon="fas fa-trash" />
                           </b-button>
 
                         </b-button-group>
@@ -36,16 +37,26 @@
                       </div><!-- /.card-simple-actions -->
                     </div><!-- /.card-simple-content -->
 
-                    <div class="card-simple-label" >
-                       {{ item.negocio.nombre }}
+                    <div class="card-simple-label">
+                      {{ item.negocio.nombre }}
                     </div>
 
+                    <section class="card-simple-price bg-transparent">
+                       <b-badge  variant="dark" v-if="item.negocio">
+                        {{ getCantidad(item.usuarios) }}
+                      </b-badge>
+                       <b-badge  variant="success" v-if="item.negocio">
+                        {{ getCantidadAplicado(item.usuarios) }} 
+                      </b-badge>
 
-                    <b-badge class="card-simple-price" variant="success" v-if="item.negocio">
-                      {{ item.disponibles > 1 ? `${item.disponibles} Disponibles` : `${item.disponibles} Disponible` }}
-                    </b-badge>
+                      <b-badge  variant="danger" v-if="item.negocio">
+                          {{ getCantidadCancelado(item.usuarios) }} 
+                      </b-badge>
+                    </section >
+                    
+                   
 
-                
+
 
                   </div><!-- /.card-simple-background -->
                 </div><!-- /.card-simple -->
@@ -57,61 +68,61 @@
       </listado>
     </b-col>
     <b-modal v-model="isShowCupon" centered size="lg" hide-footer hide-backdrop>
-        <template #modal-title>
-           <section class="d-flex justify-content-between align-items-md-center flex-wrap flex-column flex-md-row">
-              <section class="d-flex align-items-md-center flex-md-row flex-column">
-                <b-badge :variant="getVariantStatus(cupon)" class="mr-1">
-                    {{ getStatusCupon(cupon) }}
-                </b-badge>
-                <strong class="text-warning">
-                    Inicia: {{ cupon.expide | fecha('LL') }} & Termina: {{ cupon.vence | fecha('LL') }} | Disponibles: {{
-                      cupon.disponibles }} | Valor: {{ cupon.precio | currency(cupon.divisa ? cupon.divisa.iso : 'USD') }}
-                </strong>
-
-              </section>
-    
-              <!-- <b-button-group size="sm">
-            </b-button-group> -->
+      <template #modal-title>
+        <section class="d-flex justify-content-between align-items-md-center flex-wrap flex-column flex-md-row">
+          <section class="d-flex align-items-md-center flex-md-row flex-column">
+            <b-badge :variant="getVariantStatus(cupon)" class="mr-1">
+              {{ getStatusCupon(cupon) }}
+            </b-badge>
+            <strong class="text-warning">
+              Inicia: {{ cupon.expide | fecha('LL') }} & Termina: {{ cupon.vence | fecha('LL') }} | Disponibles: {{
+                cupon.disponibles }} | Valor: {{ cupon.precio | currency(cupon.divisa ? cupon.divisa.iso : 'USD') }}
+            </strong>
 
           </section>
-        </template>
-            <section class="d-flex align-items-center justify-content-between flex-wrap flex-lg-nowrap">
 
-                <article class="d-flex justify-content-center flex-grow-0 flex-shrink-1 align-items-center">
-                      <b-img :src="`/storage/negocios/cupones/${cupon.imagen}`" class="img-card" style="max-width:320px"/>
-                </article>
+          <!-- <b-button-group size="sm">
+            </b-button-group> -->
 
-                <main class="flex-grow-1 flex-chrink-0 mt-1 mt-md-0 ml-1">
-              
-                  <h4 :title="cupon.nombre" class="text-warning">
-                      {{ cupon.nombre }}
-                  </h4>
-              
-                  <p class="text-justify" :title="cupon.nombre" >
-                      {{ cupon.descripcion }}
-                  </p>
+        </section>
+      </template>
+      <section class="d-flex align-items-center justify-content-between flex-wrap flex-lg-nowrap">
 
-                  <section class="d-flex justify-content-between flex-wrap">
-                      <article class="d-flex flex-column mr-md-1">
-                        <strong class="text-warning font-weight-bolder">Condiciones</strong>
-                        <p class="text-justify">
-                            {{ cupon.condiciones }}
-                        </p>
-                      </article>
+        <article class="d-flex justify-content-center flex-grow-0 flex-shrink-1 align-items-center">
+          <b-img :src="`/storage/negocios/cupones/${cupon.imagen}`" class="img-card" style="max-width:320px" />
+        </article>
 
-                      <article class="d-flex flex-column ">
-                        <strong class="text-warning font-weight-bolder ">Restricciones</strong>
-                        <p class="text-break text-justify">
-                            {{ cupon.restricciones }}
-                        </p>
-                      </article>
-                
-                  </section>
+        <main class="flex-grow-1 flex-chrink-0 mt-1 mt-md-0 ml-1">
 
-          
-                </main>
+          <h4 :title="cupon.nombre" class="text-warning">
+            {{ cupon.nombre }}
+          </h4>
 
-            </section>
+          <p class="text-justify" :title="cupon.nombre">
+            {{ cupon.descripcion }}
+          </p>
+
+          <section class="d-flex justify-content-between flex-wrap">
+            <article class="d-flex flex-column mr-md-1">
+              <strong class="text-warning font-weight-bolder">Condiciones</strong>
+              <p class="text-justify">
+                {{ cupon.condiciones }}
+              </p>
+            </article>
+
+            <article class="d-flex flex-column ">
+              <strong class="text-warning font-weight-bolder ">Restricciones</strong>
+              <p class="text-break text-justify">
+                {{ cupon.restricciones }}
+              </p>
+            </article>
+
+          </section>
+
+
+        </main>
+
+      </section>
     </b-modal>
   </b-row>
 </template>
@@ -136,7 +147,7 @@ import {
 
 import store from '@/store'
 
-import { toRefs, ref, computed, onMounted, watch,inject } from 'vue'
+import { toRefs, ref, computed, onMounted, watch, inject } from 'vue'
 import useCuponesList from '@core/utils/cupones/useCuponesList.js'
 
 import useAuth from '@core/utils/useAuth';
@@ -166,12 +177,7 @@ export default {
 
     titulo: {
       type: String,
-      default: 'Cupones Travel Points'
-    },
-
-    subTitulo: {
-      type: String,
-      default: 'Descubre increíbles descuentos y regalos gratis disponibles en tu destino.'
+      default: 'Mis cupones Travel Points'
     }
   },
 
@@ -183,54 +189,76 @@ export default {
 
     const { negocios, destino, atraccion } = toRefs(props)
     const isShowCupon = ref(false)
-    const {cupon} = toRefs(store.state.cupones)
-    const actions = useCuponesList({ destino: destino.value ? destino : null })
-    const {usuario} = toRefs(store.state.usuario)
+    const { cupon } = toRefs(store.state.cupones)
+    const { usuario } = toRefs(store.state.usuario)
+
+    const actions = useCuponesList({ destino: destino.value ? destino : null,usuario:usuario })
+   
     const swal = inject('swal')
 
     onMounted(() => actions.refetchData());
-    watch(() => destino.value.id, () => actions.refetchData());
 
     const showCupon = (cup) => {
-      store.commit('cupones/setCupon',cup)
+      store.commit('cupones/setCupon', cup)
       isShowCupon.value = true
-    }   
-    
+    }
+
     const {
       is_loggin
     } = useAuth();
 
     const loQuiero = (cup) => {
       swal({
-        title:'¿Quieres reservar el cupón?',
-        icon:'question',
-        confirmButtonText:'Sí, lo quiero!',
-        cancelButtonText:'No, no lo quiero',
-        showCancelButton:true,
-      }).then(({isConfirmed,isDenied,isDismiseed}) => {
-        if(isConfirmed){
-          store.dispatch('cupones/reservarCupon',{usuario:usuario.value.id,cupon:cup.id})
-          .then(({result,cupon,mensaje}) => {
-            if(result){
-              toast.success(mensaje)
-              actions.refetchData();
+        title: '¿Quieres reservar el cupón?',
+        icon: 'question',
+        confirmButtonText: 'Sí, lo quiero!',
+        cancelButtonText: 'No, no lo quiero',
+        showCancelButton: true,
+      }).then(({ isConfirmed, isDenied, isDismiseed }) => {
+        if (isConfirmed) {
+          store.dispatch('cupones/reservarCupon', { usuario: usuario.value.id, cupon: cup.id })
+            .then(({ result, cupon }) => {
+              if (result) {
+                toast.success('El cupón se ha reservado con éxito a tu nombre')
+                actions.refetchData();
 
-            }else{
-              toast.info(mensaje)
-            }
-          })
+              } else {
+                toast.info('NO pudo ser reservado el cupón, inténtelo de nuevo')
+              }
+            })
         }
       })
     }
 
+    const cancelarCupon = (cup) => {
+        swal({
+        title: '¿Quieres cancelar el cupón?',
+        icon: 'question',
+        confirmButtonText: 'Si',
+        cancelButtonText: 'No',
+        showCancelButton: true,
+      }).then(({ isConfirmed, isDenied, isDismiseed }) => {
+        if (isConfirmed) {
+          store.dispatch('cupones/reservaCancelar', { usuario: usuario.value.id, cupon: cup.id })
+            .then(({ result, cupon }) => {
+              if (result) {
+                toast.success('El cupón se ha cancelado con éxito')
+                actions.refetchData();
+              } else {
+                toast.info('Inténte de nuevo mas tarde')
+              }
+            })
+        }
+      })
+    }
 
     return {
       actions,
-      cupones:actions.items,
+      cupones: actions.items,
       isShowCupon,
       cupon,
       showCupon,
-       getVariantStatus: (cupo) => {
+      getVariantStatus: (cupo) => {
         let fecha_actual = moment();
 
         let fecha_inicio = moment(cupo.expide);
@@ -240,7 +268,32 @@ export default {
 
       },
       is_loggin,
+      cancelarCupon,
       loQuiero,
+      getCantidad:(users) => { 
+        const cant = users.filter(val => val.id == usuario.value.id && val.pivot.status == 1).length;
+        if(cant > 1){
+          return cant + ' Reservados'
+        }else{
+          return cant + ' Reservado'
+        }
+      } ,
+      getCantidadAplicado: (users) => {
+        const cant = users.filter(val => val.id == usuario.value.id && val.pivot.status == 2).length;
+        if (cant > 1) {
+          return cant + ' Aplicados'
+        } else {
+          return cant + ' Aplicado'
+        }
+      },
+       getCantidadCancelado: (users) => {
+        const cant = users.filter(val => val.id == usuario.value.id && val.pivot.status == 3).length;
+        if (cant > 1) {
+          return cant + ' Cancelados'
+        } else {
+          return cant + ' Cancelado'
+        }
+      },
       getStatusCupon: (cupo) => {
         let fecha_actual = moment();
 
@@ -252,7 +305,7 @@ export default {
         }
 
         return fecha_actual.isBetween(fecha_inicio, fecha_termina) ? 'Activo' : 'No activo'
-      
+
       },
     }
   }

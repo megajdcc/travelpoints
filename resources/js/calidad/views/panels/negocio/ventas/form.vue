@@ -433,7 +433,7 @@ export default {
       formulario.value.cliente_id  = user.id
 
       verificarReservaciones(user.reservaciones)
-      cupones.value = user.cupones
+      cupones.value = user.cupones.filter(val => val.pivot.status == 1 && val.activo == true)
     } 
 
     const cargarForm =() => {

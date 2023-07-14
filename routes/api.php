@@ -397,7 +397,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::post('cupons/reservar',[CuponController::class,'reservar']);
     Route::get('cupons/reservas/{cupon}/cancelar/usuario/{usuario}',[CuponController::class,'cancelarReserva']);
     Route::resource('cupons', CuponController::class);
-    
+    Route::get('cupons/{cupon}/reservar/usuario/{usuario}',[CuponController::class,'reservarCupon']);
 
     /*****************************/
     /* Ventas de negocio

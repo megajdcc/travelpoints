@@ -236,6 +236,19 @@ export default [
           }
 
        },
+      //  Socio cupones
+       {
+          path: '/socio/cupones',
+          name: 'socio.cupones',
+          component: () => import('views/socio/cupones/list.vue'),
+          meta: {
+            resource: 'perfil',
+            action: 'read',
+            layout: 'travel',
+            name:'cupones'
+          }
+
+       },
 
       //  consumos
 

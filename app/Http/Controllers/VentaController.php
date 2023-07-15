@@ -150,7 +150,10 @@ class VentaController extends Controller
             
             // Aplicar Cupon
             if(isset($datos['cupon_id']) && !is_null($datos['cupon_id'])){
-                $venta->cliente->cupones()->updateExistingPivot($datos['cupon_id'],['status' => 2]);
+                $venta->cliente->cupones()
+                ->wherePivot('cupon_id',$datos['cupon_id'])
+                ->wherePivot('status',1)
+                ->updateExistingPivot($datos['cupon_id'],['status' => 2]);
             }
 
             $monto = number_format((float) $venta->monto,2,'.',',') .' '.$venta->divisa->iso;

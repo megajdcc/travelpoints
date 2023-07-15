@@ -322,7 +322,7 @@ class CuponController extends Controller
 
         try {
             DB::beginTransaction();
-            $usuario->cupones()->updateExistingPivot($cupon->id,['status' => 3]);
+            $usuario->cupones()->wherePivot('status',1)->updateExistingPivot($cupon->id,['status' => 3]);
             $cupon->disponibles++;
             $cupon->save();
             DB::commit();

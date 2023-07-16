@@ -25,7 +25,8 @@ export default{
          personas:1,
          reservacion_id:null,
          reservacion:null,
-         cupon_id:null
+         cupon_id:null,
+         tps_bonificados:0
       },
 
 
@@ -55,17 +56,15 @@ export default{
             model_type: null,
             empleado_id: null,
             cliente_id: null,
-
-
             divisa: null,
             model: null,
             empleado: null,
             cliente: null,
-
             personas: 1,
             reservacion_id: null,
             reservacion: null,
-            cupon_id:null
+            cupon_id:null,
+            tps_bonificados:0
          }
       },
 

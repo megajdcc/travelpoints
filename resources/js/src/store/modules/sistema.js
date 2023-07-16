@@ -28,7 +28,8 @@ export default {
       videos: [],
       sucursales:[],
       redes:[],
-      cjdropshipping:null
+      cjdropshipping:null,
+      porcentaje_referido:5
     },
 
 

@@ -13,29 +13,18 @@ export default {
 
       const {id} = toRefs(props)
 
-      const usuarios = computed(() => store.state.usuario.usuarios)
-
+      const {usuarios} = toRefs(store.state.usuario)
 
       const cargarForm = () => {
          
          if(!usuarios.value.length){
-
-            store.dispatch('usuario/getUsuario',id.value).then((data) => {
-               store.commit('usuario/capturarUsuario',Number(id.value))
-            })
-
+            store.dispatch('usuario/getUsuario',id.value)
          }else{
-
             store.commit('usuario/capturarUsuario', Number(id.value))
-         
          }
-
-
       }
 
-      onMounted(() => {
-         cargarForm()
-      })
+      cargarForm()
 
       watch([id],() => {
          cargarForm()

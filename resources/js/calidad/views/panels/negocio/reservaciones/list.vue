@@ -74,16 +74,21 @@
           
             <template #cell(actions)="{ item }">
           
-              <b-button-group size="sm">
-          
+              <b-button-group size="sm" class="">
+                
+                 <b-button @click="registrarConsumo(item.id)" variant="dark" v-if="$can('delete', 'ventas negocio') && item.status == 1 ">
+                  Registrar Consumo
+                </b-button>
+
                 <b-button :to="{ name: 'negocio.reservacion.edit', params: { id: item.id } }" variant="primary"
                   v-if="$can('update', 'negocio reservaciones')">
-                  Editar
+                  <font-awesome-icon icon="fas fa-pencil"/>
                 </b-button>
           
                 <b-button @click="eliminar(item.id)" variant="danger" v-if="$can('delete', 'negocio reservaciones')">
-                  Eliminar
+                  <font-awesome-icon icon="fas fa-trash"/>
                 </b-button>
+
               </b-button-group>
             </template>
           
@@ -104,6 +109,7 @@ import { toRefs, watch,computed } from 'vue'
 import Listado from 'components/Listado.vue'
 import useReservacionesList from './useReservacionesList'
 import store from '@/store'
+import router from '@/router'
 import { avatarText } from '@core/utils/filter'
 
 import {
@@ -162,12 +168,19 @@ export default {
     } 
 
 
+    const registrarConsumo = (reserva_id) => {
+
+      router.push({name:'negocio.venta.create',params:{reserva:reserva_id}})
+    } 
+
+
     return {
       actions,
       loading:computed(() => store.state.loading),
       refTable:actions.refTable,
       avatarText,
-      getStatus
+      getStatus,
+      registrarConsumo
 
     }
 

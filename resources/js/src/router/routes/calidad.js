@@ -48,6 +48,19 @@ export default [
                }
              },
 
+              {
+
+               path:'mi-tarjetas',
+               name:'mi.tarjetas',
+               component:() => import('views/socio/perfil/tarjetas.vue'),
+               meta:{
+                  name:'perfil',
+                  resource:'micuenta',
+                  action:'read',
+                  layout:'travel',
+               }
+             },
+
              {
                 path: 'invitados',
                 name: 'misreferidos',
@@ -223,13 +236,26 @@ export default [
           }
 
        },
+      //  Socio cupones
+       {
+          path: '/socio/cupones',
+          name: 'socio.cupones',
+          component: () => import('views/socio/cupones/list.vue'),
+          meta: {
+            resource: 'perfil',
+            action: 'read',
+            layout: 'travel',
+            name:'cupones'
+          }
+
+       },
 
       //  consumos
 
        {
 
           path: '/consumos',
-          name: 'socio.consumos',
+         //  name: 'socio.consumos',
           component: () => import('views/socio/consumos/index.vue'),
           children:[
             {
@@ -382,7 +408,7 @@ export default [
    /*************************************** */
    {
       path:'/promotores',
-      name:'promotores',
+      // name:'promotores',
       component:() => import('views/promotores/index.vue'),
       children:[
          {
@@ -406,7 +432,7 @@ export default [
    /*************************************** */
    {
       path:'/lideres',
-      name:'lideres',
+      // name:'lideres',
       component:() => import('views/promotores/index.vue'),
       children:[
          {
@@ -474,7 +500,7 @@ export default [
    {
       path:'/iatas',
       component:() => import('views/iatas/index.vue'),
-      name:'iata',
+      // name:'iata',
       children:[
          {
             path:'',
@@ -573,7 +599,7 @@ export default [
    {
       path:'/destinos',
       component:() => import('views/destinos/index.vue'),
-      name:'destino',
+      // name:'destino',
       children:[
 
          {
@@ -999,7 +1025,6 @@ export default [
 
    {
       path: '/roles',
-      name: 'roles',
       component: () => import(  'views/roles/index.vue'),
       exact:false,
       children: [
@@ -1077,7 +1102,7 @@ export default [
 
    {
       path: '/permisos',
-      name: 'permisos',
+      // name: 'permisos',
 
       component: () => import('views/permisos/index.vue'),
 
@@ -1193,7 +1218,6 @@ export default [
    {
       path: '/configuracion/faqs',
       component: () => import('views/faqs/index.vue'),
-      name: 'configuracion.faq',
       children:[
          {
             path:'',
@@ -1615,7 +1639,7 @@ export default [
    /*************************************** */
    {
       path:'/divisas',
-      name:'divisas',
+      // name:'divisas',
       component:() => import('views/divisas/index.vue'),
 
       children:[
@@ -2480,7 +2504,7 @@ export default [
    /****************************************/
    {
       path:'/comisiones',
-      name:'comisiones',
+      // name:'comisiones',
       component:() => import('views/comisiones/index.vue'),
       children:[
          {
@@ -2537,7 +2561,7 @@ export default [
    /****************************************/
    {
       path:'/reservaciones',
-      name:'reservaciones',
+      // name:'reservaciones',
       component:() => import('views/reservaciones/index.vue'),
       children:[
          {
@@ -2595,7 +2619,7 @@ export default [
 
    {
       path:'/retiros',
-      name:'retiros',
+      // name:'retiros',
       component:() => import('views/retiros/index.vue'),
       children:[
          {
@@ -2655,7 +2679,7 @@ export default [
    {
       path:'/pais',
       component:() => import('views/pais/index.vue'),
-      name:'pais',
+      // name:'pais',
 
       children:[
          {
@@ -2753,7 +2777,7 @@ export default [
    {
       path: '/estado',
       component: () => import('views/estado/index.vue'),
-      name: 'estado',
+      // name: 'estado',
 
       children: [
          {
@@ -2851,7 +2875,7 @@ export default [
    {
       path: '/ciudad',
       component: () => import('views/estado/index.vue'),
-      name: 'ciudad',
+      // name: 'ciudad',
 
       children: [
          {
@@ -2948,7 +2972,7 @@ export default [
    /*************************************** */
    {
       path:'/academia',
-      name:'academia',
+      // name:'academia',
       component:() => import('views/academia/index.vue'),
       children:[
          {
@@ -3005,7 +3029,7 @@ export default [
    /*************************************** */
    {
       path:'/paginas',
-      name:'pagina',
+      // name:'pagina',
       component:() => import('views/pages/index.vue'),
       children:[
          {
@@ -3056,7 +3080,115 @@ export default [
       ]
    },
 
+   /*****************************************/
+   /* Lotes
+   /*************************************** */
+   {
+      path:'/lotes',
+      // name:'lotes',
+      component:() => import('views/lotes/index.vue'),
+      children:[
+         {
+            path:'',
+            name:'lotes.list',
+            component:() => import('views/lotes/list.vue'),
+            meta:{
+               resource:'lotes',
+               action:'read',
+               pageTitle:'Lotes',
+               breadcrumb:[
+                  {text:'Listado',active:true}
+               ]
+            }
+         },
+          {
+            path:'create',
+            name:'lotes.create',
+            component:() => import('views/lotes/create.vue'),
+            meta:{
+               resource:'lotes',
+               action:'write',
+               pageTitle:'Lotes',
+               navActiveLink:'lotes.list',
+               breadcrumb:[
+                  {text:'Listado',active:false,to:{name:'lotes.list'}},
+                  {text:'Crear',active:true},
+               ]
+            }
+         },
+          {
+            path:':id/update',
+            props:true,
+            name:'lotes.edit',
+            component:() => import('views/lotes/edit.vue'),
+            meta:{
+               resource:'lotes',
+               action:'read',
+               pageTitle:'Lotes',
+               navActiveLink:'lotes.list',
+               breadcrumb:[
+                  {text:'Listado',active:false,to:{name:'lotes.list'}},
+                  {text:'Actualizar',active:true},
+               ]
+            }
+         }
+      ]
+   },
 
+
+   /*****************************************/
+   /* tarjetas
+   /*************************************** */
+   {
+      path:'/tarjetas',
+      name:'tarjetas',
+      component:() => import('views/tarjetas/index.vue'),
+      children:[
+         {
+            path:':lote?',
+            props:true,
+            name:'tarjetas.list',
+            component:() => import('views/tarjetas/list.vue'),
+            meta:{
+               resource:'tarjetas',
+               action:'read',
+               pageTitle:'Tarjetas',
+               breadcrumb:[
+                  {text:'Listado',active:true}
+               ]
+            }
+         },
+         
+         
+      ]
+   },
+
+
+   /*****************************************/
+   /* Vonages
+   /*************************************** */
+   {
+      path:'/vonages/sms',
+      component:() => import('views/vonages/index.vue'),
+
+      children:[
+         {
+            path:'',
+            component:() => import('views/vonages/list.vue'),
+            name:'mensajes.list',
+            meta:{
+               resource:'vonage',
+               action:'read',
+               pageTitle:'Mensajes (vonage)',
+               breadcrumb:[
+                  {text:'Listado' ,active:true}
+               ]
+            }
+         }
+      ]
+   },
+
+   
    /*****************************************/
    /* PAGINA DE perfil de negocios
    /*************************************** */

@@ -10,7 +10,7 @@
 
         <!-- :style="{'background-image':`url(${imageBanner})`}" -->
         <b-card body-class="altura-container-search" title="Identifique al Viajero de TravelPoints (Teclee su nombre de usuario)" >
-          <search-user text-search="Nombre del viajero (Identifiquelo con su nombre de usuario)" legend-tooltip="Ingrese el nombre propio, nombre del viajero o correo electrónico del viajero de Travel Points. Verifique su coincidencia cuidadosamente." @userSelected="usuarioSeleccionado" />
+          <search-user text-search="Nombre del viajero (Identifiquelo con su nombre de usuario)" legend-tooltip="Ingrese el nombre propio, nombre del viajero o correo electrónico del viajero de Travel Points. Verifique su coincidencia cuidadosamente." @userSelected="usuarioSeleccionado" :usuarioSeleccionado="userSeleccionado" />
 
         </b-card>
 
@@ -321,6 +321,11 @@ export default {
     this.cargarForm();
   },
 
+
+  props:{
+    reservaId:String|Number
+  },
+
   setup(props,{emit}){
 
     const formValidate = ref(null)
@@ -329,7 +334,8 @@ export default {
     const {negocio} = toRefs(store.state.negocio)
     const search = ref('')
     const reserva = ref(null)
-
+    const {reservaId} = toRefs(props);
+    const userSeleccionado = ref({})
     const comision_travel = computed(() => {
       
       //  Monto por venta
@@ -351,9 +357,6 @@ export default {
 
       return formulario.value.monto * negocio.value.comision / 100
     })
-
-
-
 
     const guardar = () => {
       
@@ -425,16 +428,17 @@ export default {
 
     } 
 
-
     const usuarioSeleccionado = (user) => {
       cupones.value = [];
       formulario.value.cliente_id  = user.id
 
       verificarReservaciones(user.reservaciones)
-      cupones.value = user.cupones
+      cupones.value = user.cupones.filter(val => val.pivot.status == 1 && val.activo == true)
     } 
+
     const cargarForm =() => {
 
+      
       if (!divisas.value.length) {
         store.dispatch('divisa/getDivisas')
       }
@@ -442,6 +446,18 @@ export default {
       formulario.value.divisa_id = negocio.value.divisa_id
       formulario.value.tps = tps.value
       formulario.value.comision_travel = comision_travel.value
+
+      if(reservaId.value){
+
+        store.dispatch('reservacion/fetch',reservaId.value).then((data) => {
+          reserva.value = data
+          formulario.value.cliente_id = data.usuario.id
+          cupones.value = data.usuario.cupones
+          formulario.value.reservacion_id = reservaId.value
+          userSeleccionado.value = data.usuario
+        })
+      }
+
     }
 
     // onActivated(() => cargarForm())
@@ -500,6 +516,7 @@ export default {
       formValidate,
       guardar,
       usuarioSeleccionado,
+      userSeleccionado,
       divisas,
       optionsCurrency,
       negocio,

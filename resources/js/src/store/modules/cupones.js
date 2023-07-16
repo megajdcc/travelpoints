@@ -194,6 +194,14 @@ export default{
          })
       },
 
+      reservarCupon({commit},datos){
+         return new Promise((resolve, reject) => {
+            axios.get(`/api/cupons/${datos.cupon}/reservar/usuario/${datos.usuario}`).then(({data}) => {
+               resolve(data)
+            }).catch(e => reject(e))
+         })
+      },
+
       fetchDataReservas({commit},datos) {
          return new Promise((resolve, reject) => {
             axios.post('/api/cupons/reservas/fetch-data',datos).then(({data}) => resolve(data))
@@ -205,7 +213,16 @@ export default{
          return new Promise((resolve, reject) => {
             axios.get(`/api/cupons/reservas/${cupon}/cancelar/usuario/${usuario}`).then(({data}) => resolve(data)).catch(e => reject(e))
          })
-      }
+      },
+
+      fetchDataPublic({commit},datos){
+         return new Promise((resolve,reject) => {
+            axios.post(`/api/cupons/fetch-data/public`,datos).then(({data}) => {
+               resolve(data)
+            }).catch( e => reject(e))
+         })
+      },
+    
 
 
    }

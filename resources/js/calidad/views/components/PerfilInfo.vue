@@ -3,7 +3,7 @@
       <b-media-aside vertical-align="center" class="d-none d-md-flex">
          <b-card body-class="content-img" @click="refInputEl.$el.click()" style="cursor:pointer">
             <b-img ref="previewEl" rounded :src="usuario.avatar" class="img-perfil" thumbnail v-loading="loading" />
-            <span class="img-perfil-hover">Clic para cambiar imagen</span>
+            <span class="img-perfil-hover">{{ $t('Clic para cambiar imagen') }}</span>
          </b-card>
 
          <!--/ avatar -->
@@ -14,19 +14,19 @@
          <b-card body-class="content-img d-flex d-md-none text-center justify-content-center d-flex"
             @click="refInputEl.$el.click()" style="cursor:pointer">
             <b-img ref="previewEl" rounded :src="usuario.avatar" class="img-perfil" thumbnail v-loading="loading" />
-            <span class="img-perfil-hover">Clic para cambiar imagen</span>
+            <span class="img-perfil-hover">{{ $t('Clic para cambiar imagen') }}</span>
          </b-card>
 
-         <h1><strong> {{ ` ${usuario.nombre ? usuario.nombre + ' ' + usuario.apellido : usuario.username}` }}</strong>
+         <h1><strong> {{ getNombre }}</strong>
          </h1>
          <strong>{{ usuario.direccion ? usuario.direccion : 'Dirección sin definir' }}</strong>
          <hr>
-         <h2><strong> {{ usuario.cuenta.divisa.iso }}{{ usuario.cuenta.saldo |
-            currency({ symbol: usuario.cuenta.divisa.simbolo }) }}</strong></h2>
+         <h2><strong> {{ isoDivisa }}{{ miSaldo |
+            currency({ symbol: simboloDivisa }) }}</strong></h2>
 
          <b-button :to="{ name: 'tienda.travel' }" variant="primary" size="sm">
             <feather-icon icon="ShoppingCartIcon" />
-            Ir a tienda
+            {{  $t('Ir a tienda') }}
          </b-button>
 
          <b-form-file ref="refInputEl" v-model="profileFile" accept="image/*" :hidden="true" plain @input="cargarImagen" />
@@ -87,7 +87,7 @@ export default {
       const previewEl = ref(null)
       const profileFile = ref(null)
       const refInputEl = ref(null)
-
+      const {usuario} = toRefs(props)
       const { divisa } = toRefs(store.state.divisa)
 
       onMounted(() => {
@@ -124,6 +124,31 @@ export default {
          refInputEl,
          cargarImagen,
          divisa,
+         getNombre:computed(() => {
+            if(usuario.value.nombre){
+               return `${usuario.value.nombre} ${usuario.value.apellido}`
+            }else{
+               return usuario.value.username
+            }
+         }),
+         miSaldo:computed(() => {
+           return usuario.value.cuenta ? usuario.value.cuenta.saldo : 0
+         }),
+
+         isoDivisa:computed(() => {
+            if(usuario.value.cuenta){
+               return usuario.value.cuenta.divisa ? usuario.value.cuenta.divisa.iso : 'Tp'
+            }else{
+               return 'Tp'
+            }
+         }),
+         simboloDivisa:computed(() => {
+             if (usuario.value.cuenta) {
+               return usuario.value.cuenta.divisa ? usuario.value.cuenta.divisa.simbolo : '$'
+            } else {
+               return '$'
+            }
+         }),
          loading: computed(() => store.state.loading)
       }
 

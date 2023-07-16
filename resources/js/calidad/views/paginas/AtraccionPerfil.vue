@@ -62,10 +62,19 @@
                      </strong>
                   </li>
 
+                  
+
 
                   <li class="list-inline-item mr-2">
                    
-                    <OpinionForm :model-type="atraccion.modelType" :model-id="atraccion.id" @opinionGuardada="opinionGuardada" />
+                     <OpinionForm :model-type="atraccion.modelType" :model-id="atraccion.id" @opinionGuardada="opinionGuardada" >
+                        <template #btn-prepend>
+                           <b-button size="sm" variant="outline-dark" @click="comoLlegar">
+                              <font-awesome-icon icon="fas fa-map-location-dot"/>
+                              ¿Como llegar?
+                           </b-button>
+                        </template>
+                     </OpinionForm>
                   
                   </li>
 
@@ -119,7 +128,7 @@
 
       <!-- Negocios cercanos a la atraccion -->
       <b-row>
-         <b-col cols="12">
+         <b-col cols="12" v-if="atraccion">
             <negocios :atraccion="atraccion" subTitulo="Con negocios cercanos a tí..."></negocios>
          </b-col>
       </b-row>
@@ -149,9 +158,7 @@
 
       <horario :horarios="atraccion.horarios" :showHorario.sync="showHorario" />
       
-
-
-
+      <show-directions v-model="showDirections" :showDirections.sync="showDirections" :origin="origin" :destination="destination" :destinoName="atraccion.nombre"  @originChange="cambiarOrigin"></show-directions>
    </b-container>
 </template>
 
@@ -159,8 +166,7 @@
 
 import {toRefs, ref,onMounted,computed,nextTick,watch} from 'vue'
 import store from '@/store'
-
-
+import { useGeolocation } from '@vueuse/core'
 import {
 
    BContainer,
@@ -199,7 +205,6 @@ export default {
       BFormRating,
       Horario:() => import('components/Horario.vue'),
       hasLike:() => import('components/HasLike.vue'),
-   
       BLink,
       BListGroup,
       BListGroupItem,
@@ -210,8 +215,8 @@ export default {
       ReviewsOpinion:() => import('components/ReviewsOpinion.vue'),
       Atracciones:() => import('components/Atracciones.vue'),
       Negocios:() => import('components/Negocios.vue'),
-      SwiperGallery:() => import('components/SwiperGallery.vue')
-
+      SwiperGallery:() => import('components/SwiperGallery.vue'),
+      ShowDirections:() => import('components/ShowDirections.vue')
    }, 
 
    setup(props){
@@ -221,6 +226,8 @@ export default {
       const atraccionesCercanas = ref([])
       const isShowText  = ref(false)
       const {query} = toRefs(props)
+      const showDirections = ref(false)
+      const { coords, locatedAt, error, resume, pause } = useGeolocation()
 
       watch(query,() => {
          store.dispatch('atraccion/fetchName',query.value).then(({result}) => {
@@ -240,6 +247,8 @@ export default {
 
       onMounted(() => {
          cargarAtraccionesCercanas()
+         console.log(coords.value.latitude,coords.value.longitude)
+     
       })
       
       const opinionGuardada = (opinion) => {
@@ -251,7 +260,32 @@ export default {
          isShowText.value = !isShowText.value;
       }
 
+      const comoLlegar = () => {
+        
+         if (error.code == 1 && error.message == 'User denied Geolocation') {
+            toast.info('No podemos procesar tu solicitud , sin saber cual es tu ubicación, permite a la aplicación el uso de geolocalización')
+            resume()
+         }else{
+            showDirections.value = true
+         }
+      }
+
+      watch(error,({message,code}) => {
+         console.log(message,code)
+         
+         if(code == 1 && message == 'User denied Geolocation'){
+            toast.info('No podemos procesar tu solicitud , sin saber cual es tu ubicación, permite a la aplicación el uso de geolocalización')
+            resume()
+         }
+
+      })
+
+      const cambiarOrigin = (dato) => {
+
+      }
+
       return {
+         comoLlegar,
          atraccion,
          showHorario,
          opinionGuardada,
@@ -263,7 +297,17 @@ export default {
          promedioCalificacion:computed(() => store.getters['atraccion/promedioCalificacion'](atraccion.value)),
          atraccionesCercanas,
          isShowText,
-         toggleShowDescription
+         toggleShowDescription,
+         showDirections,
+         origin:computed(() => ({
+            lat: coords.value.latitude,
+            lng:coords.value.longitude
+         })),
+         destination:computed(() => ({
+            lng:Number(atraccion.value.lng), 
+            lat:Number(atraccion.value.lat)
+         })),
+         cambiarOrigin
       }
       
    }

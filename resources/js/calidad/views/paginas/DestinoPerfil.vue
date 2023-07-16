@@ -26,11 +26,11 @@
             </article>
 
             <article class="imagenes-principales">
-               <b-img v-for="({imagen},i) in destino.imagenes.filter(val => !val.portada)" :key="i"
-                  :src="`/storage/destinos/imagenes/${imagen}`" class="w-100" v-if="i <= 1"></b-img>
+               <template v-for="({imagen},i) in destino.imagenes.filter(val => !val.portada)">
+                   <b-img :key="i"
+                     :src="`/storage/destinos/imagenes/${imagen}`" class="w-100" v-if="i <= 1"></b-img>
+               </template>
             </article>
-            
-
          </b-col>
 
          <b-col cols="12">
@@ -44,17 +44,32 @@
             <h3>
                {{ destino.titulo  }}
             </h3>
-            <p class="text-justify">{{ destino.descripcion  }}</p>
+            <div v-html="destino.descripcion"></div>
+
+            <b-button v-b-toggle.collapse-1 variant="primary" v-if="destino.about_travel">
+               {{ $t('Información de Interés sobre el Destino') }}
+            </b-button>
+               <b-collapse id="collapse-1" class="mt-2">
+                  <b-card>
+                     <b-card-body >
+                        <section v-html="destino.about_travel"></section>
+                     </b-card-body>
+                  </b-card>
+               </b-collapse>
          </b-col>
+       
       </b-row>
 
       <el-divider></el-divider>
 
-      <!-- Atracciones -->
-      <atracciones v-if="destino" :atracciones="destino.atracciones" :titulo="`Las atracciones más populares en ${destino.nombre}`"  />
+      <template v-if="!isHome">
+         <!-- Atracciones -->
+         <atracciones v-if="destino" :atracciones="destino.atracciones" :titulo="`Las atracciones más populares en ${destino.nombre}`"  />
 
-      <!-- Negocios -->
-      <negocios :destino="destino"/>
+         <!-- Negocios -->
+         <negocios :destino="destino"/>
+      </template>
+      
       <gallerie :galleries="destino.imagenes" :showGallerie.sync="showGallerie" path="/storage/destinos/imagenes" />
 
    </b-container>
@@ -69,10 +84,13 @@ import {
 
    BContainer,
    BCard,
+   BCollapse,
+   BCardBody,
    BRow,
    BCol,
    BImg,
    BButton,
+   VBToggle,
 
 } from 'bootstrap-vue'
 
@@ -87,6 +105,8 @@ export default {
       BCard,
       BRow,
       BCol,
+      BCollapse,
+      BCardBody,
       BButton,
       BImg,
       atracciones:() => import('components/Atracciones.vue'),
@@ -94,6 +114,16 @@ export default {
       Gallerie:() => import('components/Gallerie.vue'),
       Negocios:() => import('components/Negocios.vue')
    }, 
+
+   props:{
+      isHome:{
+         type:Boolean
+      }   
+   },
+
+   directives:{
+      'b-toggle': VBToggle
+   },
 
    setup(props){
       

@@ -44,3 +44,8 @@ export const validarCorreo = (email) => {
   return (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,4})+$/.test(email));
 }
 
+
+export const montoMax = (value,args) => {
+  return value <= args.monto
+}
+

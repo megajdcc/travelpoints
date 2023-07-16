@@ -7,7 +7,10 @@
         <div class="truncate">
           <h2 class="mb-25 font-weight-bolder" :class="[colorText]">
 
-            <slot :statistic="statistic">
+            <slot>
+              
+            </slot>
+            <slot name="statistic" :statistic="statistic" >
               {{ statistic }}
             </slot>
 
@@ -18,10 +21,10 @@
           </slot>
 
         </div>
-        <b-avatar :variant="`light-${colorIcon}`" class="avatar-icon">
+        <b-avatar :variant="`light-${colorIcon}`" class="avatar-icon" @click="ir">
 
           <slot name="icon">
-            <font-awesome-icon :icon="['fa-solid', icon]" size="3x" />
+            <font-awesome-icon :icon="['fa-solid', icon]" size="3x" @click="ir" />
           </slot>
 
         </b-avatar>
@@ -39,6 +42,7 @@
 <script>
 import { BCard, BCardBody, BAvatar } from 'bootstrap-vue'
 import { toRefs, computed } from 'vue';
+import router from '@/router'
 
 export default {
   components: {
@@ -71,15 +75,22 @@ export default {
     colorText: {
       type: String,
       default: 'text-black'
-    }
+    },
+    to:{
+      type:Object,
+      default:() =>({path:'#'}),  
+      required:false
+    },
+  
   },
 
 
   setup(props) {
     const { colorText } = toRefs(props)
-
-    return {
-      colorTexto: computed(() => colorText.value)
+    const {to} = toRefs(props)
+    return {  
+      colorTexto: computed(() => colorText.value),
+      ir:() => router.push(to.value)
     }
 
   }

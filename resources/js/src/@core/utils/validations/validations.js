@@ -18,7 +18,7 @@ import ar from 'vee-validate/dist/locale/ar.json'
 import en from 'vee-validate/dist/locale/en.json'
 
 // eslint-disable-next-line object-curly-newline
-import { validatorPositive, validatorUrlValidator, validatorPassword, validatorCreditCard, validatorMaxCaracteres } from './validators'
+import { validatorPositive, validatorUrlValidator, validatorPassword, validatorCreditCard, validatorMaxCaracteres,montoMax } from './validators'
 
 // ////////////////////////////////////////////////////////
 // General
@@ -88,6 +88,13 @@ export const url = extend('url', {
   validate: validatorUrlValidator,
   message: 'URL is invalid',
 })
+
+
+export const mountMax = extend('mountMax',{
+  validate:montoMax,
+  params:['monto'],
+  message:'El monto debe ser menor'
+});
 
 // export const max = ext('max',{
 //   validate: validatorMaxCaracteres,

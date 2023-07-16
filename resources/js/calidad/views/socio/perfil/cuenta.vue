@@ -3,13 +3,13 @@
       <listado :actions="actions">
 
          <template #titulo>
-            <h3>Movimientos de Cuentas</h3>
+            <h3>{{ $t('Movimientos de Cuentas') }}</h3>
          </template>
 
          <template #contenido="{ fetchData, tableColumns, isSortDirDesc, sortBy, perPage }">
             <b-card>
                <b-table ref="refTable" :items="fetchData" responsive :fields="tableColumns" primary-key="id"
-                  :sort-by="sortBy" empty-text="No se encontró ningun movimiento... " :sort-desc="isSortDirDesc"
+                  :sort-by="sortBy" :empty-text="$t('No se encontró ningun movimiento...')" :sort-desc="isSortDirDesc"
                   sticky-header="700px" :no-border-collapse="false" borderless outlined :busy="loading" :perPage="perPage"
                   showEmpty small stacked="md">
 
@@ -20,10 +20,10 @@
                   <template #cell(monto)="{ item }">
                      <span style="color:black" class="font-weight-bolder text-nowrap">
                         {{ item.tipo_movimiento == 1 ? '+' : '-' }}
-                        {{ item.divisa_id ? item.divisa.iso : item.cuenta.divisa.iso.toUpperCase() }}
+                        {{ item.divisa_id ? item.divisa.iso : 'Tp' }}
                         {{ item.monto | currency({
                            symbol: item.divisa_id ? item.divisa.simbolo :
-                              item.cuenta.divisa.simbolo
+                              '$'
                         }) }}
                      </span>
                   </template>
@@ -31,9 +31,9 @@
                   <template #cell(balance)="{ item }">
                      <span style="color:black" class="font-weight-bolder text-nowrap">
                         {{ item.tipo_movimiento == 1 ? '+' : '-' }}{{ item.divisa_id ? item.divisa.iso :
-                           item.cuenta.divisa.iso.toUpperCase() }}{{ item.balance | currency({
+                           'Tp' }}{{ item.balance | currency({
       symbol: item.divisa_id ?
-         item.divisa.simbolo : item.cuenta.divisa.simbolo
+         item.divisa.simbolo : '$'
    }) }}
                      </span>
                   </template>
@@ -45,7 +45,7 @@
 
          <template #botonera-footer>
             <b-button size="sm" variant="primary" title="Solicitar retiro" @click="mostrarFormRetiro">
-               Solicitar Retiro
+               {{ $t('Solicitar Retiro') }}
             </b-button>
          </template>
 
@@ -54,7 +54,7 @@
 
       </listado>
 
-      <b-sidebar v-model="showDialogRetiro" title="Solicitud de retiro">
+      <b-sidebar v-model="showDialogRetiro" :title="$t('Solicitud de retiro')">
          <validation-observer ref="formValidate" #default="{ handleSubmit }">
             <b-form @submit.prevent="handleSubmit(retirar)">
                <b-container fluid>
@@ -62,14 +62,12 @@
                      <b-col cols="12">
                         <b-form-group>
                            <template #label>
-                              Monto: <span class="text-danger">*</span>
+                              {{ $t('Monto') }}: <span class="text-danger">*</span>
                            </template>
 
-                           <validation-provider name="monto" rules="required" #default="{ valid, errors }">
+                           <validation-provider name="monto" :rules="`required|mountMax:${getSaldo}`" #default="{ valid, errors }">
                               <currency-input v-model="formulario.monto" :options="{
-                                 ...optionsCurrency, ...{
-                                    currency: getCurrency
-                                 }
+                                 ...optionsCurrency, ...currencyOptions
                               }" InputClass="form-control" />
 
                               <b-form-invalid-feedback :state="valid">
@@ -80,9 +78,9 @@
 
 
 
-                        <b-form-group label="Nota">
+                        <b-form-group :label="$t('Nota')">
                            <validation-provider name="nota" #default="{ valid, errors }">
-                              <b-form-textarea v-model="formulario.nota" :rows="3" :state="valid"></b-form-textarea>
+                              <b-form-textarea v-model="formulario.nota" :rows="3" :state="valid"/>
 
                               <b-form-invalid-feedback :state="valid">
                                  {{ errors[0] }}
@@ -98,8 +96,8 @@
                      <b-col cols="12">
                         <b-button-group size="sm">
                            <b-button variant="primary" type="submit" v-loading="loading"
-                              :disabled="loading || !formulario.monto > 0" title="Enviar">
-                              Enviar Solicitud
+                              :disabled="loading || !formulario.monto > 0" :title="$t('Enviar')">
+                              {{ $t('Enviar Solicitud') }}
                            </b-button>
                         </b-button-group>
                      </b-col>
@@ -138,7 +136,7 @@ import { useRoute } from 'vue2-helpers/vue-router'
 
 import { ValidationObserver, ValidationProvider } from 'vee-validate'
 
-import { required } from '@validations'
+import { required, mountMax } from '@validations'
 import { optionsCurrency } from '@core/utils/utils'
 
 import vSelect from 'vue-select'
@@ -227,7 +225,13 @@ export default {
 
       }
 
-
+      const getCurrency = computed(() => {
+         if (usuario.value.cuenta) {
+            return usuario.value.cuenta.divisa ? usuario.value.cuenta.divisa.iso : 'Tp'
+         } else {
+            return 'Tp'
+         }
+      })
 
       return {
          refTable: actions.refTable,
@@ -240,7 +244,16 @@ export default {
          formValidate,
          required,
          optionsCurrency,
-         getCurrency: computed(() => usuario.value.cuenta.divisa.iso),
+         getCurrency,
+         mountMax,
+         getSaldo:computed(() => {
+            return usuario.value.cuenta ? usuario.value.cuenta.saldo : 0
+         }), 
+         currencyOptions:computed(() => ({
+            currency:getCurrency.value == 'Tp' ? 'USD' : getCurrency.value,
+            currencyDisplay: getCurrency.value == 'Tp' ? 'hidden' : 'symbol'
+         })),
+         
       }
 
    }

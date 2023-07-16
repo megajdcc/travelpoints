@@ -39,7 +39,7 @@
 
                       <section class="flex-grow-1 d-flex flex-column ">
                           <strong>Travel Points Bonificados</strong>
-                          <strong class="text-warning">Tp{{ venta.tps | currency }}</strong>
+                          <strong class="text-warning">Tp{{ venta.tps_bonificados | currency }}</strong>
                       </section>
 
                     </section>

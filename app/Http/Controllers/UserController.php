@@ -22,10 +22,15 @@ use Illuminate\Support\Str;
 use App\Models\Telefono;
 
 use App\Models\Like;
+use App\Models\Negocio\Cargo;
 use App\Models\Pais;
 use App\Models\Producto;
+use App\Models\Tarjeta;
+use App\Models\Usuario\Permiso;
 use App\Notifications\NuevaAsignacionCoordinador;
 use App\Notifications\NuevaAsignacionLider;
+use App\Notifications\nuevoAmigo;
+use App\Notifications\validarVentaTarjeta;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 use Illuminate\Support\Collection;
 
@@ -56,7 +61,9 @@ class UserController extends Controller
             'genero'           => 'nullable',
             'codigo_postal'    => 'nullable',
             'ciudad_id'        => 'nullable',
-            'codigo_referidor' => 'nullable'
+            'codigo_referidor' => 'nullable',
+            'bio' => 'nullable',
+            'destino_id' => 'nullable'
         ], [
             'username.unique' => 'El nombre de usuario ya está siendo usado, inténta con otro',
             'email.unique'    => 'El email ya está siendo usado, el mismo debe ser único',
@@ -112,6 +119,8 @@ class UserController extends Controller
 
         $datos = $request->validate([
             'username'       => 'required|unique:users,username',
+            'nombre'         => 'required',
+            'apellido'       => 'required',
             'email'          => 'required|unique:users,email',
             'password'       => 'required|min:6',
             'retypePassword' => 'required|same:password',
@@ -122,7 +131,8 @@ class UserController extends Controller
             'password.required' => 'La contraseña es importante no lo olvides',
             'password.min' => 'La contraseña debe tener mínimo 6 caracteres',
             'retypePassword.required' => 'La contraseña es importante no lo olvides',
-            'retypePassword.same' => 'La contraseñas deben ser iguales'
+            'retypePassword.same' => 'La contraseñas deben ser iguales',
+            'email.unique' => 'Este email, ya está registrado en nuestra base de datos, inténte con otro'
         ]);
 
 
@@ -130,6 +140,8 @@ class UserController extends Controller
             DB::beginTransaction();
             $usuario = User::create([
                 'username'    => Str::slug($datos['username']),
+                'nombre' => $datos['nombre'],
+                'apellido' => $datos['apellido'],
                 'email'       => $datos['email'],
                 'password'    => $datos['password'],
                 'is_password' => true,
@@ -142,12 +154,16 @@ class UserController extends Controller
             if ($datos['referidor'] && $datos['referidor'] != 'null') {
 
                 $usuario_referidor = User::where('codigo_referidor', $datos['referidor'])->first();
-                if ($usuario_referidor) {
+
+                if ($usuario_referidor){
                     $usuario->referidor()->attach($usuario_referidor->id, [
                         'codigo' => $datos['referidor'],
                         'created_at' => now()
                     ]);
                 }
+
+                // Notificar al usuario referidor del nuevo amigo
+                $usuario_referidor->notify(new nuevoAmigo($usuario));
             }
 
             $usuario->cargar();
@@ -240,6 +256,7 @@ class UserController extends Controller
             $usuario->cargar();
 
             $result = true;
+
         } catch (Exception $e) {
             DB::rollBack();
             $result = false;
@@ -277,13 +294,7 @@ class UserController extends Controller
 
     public function getUsuarios()
     {
-
-        $usuarios = User::get();
-        foreach ($usuarios as $key => $usuario) {
-            $usuario->cargar();
-        }
-
-        return response()->json($usuarios);
+        return response()->json(User::where('activo',true)->get()->each(fn ($val) => $val->cargar()));
     }
 
     public function getLideres()
@@ -512,11 +523,11 @@ class UserController extends Controller
             ->when(!in_array($request->user()->rol->nombre, ['Desarrollador', 'Administrador']), function ($query) {
                 $query->whereHas('rol', fn (Builder $q) => $q->whereNotIn('nombre', ['Desarrollador', 'Administrador']));
             })
-            ->when(in_array($request->user()->rol->nombre, ['Promotor']), function ($query) use ($usuario) {
-                $query->whereHas('referidor', function (Builder $q) use ($usuario) {
-                    $q->where('usuario_id', $usuario->id);
-                });
-            })
+            // ->when(in_array($request->user()->rol->nombre, ['Promotor']), function ($query) use ($usuario) {
+            //     $query->whereHas('referidor', function (Builder $q) use ($usuario) {
+            //         $q->where('usuario_id', $usuario->id);
+            //     });
+            // })
 
             ->orderBy($datos['sortBy'], $datos['sortDesc'] ? 'desc' : 'asc')
             ->paginate($datos['perPage'] == 0 ? 10000 : $datos['perPage']);
@@ -654,16 +665,17 @@ class UserController extends Controller
             ->join('users as u', 'ur.referido_id', 'u.id')
             ->where('ur.usuario_id', $datos['usuario_id'])
             ->orderBy('u.id', 'desc')
-            ->paginate($datos['perPage']);
+            ->paginate($datos['perPage'],pageName:'currentPage');
 
 
+        // $usuarios = collect($paginator->items())->each(fn($val) => $val->cargar());
         $usuarios = $paginator->items();
 
         foreach ($usuarios as $key => $usuario) {
             if (empty($usuario->imagen)) {
                 $usuario->imagen =  asset('storage/img-perfil/default.jpg');
             } else {
-                $usuario->imagen =  asset('storage/img-perfil/') . $usuario->imagen;
+                $usuario->imagen =  asset('storage/img-perfil') .'/'.$usuario->imagen;
             }
 
             // $usuario->cargar();
@@ -823,6 +835,7 @@ class UserController extends Controller
         $usuario->cargar();
 
         return response()->json(['result' => $result, 'usuario' => $usuario]);
+        
     }
 
     public function cambiarStatus(User $usuario)
@@ -1258,4 +1271,87 @@ class UserController extends Controller
 
         return response()->json(['result' => $result, 'monto' => $monto, 'mensaje' => $mensaje]);
     }
+
+    public function asociarTarjeta(Request $request, User $usuario){
+        
+        $datos  = $request->validate([
+            'codigo' => ['required','min:8','max:8',function($atr,$val,$fail) use($request,$usuario){
+                
+                if($tarjeta = Tarjeta::where('numero',$val)->first()){
+                    if(!$tarjeta->aplicada && $tarjeta->validada){
+                        if ($usuario = $tarjeta->usuario) {
+                            $fail('El número de tarjeta no es Valido');
+                        }
+                    }else{
+                        $fail('El número de tarjeta no es Valido');
+                    }
+
+                }else{  
+                    $fail('El número de tarjeta no es Valido');
+                }
+
+
+            }]
+        ],[
+            'codigo.min' => 'El código debe tener 8 caractares',
+        ]);
+
+        try{
+            DB::beginTransaction();
+            $result = false;
+            if( $tarjeta = Tarjeta::where('numero',$datos['codigo'])->first()){
+                 $usuario->update([
+                    'tarjeta_id' => $tarjeta->id
+                 ]);
+                 $tarjeta->aplicada = true;
+                 $tarjeta->save();
+
+                 $result = true;    
+
+                //  $usuario->notify(new validarVentaTarjeta($tarjeta));
+
+                if($usuario->cuenta->divisa->iso == 'Tp'){
+                    $usuario->generarMovimiento($tarjeta->lote->tps, 'Nueva Tarjeta asociada a su cuenta');
+                }else{
+                    $usuario->generarMovimiento($tarjeta->lote->tps * $usuario->cuenta->divisa->tasa, 'Nueva Tarjeta asociada a su cuenta');
+                }
+                 
+            }
+           
+            DB::commit();
+        }catch (\Throwable $th) {
+            DB::rollBack();
+            $result = false;
+        }
+
+
+        $usuario->cargar();
+        
+        return response()->json(['result' => $result,'usuario' => $usuario,'tarjeta' => $result ? $tarjeta : null]);
+
+
+    }
+
+
+    public function cancelarTarjeta(User $usuario, Tarjeta $tarjeta){
+        
+        try {
+            DB::beginTransaction();
+
+            $usuario->tarjeta_id = null;
+            $usuario->save();
+
+            DB::commit();
+            $result = true;
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            $result = false;
+        }
+        $usuario->cargar();
+        
+        return response()->json(['result' => $result,'usuario' => $usuario]);
+
+    }
+
+
 }

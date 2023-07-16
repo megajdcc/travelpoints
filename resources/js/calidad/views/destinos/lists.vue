@@ -56,9 +56,9 @@
                         {{ destino.titulo }}
                      </em>
 
-                     <p class="text-justify" v-b-popover.hover="destino.descripcion.substring(0, 150)" :title="destino.titulo">
+                     <!-- <p class="text-justify" v-b-popover.hover="destino.descripcion.substring(0, 150)" :title="destino.titulo">
                         {{ destino.descripcion.substring(0, 80) }} ...
-                     </p>
+                     </p> -->
 
                      <template #footer>
                         <b-button-group size="sm">

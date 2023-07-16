@@ -6,6 +6,8 @@ use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 use Illuminate\Support\Facades\{DB};
 use App\Jobs\VerificarRedPromotores;
+use App\Jobs\verificarReservas;
+
 class Kernel extends ConsoleKernel
 {
 
@@ -29,7 +31,7 @@ class Kernel extends ConsoleKernel
         
         // $schedule->command('inspire')->hourly();
         
-        $schedule->command('queue:work --max-time=290 --max-jobs 100 --tries 5')->cron('*/5 * * * *')->withoutOverlapping(10);
+        // $schedule->command('queue:work --max-time=290 --max-jobs 100 --tries 5')->cron('*/5 * * * *')->withoutOverlapping(10);
 
         // La verificación la hacemos cada día
 
@@ -40,7 +42,9 @@ class Kernel extends ConsoleKernel
         // Limpiar los trabajos que esten fallidos... 
         $schedule->command('queue:flush')->daily();
 
-        
+
+        $schedule->job(new verificarReservas)->daily();
+
     }
 
     /**

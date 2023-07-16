@@ -20,7 +20,7 @@
                         <b-form-input v-model="searchQuery" type="search" placeholder="..." />
 
                         <template #append>
-                           <b-button variant="dark" :to="{ name: 'cargo.create' }">
+                           <b-button variant="dark" :to="{ name: 'cargo.create' }" v-if="$can('write','cargos negocio')">
                               <feather-icon size="18" icon="PlusSquareIcon" />
                               Añadir
                            </b-button>
@@ -45,7 +45,7 @@
                <b-button-group size="sm">
 
                   <b-button :to="{ name: 'cargo.edit', params: { id: item.id } }" variant="primary"
-                     title="Editar Cargo"  v-if="$can('update','cargos')">
+                     title="Editar Cargo"  v-if="$can('update','cargos negocio')">
                      <feather-icon icon="EditIcon" />
                   </b-button>
 

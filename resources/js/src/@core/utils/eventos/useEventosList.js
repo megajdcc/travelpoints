@@ -56,7 +56,7 @@ export default function useEventosList({destino = null , atraccion = null}) {
     refetchData()
   })
 
-  onMounted(() => refetchData())
+  // onMounted(() => refetchData())
 
 
 

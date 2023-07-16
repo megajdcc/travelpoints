@@ -1,6 +1,8 @@
 <?php 
 namespace App\Trais;
 use App\Models\Telefono;
+use Illuminate\Notifications\Notification;
+
 
 /**
 * 
@@ -38,6 +40,15 @@ trait hasTelefonos
          $telefono->delete();
       }
    }
+
+     /**
+     * Route notifications for the Vonage channel.
+     */
+    public function routeNotificationForVonage(Notification $notification): string
+    {
+        return $this->telefonos->first()?->telefono;
+    }
+
 
 
 

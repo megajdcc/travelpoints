@@ -26,14 +26,15 @@
          </b-nav-item>
 
 
-         <b-nav-item v-for="(pagina,i) in paginas.filter(val => val.showHeader && val.icono)"  :to="{ path: pagina.ruta }" v-b-tooltip.hover.bottom :title="pagina.nombre" :key="i" class="d-none d-md-flex">
+         <b-nav-item v-for="(pagina,i) in paginas.filter(val => val.showHeader && val.icono)"  :to="{ path: `/${pagina.ruta}` }" v-b-tooltip.hover.bottom :title="pagina.nombre" :key="i" class="d-none d-md-flex">
                <font-awesome-icon :icon="['fas',`fa-${pagina.icono}`]" size="lg"/>
          </b-nav-item>
 
          <dark-Toggler class="d-none d-lg-block" />
 
          <notification-dropdown v-if="is_loggin" />
-         <academia v-if="is_loggin && usuario.rol.academia.length" />
+         <academia v-if="is_loggin && usuario.rol && usuario.rol.academia && (usuario.rol.academia.length > 0)" />
+         <billetera v-if="is_loggin"  />
          <user-dropdown />
       </b-navbar-nav>
    </div>
@@ -64,7 +65,8 @@ export default {
       UserDropdown,
       BNavItem,
       carritoCompra:() => import('components/carritoCompra.vue'),
-    Academia: () => import('components/Academia.vue')
+      Academia: () => import('components/Academia.vue'),
+      billetera:() => import('components/billetera.vue')
 
    },
    directives:{

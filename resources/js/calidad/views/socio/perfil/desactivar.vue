@@ -10,7 +10,7 @@
             <b-form-group>
 
                <template #label>
-                  Nos intersa saber por qué nos dejas <span class="text-danger">*</span>
+                  Nos interesa saber por qué nos dejas <span class="text-danger">*</span>
                </template>
                <validation-provider name="mensaje" rules="required" #default="{errors}">
                   <b-form-textarea v-model="formulario.mensaje" :state="errors.length ? false : null" :rows="3"

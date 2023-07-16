@@ -11,7 +11,7 @@ use App\Models\Divisa;
 use App\Http\Controllers\ImagenController;
 use App\Models\Negocio\HorarioReservacion;
 
-use App\Http\Controllers\{PaisController, CiudadController, EstadoController, PaginaController};
+use App\Http\Controllers\{PaisController, CiudadController, EstadoController, LoteController, MensajesVonageController, PaginaController, TarjetaController};
 
 /*
 |--------------------------------------------------------------------------
@@ -142,6 +142,9 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::post('usuarios/promotor/save', [UserController::class, 'guardarPromotor']);
     Route::post('usuarios/lider/save', [UserController::class, 'guardarLider']);
 
+    Route::put('usuarios/{usuario}/asociar/tarjeta',[UserController::class,'asociarTarjeta']);
+    Route::delete('usuarios/{usuario}/cancelar/tarjeta/{tarjeta}',[UserController::class,'cancelarTarjeta']);
+
 
     /*****************************/
     /* TELEFONOS
@@ -218,7 +221,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::resource('negocio/solicituds', SolicitudController::class)->middleware(convertirNull::class);
     Route::get('negocio/solicituds/get/all', [SolicitudController::class, 'getAll']);
     Route::get('negocio/solicituds/{solicitud}/get', [SolicitudController::class, 'getSolicitud']);
-
+    Route::get('negocio/mis-solicitudes',[SolicitudController::class,'misSolicitudes']);
     /*****************************/
     /* Negocios
     /*****************************/
@@ -246,7 +249,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::put('negocios/{negocio}/cargar/saldo', [NegocioController::class, 'agregarSaldo']);
 
     Route::get('negocios/{negocio}/datos/home', [NegocioController::class, 'datosHome']);
-
+    
     Route::get('negocios/{negocio}/recomendacions/toggle/user/{usuario}', [NegocioController::class, 'togleRecomendacion']);
     Route::get('negocios/{negocio}/seguidors/toggle/user/{usuario}', [NegocioController::class, 'toggleSeguidor']);
 
@@ -394,7 +397,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::post('cupons/reservar',[CuponController::class,'reservar']);
     Route::get('cupons/reservas/{cupon}/cancelar/usuario/{usuario}',[CuponController::class,'cancelarReserva']);
     Route::resource('cupons', CuponController::class);
-    
+    Route::get('cupons/{cupon}/reservar/usuario/{usuario}',[CuponController::class,'reservarCupon']);
 
     /*****************************/
     /* Ventas de negocio
@@ -639,6 +642,34 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::post('paginas/fetch-data', [PaginaController::class, 'fetchData']);
     Route::get('paginas/{pagina}/fetch-data', [PaginaController::class, 'fetch']);
     Route::resource('paginas', PaginaController::class);
+
+
+
+    /**************************/
+    /* Lote
+    /**************************/
+    Route::get('get/lotes', [LoteController::class, 'getLotes']);
+    Route::post('fetch/lotes', [LoteController::class, 'fetchData']);
+    Route::resource('lotes', LoteController::class);
+    Route::get('fetch/lote/{lote}', [LoteController::class, 'fetch']);
+
+    Route::put('lotes/{lote}/asociar/lote',[LoteController::class,'asociarLote']);
+
+    /**************************/
+    /* Tarjeta
+    /**************************/
+    Route::get('get/tarjetas', [TarjetaController::class, 'getLotes']);
+    Route::post('fetch/tarjetas', [TarjetaController::class, 'fetchData']);
+    Route::resource('tarjetas', TarjetaController::class);
+    Route::get('fetch/tarjeta/{tarjeta}', [TarjetaController::class, 'fetch']);
+    Route::get('tarjetas/{tarjeta}/toggle-validation',[TarjetaController::class,'toggleValidation']);
+
+    /**************************/
+    /* Vonage
+    /**************************/
+    Route::post('vonages/sms/fetchData',[MensajesVonageController::class,'fetchDataSms']);
+    Route::delete('vonages/sms/{mensaje}/eliminar',[MensajesVonageController::class,'eliminarSMS']);
+
 });
 
 Route::put('usuario/{usuario}/establecer/contrasena', [UserController::class, 'EstablecerContrasena'])->name('establecercontrasena');
@@ -675,7 +706,7 @@ Route::get('atraccions/{atraccion}/otras/cercanas', [AtraccionController::class,
 Route::post('search/public', [HomeController::class, 'searchPublic']);
 Route::post('search/location', [HomeController::class, 'searchLocation']);
 Route::post('destinos/obtener/por-nombre', [DestinoController::class, 'getPorNombre']);
-
+Route::get('destinos/{destino}/fetch/data-public',[DestinoController::class,'fetch']);
 Route::post('atraccions/obtener/por-nombre', [AtraccionController::class, 'getPorNombre']);
 
 Route::post('opinions/fetch/data/model', [OpinionController::class, 'fetchDataModel']);
@@ -692,7 +723,7 @@ Route::post('negocio/obtener-por-url', [NegocioController::class, 'capturarPorUr
 Route::post('publicacions/fetch/data', [PublicacionController::class, 'fetchData']);
 
 // perfil Negocio Eventos
-
+Route::get('negocios/{negocio}/aumentar-vistas', [NegocioController::class, 'aumentarVistas']);
 Route::post('eventos/fetch/data', [EventoController::class, 'fetchData']);
 Route::post('eventos/fetch/eventos', [EventoController::class, 'fetchEventos']);
 
@@ -730,3 +761,7 @@ Route::post('eventos/fetch-data-public', [EventoController::class, 'fetchDataPub
 
 // Travels
 Route::get('travels/map/destino/{destino}', [HomeController::class, 'getTravels']);
+
+// Cupones
+
+Route::post('cupons/fetch-data/public',[CuponController::class,'fetchDataPublic']);

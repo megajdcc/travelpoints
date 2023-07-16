@@ -11,12 +11,22 @@ import router from '@/router'
 
 export default {
   
-  setup(){
-    store.commit('venta/clear')
+  props:{
+    reserva:Number|String
+  },
 
+  setup(props){
+
+    const {reserva} = toRefs(props)
+    
+    store.commit('venta/clear')
     
     return () => h(form,{
 
+      props:{
+        reservaId:reserva.value
+      },
+      
       on:{
         save:(datos,formValidate) => {
 

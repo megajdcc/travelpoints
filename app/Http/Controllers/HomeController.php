@@ -146,7 +146,6 @@ class HomeController extends Controller
 
     public function searchLocation(Request $request)
     {
-
         $datos = $request->all();
         return response()->json(collect([...Destino::getLocation($datos), ...Atraccion::getLocation($datos)]));
     }
@@ -165,14 +164,18 @@ class HomeController extends Controller
         foreach ($destinos as $key => $destino) {
             $destino->ruta = "/Destinos?q={$destino->nombre}";
             $destino->tipo = 'Destino';
-            $destino->imagenes;
-            $destino->cargar();
-            $destino->imagen = $destino->imagenes[0] ? "/storage/destinos/imagenes/{$destino->imagenes[0]->imagen}" : '';
+            // $destino->descripcion = '';
+            $destino->about_travel = '';
+            // $destino->imagenes;
+            // $destino->cargar();
+            // $destino->imagen = $destino->imagenes[0] ? "/storage/destinos/imagenes/{$destino->imagenes[0]->imagen}" : '';
         }
 
         $atracciones = Atraccion::get();
         foreach ($atracciones as $key => $atraccion) {
-            $atraccion->cargar();
+            // $atraccion->cargar();
+            $atraccion->tipo = 'Atracción';
+
         }
 
         $negocios = Negocio::where('status', 1)->get();
@@ -180,9 +183,10 @@ class HomeController extends Controller
         foreach ($negocios as $key => $negocio) {
             $negocio->ruta = "/{$negocio->url}";
             $negocio->tipo = 'Negocio';
-            $negocio->opinions;
-            $negocio->imagen = count($negocio->imagenes) > 0 ? "/storage/negocios/fotos/{$negocio->imagenes[0]->imagen}" : '';
-            $negocio->cargar();
+            // $negocio->opinions;
+            // $negocio->imagen = count($negocio->imagenes) > 0 ? "/storage/negocios/fotos/{$negocio->imagenes[0]->imagen}" : '';
+
+            // $negocio->cargar();
         }
 
 

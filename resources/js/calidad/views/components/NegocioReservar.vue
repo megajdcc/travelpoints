@@ -2,14 +2,13 @@
   <validation-observer ref="formValidate" #default="{handleSubmit}">
 
     <b-form @submit.prevent="handleSubmit(enviarReserva)">
-      <b-modal :visible="isShowDialog" centered @hide="cerrarModal" title="Crea tu reserva">
+      <b-modal :visible="isShowDialog" centered @hide="cerrarModal" title="Crea tu reserva" @show="cargarForm">
         <b-form-group>
           <template #label>
             Fecha de la reserva: <span class="text-danger">*</span>
           </template>
         
           <validation-provider name="fecha" #default="{valid,errors}">
-        
         
             <flat-pickr v-model="formulario.fecha" class="form-control"
               :config="{ dateFormat: 'Y-m-d', minDate: 'today', defaultDate: 'today', onChange:(_,dateStr) => consultarHoras(dateStr)  }"
@@ -29,9 +28,9 @@
         
             <validation-provider name="hora" rules="required" #default="{valid,errors}">
         
-              <b-form-radio v-model="formulario.hora" v-for="(hora,i) in horas" :key="i" button button-variant="primary"
-                class="btn-horas" size="sm mx-1" :value="hora.hora" :state="valid"
-                @input="establecerLugaresDisponibles($event,hora.lugares)">
+              <b-form-radio v-model="formulario.hora" v-for="(hora,i) in horas"  :key="i" button button-variant="primary"
+                class="btn-horas" size="sm mx-1" :value="hora.hora" :disabled="verificarDisponibilidad(hora.hora,hora.lugares)" :state="valid"
+                @change="establecerLugaresDisponibles($event,hora.lugares)">
                 {{ hora.hora | fecha('hh:mm A',true) }}
               </b-form-radio>
         
@@ -171,8 +170,6 @@ export default {
 
 
     const enviarReserva = () => {
-
-
       formValidate.value.validate().then(result => {
 
           if(result){
@@ -216,9 +213,6 @@ export default {
           }
 
       })
-
-      
-
     }
 
     const consultarHoras = (fecha) => {
@@ -287,7 +281,38 @@ export default {
     const establecerLugaresDisponibles = (hora, lars) => {
       // console.log(hora, lars)
       formulario.value.personas = 0
+     
+
       lugares.value = lars - store.getters['reservacion/lugaresOcupados']({ fecha: formulario.value.fecha, hora: hora })
+      let fecha_selected = moment(`${formulario.value.fecha} ${hora}`);
+
+      if(fecha_selected.isBefore(moment())){
+        setTimeout(() => {
+            formulario.value.hora = null
+        }, 400);
+          
+          swal({
+            icon: 'info',
+            title: "La hora seleccionada ha pasado. Por favor, elige otro momento.",
+            cancelButtonText: 'Ok',
+            showCancelButton: true,
+            showConfirmButton: false
+          })
+      }else if(lugares.value < 1){
+        setTimeout(() => {
+          formulario.value.hora = null
+        }, 400);
+
+        swal({
+          icon: 'info',
+          title: "Esta hora no tiene lugares disponibles. Por favor, selecciona otro horario.",
+          cancelButtonText: 'Ok',
+          showCancelButton: true,
+          showConfirmButton: false
+        })
+      }
+
+    
     }
 
     const cerrarModal = () => {
@@ -296,6 +321,21 @@ export default {
 
       emit('update:isShowDialog',false)
     }
+
+    const verificarDisponibilidad = (hora,lugrs) => {
+      let lugares = lugrs - store.getters['reservacion/lugaresOcupados']({ fecha: formulario.value.fecha, hora: hora })
+      let fecha_selected = moment(`${formulario.value.fecha} ${hora}`);
+
+      var result = false;
+      if (fecha_selected.isBefore(moment())) {
+        result = true
+      } else if (lugares < 1) {
+        result = true
+      }
+
+      return result;
+
+    } 
 
     return {
 
@@ -309,7 +349,9 @@ export default {
       formulario,
       lugares,
       horas,
-      cerrarModal
+      cerrarModal,
+      cargarForm,
+      verificarDisponibilidad
     }
 
   }
@@ -337,5 +379,8 @@ export default {
   font-weight: 900;
 
 }
-
+.btn-primary.disabled{
+  border-color:gray !important;
+  background-color: gray !important;
+}
 </style>

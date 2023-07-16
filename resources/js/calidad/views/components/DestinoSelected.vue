@@ -2,7 +2,7 @@
     <b-row>
       <b-col cols="12" >
         <h3>{{ titulo  }}</h3>
-        <p>{{  subTitulo  }}</p>
+        <p v-html="subTitulo"></p>
       </b-col>
       <b-col cols="12" >
         <listado :actions="actions" hideFooter hideHeader>
@@ -13,8 +13,9 @@
                   <div class="card-simple" :style="`background-image:url(${portada(item.imagenes)});cursor:pointer;`" @click="seleccionarDestino(item.id,item.ruta)">
                     <div class="card-simple-background">
                       <div class="card-simple-content">
-                        <h2 @click="seleccionarDestino(item.id, item.ruta)">
-                              {{ item.nombre }}
+                        <h2 @click="seleccionarDestino(item.id, item.ruta)" class="d-flex flex-column">
+                              <span class="text-uppercase"> {{ item.nombre }}</span>
+                             <strong>{{ item.iata.pais.pais }}</strong>
                         </h2>
                         <!-- <div class="card-simple-rating">
                           <el-rate :value="promedioCalificacion(item)" disabled disabled-void-color="#4f4f4f"
@@ -89,7 +90,7 @@ export default{
 
     subTitulo: {
       type: String,
-      default: 'Descubre los negocios que regalan Travel Points en estos destinos'
+      default: '<strong class="text-warning">Descubre</strong> lo que cada destino tiene para ti y los <strong class="text-warning"> negocios </strong> que te ofrecen Travel Points.'
     },
     isSelected:Boolean
   },

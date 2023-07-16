@@ -22,10 +22,11 @@
                                  <b-form-input v-model="searchQuery" type="search" placeholder="..." />
                
                                  <template #append>
-                                    <b-button variant="dark" :to="{ name: 'personal.create' }" v-if="$can('write','empleados')">
+                                    <b-button variant="dark" :to="{ name: 'personal.create' }" v-if="$can('write','personal negocio')">
                                        <feather-icon size="18" icon="PlusSquareIcon" />
                                        Añadir
                                     </b-button>
+
                                  </template>
                               </b-input-group>
                
@@ -78,7 +79,7 @@
                      <template #footer>
 
                         <b-button-group size="sm">
-                           <b-button variant="primary" v-if="$can('edit','empleados')" :to="{name:'personal.edit',params:{id:id}}">
+                           <b-button variant="primary" v-if="$can('update','personal negocio')" :to="{name:'personal.edit',params:{id:id}}">
                               <feather-icon icon="EditIcon"/>
                               Editar
                            </b-button>

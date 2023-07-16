@@ -4,8 +4,8 @@
         <b-col cols="12">
 
           <GmapMap
-              :center="{ lat: promedioLatitud, lng: promedioLongitud }"
-              :zoom="3"
+              :center="origenMap"
+              :zoom="10"
               map-type-id="terrain"
               style="width: 100%; height: 600px"
               :options="{ styles: stylosMap }"
@@ -107,6 +107,7 @@ export default {
   setup(props,{emit}){
 
     const {destino} = toRefs(props)
+    const {destino:origen} = toRefs(store.state.destino)
     const options_map = ref({})
     const refMap = ref(null); 
     const travels = ref([]);
@@ -172,19 +173,20 @@ export default {
       refMap,
       travels,
       travelSelected,
+      origen,
       locations:computed(() => {
         return travels.value.map(val => ({
           lng:val.lng,
           lat:val.lat,
           nombre:val.nombre ? val.nombre : 'Sin definir',
-          direccion:val.direccion ? val.direccion : 'Sin definir',
+          direccion:val.direccion ? val.direccion : '',
           ruta:getRutaTravel(val),
           tipo:val.tipo,
         }))
       }),
 
       optionsPlace: (travel) => ({
-        content: `<strong>${travel.tipo.toUpperCase()}: ${travel.nombre}<br>${travel.direccion}</strong>`,
+        content: `<small>${travel.tipo.toUpperCase()}: ${travel.nombre}<br>${travel.direccion}</small>`,
         disableAutoPan:true
       }),
 
@@ -209,7 +211,11 @@ export default {
           let result = sum / travels.value.length;
           return Number.isFinite(result) ? result : 0; // Verificar si el resultado es finito
         }),
-        showInfoWindow
+        showInfoWindow,
+        origenMap:computed(() => ({
+          lat:Number(origen.value.lat),
+          lng:Number(origen.value.lng)
+        }))
 
     }
   }

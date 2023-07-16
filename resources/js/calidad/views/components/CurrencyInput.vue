@@ -1,10 +1,10 @@
 <template>
 
    <section v-if="validar">
-         <input  ref="inputRef" :value="formattedValue" :class="InputClass" :disabled="disabled"/>
+         <input  ref="inputRef" :value="formattedValue" :class="InputClass" :disabled="disabled" @blur="$emit('blur',formattedValue)" />
    </section>
 
-   <input  ref="inputRef" :value="formattedValue" :class="InputClass" :disabled="disabled" v-else>
+   <input  ref="inputRef" :value="formattedValue" :class="InputClass" :disabled="disabled" @blur="$emit('blur', formattedValue)" v-else>
 
 </template>
 
@@ -55,7 +55,7 @@ export default {
       BFormInvalidFeedback
    },
 
-   setup(props){
+   setup(props,{emit}){
 
       const {value,options} = toRefs(props) 
       let validateFormInput = ref(null)
@@ -74,20 +74,19 @@ export default {
          setOptions(options)
       })
 
+      // watch(formattedValue, (val) => emit('blur',val))
+
       // watch(validateFormInput, (val) => {
       //    errors.value = val.errors;
       // })
 
-
-    
-
-return {
-         formattedValue,
-         inputRef,
-         validateFormInput,
-         // errors
-      }
-   }
+      return {
+               formattedValue,
+               inputRef,
+               validateFormInput,
+               // errors
+            }
+         }
    
 }
 </script>

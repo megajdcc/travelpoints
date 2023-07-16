@@ -22,6 +22,9 @@ export default{
          atracciones:[],
          negocios:[],
          activo:false,
+         about_travel:null,
+         promotores:[]
+
       },
 
       destinos:[]
@@ -78,6 +81,8 @@ export default{
             imagenes: [],
             negocios: [],
             activo:false,
+            about_travel:null,
+            promotores:[]
 
 
          }
@@ -318,6 +323,17 @@ export default{
       fetchDataPublic({commit},datos){
          return new Promise((resolve, reject) => {
             axios.post('/api/destinos/fetch-data/public',datos).then(({data}) => resolve(data)).catch(e => reject(e))
+         })
+      },
+
+      fetchPublic({commit},destino_id){
+         return new Promise((resolve, reject) => {
+               
+            axios.get(`/api/destinos/${destino_id}/fetch/data-public`).then(({data}) => {
+                  commit('setDestino',data)
+                  resolve(data)
+            }).catch(e => reject(e))
+
          })
       }
 

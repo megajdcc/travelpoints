@@ -13,7 +13,7 @@
         
     </slot>
   
-    <b-button variant="warning" :disabled="!usuario.id" @click.stop="toggleRecomendacion"
+    <b-button variant="warning" :disabled="!usuario.id" @click="toggleRecomendacion"
       class="font-weight-bolder flex-grow-1" v-b-tooltip.hover="legendRecomendacion">
       <font-awesome-icon icon="fa fa-heart" :class="{'mr-1' : !hideLegend}" :color="getColorRecomendacion" />
 
@@ -21,7 +21,6 @@
           <span class="d-none d-md-inline">
               {{ legendRecomendacion }}
           </span>
-       
       </template>
     </b-button>
 
@@ -74,7 +73,6 @@ export default{
 
       store.dispatch('negocio/toggleSeguidor', { negocio: negocio.value.id, usuario: usuario.value.id })
       emit('reload',true)
-
 
     }
 

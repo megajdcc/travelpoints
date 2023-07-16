@@ -339,7 +339,7 @@
 
 <script>
 
-import { toRefs, ref, computed } from 'vue'
+import { toRefs, ref, computed,onMounted,watch } from 'vue'
 
 import store from '@/store'
 import router from '@/router';
@@ -409,6 +409,13 @@ export default {
     const { url } = toRefs(props)
     const { negocio } = toRefs(store.state.negocio)
 
+    const cargarForm = () => {
+
+      if(negocio.value.id){
+         store.dispatch('negocio/aumentarVisita', negocio.value.id)
+      }
+     
+    }
 
     store.dispatch('negocio/negocioUrl', url.value).then(({ result }) => {
 
@@ -420,6 +427,12 @@ export default {
       router.push({ name: 'inicio' })
     })
 
+
+   
+
+    onMounted(() => cargarForm())
+
+    watch(negocio,() => cargarForm())
 
     const {
       routerTransition

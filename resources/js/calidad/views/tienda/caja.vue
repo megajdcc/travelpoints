@@ -313,7 +313,7 @@
                     </validation-observer>
               </b-card>
 
-              <b-card class="flex-grow-0">
+              <b-card class="flex-grow-0 flex-shrink-1">
                  <table class="table table-hover table-sm " >
 
                     <tr>

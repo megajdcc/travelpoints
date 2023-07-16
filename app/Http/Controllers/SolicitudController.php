@@ -19,22 +19,24 @@ use App\Models\Usuario\Permiso;
 class SolicitudController extends Controller
 {
 
-    public function getAll()
+    public function getAll(Request $request)
     {
-
+        $usuario = $request->user();
         $solicitudes = Solicitud::get();
 
+        $solicitudes->each(fn ($val) => $val->cargar());
 
-        foreach ($solicitudes as $key => $solicitud) {
 
-            $solicitud->categoria;
-            $solicitud->usuario;
-            $solicitud->usuario->avatar = $solicitud->usuario->getUrlAvatar();
-            $solicitud->ciudad;
-            $solicitud->estado->pais;
-            $solicitud->divisa;
-            $solicitud->iata;
-        }
+        return response()->json($solicitudes);
+    }
+
+    public function misSolicitudes(Request $request){
+
+        $usuario = $request->user();
+
+        $solicitudes = Solicitud::where('usuario_id',$usuario->id)->get();
+        
+        $solicitudes->each(fn($val) => $val->cargar());
 
         return response()->json($solicitudes);
     }
@@ -323,6 +325,7 @@ class SolicitudController extends Controller
                 $negocio->asignarEmpleado($negocio->encargado, $negocio->primerCargo());
                 $permisos = Permiso::whereHas('panel', fn (Builder $q) => $q->where('panel', 'Negocio'))->get();
                 $negocio->encargado->asignarPermisos($permisos);
+                
             }
         } catch (\Exception $e) {
 

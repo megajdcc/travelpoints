@@ -22,7 +22,7 @@ import VueGoogleAutocomlete from 'vue-google-autocomplete';
 
 Vue.use(GmapVue, {
   load: {
-    key: 'AIzaSyCNWsVH2kmknm6knGSRKDuzGeMWM1PT6gA',
+    key: 'AIzaSyCnsLa_yFH7kb5s5GdIaE_P9aGKLkeVIUQ', //'AIzaSyCNWsVH2kmknm6knGSRKDuzGeMWM1PT6gA',
     libraries: 'places',
   },
   installComponents: true
@@ -46,7 +46,7 @@ import '@/libs/clipboard'
 import '@/libs/toastification'
 import '@/libs/sweet-alerts'
 import '@/libs/vue-select'
-import '@/libs/tour'
+// import '@/libs/tour'
 // import '@/libs/markdown-editor'
 
 import VueCurrencyFilter from 'vue-currency-filter'
@@ -257,7 +257,7 @@ let app = new Vue({
   store,
   i18n,
   render: h => h(App),
-  provide:() =>  ({swal : Vue.swal})
+  provide:() =>  ({swal : Vue.swal,i18n:i18n})
 
 }).$mount('#app')
 

@@ -86,11 +86,10 @@
 
                               <validation-provider name="descripcion" rules="required|min:10" #default="{errors,valid}">
 
-                                 <b-form-textarea v-model="formulario.descripcion" :rows="3" :state="valid">
-                                    
-                                 </b-form-textarea>
+                                  <editor output-format="html" :value="formulario.descripcion" @input="formulario.descripcion = $event"
+                                       api-key="t1i940nuarrf1zefgxbf6ow5cxmgjmcad7q7l3fm5prgebyc" :init="optionsEditor" />
 
-                                 <b-form-invalid-feedback>
+                                 <b-form-invalid-feedback :state="valid">
                                     {{ errors[0] }}
                                  </b-form-invalid-feedback>
 
@@ -99,6 +98,27 @@
                            </b-form-group>
 
 
+                        </b-col>
+
+                        <b-col cols="12" >
+                            <b-form-group>
+          
+                                 <template #label>
+                                    ¿ Que debe saber el Viajero para el viaje ?
+                                 </template>
+                        
+                                 <validation-provider name="about_travel" #default="{ errors, valid }">
+                        
+                                    <editor output-format="html" :value="formulario.about_travel" @input="formulario.about_travel = $event"
+                                    api-key="t1i940nuarrf1zefgxbf6ow5cxmgjmcad7q7l3fm5prgebyc" :init="optionsEditor" />
+                        
+                                    <b-form-invalid-feedback :state="valid">
+                                    {{ errors[0] }}
+                                    </b-form-invalid-feedback>
+                        
+                                 </validation-provider>
+                        
+                              </b-form-group>
                         </b-col>
                      </b-row>
 
@@ -299,6 +319,7 @@ import {
    BInputGroupPrepend,
    BInputGroup
 } from 'bootstrap-vue'
+import Editor from '@tinymce/tinymce-vue'
 
 import store from '@/store'
 
@@ -306,7 +327,7 @@ import {computed,toRefs,ref,onMounted,watch,provide} from 'vue'
 
 import vSelect  from 'vue-select'
 
-import { regresar } from '@core/utils/utils'
+import { regresar, optionsEditor } from '@core/utils/utils'
 import useDireccion from '@core/utils/useDireccion'
 export default {
 
@@ -327,10 +348,8 @@ export default {
       ValidationObserver,
       BInputGroup,
       vSelect,
-      multimedia: () => import('views/multimedias/multimedia.vue')
-
-
-
+      multimedia: () => import('views/multimedias/multimedia.vue'),
+      Editor
    },
 
 
@@ -437,6 +456,7 @@ export default {
          getLatitud,
          getLongitud,
          iatas,
+         optionsEditor,
 
          filterIata:(options,search) => {
 

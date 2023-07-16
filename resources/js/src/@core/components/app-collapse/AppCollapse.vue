@@ -1,6 +1,5 @@
 <template>
   <div
-    role="tablist"
     class="collapse-icon"
     :class="collapseClasses"
   >

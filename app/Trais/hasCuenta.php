@@ -66,7 +66,9 @@ trait hasCuenta
 
       if(!is_null($divisa)){
          $saldo  = $this->cuenta->saldo;
-         $new_saldo = $this->cuenta->divisa->convertir($divisa,$saldo);
+         
+         $new_saldo = Divisa::cambiar($this->cuenta->divisa,$divisa,$saldo);
+         // $new_saldo = $this->cuenta->divisa->convertir($divisa,$saldo);
 
          $this->cuenta->divisa_id = $divisa->id;
          $this->cuenta->save();

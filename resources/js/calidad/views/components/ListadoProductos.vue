@@ -21,19 +21,19 @@
             <div class="price-slider" v-if="!hideSliderPrices">
               
               <h6 class="filter-title">
-                {{ $t('Rango de precios') }}
+                {{ $t('Selecciona una Categoría y un rango de precio') }}
               </h6>
 
-              <vue-slider :value="precios" @change="precios = $event" lazy :min="precio_minimo" :max="precio_maximo"
-                 :tooltipFormatter="(val) => `$ ${val}`" silent :interval=".2">
+              <vue-slider v-model.lazy="precios" :lazy="true" :min="0" :max="precio_maximo"
+                 :tooltipFormatter="(val) => `$ ${val}`" :interval=".2" >
                  
                 </vue-slider>
 
             </div>
 
             <!-- Categorias -->
-
-           <b-form-group label="Categorías" >
+            
+           <b-form-group :label="$t('Categorías')" >
             <b-form-checkbox-group  v-if="!cjDropShipping" v-model="categoria_id" :options="categorias" :text-field="cjDropShipping ? 'categoryFirstName' : 'nombre'" :value-field="cjDropShipping ? 'categoryFirstId' : 'id'" stacked >
             
             </b-form-checkbox-group>
@@ -49,6 +49,13 @@
 
            </b-form-group>
 
+           <!-- Tiendas -->
+
+           <b-form-group :label="$t('Tiendas')" v-if="!cjDropShipping">
+               <b-form-checkbox-group  v-model="tienda_id" :options="tiendas" text-field="nombre" value-field="id" stacked >
+              </b-form-checkbox-group>
+
+          </b-form-group>
            
         </b-card>
       </b-col>
@@ -250,6 +257,8 @@ export default {
       eliminar,
       items,
       categorias,
+      tiendas,
+      tienda_id,
       categoria_id,
       precios = [0,100],
       sortByOptions
@@ -318,6 +327,11 @@ export default {
       return convertDataFormat(categorias.value)
     })
 
+    const limpiar = () => {
+
+    }
+
+
     return {
       loading:computed(() => store.state.loading),
 
@@ -342,10 +356,12 @@ export default {
       itemView,
       itemViewOptions,
       sortByOptions,
-      precio_minimo:computed(() => range_precio.value[0]),
-      precio_maximo: computed(() => range_precio.value[1]),
+      precio_minimo:computed(() => redondeo(range_precio.value[0],0)),
+      precio_maximo: computed(() => redondeo(range_precio.value[1],0)),
       defaultProps,
       categories,
+      tiendas,
+      tienda_id,
       convertDataFormat,
       refreshData:() => {
         categoria_id.value = null
@@ -354,7 +370,7 @@ export default {
         actions.refetchData();
 
       },
-
+      limpiar,
       nodoSelected:(nod,opt) => {
         console.log(opt)
         console.log(nod)

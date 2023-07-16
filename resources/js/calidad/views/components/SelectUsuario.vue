@@ -38,7 +38,8 @@ export default {
   },
 
   props:{
-    usuarioId:Number
+    usuarioId:Number,
+    filterRol:Array
   },
 
   model:{
@@ -48,6 +49,7 @@ export default {
 
   setup(props,{emit}){
     const {usuarios} = toRefs(store.state.usuario)
+    const {filterRol} = toRefs(props)
 
     const cargarForm = () => {
 
@@ -64,7 +66,17 @@ export default {
     }
 
     return {
-      usuarios,
+      
+      usuarios:computed(() => {
+        
+        if(filterRol.value.length){
+          return usuarios.value.filter(val => filterRol.value.includes(val.rol.nombre))
+        }
+
+        return usuarios.value
+
+      }),
+
       filterUser:(options,search) => {
           return options.filter(option => {
 

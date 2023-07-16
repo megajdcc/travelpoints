@@ -33,7 +33,8 @@ class ApplicationController extends Controller
             'email' => 'required',
             'asunto' => 'required',
             'mensaje' => 'required|min:30',
-            'telefono' => 'required'
+            'telefono' => 'required',
+            'perfil' => 'required'
         ], [
             'mensaje.min' => 'El mensaje debe tener mas de 30 Caracteres...'
         ]);
@@ -54,7 +55,7 @@ class ApplicationController extends Controller
         } catch (\Exception $e) {
             $result = false;
 
-            dd($e->getMessage());
+            // dd($e->getMessage());
         }
 
 

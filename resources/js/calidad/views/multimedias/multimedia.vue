@@ -30,13 +30,15 @@ export default {
       type: Boolean,
       default: false,
     },
+
  
   },
 
   setup(props){
 
     const {sistema} = toRefs(store.state.sistema)
-
+    const { isNegocio } = toRefs(props)
+    const { negocio } = toRefs(store.state.negocio)
     const actions = () => {
 
       const archivoSeleccionado = (file,next) => {

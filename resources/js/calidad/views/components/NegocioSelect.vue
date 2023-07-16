@@ -1,5 +1,5 @@
 <template>
-  <listado :actions="actions" hideFooter searchPlaceholder="Escriba el nombre del negocio si no lo encuentra en el listado...">
+  <listado :actions="actions" hideFooter :searchPlaceholder="$t('Escriba el nombre del negocio si no lo encuentra en el listado...')">
     <template #contenido="{items}">
       <b-container fluid class="mx-0 px-0"> 
         <b-row>
@@ -12,15 +12,15 @@
                   tag="article"
                   class="mb-2"
                   :class="{'negSelected' : negocio.id === nego.id}"
-                   @click="$emit('update:negocioId', negocio.id)" 
+                   @click="negocioSelected(negocio.id)" 
                 >
                   <b-card-text>
                     {{ negocio.breve }}
                   </b-card-text>
 
-                  <b-button @click.stop="$emit('update:negocioId',negocio.id)" 
+                  <b-button @click.stop="negocioSelected(negocio.id)" 
                   :variant="nego.id === negocio.id ? 'success' : 'primary'" >
-                  {{ negocio.id === nego.id ? 'Seleccionado' : 'Seleccionar' }}
+                  {{ negocio.id === nego.id ? $t('Seleccionado') : $t('Seleccionar') }}
                 </b-button>
                 </b-card>
           </b-col>
@@ -35,7 +35,7 @@ import useNegocioList from 'views/negocios/useNegocioListado.js';
 
 import store from '@/store'
 
-import {computed,ref,toRefs,onMounted} from 'vue'
+import {computed,ref,toRefs,onMounted,watch} from 'vue'
 
 import {
   BCard,
@@ -68,7 +68,9 @@ export default {
     negocioId:{
       type:Number,
       nullable:true,
-    }
+    },
+
+    destinoId:String|Number
   },
 
   model:{
@@ -78,16 +80,23 @@ export default {
 
   setup(props,{emit}){
     const {negocios,negocio:nego} = toRefs(store.state.negocio)
-    const {negocioId} = toRefs(props)
+    const {negocioId,destinoId} = toRefs(props)
 
-    const actions =  useNegocioList();
+    const actions =  useNegocioList(destinoId);
 
     actions.refetchData();
 
+    watch(destinoId,() => actions.refetchData());
+
+    const negocioSelected = (negocio_id) => {
+      emit('negocioSeleccionado',negocio_id)
+      emit('update:negocioId',negocio_id)
+    } 
     return {
       loading:computed(() => store.state.loading),
       actions,
-      nego
+      nego,
+      negocioSelected
 
     }
   }

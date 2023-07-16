@@ -15,14 +15,14 @@ class AtraccionController extends Controller
 
     public function getAll(){
         
-        $atracciones = Atraccion::all();
+        $atracciones = Atraccion::get();
 
         foreach($atracciones as $atraccion){
             $atraccion->telefono;
             $atraccion->imagenes;
-            $atraccion->destino;
-            $atraccion->destino->estado?->pais;
-            $atraccion->destino->ciudad;
+            // $atraccion->destino;
+            // $atraccion->destino->estado?->pais;
+            // $atraccion->destino->ciudad;
             $atraccion->horarios;
             $atraccion->likes;
             $atraccion->ruta = "/Atraccions?q={$atraccion->nombre}";

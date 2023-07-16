@@ -13,8 +13,9 @@
   <!-- Styles -->
   @vite(['resources/scss/loader.css', 'resources/js/app.js'])
   <!-- Favicon -->
-  <link rel="shortcut icon" href="{{ asset('favicons/favicon-8x8.png') }}">
+  <link rel="shortcut icon" href="{{ asset('favicons/favicon-57x57.png') }}">
   <script src="https://accounts.google.com/gsi/client" async defer ></script>
+ 
 
 </head>
 
@@ -36,13 +37,16 @@
   
   @if(env('APP_ENV') == 'production')
     <script>
-      // Check that service workers are supported
-      if ('serviceWorker' in navigator) {
-        // Use the window load event to keep the page load performant
-        window.addEventListener('load', () => {
-          navigator.serviceWorker.register('/service-worker.js');
-        });
-      }
+      window.addEventListener('load',() => {
+          if('serviceWorker' in navigator){
+            navigator.serviceWorker.register('/service-worker.js').then(() => {
+              console.log('Service Worker registrado!')
+            }).catch(e => {
+              console.log('Service Worker no pudo ser registrado')
+              console.log(e)
+            });
+          }
+      });
     </script> 
 
   @endif

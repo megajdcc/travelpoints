@@ -44,7 +44,11 @@ export default {
 				carrito_compra:[],
 				status:3,
 				lider:null,
-				promotores:[]
+				promotores:[],
+				tarjeta_id:null,
+				tarjeta:null,
+				destino_id:null,
+				destino:null
 			},
 
 			user: {
@@ -80,7 +84,11 @@ export default {
 				referidos: [],
 				referidor: [],
 				negocios: [],
-				cupones: []
+				cupones: [],
+				tarjeta_id:null,
+				tarjeta:null,
+				destino_id:null,
+				destino:null
 			},
 
 			usuarios: [],
@@ -89,7 +97,8 @@ export default {
 
 	mutations:{
 
-		cargarUser(state,data){			
+		cargarUser(state,data){
+			localStorage.setItem('userData',JSON.stringify(data))			
 			state.usuario = data;
 		},
 
@@ -102,7 +111,10 @@ export default {
 		},
 
 		setUsuario(state,usuario){
-			state.user = usuario
+			if(usuario != undefined || usuario != null){
+				state.user = usuario
+			}
+			
 		},
 
 		pushUsuario(state,usuario){
@@ -147,7 +159,11 @@ export default {
 				referidos: [],
 				referidor: [],
 				negocios: [],
-				cupones: []
+				cupones: [],
+				tarjeta_id:null,
+				tarjeta:null,
+				destino_id:null,
+				destino:null
 			}
 		},
 
@@ -173,9 +189,7 @@ export default {
 
 		updateAvatar(state,avatar){
 			const user = JSON.parse(localStorage.getItem('userData'))
-
 			user.avatar = avatar;
-
 			localStorage.setItem('userData',JSON.stringify(user))
 			state.usuario.avatar = avatar;
 		},
@@ -241,7 +255,9 @@ export default {
 				likes:[],
 				status:3,
 				lider:null,
-				promotores:[]
+				promotores:[],
+				tarjeta_id:null,
+				tarjeta:null
 			}
 		},
 
@@ -446,23 +462,23 @@ export default {
 				})
 			}
 		},
+
+		miSaldo(state){
+			return state.usuario.cuenta ? state.usuario.cuenta.saldo : 0
+		}
 	},
 
 	actions:{
 
 		cargarUsuarios({state,commit}){
-			var result = false;
 
-			commit('toggleLoading',null,{root:true});
+			return new Promise((resolve, reject) => {
+				axios.get('/api/usuarios/all').then(({data}) => {
+					commit('setUsuarios',data);
+					resolve(data)
+				}).catch( e => reject(e))
+			})
 
-			axios.get('/api/usuarios/all').then(respon => {
-				result = true;
-				commit('setUsuarios',respon.data);
-			}).catch(e => {
-				console.log(e)
-			}).then(() => commit('toggleLoading', null, { root: true }) )
-
-			return result;
 		},
 
 		cargarLideres({state,commit}){
@@ -494,7 +510,7 @@ export default {
 		},
 
 
-		async cargarUsuario({state,commit,dispatch}){
+		cargarUsuario({state,commit,dispatch}){
 
 				// return await axios.get('/app/get/data');
 				let options = {
@@ -502,18 +518,22 @@ export default {
 						'WWW-Authenticate': 'Bearer', 'Authorization': localStorage.getItem('token')
 					}
 				}
-				return await axios.get('/api/auth/user',null,options);
+				return new Promise((resolve, reject) => {
+					axios.get(`/api/auth/user/`,null,options).then(({data}) => {
+						commit('cargarUser',data)
+						resolve(data)
+					}).catch(e => reject(e))
+
+				})
 
 		},
 
 		async guardar({state,commit,dispatch},data){
 
 			return new Promise((resolve, reject) => {
-				commit('toggleLoading',null,{root:true})
-
-				if (state.user.id) {
+				if (data.id) {
 						
-						axios.put(`/api/usuarios/` + state.user.id, data).then(({data:datos}) => {
+						axios.put(`/api/usuarios/` + data.id, data).then(({data:datos}) => {
 
 							if(datos.result){
 								commit('update',datos.usuario)
@@ -521,7 +541,6 @@ export default {
 							resolve(datos)
 
 						}).catch(e => reject(e))
-						.then(() => commit('toggleLoading',null,{root:true}))
 
 
 
@@ -535,8 +554,6 @@ export default {
 						resolve(datos)
 					
 					 }).catch(e => reject(e))
-					 .then(() => store.commit('toggleLoading',null,{root:true}))
-
 				}
 			
 			})
@@ -619,6 +636,7 @@ export default {
 		getUsuario({state,commit},id_usuario){
 			return new Promise((resolve, reject) => {
 				axios.get(`/api/usuarios/${id_usuario}/get`).then(({data}) => {
+					commit('setUsuario',data)
 					resolve(data)
 				}).catch(e => reject(e))
 			})
@@ -904,7 +922,35 @@ export default {
 				}).catch(e => reject(e))
 
 			})
+		},
+
+		asociarTarjeta({state,commit},tarjeta){
+
+			return new Promise((resolve, reject) => {
+				axios.put(`/api/usuarios/${state.usuario.id}/asociar/tarjeta`,tarjeta).then(({data}) => {
+					if(data.result){
+						commit('updatePerfil',data.usuario)
+					}
+
+					resolve(data)
+					
+				}).catch(e => reject(e))
+			})
+		},
+
+		cancelarTarjeta({state,commit},tarjeta_id){
+			return new Promise((resolve, reject) => {
+				axios.delete(`/api/usuarios/${state.usuario.id}/cancelar/tarjeta/${tarjeta_id}`).then(({data}) => {
+					if(data.result){
+						commit('updatePerfil',data.usuario)
+					}
+
+					resolve(data)
+				}).catch(e => reject(e))
+				
+			})
 		}
+
 
 	}
 

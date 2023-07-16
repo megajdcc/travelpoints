@@ -32,24 +32,20 @@ export default function useAuth(){
 
 
       store.dispatch('cerrarSesion').then(({data}) => {
-      localStorage.removeItem('token')
-      localStorage.removeItem('habilidades');
-      localStorage.removeItem('userData');
+         localStorage.removeItem('token')
+         localStorage.removeItem('habilidades');
+         localStorage.removeItem('userData');
+         localStorage.removeItem('usuarioId')
 
-      store.commit('usuario/limpiarUsuario')
-      ability.update(initialAbility)
-      
+         store.commit('usuario/limpiarUsuario')
+         ability.update(initialAbility)
+         
 
-      router.push({name:'login'})
+         router.push({name:'login'})
 
       }).catch(e => {
-
-         console.log(e)
-
          if(e.response.status === 419 ){
-
             router.push({name:'login'})
-
          }
 
       })
@@ -75,6 +71,7 @@ export default function useAuth(){
                   localStorage.setItem('token', data.accessToken);
                   localStorage.setItem('habilidades', JSON.stringify(data.usuario.habilidades));
                   localStorage.setItem('userData', JSON.stringify(data.usuario));
+                  // localStorage.setItem('usuarioId',data.usuario.id)
 
                   ability.update(JSON.parse(localStorage.getItem('habilidades')));
 
@@ -82,6 +79,7 @@ export default function useAuth(){
 
             }).catch((error) => {
 
+               console.log(error);
                if (error.response && error.response.status === 422) {
                   formValidate.value.setErrors(error.response.data.errors)
                }
@@ -175,12 +173,14 @@ export default function useAuth(){
 
          localStorage.setItem('token', data.accessToken);
          localStorage.setItem('habilidades', JSON.stringify(data.usuario.habilidades));
+         localStorage.setItem('usuarioId',data.usuario.id);
          localStorage.setItem('userData', JSON.stringify(data.usuario));
 
          ability.update(JSON.parse(localStorage.getItem('habilidades')));
 
          if (localStorage.getItem('token')) {
-            store.commit('usuario/cargarUser', JSON.parse(localStorage.getItem('userData')));
+            store.commit('usuario/cargarUser', localStorage.getItem('userData') ? JSON.parse(localStorage.getItem('userData')) : data.usuario);
+            // store.commit('usuario/cargarUser',data.usuario)
          }
 
          toast({
@@ -205,7 +205,12 @@ export default function useAuth(){
    }  
 
 
-   const isNegocios = computed(() => usuario.value.negocios.length > 0 ? true : false);
+   const isNegocios = computed(() => {
+      if(usuario.value.negocios){
+         return usuario.value.negocios.length > 0 ? true : false
+      }
+      return false
+   });
 
 
    return {

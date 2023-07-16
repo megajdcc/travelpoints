@@ -78,14 +78,28 @@
                 {{ getStatusLegendPromotor(item.status) }}
               </span>
             </template>
+
+            <template #cell(destino_id)="{ item }">
+
+              <b-button @click="showDestino(item)" variant="primary" size="sm" >
+                {{ item.destino_id ? item.destino ? item.destino.nombre : '' : 'Sin destino, ¿Asociar?' }}
+               </b-button>
+            
+             
+            </template>
             
             <!-- Column: Actions -->
-            <template #cell(actions)>
+            <template #cell(actions)="{item}">
               <b-dropdown variant="link" no-caret :right="$store.state.appConfig.isRTL">
 
                 <template #button-content>
                   <feather-icon icon="MoreVerticalIcon" size="16" class="align-middle text-body" />
                 </template>
+
+                <b-dropdown-item :to="{name:'edit.usuario',params:{id:item.id}}" v-if="$can('update','usuarios')">
+                  <font-awesome-icon icon="fas fa-edit"/>
+                  Editar
+                </b-dropdown-item>
              
               </b-dropdown>
             </template>
@@ -217,6 +231,36 @@
       </validation-observer>
     </b-sidebar>
 
+    <b-sidebar v-model="isShowDestino" title="Destino">
+      <validation-observer ref="formValidateUser" #default="{handleSubmit}">
+        <b-form @submit.prevent="handleSubmit(asociarDestino)">
+          <b-container fluid>
+            <b-row>
+              <b-col cols="12">
+                <b-form-group label="Destino" description="Seleccione un destino">
+                  <validation-provider name="destino_id" rules="required" #default="{valid,errors}">
+                    <v-select v-model="formUser.destino_id" :options="destinos" label="nombre" :reduce="(option) => option.id"></v-select>
+
+                    <b-form-invalid-feedback :state="valid">
+                      {{  errors[0]  }}
+                    </b-form-invalid-feedback>
+                  </validation-provider>
+
+                </b-form-group>
+              </b-col>
+
+              <b-col cols="12">
+                <b-button variant="primary" size="sm" v-loading="loading" type="submit" :disabled="loading">
+                  <font-awesome-icon icon="fas fa-save"/>
+                  {{ $t('Guardar') }}
+                </b-button>
+              </b-col>
+            </b-row>
+          </b-container>
+        </b-form>
+      </validation-observer>
+    </b-sidebar>
+ 
   </section>
 
 </template>
@@ -311,16 +355,20 @@ export default {
     
     const {usuario,usuarios} = toRefs(store.state.usuario)
     const { liderId:lider_id } = toRefs(props)
+    const isShowDestino  = ref(false)
+    const formUser = ref({})
     const lider = ref({
       id:computed(() => lider_id.value)
-    })
+    })  
+
+    const {destinos} = toRefs(store.state.destino)
 
     const actions = usePromotoresList(lider.value.id ? lider : usuario);
     
     const showUsersLiders = ref(false)
     const formValidate =ref(null)
     const formValidatePromotor = ref(null)
-    
+    const formValidateUser =ref(null)
 
     const showFormularioPromotor = ref(false)
 
@@ -450,9 +498,47 @@ export default {
       store.dispatch('usuario/cargarLideres')
     }
 
+    const showDestino = (user) => {
+
+      if(!destinos.value.length){
+        store.dispatch('destino/getDestinos')
+      }
+
+      formUser.value = user
+      isShowDestino.value = true
+
+    }
+
+    const asociarDestino = () => {
+
+      store.dispatch('usuario/guardar',formUser.value).then(({result}) => {
+
+        if(result){
+          toast.success('Se ha asociado con éxito destino al promotor')
+          isShowDestino.value = false
+          formUser.value = {}
+          actions.refetchData()
+
+        }else{
+          toast.info('No se pudo asociar el destino, inténte de nuevo')
+        }
+      }).catch(e => {
+
+        if(e.response.status === 422){
+          formValidateUser.value.setErrors(e.response.data.errors)
+        }else{
+          console.log(e)
+        }
+      })
+    }
+
+
     return {
       loading:computed(() => store.state.loading),
       actions,
+      destinos,
+      formValidateUser,
+      formUser,
       refTable:actions.refTable,
       avatarText,
       resolveUserRoleVariant,
@@ -460,6 +546,8 @@ export default {
       cambiarEstado,
       asignarLider,
       showUsersLiders,
+      showDestino,
+      isShowDestino,
       formulario,
       formValidate,
       guardarAsignacion,
@@ -473,7 +561,8 @@ export default {
       guardarPromotor,
       formValidatePromotor,
       cargarUsers,
-      getStatusLegendPromotor
+      getStatusLegendPromotor,
+      asociarDestino
     }
   }
 

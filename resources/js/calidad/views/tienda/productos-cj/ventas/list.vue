@@ -1,10 +1,10 @@
 <template>
     <listado :actions="actions" hideFooter>
-       <template #contenido="{ fetchData, tableColumns, sortBy, isSortDirDesc, perPage, eliminar }">
+       <template #contenido="{ fetchData, tableColumns, sortBy, isSortDirDesc, perPage }">
           <b-card class="mt-1">
         
-            <b-table ref="refTable" :items="fetchData" responsive :fields="tableColumns" primary-key="id" :sort-by.sync="sortBy"
-              empty-text="No se encontró ninguna venta" :sort-desc.sync="isSortDirDesc" sticky-header="700px"
+            <b-table ref="refTable" :items="fetchData" responsive :fields="tableColumns" primary-key="id" :sort-by="sortBy"
+              empty-text="No se encontró ninguna venta" :sort-desc="isSortDirDesc" sticky-header="700px"
               :no-border-collapse="false"  borderless outlined :busy="loading" :perPage="perPage" showEmpty small stacked="md">
             
               <template #cell(id)="{ item, toggleDetails, detailsShowing }">

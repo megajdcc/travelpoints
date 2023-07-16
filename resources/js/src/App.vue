@@ -27,6 +27,7 @@ import { Notification } from 'element-ui'
 
 import { useRoute } from 'vue2-helpers/vue-router';
 
+
 export default {
 
   components: {
@@ -67,6 +68,7 @@ export default {
 
     const route = useRoute();
     const contentLayoutType = computed(() => store.state.appConfig.layout.type)
+    const usuario = computed(() => store.state.usuario.usuario);
 
     const layout = computed(() => {
 
@@ -95,7 +97,13 @@ export default {
 
 
     if (localStorage.getItem('token')) {
-      store.commit('usuario/cargarUser', JSON.parse(localStorage.getItem('userData')));
+      if(localStorage.getItem('userData') != undefined){
+       store.commit('usuario/cargarUser', JSON.parse(localStorage.getItem('userData')));
+      }else{
+        if (!usuario.value.id) {
+          store.dispatch('usuario/cargarUsuario')
+        }
+      }
     }
 
     // Cargar Sistema

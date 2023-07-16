@@ -8,12 +8,10 @@
                <search :destino="destino_id" />
             </b-card>
             <b-breadcrumb style="margin-top: -20px;">
-
                <b-breadcrumb-item @click="limpiarDestinos">
                   <font-awesome-icon icon="fas fa-rotate-right" />
-                  Destinos
+                  {{ $t('Destinos') }}
                </b-breadcrumb-item>
-
                <b-breadcrumb-item :to="rutaDestino" text>{{ getDestinoName }}</b-breadcrumb-item>
             </b-breadcrumb>
 
@@ -24,39 +22,79 @@
       <!-- <destinos :destinos="destinos" /> -->
 
 
-      <b-tabs content-class="mt-3">
+      <b-tabs content-class="mt-3" nav-class="fixed-top" ref="refTabs">
          <b-tab active>
 
             <template #title>
                <font-awesome-icon icon="fas fa-grip-vertical" class="mr-1" />
-               Vista principal
+               {{ $t('Vista principal') }}
             </template>
+            <!-- Destino Perfil -->
+
+            <destino-perfil :destino="origen" isHome v-if="destino_id && origen.id" />
             <!-- Atracciones -->
             <atracciones :atracciones="atracciones.filter(val => val.destino_id == destino_id)" />
 
             <!-- Negocios -->
-            <negocios :destino="destino" v-if="destino_id" />
+            <negocios :destino="destino" v-if="destino_id" id="negocios-list" ref="negociosElem"/>
 
             <!-- Eventos -->
-            <eventos :destino="destino" v-if="destino_id" />
+            <eventos :destino="destino" v-if="destino_id" id="eventos-list" ref="eventosElem"/>
+
+            <!-- Cupones -->
+
+            <cupones :destino="destino" v-if="destino_id" id="cupones-list" ref="destinoElem"  />
 
          </b-tab>
          <b-tab title="Maps" lazy>
 
             <template #title>
                <font-awesome-icon icon="fas fa-map-location-dot" class="mr-1" />
-               Vista Mapa
+               {{ $t('Vista Mapa') }}
             </template>
 
             <travel-map :destino="destino_id" v-if="destino_id" />
          </b-tab>
 
+         <template #tabs-end>
+            <li  class="nav-item">
+               <b-button class="nav-link" variant="text" role="button"  v-ripple.400="'rgba(255, 255, 255, 0.15)'" @click="scrollIr('negocios-list')">
+                  <font-awesome-icon icon="fas fa-store" />
+                  {{ $t('Negocios') }}
+               </b-button>
+            </li>
+
+            <li class="nav-item">
+               <b-button class="nav-link" variant="text" role="button"  v-ripple.400="'rgba(255, 255, 255, 0.15)'" @click="scrollIr('eventos-list')">
+                  <font-awesome-icon icon="fas fa-grip" />
+                  {{ $t('Eventos') }}
+               </b-button>
+            </li>
+
+             <li class="nav-item">
+               <b-button class="nav-link" variant="text" role="button" v-ripple.400="'rgba(255, 255, 255, 0.15)'" @click="scrollIr('cupones-list')">
+                  <font-awesome-icon icon="fas fa-tags" />
+                  {{ $t('Cupones') }}
+               </b-button>
+            </li>
+
+         </template>
+
       </b-tabs>
 
 
       <!-- Si el usuario no Ha seleccionado un destino, debe hacerlo  -->
-      <el-dialog title="Elija un Destino" :visible.sync="showDestino" width="90%" :show-close="false"
-         :close-on-click-modal="false" :close-on-press-escape="false">
+      <el-dialog :title="$t('Elija un Destino')" :visible.sync="showDestino" width="90%" :show-close="false"
+         :close-on-click-modal="false" :close-on-press-escape="false" class="dialogo-seleccion-destino">
+
+         <template #title>
+            <h3 class="card-title">
+               <strong class="text-primary">
+                  {{ $t('Comencemos') }}
+               </strong>
+               {{ $t('por elegir un destino') }}
+            </h3>
+         </template>
          <destino-selected isSelected @destinoSelected="destinoSeleccionado" />
       </el-dialog>
 
@@ -66,6 +104,7 @@
 <script>
 import {
    BContainer,
+   BCardTitle,
    BRow,
    BCol,
    BCard,
@@ -79,9 +118,10 @@ import {
    BBreadcrumb,
    BBreadcrumbItem,
    BTabs,
-   BTab
+   BTab,
+   BButton
 } from 'bootstrap-vue'
-import { onMounted, onActivated, computed, ref, toRefs } from 'vue'
+import { onMounted, onActivated, computed, ref, toRefs, watch,inject } from 'vue'
 
 // import { Pagination, Navigation } from 'swiper'
 
@@ -91,7 +131,7 @@ import useAuth from '@core/utils/useAuth';
 import router from '@/router'
 import Ripple from 'vue-ripple-directive'
 
-
+import { useElementBounding } from '@vueuse/core'
 export default {
 
    components: {
@@ -103,7 +143,7 @@ export default {
       vSelect,
       BCarousel,
       BCarouselSlide,
-
+      BButton,
       BImg,
       BLink,
       BBadge,
@@ -117,11 +157,14 @@ export default {
       destinoSelected: () => import('components/DestinoSelected.vue'),
       Negocios: () => import('components/Negocios.vue'),
       Eventos: () => import('components/Eventos.vue'),
+      Cupones: () => import('components/Cupones.vue'),
+
       TravelMap: () => import('components/TravelMap.vue'),
       BBreadcrumb,
       BBreadcrumbItem,
       BTabs,
-      BTab
+      BTab,
+      DestinoPerfil:() => import('views/paginas/DestinoPerfil.vue')
    },
 
    directives: {
@@ -140,16 +183,27 @@ export default {
       const showDestino = ref(false)
       const destino = ref({ id: computed(() => destino_id.value) })
       destino_id.value = localStorage.getItem('destino_id')
+      const refTabs = ref(null)
+      const negociosElem = ref(null)
+      const eventosElem = ref(null)
+      const i18n = inject('i18n')
+      
       const cargarForm = () => {
+         
+         if(destino_id.value){
+            store.dispatch('destino/fetchPublic', destino_id.value)
+            store.dispatch('atraccion/getAtracciones')
+         }
+
          // if(!atracciones.value.length){
-         store.dispatch('atraccion/getAtracciones')
+         // store.dispatch('atraccion/getAtracciones')
          // }
 
          // if (!destinos.value.length) {
-         store.dispatch('destino/getDestinos')
+         // store.dispatch('destino/getDestinos')
          // }
-
-
+         
+       
 
          if (!destino_id.value) {
             showDestino.value = true
@@ -159,8 +213,9 @@ export default {
 
       onMounted(() => {
          authGoogle()
-         cargarForm()
       })
+
+      cargarForm();
 
       const remoteMethod = () => {
 
@@ -222,11 +277,12 @@ export default {
 
       const destinoSeleccionado = (dest_id) => {
          localStorage.setItem('destino_id', dest_id)
+
          destino_id.value = localStorage.getItem('destino_id')
          cargarForm();
          showDestino.value = false
 
-         window.location.reload();
+         // window.location.reload();
       }
 
 
@@ -235,15 +291,43 @@ export default {
          showDestino.value = true
       }
 
+      const scrollIr = (to) => {
+
+         refTabs.value.firstTab();
+
+         setTimeout(() => {
+            const elem = document.getElementById(to)
+            window.scrollTo({
+               top: elem.offsetTop - 80,
+               behavior: 'smooth',
+            })
+         }, 200);
+         
+
+      }
+
+
+      watch(destino_id, () => {
+          store.dispatch('destino/fetchPublic', destino_id.value).then((data) => {
+            store.dispatch('atraccion/getAtracciones')
+         })
+      })
+
+
       return {
          showDestino,
          search,
          remoteMethod,
+         refTabs,
          swiperOptions,
          atracciones,
          destinos,
          is_loggin,
          destino_id,
+         scrollIr,
+         eventosElem,
+         negociosElem,
+         origen,
          destino,
          limpiarDestinos,
          destinoSeleccionado,
@@ -251,19 +335,21 @@ export default {
          loading: computed(() => store.state.loading),
          imageBanner: computed(() => `/storage/${sistema.value.banner_principal}`),
          getDestinoName: computed(() => {
-            if (destino_id.value && destinos.value.length) {
-               let desti = destinos.value.find(val => val.id == destino_id.value)
-
-               return desti != undefined ? desti.nombre : ''
+            if (destino_id.value) {
+               // let desti = destinos.value.find(val => val.id == destino_id.value)
+               // return desti != undefined ? desti.nombre : destino.value.nombre
+               return origen.value.nombre 
             } else {
-               return 'Elejir Destino'
+               return i18n.t('Elejir Destino')
             }
          }),
          rutaDestino: computed(() => {
-            if (destino_id.value && destinos.value.length) {
+            if (destino_id.value && origen.value.ruta) {
 
-               let desti = destinos.value.find(val => val.id == destino_id.value)
-               return desti != undefined ? desti.ruta : ''
+               // let desti = destinos.value.find(val => val.id == destino_id.value)
+               // return desti != undefined ? desti.ruta : ''
+
+               return origen.value.ruta
             } else {
                return '#'
             }
@@ -308,4 +394,12 @@ export default {
 .el-dialog {
    width: 80% !important;
 }
+
+
+</style>
+
+<style lang="scss" scoped>
+   .dialogo-seleccion-destino::v-deep .el-dialog__body {
+      padding-top: 0px !important;
+   }
 </style>

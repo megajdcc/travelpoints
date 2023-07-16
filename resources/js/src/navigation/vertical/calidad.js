@@ -132,6 +132,15 @@ export default [
          }
       ]
    },
+   {
+      title:'Tarjetas',
+      icon:'fa-credit-card',
+      fontAwesome:true,
+      children:[
+         { title:'Registrar lote',route:'lotes.list',icon:'fa-plus',resource:'lotes',action:'read',fontAwesome:true},
+         { title:'Tarjetas',route:'tarjetas.list',icon:'fa-rectangle-list',resource:'tarjetas',action:'read',fontAwesome:true},
+      ]
+   },
 
    {
       title:'Tiendas Y Productos',
@@ -167,15 +176,6 @@ export default [
       fontAwesome:true,
       route:'multimedias',
       resource:'multimedias',
-      action:'read'
-   },
-
-   {
-      title:'Academia',
-      icon:'fa-play',
-      fontAwesome:true,
-      route:'academia.list',
-      resource:'academias',
       action:'read'
    },
 
@@ -244,6 +244,15 @@ export default [
          },
 
          {
+            title:'Academia',
+            icon:'fa-play',
+            fontAwesome:true,
+            route:'academia.list',
+            resource:'academias',
+            action:'read'
+         },
+
+         {
             title: 'Preguntas Frecuentes (Faqs)',
             route: 'listar.faqs',
             icon:'HelpCircleIcon',
@@ -284,6 +293,12 @@ export default [
             route: 'formasPago.list',
             action: 'read',
             resource: 'formas de pago'
+         },
+         {
+            title: 'Mensajes (Vonages)',
+            route: 'mensajes.list',
+            action: 'read',
+            resource: 'vonage'
          }
       ]
    },

@@ -644,7 +644,7 @@ export default [
 
                         meta: {
                               resource: "negocio eventos",
-                              action: 'read',
+                              action: 'write',
                               layout: 'negocio',
                               pageTitle: 'Crear Evento',
                               navActiveLink:'negocio.eventos',
@@ -845,36 +845,7 @@ export default [
                         }
                   },
 
-                  {
-                        path: ':id/edit',
-                        props: true,
-                        component: () => import('views/panels/negocio/cupones/edit.vue'),
-                        name: 'negocio.cupon.edit',
-                        meta: {
-                              resource: 'negocio cupones',
-                              action: 'update',
-                              pageTitle: 'Edit Cupón',
-                              layout: 'negocio',
-                              navActiveLink: 'negocio.cupones',
-                              breadcrumb: [
-                                    {
-                                          text: 'Home',
-                                          to: {name:'negocio.home'},
-                                          active: false
-                                    },
-
-                                    {
-                                          text: 'Cupones ',
-                                          active: false,
-                                          to: { name: 'negocio.cupones' }
-                                    },
-                                    {
-                                          text: 'Editar ',
-                                          active: true,
-                                    }
-                              ]
-                        }
-                  },
+            
 
                   {
                         path: ':id/reservar/cupon',
@@ -1045,7 +1016,8 @@ export default [
                   },
 
                   {
-                        path: 'create',
+                        path: 'create/:reserva?',
+                        props:true,
                         name: 'negocio.venta.create',
                         component: () => import('views/panels/negocio/ventas/create.vue'),
                         meta: {

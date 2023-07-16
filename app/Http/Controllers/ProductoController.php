@@ -34,6 +34,8 @@ class ProductoController extends Controller
         $datos  = $request->all();
 
         $is_categorias = count($datos['categoria_id']) > 0;
+        $is_tiendas = count($datos['tienda_id']) > 0;
+
         $paginator = Producto::where([
             ['nombre','like',"%{$datos['q']}%","OR"],
             ['breve', 'like', "%{$datos['q']}%", "OR"],
@@ -42,21 +44,31 @@ class ProductoController extends Controller
             ['caracteristicas', 'like', "%{$datos['q']}%", "OR"],
             ['envio', 'like', "%{$datos['q']}%", "OR"],
         ])
-        ->whereHas('categoria',function(Builder $q) use($datos){
-            $q->orWhere([
-                ['nombre','LIKE',"%{$datos['q']}%","OR"],
-                ['descripcion', 'LIKE', "%{$datos['q']}%", "OR"]
-            ]);
-        })
-        
+        ->when($is_categorias,function($q) use($datos,$is_tiendas){
 
-        ->when($is_categorias,function($q) use($datos){
-            $q->whereIn('categoria_id',$datos['categoria_id']);
+            if(CategoriaProducto::whereIn('id',$datos['categoria_id'])->where('nombre','Km 0')->first()?->nombre == 'Km 0'){
+                $q->whereIn('categoria_id', $datos['categoria_id'])
+                ->when($is_tiendas, function($que) use($datos){
+
+                    $que->whereHas('tiendas',function(Builder $query) use($datos){
+                        $query->whereIn('id',$datos['tienda_id']);
+                    });
+
+                });
+            }else{
+                $q->whereIn('categoria_id', $datos['categoria_id']);
+            }
+            
+        })
+        ->when($is_tiendas, function($q) use($datos){
+                $q->whereHas('tiendas',function(Builder $query) use($datos){
+                    $query->whereIn('id',$datos['tienda_id']);
+                });
         })
         ->whereBetween('precio',$datos['precios'])
         ->with(['categoria','imagenes','opinions','tiendas','consumos','divisa'])
         ->orderBy('precio', $datos['sortBy'] == 'price-asc' ? 'asc' : 'desc')
-        ->paginate($datos['perPage'] ?: 10000);
+        ->paginate($datos['perPage'] ?: 10000,pageName: 'currentPage');
 
         $productos = collect($paginator->items());
 

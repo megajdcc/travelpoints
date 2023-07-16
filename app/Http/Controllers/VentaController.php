@@ -7,6 +7,7 @@ use App\Models\Movimiento;
 use App\Models\Negocio\Empleado;
 use App\Models\Sistema;
 use App\Models\Venta;
+use App\Notifications\consumoInvitado;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -26,6 +27,7 @@ class VentaController extends Controller
                 ['comision', 'like', "%{$datos['q']}%", 'or'],
                 ['tps', 'like', "%{$datos['q']}%", 'or'],
                 ['tps_referente', 'like', "%{$datos['q']}%", 'or'],
+                ['tps_bonificados', 'like', "%{$datos['q']}%", 'or'],
                 ['certificado', 'like', "%{$datos['q']}%", 'or'],
             ])
             ->whereHas('cliente',function(Builder $q) use($datos){
@@ -49,6 +51,7 @@ class VentaController extends Controller
                 ['comision', 'like', "%{$datos['q']}%", 'or'],
                 ['tps', 'like', "%{$datos['q']}%", 'or'],
                 ['tps_referente', 'like', "%{$datos['q']}%", 'or'],
+                ['tps_bonificados', 'like', "%{$datos['q']}%", 'or'],
                 ['certificado', 'like', "%{$datos['q']}%", 'or'],
             ])
             ->whereHas('cliente', function (Builder $q) use ($datos){
@@ -147,7 +150,10 @@ class VentaController extends Controller
             
             // Aplicar Cupon
             if(isset($datos['cupon_id']) && !is_null($datos['cupon_id'])){
-                $venta->cliente->cupones()->updateExistingPivot($datos['cupon_id'],['status' => 2]);
+                $venta->cliente->cupones()
+                ->wherePivot('cupon_id',$datos['cupon_id'])
+                ->wherePivot('status',1)
+                ->updateExistingPivot($datos['cupon_id'],['status' => 2]);
             }
 
             $monto = number_format((float) $venta->monto,2,'.',',') .' '.$venta->divisa->iso;
@@ -155,17 +161,55 @@ class VentaController extends Controller
             // Comision Viajero Tps
             if(in_array($venta->cliente->rol->nombre, ['Viajero'])){
                 // multiplicamos el monto tps correspondido por la tasa de la divisa de la venta correspondiente a la divisa principal TP
-                $comision_cliente = $datos['tps'] / $venta->divisa->tasa; 
-                // GEneramos el movimiento en la billetera del cliente 
-                $venta->cliente->generarMovimiento($comision_cliente, "Consumo en {$venta->model->nombre} por un monto de:{$monto}.");
+                $comision_cliente = $datos['tps'] / $venta->divisa->tasa;
+
+                //  Generamos el movimiento en la billetera del cliente 
+                if (!$venta->cliente->cuenta) {
+                    $venta->cliente->aperturarCuenta(0, 'Tp');
+                }
+                $movimiento = $venta->cliente->generarMovimiento($comision_cliente, "Consumo en {$venta->model->nombre} por un monto de:{$monto}.");
+
+                $venta->tps_bonificados = $comision_cliente;
+                $venta->save();
+
+                
+                // Adjudicar Comision a referidor
+                if($venta->cliente->referidor->first() && $venta->cliente->referidor->first()->activo){
+                    
+                    $porcentaje_referidor  = Sistema::first()->porcentaje_referido;
+                    $referidor = $venta->cliente->referidor->first();
+                   
+                    if($porcentaje_referidor > 0){
+                       
+                       $comision_referidor = round($comision_cliente * $porcentaje_referidor / 100,2);
+                        
+                       if(!$referidor->cuenta){
+                        $referidor->aperturarCuenta(0,'Tp');
+                       }
+
+                       $movimiento_referidor = $referidor->generarMovimiento($comision_referidor,
+                       "Consumo de un invitado ({$venta->cliente->getNombreCompleto()}) en el negocio {$venta->model->nombre}.");
+
+                        // Descontamos al sistema el monto adjudicado al Referidor
+
+                        $sistema = Sistema::first();
+                        
+                        $monto_descontar = $comision_referidor * $sistema->cuenta->divisa->tasa;
+
+                        $sistema->generarMovimiento($monto_descontar,"Comisión adjudicada al viajero {$referidor->getNombreCompleto()}, por consumo de su invitado ({$venta->cliente->getNombreCompleto()}) en el negocio ({$venta->model->nombre}), por un monto de:{$monto}",Movimiento::TIPO_EGRESO);
+
+                        // Se le notifica al invitador de la nueva comisión.
+                        $referidor->notify(new consumoInvitado($venta,$comision_referidor));
+                    }
+                }
+                
             }
-            
-          
 
             // descontamos al negocio El monto correspondiente por haber realizado la venta
             $comision_travel = $venta->getComisionTravel();
+            $monto_descuento = Divisa::cambiar($venta->divisa,$venta->model->divisa,$comision_travel);
             
-            $venta->model->generarMovimiento($venta->model->divisa->convertir($venta->divisa, $comision_travel), "Consumo de cliente {$venta->cliente->nombre} {$venta->cliente->apellido} por un monto de:{$monto}.",Movimiento::TIPO_EGRESO);
+            $venta->model->generarMovimiento($monto_descuento, "Consumo de cliente {$venta->cliente->nombre} {$venta->cliente->apellido} por un monto de:{$monto}.",Movimiento::TIPO_EGRESO);
 
            
             // generar movimiento para el sistema... 
@@ -173,8 +217,8 @@ class VentaController extends Controller
             $sistema->adjudicarComisiones($comision_travel,$venta);
             // dd($venta);
             $sistema->refresh();
-          
-            $venta->cargar();
+
+           
 
             if($reservacion = $venta->reservacion){
                 $reservacion->status = 2;
@@ -183,6 +227,7 @@ class VentaController extends Controller
 
             // Falta Notificar Venta al usuario y a los operadores si los Hubiera...
             DB::commit();
+            $venta->cargar();
             $result = true;
         } catch (\Throwable $th) {
 

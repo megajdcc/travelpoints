@@ -161,6 +161,15 @@ import academiaVideos from './modules/academiaVideos.js'
 import pagina from './modules/pagina.js';
 
 
+// Lote de Tarjetas
+import lote from './modules/lote.js';
+
+// Tarjeta  
+import tarjeta from './modules/tarjeta.js'
+
+// vonage
+import vonage from './modules/vonage.js'
+
 Vue.use(Vuex)
 
 
@@ -314,7 +323,10 @@ export default new Vuex.Store({
     estado,
     ciudad,
     academiaVideos,
-    pagina
+    pagina,
+    lote,
+    tarjeta,
+    vonage
   },
   strict:false,
 

@@ -41,7 +41,7 @@ export default{
 
       getStatus(state){
          return (event) => {
-            let status = ['Activo','Vencido','Prorrateado'];
+            let status = ['Activo','Vencido','Aun no inicia'];
 
             return status[event.status - 1];
          }
@@ -49,9 +49,9 @@ export default{
 
        getRecurrencia(state){
          return (event) => {
-            let tipo_recurrencia = ['Semanalmente','Mensual','Anual'];
+            let tipo_recurrencia = ['Diariamente','Semanalmente','Mensual','Anual'];
 
-            return tipo_recurrencia[event.tipo_recurrencia - 1];
+            return tipo_recurrencia[event.tipo_recurrencia];
          }
       }
    },
@@ -176,7 +176,10 @@ export default{
             axios.post(`/api/eventos/fetch/eventos`,datos).then(({data}) => {
                commit('setEventos',data)
                resolve(data)
-            }).catch(e => reject(e))
+            }).catch(e => {
+               console.log(e)
+               reject(e)
+            })
 
 
          })
@@ -186,9 +189,11 @@ export default{
 
          return new Promise((resolve, reject) => {
             
+
+           
             if(datos.id){
-               
                axios.put(`/api/eventos/${datos.id}`,datos).then(({data}) => {
+
                   if(data.result){
                      commit('update',data.evento)
                   }

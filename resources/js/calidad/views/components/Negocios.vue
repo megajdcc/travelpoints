@@ -108,12 +108,14 @@ export default{
   },
 
   props:{
-    negocios:Array,
+    negocios:{
+      type:Array,
+      required:false,
+      default:() => []
+    },
     destino:{
       type:Object,
-      default:{
-        id:null
-      }
+      default:() => ({id:null})
     },
     atraccion: Object,
     titulo:{
@@ -147,7 +149,7 @@ export default{
     }   
 
 
-    onMounted(() => actions.refetchData());
+    // onMounted(() => actions.refetchData());
     watch(() => destino.value.id, () => actions.refetchData());
 
     return {
@@ -188,7 +190,7 @@ export default{
   -webkit-backface-visiblity: hidden;
 }
 
-.card-simple:hover .card-simple-label {
+.card-simple:hover .card-simple-label{
   margin-top: -25px;
 }
 

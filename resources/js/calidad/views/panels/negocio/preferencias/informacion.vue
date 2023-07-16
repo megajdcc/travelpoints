@@ -62,6 +62,21 @@
                         </validation-provider>
                      </b-form-group>
 
+                      <b-form-group>
+                           <template #label>
+                              Divisa: <span class="text-danger">*</span>
+
+                              <validation-provider name="divisa_id" rules="required" #default="{ valid, errors }">
+                                 <v-select v-model="formulario.divisa_id" :reduce="(option) => option.id"
+                                    :options="divisas.filter(val => !val.principal)" label="nombre" class="w-100" />
+
+                                 <b-form-invalid-feedback :state="valid">
+                                    {{ errors[0] }}
+                                 </b-form-invalid-feedback>
+                              </validation-provider>
+                           </template>
+                     </b-form-group>
+
                      <b-form-group v-b-tooltip.hover.v-warning
                         title="Elija entre pagar una comisión o un cantidad fija por persona">
                         <template #label>
@@ -74,7 +89,7 @@
                            <b-form-radio-group v-model="formulario.tipo_comision"
                               :options="[{ text: 'Comisión', value: 1 }, { text: 'Cantidad Fija', value: 2 }]"
                               button-variant="outline-primary" buttons size="md" :state="errors.length ? false : null"
-                              class="w-100" @change="formulario.comision = 10">
+                              class="w-100" @change="validarMonto">
 
                            </b-form-radio-group>
 
@@ -119,7 +134,7 @@
                         <validation-provider name="comision" rules="required" #default="{ errors }">
 
                            <currency-input :value="formulario.comision" @input="formulario.comision = $event"
-                              :options="{...optionsCurrency,...{ currency: getCurrency }}" class="form-control" />
+                              :options="{...optionsCurrency,...{ currency: getCurrency }}" class="form-control" @blur="validarMonto"  />
 
                            <b-form-invalid-feedback :state="errors.length ? false : null">
                               {{ errors[0] }}
@@ -130,20 +145,7 @@
 
                      </b-form-group>
 
-                     <b-form-group>
-                        <template #label>
-                           Divisa: <span class="text-danger">*</span>
-
-                           <validation-provider name="divisa_id" rules="required" #default="{ valid, errors }">
-                              <v-select v-model="formulario.divisa_id" :reduce="(option) => option.id"
-                                 :options="divisas.filter(val => !val.principal)" label="nombre" class="w-100" />
-
-                              <b-form-invalid-feedback :state="valid">
-                                 {{ errors[0] }}
-                              </b-form-invalid-feedback>
-                           </validation-provider>
-                        </template>
-                     </b-form-group>
+                    
 
 
 
@@ -819,7 +821,8 @@ export default {
       })
 
       watch(formulario, () => cargarForm())
-
+      watch(divisas,() => cargarForm());
+      
       const getLatitud = () => {
          return Number(formulario.value.lat)
       }
@@ -886,6 +889,40 @@ export default {
          formulario.value.telefonos.splice(i , 1)
       }
 
+       const validarMonto = () => {
+         if (formulario.value.tipo_comision == 2 && isDivisa('MXN')) {
+
+            if (formulario.value.comision < 50) {
+               formulario.value.comision = 50;
+               toast.info('El monto mínimo permitido para MXN son 50')
+
+            }
+
+         } else {
+            formulario.value.comision = formulario.value.comision || 10;
+         }
+
+
+      }
+
+      const isDivisa = (iso) => {
+
+         let divisa = divisas.value.find(val => val.id == formulario.value.divisa_id)
+
+         if (divisa != undefined) {
+            return divisa.iso == iso ? true : false
+         }
+         return false;
+
+      }
+
+      watch(() => formulario.value.divisa_id, () => {
+         validarMonto()
+      })
+      watch(() => formulario.value.tipo_comision, () => {
+         validarMonto();
+      });
+
 
       return {
          formValidate,
@@ -922,16 +959,21 @@ export default {
          iatas,
          status: computed(() => getSituacionSolicitud(formulario.value.situacion)),
          regresar,
-
+         validarMonto,
          agregarEmail,
          quitarEmail,
-
          agregarTelefono,
          quitarTelefono,
          optionsEditor,
          getCurrency:computed(() => {
+            
             let divisa = divisas.value.find(val => val.id === formulario.value.divisa_id)
-            return divisa ? divisa.iso : 'MXN'
+            
+            if(divisa != undefined){
+               return divisa.iso
+            }
+
+            return 'MXN'
          })
       }
 

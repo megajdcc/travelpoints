@@ -13,23 +13,27 @@
                         </template>
                         <validation-provider name="usuario_id" rules="required" #default="{valid,errors}">
 
-                           <v-select v-model="formulario.usuario_id" :filterBy="filtrarUsuario" :reduce="(option) => option.id" :options="usuarios.filter(val => val.id != usuario.id)" @option:selected="establecerPermisos">
+                           <v-select v-model="formulario.usuario_id" :filterBy="filtrarUsuario" :reduce="(option) => option.id" :options="usuarios" @option:selected="establecerPermisos" :selectable="isSelected">
 
                               <template #selected-option="{avatar,nombre,apellido,email}">
                                  <b-avatar :src="avatar" rounded="circle" class="mr-1" size="20pt" />
                                  <strong> {{  `${nombre} ${apellido} - ${email}`  }}</strong>
                               </template>   
 
-                              <template #option="{avatar,nombre,apellido,email}" class="mr-1">
+                              <template #option="{avatar,nombre,apellido,email}">
                                  <b-avatar :src="avatar" rounded="circle" size="20pt" />
                                  <strong> {{ `${nombre} ${apellido} - ${email}` }}</strong>
                               </template>
 
-                              <template #no-options="{ search, searching, loading }">
+                              <template #no-options>
                                  Sin usuarios
                               </template>
 
                            </v-select>
+
+                           <b-form-invalid-feedback :state="valid">
+                              {{ errors[0] }}
+                           </b-form-invalid-feedback>
                         </validation-provider>
                      </b-form-group>
                   </b-col>
@@ -44,12 +48,14 @@
                            <v-select v-model="formulario.cargo_id"  :reduce="(option) => option.id"
                               :options="cargos" label="cargo" @option:selected="establecerPermisos">
 
-                              <template #no-options="{ search, searching, loading }">
+                              <template #no-options>
                                  Sin Cargos
                               </template>
                   
                            </v-select>
-
+                           <b-form-invalid-feedback :state="valid">
+                              {{ errors[0] }}
+                           </b-form-invalid-feedback>
                         </validation-provider>
                      </b-form-group>
                   </b-col>
@@ -190,9 +196,8 @@ export default {
          if(formulario.value.id){
             establecerPermisos();
          }
-      }
+      }  
 
-      onMounted(() => cargarForm())
       watch([formulario,usuarios],() => cargarForm())
 
       const formValidate = ref(null)
@@ -215,6 +220,8 @@ export default {
        
       }
 
+      cargarForm();
+
       return {
          loading:computed(() => store.state.loading),
          guardar,
@@ -224,7 +231,10 @@ export default {
          required,
          usuarios,
          usuario,
+         isSelected:(option) => {
 
+            return option.id == usuario.value.id ? false : true
+         },
          filtrarUsuario: ({email,nombre,apellido},label,search) =>{
             return (email || nombre ||  apellido || '').toLocaleLowerCase().indexOf(search.toLocaleLowerCase()) > -1
          },

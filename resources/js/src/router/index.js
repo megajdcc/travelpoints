@@ -58,7 +58,7 @@ const router = new VueRouter({
   ],
 })
 
-router.beforeEach((to, _, next) => {
+router.beforeEach((to, from, next) => {
   
   const isLoggedIn = (localStorage.getItem('token'))  ? true : false;
 

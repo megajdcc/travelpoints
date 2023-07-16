@@ -44,10 +44,10 @@ class SolicitudEnviada extends Notification implements ShouldQueue
     {
         return (new MailMessage)
         ->subject('Solicitud enviada')
-        ->greeting("Hola {$notifiable->getNombreCompleto()}!")
+        ->greeting("Hola {$notifiable->getNombreCompleto()}")
                     ->line("Tu solicitud para que afiliemos al negocio {$this->solicitud->nombre}, ha sido notificada en TravelPoints.")
-                    ->line('Al revisar tu solicitud te estaremos informando acerca de su estatus')
-                    ->line('Gracias por usar TravelPoints!');
+                    ->line('Al revisar tu solicitud te estaremos informando acerca de su estatus.')
+                    ->salutation('¡Gracias por usar TravelPoints!');
     }
 
     /**

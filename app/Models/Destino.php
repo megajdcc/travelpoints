@@ -32,7 +32,8 @@ class Destino extends Model
         'lat',
         'lng',
         'titulo',
-        'activo'
+        'activo',
+        'about_travel'
     ];
 
 
@@ -47,9 +48,7 @@ class Destino extends Model
 
     public static function getLocation($datos) : Collection{
         
-        $destinos = Destino::where('activo',true)->all()->filter(function($val) use($datos) {
-            return Destino::cerca($datos,$val,$datos['km']);
-        });
+        $destinos = Destino::where('activo',true)->get()->filter(fn($val) => Destino::cerca($datos, $val, $datos['km']));
 
         foreach ($destinos as $key => $destino) {
             $destino->ruta = "/Destinos?q={$destino->nombre}";
@@ -91,11 +90,19 @@ class Destino extends Model
 
     }
 
+    /**
+     * Un destino puede tener muchos promotores
+     */
+    public function promotores(){
+        return $this->hasMany(User::class,'destino_id','id');
+    }
 
     public function cargar(){
         
         $this->atracciones;
+
         $this->iata;
+        $this->iata->pais = $this->pais();
         $this->ciudad;
         $this->estado;
         $this->imagenes;
@@ -104,7 +111,20 @@ class Destino extends Model
         $this->modelType = $this->model_type;
         $this->ruta = "/Destinos?q={$this->nombre}";
         $this->negocios = $this->negocios();
+        $this->promotores;
         
+        $this->estado?->pais;
+
+        foreach ($this->atracciones as $atraccion) {
+            $atraccion->ruta = "/Atraccions?q={$atraccion->nombre}";
+            $atraccion->opinions;
+            $atraccion->telefono;
+            $atraccion->imagenes;
+            $atraccion->destino;
+            $atraccion->horarios;
+            $atraccion->likes;
+            $atraccion->modelType = $atraccion->model_type;
+        }
         
 
     }

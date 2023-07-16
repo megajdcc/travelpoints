@@ -30,9 +30,6 @@ export default {
 
             permisos.forEach(val => permissions.push(val.permiso))
 
-            // console.log(userPermisos)
-
-
             return permissions.map(val => {
                let actions = null;
 
@@ -43,10 +40,10 @@ export default {
 
                return {
                   module: val.nombre,
-                  read: actions ? actions.find(v => v == 'read') ? true : false : false,
-                  write: actions ? actions.find(v => v == 'write') ? true : false : false,
-                  update: actions ? actions.find(v => v == 'update') ? true : false : false,
-                  delete: actions ? actions.find(v => v == 'delete') ? true : false : false,
+                  read: actions ? actions.find(v => v == 'read') ? true : false : true,
+                  write: actions ? actions.find(v => v == 'write') ? true : false : true,
+                  update: actions ? actions.find(v => v == 'update') ? true : false : true,
+                  delete: actions ? actions.find(v => v == 'delete') ? true : false : true,
                }
             })
          }

@@ -29,16 +29,17 @@ class SistemaController extends Controller
     private function validar(Request $request,Sistema $sistema) : Collection {
         
         return collect($request->validate([
-            'nombre'            => 'required',
-            'terminos'          => 'nullable',
-            'paypal_id'         => 'nullable',
-            'paypal_secrect'    => 'nullable',
-            'production_paypal' => 'nullable',
-            'paypal'            => 'nullable',
-            'divisa_id'         => 'required',
-            'empresa_digital'   => 'nullable',
-            'redes'             => 'nullable',
-            'negocio' => 'nullable'
+            'nombre'              => 'required',
+            'terminos'            => 'nullable',
+            'paypal_id'           => 'nullable',
+            'paypal_secrect'      => 'nullable',
+            'production_paypal'   => 'nullable',
+            'paypal'              => 'nullable',
+            'divisa_id'           => 'required',
+            'empresa_digital'     => 'nullable',
+            'redes'               => 'nullable',
+            'negocio'             => 'nullable',
+            'porcentaje_referido' => 'nullable'
         ]));
         
     }

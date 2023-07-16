@@ -10,7 +10,7 @@
                   tag="article"
                   class="mb-3"
                   :class="{'negSelected' : usuario.id === user.id}"
-                   @click="$emit('update:usuarioId', usuario.id)" 
+                   @click="userSelected(usuario.id)" 
                 >
 
                 <b-card-title class="mb-1 text-center">
@@ -23,7 +23,7 @@
                     </section>
                 </template>
 
-                <b-button @click.stop="$emit('update:usuarioId',usuario.id)" 
+                <b-button @click.stop="userSelected(usuario.id)" 
                   :variant="user.id === usuario.id ? 'success' : 'primary'" >
                   {{ usuario.id === user.id ? 'Seleccionado' : 'Seleccionar' }}
                 </b-button>
@@ -94,11 +94,16 @@ export default {
        actions.refetchData()
     })
    
+    const userSelected = (usuario_id) => {
+      emit('update:usuarioId', usuario_id)
+      emit('usuarioSeleccionado',usuario_id)
+    }
 
     return {
       loading:computed(() => store.state.loading),
       actions,
-      user
+      user,
+      userSelected
 
     }
   }

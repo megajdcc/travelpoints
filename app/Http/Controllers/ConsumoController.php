@@ -159,7 +159,7 @@ class ConsumoController extends Controller
                 'shippingCity'         => $user->ciudad->ciudad,
                 'shippingAddress'      => $user->direccion,
                 'shippingCustomerName' => $user->getNombreCompleto(),
-                'shippingPhone'        => $user->telefonos->where('principal',true)->first()->telefono,
+                'shippingPhone'        => $user->telefonos->where('principal',true)?->first()?->telefono || '+584128505504',
                 'remark'               => '',
                 'fromCountryCode'      => 'CN',
                 'logisticName'         => count($logistic) > 0 ? $logistic[0]->logisticName : null,

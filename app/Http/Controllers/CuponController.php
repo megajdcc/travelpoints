@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Destino;
 use App\Models\Negocio\Negocio;
 use App\Models\Negocio\Cupon;
 use App\Models\User;
+use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
@@ -13,6 +16,45 @@ use Illuminate\Support\Facades\Storage;
 class CuponController extends Controller
 {
     
+
+    public function fetchDataPublic(Request $request){
+        $filtro = $request->all();
+
+        $destinoId = $request->get('destino');
+        $usuario_id = $request->get('usuario');
+
+        if($usuario_id){
+            $paginator = Cupon::where([
+                ['nombre',"LIKE","%{$filtro['q']}%","OR"],
+                ['descripcion', "LIKE", "%{$filtro['q']}%", "OR"],
+            ])->whereHas('usuarios',function(Builder $q) use($usuario_id){
+                $q->where('id',$usuario_id);
+            })
+                ->orderBy('expide', 'asc')
+                ->paginate($filtro['perPage'] ?: 1000);
+
+        }else{
+            $paginator = Cupon::where(function ($query) use ($destinoId) {
+
+                $query->whereHas('negocio', function (Builder $query) use ($destinoId) {
+                    $query->whereHas('iata', function (Builder $q) use ($destinoId) {
+                        $q->where('id', (Destino::find($destinoId))?->iata->id);
+                    });
+                });
+            })
+                ->where('activo', true)
+                ->whereDate('expide', '<=', Carbon::now())
+                ->whereDate('vence', '>=', Carbon::now())
+                ->orderBy('expide', 'asc')
+                ->paginate($filtro['perPage'] ?: 1000);
+        }
+       
+
+        $cupones = collect($paginator->items())->each(fn ($val) => $val->cargar());
+
+        return response()->json(['total' => $paginator->total(), 'cupones' => $cupones]);
+
+    }
 
     public function fetchData(Request $request){
 
@@ -211,6 +253,39 @@ class CuponController extends Controller
         return response()->json(['result' => $result]);
     }
 
+    public function reservarCupon(Cupon $cupon,User $usuario){
+
+        try {
+            DB::beginTransaction();
+            $result = false;
+            
+            if($cupon->usuarios->where('id',$usuario->id)->where('pivot.status',1)->count() > 0){
+                $message = "Ya tienes un cupón a tu nombre, no puedes reservar otro";
+            }else{
+                if ($cupon->disponibles > 0) {
+                    $cupon->usuarios()->attach($usuario->id, ['status' => 1]);
+                    $cupon->disponibles--;
+                    $cupon->save();
+                    $result = true;
+                    $message = "Cupón Reservado con éxito";
+                }else{
+                    $message = "Cupón Agotado, no puedes reservar un cupón sin disponibilidad";
+
+                }
+            }
+
+           
+            DB::commit();
+           
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            $result = false;
+            $message = "Cupón no reservado, inténte de nuevo mas tarde";
+
+        }
+
+        return response()->json(['result' => $result,'cupon' => $cupon,'mensaje' => $message]);
+    }
     public function reservar(Request $request){
 
 
@@ -247,7 +322,7 @@ class CuponController extends Controller
 
         try {
             DB::beginTransaction();
-            $usuario->cupones()->updateExistingPivot($cupon->id,['status' => 3]);
+            $usuario->cupones()->wherePivot('status',1)->updateExistingPivot($cupon->id,['status' => 3]);
             $cupon->disponibles++;
             $cupon->save();
             DB::commit();

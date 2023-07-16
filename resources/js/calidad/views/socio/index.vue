@@ -42,6 +42,16 @@
                      Compras
                   </b-nav-item>
 
+                  <b-nav-item :to="{ name: 'socio.consumos' }" active-class="active">
+                     <font-awesome-icon icon="fas fa-concierge-bell" />
+                     Consumos
+                  </b-nav-item>
+
+                  <b-nav-item :to="{ name: 'socio.cupones' }" active-class="active">
+                     <font-awesome-icon icon="fas fa-tags" />
+                     Mis Cupones
+                  </b-nav-item>
+
 
 
                </b-nav>
@@ -94,9 +104,14 @@
                   </b-nav-item>
 
 
+                  <b-nav-item :to="{ name: 'mi.tarjetas' }" exact active-class="active">
+                     <span class="fas fa-credit-card"></span>
+                     Tarjetas asociadas
+                  </b-nav-item>
+
                   <b-nav-item :to="{ name: 'misreferidos' }" exact active-class="active">
                      <span class="fas fa-user-plus"></span>
-                     Mis Referidos
+                     Mis amigos
                   </b-nav-item>
 
                   <b-nav-item :to="{ name: 'perfil.editar' }" exact active-class="active">
@@ -187,7 +202,7 @@ export default {
       onMounted(() => {
 
          if(!solicitudes.value.length){
-               store.dispatch('solicitud/getSolicitudes');
+               store.dispatch('solicitud/getMisSolicitudes');
          }
       })
 

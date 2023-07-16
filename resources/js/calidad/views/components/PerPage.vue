@@ -1,6 +1,6 @@
 
 <template>
-   <b-input-group :size="size" prepend="Mostrar">
+   <b-input-group :size="size" :prepend="$t('Mostrar')">
 
       <b-form-select :value="perPage" @change="$emit('update:per-page',$event)" :options="perPageOptions"
          text-field="label" value-field="value">
@@ -8,7 +8,7 @@
 
 
       <b-input-group-append is-text>
-         Entradas
+         {{ $t('Entradas') }}
       </b-input-group-append>
 
    </b-input-group>

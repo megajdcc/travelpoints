@@ -140,6 +140,11 @@ export default {
     legendTooltip:{
       type:String,
       default:'Busque a su usuario'
+    },
+
+    usuarioSeleccionado:{
+      type:Object,
+      required:false,
     }
   },
 
@@ -151,6 +156,7 @@ export default {
     const resultados = ref([])
     const collapseSearch = ref(null)
     const user = ref(null);
+    const {usuarioSeleccionado} = toRefs(props)
 
     const inputSearch = ref(false)
     const listenToggle = ref(false)
@@ -180,8 +186,21 @@ export default {
         search.value = ''
         emit('userSelected',user.value)
         
+    } 
+
+    const cargarForm = () => {
+
+      if(usuarioSeleccionado.value.id){
+        user.value = usuarioSeleccionado.value
+      }
+
     }
 
+    watch([usuarioSeleccionado],() => cargarForm())
+
+    onMounted(() => {
+      cargarForm()
+    })
 
     return {
       remoteMethod,

@@ -296,7 +296,7 @@ class EventoController extends Controller
             ['fecha_fin', 'LIKE', "%{$filtro['q']}%", 'OR'],
             ['url', 'LIKE', "%{$filtro['q']}%", 'OR'],
         ])->whereIn('status',[1,3])
-      
+    
         ->orderBy('fecha_inicio','asc')
         ->paginate($filtro['perPage']?: 1000);
 

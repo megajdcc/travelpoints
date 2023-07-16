@@ -53,10 +53,25 @@ class DestinoController extends Controller
             ]);
         })
         ->orderBY($datos['sortBy'] ?: 'id', $datos['isSortDirDesc'] ? 'desc' : 'asc')
-        ->paginate($datos['perPage'] ?: 10000);
+        ->paginate(4);
 
-        $destinos = collect($pagination->items())->each(fn($destino) => $destino->cargar());
+        $destinos = collect($pagination->items())->each(function($destino){
+            // $destino->cargar();
+            $destino->imagenes;
+            $destino->iata;
+            $destino->iata->pais = $destino->pais();
+            $destino->ciudad;
+            $destino->estado;
+            $destino->likes;
+            $destino->estado?->pais;
+            $destino->modelType = $destino->model_type;
+            $destino->likes;
+            $destino->ruta = "/Destinos?q={$destino->nombre}";
 
+            $destino->about_travel = '';
+        });
+
+        
         return response()->json([
             'destinos' => $destinos,
             'total' => $pagination->total()
@@ -65,12 +80,8 @@ class DestinoController extends Controller
 
     public function fetch(Destino $destino){
 
-        $destino->iata;
-        $destino->imagenes;
-        $destino->ciudad;
-        $destino->estado?->pais;
-        $destino->likes;
-
+        $destino->cargar();
+        
         return response()->json($destino);
         
     }
@@ -121,7 +132,8 @@ class DestinoController extends Controller
             'iata_id'     => 'required',
             'lat' => 'nullable',
             'lng' => 'nullable',
-            'imagenes' => 'nullable'
+            'imagenes' => 'nullable',
+            'about_travel' => 'nullable'
         ]));
 
     }

@@ -25,7 +25,7 @@ use App\Models\Negocio\Negocio;
 use App\Models\Negocio\Reservacion;
 use App\Models\Usuario\Permiso;
 use Carbon\Carbon;
-use Illuminate\Support\Collection;
+use Illuminate\Support\{Collection,Str};
 
 class User extends Authenticatable
 {
@@ -33,8 +33,10 @@ class User extends Authenticatable
     use HasApiTokens,HasFactory, Notifiable;
     use Has_roles;
     use hasCuenta,hasTelefonos,hasCarrito;
+    
     public readonly string $model_type;
-    public readonly int $divisa_id;
+    public readonly int $divisa_id; 
+    public $porcentajePerfil = 0;
 
     public function __construct(
         string $model_type = 'App\Models\User')
@@ -45,7 +47,7 @@ class User extends Authenticatable
 
         $this->divisa_id = Divisa::where('principal', true)->first()->id;
 
-       
+       $this->porcentajePerfil = $this->getFillPercentage();
 
     }
 
@@ -79,7 +81,9 @@ class User extends Authenticatable
         'ciudad_id' ,
         'codigo_referidor',
         'lider_id',
-        'coordinador_id'
+        'coordinador_id',
+        'tarjeta_id',
+        'destino_id'
     ];
 
     /**
@@ -231,6 +235,8 @@ class User extends Authenticatable
         return $this->hasMany(Like::class,'usuario_id','id');
     }
 
+
+    
     public function negocios(){
         return $this->belongsToMany(Negocio::class,'empleados','usuario_id','negocio_id')->withPivot(['cargo_id']);
     }
@@ -774,6 +780,39 @@ class User extends Authenticatable
 
     }
 
+    public function generateLink(){
+        if(is_null($this->codigo_referidor) || empty($this->codigo_referidor)){
+            $this->codigo_referidor = Str::slug($this->username);
+            $this->save();
+        }
+    }
+
+
+    public function tarjeta(){
+        return $this->belongsTo(Tarjeta::class,'tarjeta_id','id');
+    }
+
+    public function getFillPercentage()
+    {
+        $fillableProperties = $this->getFillable();
+        $totalProperties = count($fillableProperties);
+        $filledProperties = 0;
+
+        foreach ($fillableProperties as $property) {
+            if (!empty($this->$property)) {
+                $filledProperties++;
+            }
+        }
+
+        $percentageFilled = ($filledProperties / $totalProperties) * 100;
+        
+        return $percentageFilled;
+    }
+
+    public function destino(){
+        return $this->belongsTo(Destino::class,'destino_id','id');
+    }
+    
     public function cargar(): User{
         $this->tokens;
         $this->rol?->permisos;
@@ -781,13 +820,17 @@ class User extends Authenticatable
         $this->habilidades = $this->getHabilidades();
         $this->avatar = $this->getAvatar();
         $this->ciudad?->estado?->pais;
+        $this->cuenta;
         $this->cuenta?->divisa;
-        $this->cuenta?->movimientos;
         $this->telefonos;
         $this->likes;
-        $this->negocios;
+        foreach ($this->negocios as $key => $negocio) {
+            $negocio->descripcion = '';
+        }
+        
         $this->solicitudes;
-        $this->faqs;
+        $this->destino;
+        // $this->faqs;
         $this->referidor;
         $this->referidos;
         $this->permisos;
@@ -803,7 +846,9 @@ class User extends Authenticatable
         $this->promotores;
         $this->coordinador;
         $this->lideres;
-
+        $this->porcentajePerfil = $this->getFillPercentage();
+        $this->tarjeta?->lote;
+        // dd($this->porcentajePerfil);
         return $this;
     }
 

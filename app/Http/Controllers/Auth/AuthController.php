@@ -54,6 +54,7 @@ class AuthController extends Controller
 
             $usuario->asignarPermisosPorRol();
          }
+         $usuario->generateLink();
          
          $usuario->ultimo_login = now();
          $usuario->save();
@@ -135,6 +136,8 @@ class AuthController extends Controller
             'email'=>'required|string|unique:users',
             'password'=>'required|string',
             'c_password' => 'required|same:password'
+        ],[
+         'email.unique' => 'El email ya está registrado, inténte con otro'
         ]);
 
         $user = User::create([
@@ -144,7 +147,7 @@ class AuthController extends Controller
             'password' => $request->password,
             'rol_id' => Rol::where('nombre','Invitado')->first()->id
         ]);
-
+        $user->generateLink();
         if($user->save()){
 
             $tokenResult = $user->createToken($user->nombre.'-'.$user->id);
@@ -194,10 +197,10 @@ class AuthController extends Controller
 
          
          if($user_verify = User::where('email',$credentials['email'])->first()){
-
+            $user_verify->generateLink();
             if(!$user_verify->activo){
-               return response()->json(['result' => false, 'message' => 'No te encuentras activos en el sistema, comunicate con soporte, si deseas reactivación de cuenta.'], 401);
-            }
+               return response()->json(['result' => false, 'message' => 'Tu usuario no está activo. Para reactivarlo por favor contacta con soporte técnico.'], 401);
+            }  
          }
 
          if (!Auth::attempt($datos,$data['remember'])){
@@ -206,6 +209,7 @@ class AuthController extends Controller
 
          $user = $request->user();
          $user->ultimo_login = now();
+       
          $user->save();
 
          $token = (!is_null($user->getTokenText())) ? $user->getTokenText() : ($user->createToken($user->nombre.'-'.$user->id))->plainTextToken;
@@ -225,7 +229,6 @@ class AuthController extends Controller
          
          $user->cargar();
 
-
          // broadcast(new UsuarioConectado($user))->toOthers();
 
          $result = true;
@@ -234,7 +237,7 @@ class AuthController extends Controller
          $result = false;
       }
       
-      
+      $user->porcentajePerfil = $user->getFillPercentage();
       return response()->json([
          'result' => $result,
          'accessToken' => $token,
@@ -251,13 +254,8 @@ class AuthController extends Controller
     */
    public function user(Request $request)
    {
-
-      $usuario = $request->user();
-
-      $usuario->tokens;
-      $usuario->rol;
-      $usuario->habilidades = $usuario->getHabilidades();
-      $usuario->avatar = $usuario->getAvatar();
+      $usuario = User::find($request->user()->id);
+      $usuario->cargar();
       
       return response()->json($usuario);
    }

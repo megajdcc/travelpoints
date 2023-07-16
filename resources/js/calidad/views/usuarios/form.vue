@@ -524,7 +524,7 @@ export default {
       
       const {usuario} = toRefs(store.state.usuario)
       const {divisas} = toRefs(store.state.divisa)
-
+      const {destinos} = toRefs(store.state.destino)
       const resetuserData = () => store.commit('usuario/clearUsuario')
       const { resolveUserRoleVariant } = useUsersList()
       const getRols = computed(() => store.getters['rol/getRols'])

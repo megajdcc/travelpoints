@@ -216,7 +216,7 @@ import useVentasList from './useVentasList';
 
 import {mapState } from 'vuex';
 import vSelect from 'vue-select'
-import CurrencyInput from 'components/CurrencyInput';
+import CurrencyInput from 'components/CurrencyInput.vue';
 
 import { Notification } from 'element-ui';
 
@@ -247,8 +247,8 @@ export default {
       CurrencyInput,
       BTr,
       BTh,
-      PaginateTable:() => import('components/PaginateTable'),
-      PerPage:() => import('components/PerPage')
+      PaginateTable:() => import('components/PaginateTable.vue'),
+      PerPage:() => import('components/PerPage.vue')
       },
 
    directives:{

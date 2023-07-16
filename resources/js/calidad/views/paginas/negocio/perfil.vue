@@ -191,7 +191,8 @@ import {
   BButton,
   BCardBody,
   VBTooltip,
-  BLink
+  BLink,
+  BAvatar
 } from 'bootstrap-vue'
 
 
@@ -205,6 +206,8 @@ export default {
     BCardBody,
     BImg,
     BButton,
+    BAvatar,
+
     ReviewsOpinion: () => import('components/ReviewsOpinion.vue'),
     MiPdf:() => import('components/MiPdf.vue'),
     SwiperGallery:() => import('components/SwiperGallery.vue'),

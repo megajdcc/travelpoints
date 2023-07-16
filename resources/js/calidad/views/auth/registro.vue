@@ -154,7 +154,7 @@ export default {
       // validations
       ValidationProvider,
       ValidationObserver,
-      Logo:() => import('components/Logo')
+      Logo:() => import('components/Logo.vue')
    },
 
    props:{

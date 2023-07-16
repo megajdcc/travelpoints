@@ -1,6 +1,6 @@
 <script>
 import { h, onMounted,watch,toRefs } from 'vue'
-import form from './form'
+import form from './form.vue'
 
 import store from '@/store'
 

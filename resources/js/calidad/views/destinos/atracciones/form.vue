@@ -108,19 +108,16 @@
                   <b-col>
 
                      <div class="d-none">
-                        <div class="input-group col-md-6 mt-2" id="myAutocomplete">
-                           <div class="input-group-prepend">
-                              <div class="input-group-text bg-secondary">
-                                 <span class="fas fa-search text-white" aria-hidden="true"></span>
-                              </div>
-                           </div>
-
-                           <gmap-autocomplete class="form-control py-1 " style="z-index:8000 !important"
-                              @place_changed="setPlace($event, formulario)">
-
-                           </gmap-autocomplete>
-
-                        </div>
+                       <gmap-autocomplete class="col-12 py-1" style="z-index:8000 !important" @place_changed="setPlace($event, formulario)" #default="{ attrs, listeners }" id="myAutocomplete" slotRefName="inputAutocomplete">
+                                    <b-input-group class="col-md-6 mt-2" >
+                                       <b-input-group-prepend is-text>
+                                          <span class="fas fa-search text-black" aria-hidden="true"></span>
+                                       </b-input-group-prepend>
+                                   
+                                       <b-form-input ref="inputAutocomplete"  v-bind="attrs" v-on="listeners" />
+                                    </b-input-group>
+                                
+                                 </gmap-autocomplete>
                      </div>
 
                      <GmapMap ref="input" :center="{
@@ -221,8 +218,8 @@
                         </thead>
 
                         <tbody>
-                           <tr v-for="(item,i) in formulario.incluye">
-                              <td>
+                           <tr v-for="(item,i) in formulario.incluye" :key="i" >
+                              <td >
                                  <b-form-group>
                                     <template #label>
                                        Sujeto: <span class="text-danger">*</span>

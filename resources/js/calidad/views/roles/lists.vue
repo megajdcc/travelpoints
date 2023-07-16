@@ -104,8 +104,8 @@ import store from '@/store'
 			BTable,
 			BButtonGroup,
 			BButton,
-			PerPage:() => import('components/PerPage'),
-			PaginateTable:() => import('components/PaginateTable'),
+			PerPage:() => import('components/PerPage.vue'),
+			PaginateTable:() => import('components/PaginateTable.vue'),
 			BInputGroup,
 			BFormInput
 

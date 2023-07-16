@@ -6,7 +6,7 @@ export default [
       resource: 'home',
       action: 'read',
     },
-    component: () => import('views/home'),
+    component: () => import('views/home.vue'),
   },
   
 

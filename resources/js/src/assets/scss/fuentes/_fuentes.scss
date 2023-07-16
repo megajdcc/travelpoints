@@ -5,54 +5,54 @@
 font-family: 'Nexa Book';
 font-style: normal;
 font-weight: normal;
-src: local('Nexa Book'), url('../../fonts/NexaBold.woff') format('woff');
+src: local('Nexa Book'), url('@fuentes/NexaBold.woff') format('woff');
 }
 
 @font-face {
 font-family: 'Nexa Book Italic';
 font-style: normal;
 font-weight: normal;
-src: local('Nexa Book Italic'), url('../../fonts/NexaBookItalic.woff') format('woff');
+src: local('Nexa Book Italic'), url('@fuentes/NexaBookItalic.woff') format('woff');
 }
 
 @font-face {
 font-family: 'Nexa Thin';
 font-style: normal;
 font-weight: normal;
-src: local('Nexa Thin'), url('../../fonts/NexaThin.woff') format('woff');
+src: local('Nexa Thin'), url('@fuentes/NexaThin.woff') format('woff');
 }
 
 @font-face {
 font-family: 'Nexa Bold';
 font-style: normal;
 font-weight: normal;
-src: local('Nexa Bold'), url('../../fonts/NexaBold.woff') format('woff');
+src: local('Nexa Bold'), url('@fuentes/NexaBold.woff') format('woff');
 }
 
 @font-face {
 font-family:"Myriad";
 font-style:normal;
 font-weight:normal;
-src:url('../../fonts/MyriadPro-Cond_0.otf');
+src:url('@fuentes/MyriadPro-Cond_0.otf');
 }
 
 @font-face {
 font-family: 'Myriad Bold';
 font-style: normal;
 font-weight: 600;
-src:url('../../fonts/MyriadPro-BoldCond_0.otf');
+src:url('@fuentes/MyriadPro-BoldCond_0.otf');
 }
 
 
 @font-face {
 font-family: 'Myriad Regular';
 font-style: normal;
-src:url('../../fonts/MyriadPro-Regular_0.otf');
+src:url('@fuentes/MyriadPro-Regular_0.otf');
 }
 
 @font-face {
 font-family: 'Myriad Light';
 font-style: normal;
-src:url('../../fonts/MyriadPro-Light.otf');
+src:url('@fuentes/MyriadPro-Light.otf');
 }
 

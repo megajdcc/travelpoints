@@ -7,12 +7,12 @@ export default [
    {
     path: '/socio',
     name:'socio',
-    component: () => import('views/socio'),
+    component: () => import('views/socio/index.vue'),
     children:[
       {
           path: 'perfil',
           name: 'perfil',
-          component: () => import('views/socio/perfil'),
+          component: () => import('views/socio/perfil/index.vue'),
           meta: {
              resource: 'perfil',
              action: 'read',
@@ -27,7 +27,7 @@ export default [
              {
                 path: '',
                 name: 'miperfil',
-                component: () => import('views/socio/perfil/datos'),
+                component: () => import('views/socio/perfil/datos.vue'),
                 meta: {
                    name: 'perfil',
                    layout: 'travel'
@@ -51,7 +51,7 @@ export default [
              {
                 path: 'invitados',
                 name: 'misreferidos',
-                component: () => import('views/socio/perfil/invitados'),
+                component: () => import('views/socio/perfil/invitados/index.vue'),
                 meta: {
                    name: 'perfil',
                    layout: 'travel'
@@ -62,7 +62,7 @@ export default [
              {
                 path: 'editar',
                 name: 'perfil.editar',
-                component: () => import('views/socio/perfil/editar'),
+                component: () => import('views/socio/perfil/editar.vue'),
                 meta: {
                    name: 'perfil',
                    layout: 'travel'
@@ -84,7 +84,7 @@ export default [
              {
                 path: 'contrasena',
                 name: 'perfil.password',
-                component: () => import('views/socio/perfil/CambiarPassword'),
+                component: () => import('views/socio/perfil/CambiarPassword.vue'),
                 meta: {
                    name: 'perfil',
                    layout: 'travel'
@@ -96,7 +96,7 @@ export default [
              {
                 path: 'desactivar',
                 name: 'perfil.desactivar',
-                component: () => import('views/socio/perfil/desactivar'),
+                component: () => import('views/socio/perfil/desactivar.vue'),
                 meta: {
                    name: 'perfil',
                    layout: 'travel'
@@ -112,7 +112,7 @@ export default [
        {
           path: 'negocio',
           name: 'socio.negocio',
-          component: () => import('views/socio/negocio'),
+          component: () => import('views/socio/negocio/index.vue'),
           meta: {
              resource: 'perfil',
              action: 'read',
@@ -126,7 +126,7 @@ export default [
             {
                path:'',
                name:'socio.negocio.list',
-               component:()=> import('views/socio/negocio/list'),
+               component:()=> import('views/socio/negocio/list.vue'),
                 meta: {
                    name: 'negocio',
                    layout: 'travel'
@@ -138,7 +138,7 @@ export default [
              {
                 path: 'siguiente',
                 name: 'socio.negocio.siguiendo',
-                component: () => import('views/socio/negocio/siguiendo'),
+                component: () => import('views/socio/negocio/siguiendo.vue'),
                 meta: {
                    navActiveLink: 'socio.negocio',
                    name: 'negocio',
@@ -150,7 +150,7 @@ export default [
              {
                 path: 'recomendados',
                 name: 'socio.negocio.recomendados',
-                component: () => import('views/socio/negocio/recomendados'),
+                component: () => import('views/socio/negocio/recomendados.vue'),
                 meta: {
                    navActiveLink: 'socio.negocio',
                    name: 'negocio',
@@ -161,7 +161,7 @@ export default [
              },
              {
                 path: 'solicitudes',
-                component: () => import('views/socio/negocio/solicitudes'),
+                component: () => import('views/socio/negocio/solicitudes/index.vue'),
                 meta: {
                    navActiveLink: 'socio.negocio',
                    name: 'negocio',
@@ -171,7 +171,7 @@ export default [
                 children:[
                   {
                      path:'',
-                     component:()  => import('views/socio/negocio/solicitudes/list'),
+                     component:()  => import('views/socio/negocio/solicitudes/list.vue'),
                      name:'socio.negocio.solicitudes',
                      meta: {
                         navActiveLink: 'socio.negocio',
@@ -184,7 +184,7 @@ export default [
                   {
                      path: 'afiliar',
                      name: 'socio.negocio.afiliar',
-                     component: () => import('views/socio/negocio/solicitudes/create'),
+                     component: () => import('views/socio/negocio/solicitudes/create.vue'),
                         meta: {
                            navActiveLink: 'socio.negocio',
                            name: 'negocio',
@@ -195,7 +195,7 @@ export default [
                   {
                      path:':id/edit',
                      props:true,
-                     component:()  => import('views/socio/negocio/solicitudes/edit'),
+                     component:()  => import('views/socio/negocio/solicitudes/edit.vue'),
                      name:'socio.negocio.solicitudes.edit',
                      meta: {
                         navActiveLink: 'socio.negocio',
@@ -213,7 +213,7 @@ export default [
        {
           path: '/socio/reservaciones',
           name: 'socio.reservaciones',
-          component: () => import('views/socio/reservaciones'),
+          component: () => import('views/socio/reservaciones/index.vue'),
           meta: {
             resource: 'perfil',
             action: 'read',
@@ -264,7 +264,7 @@ export default [
        {
           path: '/cupones',
           name: 'socio.cupones',
-          component: () => import('views/socio/cupones'),
+          component: () => import('views/socio/cupones/index.vue'),
           meta: {
              resource: 'perfil',
              action: 'read',
@@ -298,15 +298,12 @@ export default [
    {
       path:'/usuarios',
       name:'usuarios',
-      component: () => import(
-         /*  webpackChunkName: "group-usuario"  */ 
-         /* webpackPreload:true  */ 'views/usuarios'),
-
+      component: () => import('views/usuarios/index.vue'),
       children:[
          {
             path:'',
             name:'listar.usuarios',
-            component: () => import(/*  webpackChunkName: "group-usuario" */ 'views/usuarios/lists'),
+            component: () => import('views/usuarios/lists.vue'),
           
             meta:{
                resource: 'usuarios',
@@ -323,7 +320,7 @@ export default [
          {
             path:'create',
             name:'create.usuario',
-            component: () => import( /*  webpackChunkName: "group-usuario" */ 'views/usuarios/create'),
+            component: () => import('views/usuarios/create.vue'),
            
 
             meta: {
@@ -352,7 +349,7 @@ export default [
             path: ':id/edit',
             props:true,
             name: 'edit.usuario',
-            component: () => import( /*  webpackChunkName: "group-usuario" */ 'views/usuarios/edit'),
+            component: () => import('views/usuarios/edit.vue'),
             
 
             meta: {
@@ -1003,13 +1000,13 @@ export default [
    {
       path: '/roles',
       name: 'roles',
-      component: () => import(  'views/roles'),
+      component: () => import(  'views/roles/index.vue'),
       exact:false,
       children: [
          {
             path: '',
             name: 'listar.roles',
-            component: () => import('views/roles/lists'),
+            component: () => import('views/roles/lists.vue'),
             meta: {
                pageTitle: 'Rol de usuarios',
                breadcrumb: [
@@ -1025,7 +1022,7 @@ export default [
          {
             path: 'create',
             name: 'create.role',
-            component: () => import('views/roles/create'),
+            component: () => import('views/roles/create.vue'),
             meta: {
                pageTitle: 'Crear Rol',
                navActiveLink:'listar.roles',
@@ -1049,7 +1046,7 @@ export default [
             path: ':id/edit',
             props:true,
             name: 'edit.role',
-            component: () => import('views/roles/edit'),
+            component: () => import('views/roles/edit.vue'),
             meta: {
                pageTitle: 'Editar Rol',
                navActiveLink: 'listar.roles',
@@ -1082,14 +1079,14 @@ export default [
       path: '/permisos',
       name: 'permisos',
 
-      component: () => import('views/permisos'),
+      component: () => import('views/permisos/index.vue'),
 
       exact: false,
       children: [
          {
             path: '',
             name: 'listar.permisos',
-            component: () => import('views/permisos/lists'),
+            component: () => import('views/permisos/lists.vue'),
             meta: {
                pageTitle: 'Permisos de usuario',
                breadcrumb: [
@@ -1105,7 +1102,7 @@ export default [
          {
             path: 'create',
             name: 'create.permiso',
-            component: () => import('views/permisos/create'),
+            component: () => import('views/permisos/create.vue'),
             meta: {
                pageTitle: 'Crear Permiso',
                navActiveLink: 'listar.permisos',
@@ -1129,7 +1126,7 @@ export default [
             path: ':id/edit',
             props: true,
             name: 'edit.permiso',
-            component: () => import('views/permisos/edit'),
+            component: () => import('views/permisos/edit.vue'),
             meta: {
                pageTitle: 'Editar Permiso',
                navActiveLink: 'listar.permisos',
@@ -1162,7 +1159,7 @@ export default [
    {
       path:'/register/:codigo?',
       props:true,
-      component:() => import('views/auth/registro'),
+      component:() => import('views/auth/registro.vue'),
       name:'registro.referido',
       meta:{
          layout:'full',
@@ -1179,7 +1176,7 @@ export default [
     {
       path:'/register',
       props:true,
-      component:() => import('views/auth/registro'),
+      component:() => import('views/auth/registro.vue'),
       name:'register',
       meta:{
          layout:'full',
@@ -1195,13 +1192,13 @@ export default [
    /*************************************** */
    {
       path: '/configuracion/faqs',
-      component: () => import('views/faqs'),
+      component: () => import('views/faqs/index.vue'),
       name: 'configuracion.faq',
       children:[
          {
             path:'',
             name:'listar.faqs',
-            component:() => import('views/faqs/list'),
+            component:() => import('views/faqs/list.vue'),
             meta:{
                pageTitle:'Preguntas Frecuentes',
                resource:'faqs',
@@ -1224,7 +1221,7 @@ export default [
          {
             path: 'create',
             name: 'create.faq',
-            component: () => import('views/faqs/create'),
+            component: () => import('views/faqs/create.vue'),
             meta: {
                pageTitle: 'Crear pregunta Frecuente',
                resource: 'faqs',
@@ -1254,7 +1251,7 @@ export default [
             path: ':id/edit',
             name: 'edit.faq',
             props:true,
-            component: () => import('views/faqs/edit'),
+            component: () => import('views/faqs/edit.vue'),
             meta: {
                pageTitle: 'Editar pregunta Frecuente',
                resource: 'faqs',
@@ -1290,13 +1287,13 @@ export default [
 
    {
       path: '/configuracion/categorias-faqs',
-      component: () => import('views/faqs'),
+      component: () => import('views/faqs/index.vue'),
       name: 'configuracion.categorias-faq',
       children: [
          {
             path: '',
             name: 'listar.categoria-faqs',
-            component: () => import('views/faqs/categorias/list'),
+            component: () => import('views/faqs/categorias/list.vue'),
             meta: {
                pageTitle: 'Categorías de Preguntas Frecuentes (Faqs)',
                resource: 'faqs',
@@ -1319,7 +1316,7 @@ export default [
          {
             path: 'create',
             name: 'create.categoria-faq',
-            component: () => import('views/faqs/categorias/create'),
+            component: () => import('views/faqs/categorias/create.vue'),
             meta: {
                pageTitle: 'Crear categoría',
                resource: 'faqs',
@@ -1349,7 +1346,7 @@ export default [
             path: ':id/edit',
             props:true,
             name: 'edit.categoria-faq',
-            component: () => import('views/faqs/categorias/edit'),
+            component: () => import('views/faqs/categorias/edit.vue'),
             meta: {
                pageTitle: 'Editar Categoría',
                resource: 'faqs',
@@ -1382,7 +1379,7 @@ export default [
 
    {
       path: '/faqs',
-      component: () => import('views/paginas/faqs'),
+      component: () => import('views/paginas/faqs.vue'),
       name: 'faqs',
       meta: {
          layout  : 'travel',
@@ -1399,12 +1396,12 @@ export default [
 
    {
       path:'/negocios/categorias',
-      component:()=> import('views/negocios/categorias'),
+      component:()=> import('views/negocios/categorias/index.vue'),
       children:[
          {
             path:'',
             name:'negocio.categorias.list',
-            component:() => import('views/negocios/categorias/list'),
+            component:() => import('views/negocios/categorias/list.vue'),
             meta:{
                resource:'negocio categorías',
                action:'read',
@@ -1427,7 +1424,7 @@ export default [
          {
             path: 'create',
             name: 'negocio.categorias.create',
-            component: () => import('views/negocios/categorias/create'),
+            component: () => import('views/negocios/categorias/create.vue'),
             meta: {
                resource: 'negocio categorías',
                action: 'write',
@@ -1457,7 +1454,7 @@ export default [
             path: ':id/edit',
             name: 'negocio.categorias.edit',
             props:true,
-            component: () => import('views/negocios/categorias/edit'),
+            component: () => import('views/negocios/categorias/edit.vue'),
             meta: {
                resource: 'negocio categorías',
                action: 'update',
@@ -1554,12 +1551,12 @@ export default [
 
    {
       path:'/negocios/solicitudes',
-      component:() => import('views/negocios/solicitudes'),
+      component:() => import('views/negocios/solicitudes/index.vue'),
       children:[
          {
             path:'',
             name:'listar.solicitudes.negocios',
-            component:() => import('views/negocios/solicitudes/list'),
+            component:() => import('views/negocios/solicitudes/list.vue'),
 
             meta:{
                pageTitle:'Solicitudes de negocios',
@@ -1583,7 +1580,7 @@ export default [
             path: ':id/show',
             props:true,
             name: 'negocio.solicitud.show',
-            component: () => import('views/negocios/solicitudes/edit'),
+            component: () => import('views/negocios/solicitudes/edit.vue'),
 
             meta: {
                // pageTitle: 'Solicitud de negocio',

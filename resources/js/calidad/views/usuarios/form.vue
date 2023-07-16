@@ -504,7 +504,7 @@ export default {
       const {usuario} = toRefs(store.state.usuario)
       const {divisas} = toRefs(store.state.divisa)
 
-
+      const resetuserData = () => store.commit('usuario/clearUsuario')
       const { resolveUserRoleVariant } = useUsersList()
       const getRols = computed(() => store.getters['rol/getRols'])
       const { refFormObserver, getValidationState, resetForm } = formValidation(resetuserData)
@@ -532,7 +532,7 @@ export default {
          cargarform();
       })
 
-      const resetuserData = () => store.commit('usuario/clearUsuario')
+     
 
       const guardar =  () => {
          emit('save',form.value,refFormObserver.value)

@@ -146,8 +146,8 @@ export default {
       BAvatar,
       BBadge,
       BLink,
-      PerPage: () => import('components/PerPage'),
-      PaginateTable: () => import('components/PaginateTable'),
+      PerPage: () => import('components/PerPage.vue'),
+      PaginateTable: () => import('components/PaginateTable.vue'),
    },
 
    setup(){

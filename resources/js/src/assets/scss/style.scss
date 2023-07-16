@@ -212,7 +212,7 @@ body {
 }
 
 .layout-travel {
-   background-image: url('/images/patron_fondo_blanco.svg');
+   background-image: url('@images/illustration/patron_fondo_blanco.svg');
    background-attachment: fixed;
    background-repeat: repeat;
    background-position: top;
@@ -223,7 +223,7 @@ body {
 
 .dark-layout .layout-travel {
 
-   background-image: url('/images/patron_fondo_gris.svg') !important;
+   background-image: url('@images/illustration/patron_fondo_gris.svg') !important;
    background-attachment: fixed;
    background-repeat: repeat;
    background-position: top;

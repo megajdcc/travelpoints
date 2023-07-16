@@ -1,12 +1,7 @@
 <template>
    <listado :actions="actions" hideFooter>
 
-      <template #btn-action>
-         <b-button variant="primary" title="Crear Nuevo Negocio" v-if="$can('write','negocios')" class="d-flex align-items-center">
-            <font-awesome-icon icon="fa-plus"/>
-            Nuevo Negocio
-         </b-button>
-      </template>
+    
 
       <template #contenido="{fetchData,tableColumns,isSortDirDesc,sortBy,eliminar}">
          <b-card no-body class="p-1">

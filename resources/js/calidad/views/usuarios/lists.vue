@@ -164,9 +164,9 @@ export default {
     BDropdownItem,
     BDropdownItemButton,
     BPagination,
-    PaginateTable: () => import('components/PaginateTable'),
+    PaginateTable: () => import('components/PaginateTable.vue'),
     vSelect,
-    PerPage: () => import('components/PerPage'),
+    PerPage: () => import('components/PerPage.vue'),
     BInputGroup,
     BFormCheckbox
   },

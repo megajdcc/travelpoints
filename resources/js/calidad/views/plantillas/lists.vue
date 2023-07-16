@@ -125,8 +125,8 @@ export default {
       BButtonGroup,
       BButton,
       BFormSelect,
-      PerPage:() => import('components/PerPage'),
-      PaginateTable:() => import('components/PaginateTable'),
+      PerPage:() => import('components/PerPage.vue'),
+      PaginateTable:() => import('components/PaginateTable.vue'),
       vSelect
    },
 

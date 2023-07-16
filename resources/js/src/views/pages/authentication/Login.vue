@@ -146,7 +146,7 @@ import { computed, toRefs, onMounted } from 'vue';
 import useAuth from '@core/utils/useAuth'
 
 import '@core/scss/vue/libs/toastification.scss'
-import ToastificationContent from '@core/components/toastification/ToastificationContent'
+import ToastificationContent from '@core/components/toastification/ToastificationContent.vue'
 import router from '@/router'
 import { getHomeRouteForLoggedInUser } from '@/auth/utils'
 import { $themeConfig } from '@themeConfig'
@@ -173,12 +173,12 @@ export default {
     ValidationProvider,
     ValidationObserver,
     BFormInvalidFeedback,
-    Logo: () => import('components/Logo')
+    Logo: () => import('components/Logo.vue')
   },
   mixins: [togglePasswordVisibility],
   data() {
     return {
-      sideImg: require('@/assets/images/pages/login-v2.svg'),
+      sideImg: import('@/assets/images/pages/login-v2.svg'),
     }
   },
   computed: {
@@ -189,7 +189,7 @@ export default {
     imgUrl() {
       if (store.state.appConfig.layout.skin === 'dark') {
         // eslint-disable-next-line vue/no-side-effects-in-computed-properties
-        this.sideImg = require('@/assets/images/pages/login-v2-dark.svg')
+        this.sideImg = import('@/assets/images/pages/login-v2-dark.svg')
         return this.sideImg
       }
       return this.sideImg
@@ -299,7 +299,7 @@ export default {
 
   width: 100%;
   height: 500px;
-  background-image: url('/storage/animation_travel.gif');
+  background-image: url('storage/animation_travel.gif');
   background-repeat: no-repeat;
   background-position: center center;
   background-size: contain;

@@ -3,10 +3,8 @@
     <b-link class="brand-logo">
       <b-link class="brand-logo">
         
-         <img src="/storage/logotipo.png" alt="Logo" />
-        <!-- <h2 class="brand-text text-primary ml-1">
-          Boda y Playa
-        </h2> -->
+         <img :src="logotipo" alt="Logo" />
+       
       </b-link>
     </b-link>
 
@@ -43,7 +41,8 @@ import { mapState } from 'vuex';
 import downImg from '@/assets/images/pages/not-authorized.svg'
 import downImgDark from '@/assets/images/pages/not-authorized-dark.svg'
 import {computed,toRefs} from 'vue';
-
+import logotipo from 'storage/logotipo.png'
+import logotipoblanco from 'storage/logotipoblanco.png'
 export default {
   components: {
     BLink,
@@ -52,10 +51,11 @@ export default {
     VuexyLogo,
   },
 
+
   setup(){
     const {layout} = toRefs(store.state.appConfig)
     const {usuario}  = toRefs(store.state.usuario)
-
+    const skin = computed(() => layout.value.skin)
     const  loginRoute = () => {
 
       if(usuario.value.id){
@@ -67,6 +67,7 @@ export default {
 
     return {
       downImg,
+       logotipo: computed(() => skin.value === 'dark' ? logotipoblanco : logotipo),
       imgUrl:computed(() => {
         return layout.value.skin === 'dark' ? downImgDark : downImg
       }),

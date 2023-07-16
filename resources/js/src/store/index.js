@@ -267,6 +267,7 @@ export default new Vuex.Store({
 
 	},
 
+  
   modules: {
     app,
     appConfig,
@@ -315,6 +316,6 @@ export default new Vuex.Store({
     academiaVideos,
     pagina
   },
-  strict:import.meta.env.DEV,
+  strict:false,
 
 })

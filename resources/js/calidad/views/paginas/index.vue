@@ -109,7 +109,7 @@ export default {
       BBadge,
       BFormRating,
       SwiperComponent: () => import('@/views/extensions/swiper/Swiper.vue'),
-      NabvarPagina: () => import('components/NabvarPagina'),
+      NabvarPagina: () => import('components/NabvarPagina.vue'),
       HasLike: () => import('components/HasLike.vue'),
       FormWizard: () => import('@/views/forms/form-wizard/FormWizard.vue'),
       Search: () => import('components/Search.vue'),

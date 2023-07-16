@@ -435,7 +435,7 @@ export default {
       BTabs,
       BTab,
       BFormCheckbox,
-      PerfilInfo: () => import('components/PerfilInfo')
+      PerfilInfo: () => import('components/PerfilInfo.vue')
 
    },
 

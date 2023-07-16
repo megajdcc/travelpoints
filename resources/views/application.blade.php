@@ -11,7 +11,7 @@
 
   <title>TravelPoints</title>
   <!-- Styles -->
-  @vite(['resources/scss/app.scss','resources/scss/loader.css', 'resources/js/app.js'])
+  @vite(['resources/scss/loader.css', 'resources/js/app.js'])
   <!-- Favicon -->
   <link rel="shortcut icon" href="{{ asset('favicons/favicon-8x8.png') }}">
   <script src="https://accounts.google.com/gsi/client" async defer ></script>

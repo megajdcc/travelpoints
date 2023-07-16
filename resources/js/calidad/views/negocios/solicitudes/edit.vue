@@ -1,6 +1,6 @@
 
 <script>
-import form from 'views/socio/negocio/solicitudes/form'
+import form from 'views/socio/negocio/solicitudes/form.vue'
 import { h, onMounted, toRefs, watch } from 'vue'
 import store from '@/store'
 import router from '@/router'

@@ -4,7 +4,7 @@
    <!-- Brand logo-->
       <b-link class="brand-logo" :to="{name:'home'}">
         
-         <img src="/storage/logotipo.png" alt="Logo" />
+         <img :src="logotipo" alt="Logo" />
      
       </b-link>
       <!-- /Brand logo-->
@@ -38,6 +38,8 @@ import store from '@/store/index'
 import downImg from '@/assets/images/pages/under-maintenance.svg'
 import {computed,toRefs} from 'vue';
 import downImgDark from '@/assets/images/pages/under-maintenance-dark.svg';
+import logotipo from 'storage/logotipo.png'
+import logotipoblanco from 'storage/logotipoblanco.png'
 
 export default {
   components: {
@@ -50,9 +52,11 @@ export default {
   },
   setup() {
     const {layout} = toRefs(store.state.appConfig)
+    const skin = computed(() => layout.value.skin)
 
     return {
       downImg,
+      logotipo: computed(() => skin.value === 'dark' ? logotipoblanco : logotipo),
       imgUrl:computed(() => {
         return  layout.value.skin === 'dark' ? downImgDark : downImg
       })

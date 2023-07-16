@@ -4,6 +4,9 @@ import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
 import lang from 'element-ui/lib/locale/lang/es';
 import locale from 'element-ui/lib/locale';
+import('../../scss/app.scss');
+import('../../scss/loader.css');
+
 
 Vue.prototype.$eventHub = new Vue();
 
@@ -13,10 +16,11 @@ import TheMask from 'vue-the-mask';
 
 Vue.use(TheMask);
 
-import * as VueGoogleMaps from 'vue2-google-maps';
-// import VueGoogleAutocomlete from 'vue-google-autocomplete';
+// import * as VueGoogleMaps from 'vue2-google-maps';
+import GmapVue from 'gmap-vue';
+import VueGoogleAutocomlete from 'vue-google-autocomplete';
 
-Vue.use(VueGoogleMaps, {
+Vue.use(GmapVue, {
   load: {
     key: 'AIzaSyCNWsVH2kmknm6knGSRKDuzGeMWM1PT6gA',
     libraries: 'places',

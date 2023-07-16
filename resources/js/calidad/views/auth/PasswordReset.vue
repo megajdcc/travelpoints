@@ -7,10 +7,8 @@
         <!-- Brand logo-->
         <b-link class="brand-logo">
 
-          <img src="/storage/logotipo.png" alt="Logo" />
-          <!-- <h2 class="brand-text text-primary ml-1">
-            Boda y Playa
-         </h2> -->
+          <img :src="logotipo" alt="Logo" />
+         
         </b-link>
         <!-- /Brand logo-->
         <b-card-title class="mb-1">
@@ -91,6 +89,10 @@ import {
 } from 'bootstrap-vue'
 import { required } from '@validations'
 import ToastificationContent from '@core/components/toastification/ToastificationContent.vue'
+import { ref, toRefs, computed } from 'vue';
+
+import logotipo from 'storage/logotipo.png'
+import logotipoblanco from 'storage/logotipoblanco.png'
 
 export default {
   components: {
@@ -198,6 +200,17 @@ export default {
       })
     },
   },
+
+  setup(props) {
+
+    const { layout } = toRefs(store.state.appConfig)
+    const skin = computed(() => layout.value.skin)
+
+    return {
+      logotipo: computed(() => skin.value === 'dark' ? logotipoblanco : logotipo)
+    }
+  }
+
 }
 </script>
 

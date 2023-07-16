@@ -226,7 +226,7 @@ export default [
 
    },
    {
-      path:'/tienda-travel/producto/:id/show',
+      path:'/tienda-travel/producto/:id?/show',
       component:() => import('views/paginas/PerfilProducto.vue'),
       props:true,
       name:'tienda.travel.show.producto',

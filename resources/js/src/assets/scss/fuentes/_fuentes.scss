@@ -33,26 +33,26 @@ src: local('Nexa Bold'), url('@fuentes/NexaBold.woff') format('woff');
 font-family:"Myriad";
 font-style:normal;
 font-weight:normal;
-src:url('@fuentes/MyriadPro-Cond_0.otf');
+src:'./../../fonts/MyriadPro-Cond_0.otf';
 }
 
 @font-face {
 font-family: 'Myriad Bold';
 font-style: normal;
 font-weight: 600;
-src:url('@fuentes/MyriadPro-BoldCond_0.otf');
+src:'./../../fonts/MyriadPro-BoldCond_0.otf';
 }
 
 
 @font-face {
 font-family: 'Myriad Regular';
 font-style: normal;
-src:url('@fuentes/MyriadPro-Regular_0.otf');
+src:'./../../fonts/MyriadPro-Regular_0.otf';
 }
 
 @font-face {
 font-family: 'Myriad Light';
 font-style: normal;
-src:url('@fuentes/MyriadPro-Light.otf');
+src:'./../../fonts/MyriadPro-Light.otf';
 }
 

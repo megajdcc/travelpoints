@@ -10,13 +10,15 @@
   <link rel="manifest" href="/manifest.json">
 
   <title>TravelPoints</title>
-  <!-- Styles -->
-  @vite(['resources/scss/loader.css', 'resources/js/app.js'])
+ 
   <!-- Favicon -->
   <link rel="shortcut icon" href="{{ asset('favicons/favicon-57x57.png') }}">
   <script src="https://accounts.google.com/gsi/client" async defer ></script>
  
-
+   <!-- Styles -->
+  @vite(['resources/js/app.js'])
+  <link rel="stylesheet" href="./css/loader.css">
+  
 </head>
 
 <body>
@@ -39,7 +41,7 @@
     <script>
       window.addEventListener('load',() => {
           if('serviceWorker' in navigator){
-            navigator.serviceWorker.register('/service-worker.js').then(() => {
+            navigator.serviceWorker.register('/build/sw.js').then(() => {
               console.log('Service Worker registrado!')
             }).catch(e => {
               console.log('Service Worker no pudo ser registrado')

@@ -41,7 +41,7 @@
                  <b-col cols="12" md="10"  class="d-flex justify-content-center">
 
                     <!-- <article class="img-central"> -->
-                       <vue-hover-zoom :imageUrl="`/storage/productos/${getImagenSeleccionada().imagen}`"  class="img-central d-flex justify-content-center" :alt="producto.nombre" style="width:100%;height:100%;position:relative; object-fit:contain; ">
+                       <vue-hover-zoom :imageUrl="`/storage/productos/${getImagenSeleccionada().imagen}`"  class="img-central d-flex justify-content-center" :alt="producto.nombre" style="width:100%;height:100%;position:relative; object-fit:contain; " v-if="producto.imagenes.length">
                     
                       </vue-hover-zoom>
                     <!-- </article> -->
@@ -554,7 +554,10 @@ export default {
 
           var i = producto.value.imagenes.findIndex(foto => foto.id == imagen.id);
 
-          producto.value.imagenes[i].portada = true;
+          if(i != -1){
+             producto.value.imagenes[i].portada = true;
+          }
+         
 
     }
 
@@ -563,7 +566,7 @@ export default {
           if(foto != undefined){
             return foto
           }
-          return producto.value.imagenes[0];
+          return producto.value.imagenes.length ? producto.value.imagenes[0] : null;
     }
 
    const cargarForm = () => {
@@ -773,10 +776,10 @@ export default {
 
         const imagen_principal = produc.imagenes.find(val => val.portada)
 
-        if (imagen_principal) {
-          return `/storage/productos/${imagen_principal.imagen}`
+        if (imagen_principal != undefined) {
+          return `storage/productos/${imagen_principal.imagen}`
         }
-        return `/storage/productos/${produc.imagenes[0].imagen}`
+        return produc.imagenes.length ? `storage/productos/${produc.imagenes[0].imagen}` : ''
       },
 
 

@@ -6,12 +6,12 @@ export default [
    /*************************************** */
    {
     path: '/socio',
-    name:'socio',
+   //  name:'socio',
     component: () => import('views/socio/index.vue'),
     children:[
       {
           path: 'perfil',
-          name: 'perfil',
+         //  name: 'perfil',
           component: () => import('views/socio/perfil/index.vue'),
           meta: {
              resource: 'perfil',
@@ -124,7 +124,7 @@ export default [
       //  negocio
        {
           path: 'negocio',
-          name: 'socio.negocio',
+         //  name: 'socio.negocio',
           component: () => import('views/socio/negocio/index.vue'),
           meta: {
              resource: 'perfil',
@@ -286,19 +286,19 @@ export default [
           ]
 
        },
-      //  cupones
-       {
-          path: '/cupones',
-          name: 'socio.cupones',
-          component: () => import('views/socio/cupones/index.vue'),
-          meta: {
-             resource: 'perfil',
-             action: 'read',
-             layout: 'travel',
-            //  navActiveLink: 'socio'
-          }
+      // //  cupones
+      //  {
+      //     path: '/cupones',
+      //     name: 'socio.cupones',
+      //     component: () => import('views/socio/cupones/index.vue'),
+      //     meta: {
+      //        resource: 'perfil',
+      //        action: 'read',
+      //        layout: 'travel',
+      //       //  navActiveLink: 'socio'
+      //     }
 
-       },
+      //  },
       //  compras
        {
           path: 'compras',
@@ -323,7 +323,7 @@ export default [
 
    {
       path:'/usuarios',
-      name:'usuarios',
+      // name:'usuarios',
       component: () => import('views/usuarios/index.vue'),
       children:[
          {
@@ -1312,7 +1312,7 @@ export default [
    {
       path: '/configuracion/categorias-faqs',
       component: () => import('views/faqs/index.vue'),
-      name: 'configuracion.categorias-faq',
+      // name: 'configuracion.categorias-faq',
       children: [
          {
             path: '',

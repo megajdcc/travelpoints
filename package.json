@@ -71,6 +71,7 @@
     "uuid": "8.3.2",
     "v-mask": "^2.3.0",
     "vee-validate": "3.4.5",
+    "vite-plugin-pwa": "^0.16.4",
     "vm-browserify": "^1.1.2",
     "vue": "^2.7.14",
     "vue-apexcharts": "^1.6.2",

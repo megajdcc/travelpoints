@@ -27,7 +27,7 @@
               <vue-slider v-model.lazy="precios" :lazy="true" :min="0" :max="precio_maximo"
                  :tooltipFormatter="(val) => `$ ${val}`" :interval=".2" >
                  
-                </vue-slider>
+              </vue-slider>
 
             </div>
 
@@ -165,13 +165,9 @@ import {
 } from 'bootstrap-vue'
 
 import store from '@/store'
-import router from '@/router'
-import Ripple from 'vue-ripple-directive'
 
 import { ref, toRefs, computed, onActivated,onMounted,watch } from 'vue'
 import VueSlider from 'vue-slider-component'
-import vSelect from 'vue-select'
-import { regresar } from '@core/utils/utils.js'
 
 export default {
 
@@ -199,13 +195,11 @@ export default {
     BDropdownItem,
     BFormRadioGroup,
     BFormRadio,
-    vSelect
 
   },
 
   directives: {
     'b-popover': VBPopover,
-    Ripple,
   },
 
 

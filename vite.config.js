@@ -1,24 +1,40 @@
 import { defineConfig } from 'vite';
 import laravel from 'laravel-vite-plugin';
 import vue from '@vitejs/plugin-vue2'
-
+import { VitePWA } from 'vite-plugin-pwa'
 import path from 'path' 
 import fs from 'fs'; 
  
 const host = 'travelpoints.dev'; 
 export default defineConfig({
+    // base:'https://travelpoints.dev',
     plugins: [
-        laravel([
-            'resources/js/app.js',
-        ]),
+        laravel({
+            refresh:['resources/views/**'],
+            buildDirectory:'build',
+            input:['resources/js/app.js']
+        }),
         vue({
             template: {
                 transformAssetUrls: {
-                    base: '/',
+                    base:null,
                     includeAbsolute: false,
+                   
                 },
             },
         }),
+    //    VitePWA({
+    //         outDir: 'public/build',
+    //         injectRegister: 'inline',
+    //         registerType: 'autoUpdate',
+    //         workbox: {
+    //             globPatterns: ['**/*.{ico,png,svg,ttf}']
+    //         },
+    //         devOptions: {
+    //             enabled: true
+    //         }
+    //     })
+
     ],
     resolve: {
           alias: {
@@ -38,12 +54,7 @@ export default defineConfig({
 
           }
     },
-    optimizeDeps: {
-      exclude: [
-        'vue2-google-maps',
-        'bootstrap-vue'
-      ],
-    },
+
     server: { 
         host, 
         hmr: { host }, 
@@ -54,8 +65,13 @@ export default defineConfig({
     }, 
 
     build:{
+        assetsInlineLimit:0,
+        // cssCodeSplit:false,
+        manifest:true,
+        sourcemap:true,
         chunkSizeWarningLimit:5000
-    }
+    },
+    
 
     // proxy: {
     //     '/': 'https://travelpoints.dev',

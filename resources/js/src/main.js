@@ -4,8 +4,8 @@ import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
 import lang from 'element-ui/lib/locale/lang/es';
 import locale from 'element-ui/lib/locale';
-import('../../scss/app.scss');
-import('../../scss/loader.css');
+import '../../scss/app.scss';
+// import '../../scss/loader.css';
 
 
 Vue.prototype.$eventHub = new Vue();

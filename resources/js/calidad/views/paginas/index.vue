@@ -84,7 +84,7 @@
 
 
       <!-- Si el usuario no Ha seleccionado un destino, debe hacerlo  -->
-      <el-dialog :title="$t('Elija un Destino')" :visible.sync="showDestino" width="90%" :show-close="false"
+      <el-dialog :title="$t('Elija un Destino')" :visible.sync="showDestino" width="90% !important" :show-close="false"
          :close-on-click-modal="false" :close-on-press-escape="false" class="dialogo-seleccion-destino">
 
          <template #title>

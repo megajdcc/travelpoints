@@ -247,8 +247,6 @@ export default {
 
       onMounted(() => {
          cargarAtraccionesCercanas()
-         console.log(coords.value.latitude,coords.value.longitude)
-     
       })
       
       const opinionGuardada = (opinion) => {

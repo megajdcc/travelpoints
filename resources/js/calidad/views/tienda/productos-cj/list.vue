@@ -165,10 +165,7 @@ export default {
       actions,
       refTable: actions.refTable,
       required,
-      getMaxCantidad:computed(() => {
-        return product.value.tiendas.find(val => val.id === formulario.value.tienda_id).pivot.cantidad || 0
-      }),
-
+   
       getImagenPrincipal: (produc) => {
 
         const imagen_principal = produc.imagenes.find(val => val.portada)

@@ -1,196 +1,149 @@
 <template>
+
       <listado-productos :actions.sync="actions" class="ecommerce-application">
 
-      <template #btn-action v-if="!isStore">
-          <b-button size="sm" class="ml-sm-1 mt-1 mt-sm-0 d-flex align-items-center" variant="outline-primary"
-            :to="{ name: 'producto.create' }" v-if="$can('write', 'productos')">
-            {{ $t('Crear') }}
-          </b-button>
-      </template>
+        <template #btn-action v-if="!isStore">
+            <b-button size="sm" class="ml-sm-1 mt-1 mt-sm-0 d-flex align-items-center" variant="outline-primary"
+              :to="{ name: 'producto.create' }" v-if="$can('write', 'productos')">
+              {{ $t('Crear') }}
+            </b-button>
+        </template>
 
-      <template #contenido="{ items, eliminar, itemView }">
+        <template #contenido="{ items, eliminar, itemView }">
 
-          <section :class="itemView">
-              <b-card v-for="producto in items" :key="producto.id" class="ecommerce-card" no-body>
-            
-                <div class="item-img text-center py-0">
-                  <b-link :to="{ name: !isStore ? 'producto.show' : 'tienda.travel.show.producto', params: { id: producto.id } }" style="height:100%">
-                    <b-img :alt="producto.nombre" fluid class="card-img-top img-fluid" v-if="producto.imagenes.length"
-                      :src="getImagenPrincipal(producto)" />
-                  </b-link>
-                </div>
-            
-                <b-card-body>
-                  <div class="item-wrapper">
-            
-                    <div>
-                      <h2 class="item-price">
-                        <template v-if="producto.divisa.iso.toUpperCase() == 'TP'">
-                          Tp{{ producto.precio | currency }}
-                        </template>
-                        <template v-else>
-                          {{ producto.precio | currency(producto.divisa ? producto.divisa.iso : 'MXN') }}
-                        </template>
-                        
-                      </h2>
-
-                      <b-badge variant="primary">{{ producto.categoria.nombre }}</b-badge>
-                    </div>
-                  </div>
-                  <h6 class="item-name">
-                    <b-link class="text-body" :to="{ name: !isStore ? 'producto.show' : 'tienda.travel.show.producto', params: { id: producto.id } }">
-                      {{ producto.nombre }}
+            <section :class="itemView">
+                <b-card v-for="producto in items" :key="producto.id" class="ecommerce-card" no-body>
+              
+                  <div class="item-img text-center py-0">
+                    <b-link :to="{ name: !isStore ? 'producto.show' : 'tienda.travel.show.producto', params: { id: producto.id } }" style="height:100%">
+                      <b-img :alt="producto.nombre" fluid class="card-img-top img-fluid" v-if="producto.imagenes.length"
+                        :src="getImagenPrincipal(producto)" />
                     </b-link>
-                  
-                  </h6>
-                  <b-card-text class="item-description" style="max-width:320px" >
-                    {{ producto.breve }}
-                  </b-card-text>
-
-                </b-card-body>
-            
-                <!-- Product Actions -->
-                <div class="item-options text-center">
-                  <div class="item-wrapper">
-                    <div class="item-cost">
-            
-                      <h4 class="item-price">
-                        {{ producto.precio | currency(producto.divisa ? producto.divisa.iso : 'MXN') }}
-                      </h4>
-            
-                    </div>
                   </div>
-            
-                  <b-button-group size="sm" class="w-100" v-if="!isStore">
-            
-                    <b-button variant="primary" tag="a" class="btn-cart" :to="{ name: 'producto.edit', params: { id: producto.id } }"
-                      v-if="$can('update', 'productos')">
-                      <feather-icon icon="Edit3Icon" class="mr-50" />
-                    </b-button>
-            
-                    <b-button variant="danger" tag="a" class="btn-cart" @click="eliminar(producto.id)"
-                      v-if="$can('delete', 'productos')">
-                      <feather-icon icon="Trash2Icon" class="mr-50" />
-                    </b-button>
-
-                    <b-button tag="a" class="btn-cart" variant="dark" v-if="$can('write', 'productos')" title="Imagenes" :to="{ name: 'producto.imagenes', params: { id: producto.id } }" >
-                      <font-awesome-icon icon="fas fa-images"/>
-                    </b-button>
-            
-                  </b-button-group>
-
-                  <b-button-group v-else class="w-100" >
-                      <b-button tag="a" class="w-100" variant="primary" title="Agregar al carrito" v-b-tooltip.hover @click="agregarCarrito(producto.id)" v-if="producto.tipo_producto != 2" >
-                        <font-awesome-icon icon="fas fa-cart-plus" />
-                        Agregar Carrito
-                      </b-button>
-                  </b-button-group>
-                </div>
-              </b-card>
-
-            
-          </section>
-
-           <b-sidebar v-model="addCarrito" no-header-close >
-                <template #title>
-                  <h3>Agregar al carrito</h3>
-                </template>
-
-                <b-container fluid >
-                  <b-row>
-                    <b-col cols="12">
-                        <b-card class="ecommerce-card" no-body>
-        
-                            <div class="item-img text-center py-0">
-                              <b-link :to="{ name: !isStore ? 'producto.show' : 'tienda.travel.show.producto', 
-                              params: { id: product.id } }" style="height:100%">
-                                <b-img :alt="product.nombre" fluid class="card-img-top img-fluid" v-if="product.imagenes.length"
-                                  :src="getImagenPrincipal(product)" />
-                              </b-link>
-                            </div>
-                    
-                            <b-card-body>
-                              <div class="item-wrapper">
-                    
-                                <div>
-                                  <h2 class="item-price">
-                                    {{ product.precio | currency(product.divisa ? product.divisa.iso : 'MXN') }}
-                                  </h2>
-
-                                  <b-badge variant="primary">{{ product.id ? product.categoria.nombre : '' }}</b-badge>
-                                </div>
-                              </div>
-                              
-                              <h6 class="item-name">
-                                
-                                <b-link class="text-body" :to="{ name: !isStore ? 'producto.show' : 'tienda.travel.show.producto', 
-                                params: { id: product.id } }">
-                                  {{ product.nombre }}
-                                </b-link>
+              
+                  <b-card-body>
+                    <div class="item-wrapper">
+              
+                      <div>
+                        <h2 class="item-price">
+                          <template v-if="producto.divisa.iso.toUpperCase() == 'TP'">
+                            Tp{{ producto.precio | currency }}
+                          </template>
+                          <template v-else>
+                            {{ producto.precio | currency(producto.divisa ? producto.divisa.iso : 'MXN') }}
+                          </template>
                           
-                              </h6>
+                        </h2>
 
-                            </b-card-body>
+                        <b-badge variant="primary">{{ producto.categoria.nombre }}</b-badge>
+                      </div>
+                    </div>
+                    <h6 class="item-name">
+                      <b-link class="text-body" :to="{ name: !isStore ? 'producto.show' : 'tienda.travel.show.producto', params: { id: producto.id } }">
+                        {{ producto.nombre }}
+                      </b-link>
+                    
+                    </h6>
+                    <b-card-text class="item-description" style="max-width:320px" >
+                      {{ producto.breve }}
+                    </b-card-text>
 
-                        </b-card>
+                  </b-card-body>
+              
+                  <div class="item-options text-center">
+                    <div class="item-wrapper">
+                      <div class="item-cost">
+              
+                        <h4 class="item-price">
+                          {{ producto.precio | currency(producto.divisa ? producto.divisa.iso : 'MXN') }}
+                        </h4>
+              
+                      </div>
+                    </div>
+              
+                    <b-button-group size="sm" class="w-100" v-if="!isStore">
+              
+                      <b-button variant="primary" tag="a" class="btn-cart" :to="{ name: 'producto.edit', params: { id: producto.id } }"
+                        v-if="$can('update', 'productos')">
+                        <feather-icon icon="Edit3Icon" class="mr-50" />
+                      </b-button>
+              
+                      <b-button variant="danger" tag="a" class="btn-cart" @click="eliminar(producto.id)"
+                        v-if="$can('delete', 'productos')">
+                        <feather-icon icon="Trash2Icon" class="mr-50" />
+                      </b-button>
 
-                        <b-form-group v-if="!product.isChino">
-                              <template #label>
-                                Tienda que ofrece el producto y/o servicio.
-                              </template>
+                      <b-button tag="a" class="btn-cart" variant="dark" v-if="$can('write', 'productos')" title="Imagenes" :to="{ name: 'producto.imagenes', params: { id: producto.id } }" >
+                        <font-awesome-icon icon="fas fa-images"/>
+                      </b-button>
+              
+                    </b-button-group>
 
-                              <validation-provider name="tienda_id" rules="required" #default="{ valid, errors }">
+                    <b-button-group v-else class="w-100" >
+                        <b-button tag="a" class="w-100" variant="primary" title="Agregar al carrito" v-b-tooltip.hover @click="agregarCarrito(producto.id)" v-if="producto.tipo_producto != 2" >
+                          <font-awesome-icon icon="fas fa-cart-plus" />
+                          Agregar Carrito
+                        </b-button>
+                    </b-button-group>
+                  </div>
+                </b-card>
 
-                                <v-select v-model="formulario.tienda_id" :options="product.tiendas" :reduce="option => option.id" label="nombre">
-                                </v-select>
+              
+            </section>
 
-                                <b-form-invalid-feedback :state="valid">
-                                  {{ errors[0] }}
-                                </b-form-invalid-feedback>
-                              </validation-provider>
+            <b-sidebar v-model="addCarrito" no-header-close >
+                  <template #title>
+                    <h3>Agregar al carrito</h3>
+                  </template>
 
+                  <b-container fluid >
+                    <b-row>
+                      <b-col cols="12">
+                          <b-card class="ecommerce-card" no-body>
+          
+                              <div class="item-img text-center py-0">
+                                <b-link :to="{ name: !isStore ? 'producto.show' : 'tienda.travel.show.producto', 
+                                params: { id: product.id } }" style="height:100%">
+                                  <b-img :alt="product.nombre" fluid class="card-img-top img-fluid" v-if="product.imagenes.length"
+                                    :src="getImagenPrincipal(product)" />
+                                </b-link>
+                              </div>
+                      
+                              <b-card-body>
+                                <div class="item-wrapper">
+                      
+                                  <div>
+                                    <h2 class="item-price">
+                                      {{ product.precio | currency(product.divisa ? product.divisa.iso : 'MXN') }}
+                                    </h2>
 
-                            </b-form-group>
+                                    <b-badge variant="primary">{{ product.id ? product.categoria.nombre : '' }}</b-badge>
+                                  </div>
+                                </div>
+                                
+                                <h6 class="item-name">
+                                  
+                                  <b-link class="text-body" :to="{ name: !isStore ? 'producto.show' : 'tienda.travel.show.producto', 
+                                  params: { id: product.id } }">
+                                    {{ product.nombre }}
+                                  </b-link>
+                            
+                                </h6>
 
+                              </b-card-body>
 
-                            <b-form-group v-else description="Puede ser el color y el tamaño, elija el que desee">
+                          </b-card>
+
+                          <b-form-group v-if="!product.isChino">
                                 <template #label>
-                                  Elija la variación deseada 
+                                  Tienda que ofrece el producto y/o servicio.
                                 </template>
 
-                                <validation-provider name="vid" rules="required" #default="{ errors, valid }">
+                                <validation-provider name="tienda_id" rules="required" #default="{ valid, errors }">
 
-                                    <v-select v-model="formulario.vid" :reduce="(option) => option.vid" :filter="filtrarVariant" :options="variantColor" style="width:230px" label="variantKey" @input="variantSelect">
+                                  <v-select v-model="formulario.tienda_id" :options="product.tiendas" :reduce="option => option.id" label="nombre">
+                                  </v-select>
 
-                                        <template #selected-option="{ variantImage, variantNameEn, variantKey }">
-                                          <b-avatar :src="variantImage" rounded="circle" class="mr-1" size="20pt" />
-                                          <small :title="variantNameEn" v-b-tooltip:hover> {{ variantKey }}</small>
-                                        </template>   
-
-                                        <template #option="{ variantImage, variantNameEn, variantKey }">
-                                          <b-avatar :src="variantImage" rounded="circle" size="20pt" />
-                                           <small :title="variantNameEn"> {{ variantKey }}</small>
-                                        </template>
-
-                                        <template #no-options>
-                                          Sin Variante
-                                        </template>
-
-                                    </v-select>
-
-                                    <b-form-invalid-feedback :state="valid">
-                                      {{ errors[0] }}
-                                    </b-form-invalid-feedback>
-                                </validation-provider>
-                            </b-form-group>
-
-                              <b-form-group v-if="formulario.tienda_id || formulario.vid">
-                                <template #label>
-                                  Cantidad de productos
-                                </template>
-
-                                <validation-provider name="cantidad" rules="required" #default="{ valid, errors }">
-                                  <b-form-spinbutton v-model="formulario.cantidad" :min="0" :max="getMaxCantidad"></b-form-spinbutton>
                                   <b-form-invalid-feedback :state="valid">
                                     {{ errors[0] }}
                                   </b-form-invalid-feedback>
@@ -198,33 +151,80 @@
 
 
                               </b-form-group>
-                    </b-col>
-                  </b-row>
-                </b-container>
 
 
-                <template #footer="{ hide }">
-                  <b-button-group  class="p-1">
+                              <b-form-group v-else description="Puede ser el color y el tamaño, elija el que desee">
+                                  <template #label>
+                                    Elija la variación deseada 
+                                  </template>
 
-                      <b-button variant="primary" @click="guardarCarrito" v-loading="loading" :disabled="formulario.cantidad < 1 || loading">
-                            <font-awesome-icon icon="fas fa-cart-plus"/>
-                            Agregar al Carrito
-                      </b-button>
+                                  <validation-provider name="vid" rules="required" #default="{ errors, valid }">
 
-                      <b-button variant="dark" @click="hide">
-                        <font-awesome-icon icon="fas fa-times"/>
-                        Cerrar
-                      </b-button>
+                                      <v-select v-model="formulario.vid" :reduce="(option) => option.vid" :filter="filtrarVariant" :options="variantColor" style="width:230px" label="variantKey" @input="variantSelect">
 
-                      
-                  </b-button-group>
-                </template>
+                                          <template #selected-option="{ variantImage, variantNameEn, variantKey }">
+                                            <b-avatar :src="variantImage" rounded="circle" class="mr-1" size="20pt" />
+                                            <small :title="variantNameEn" v-b-tooltip:hover> {{ variantKey }}</small>
+                                          </template>   
+
+                                          <template #option="{ variantImage, variantNameEn, variantKey }">
+                                            <b-avatar :src="variantImage" rounded="circle" size="20pt" />
+                                            <small :title="variantNameEn"> {{ variantKey }}</small>
+                                          </template>
+
+                                          <template #no-options>
+                                            Sin Variante
+                                          </template>
+
+                                      </v-select>
+
+                                      <b-form-invalid-feedback :state="valid">
+                                        {{ errors[0] }}
+                                      </b-form-invalid-feedback>
+                                  </validation-provider>
+                              </b-form-group>
+
+                                <b-form-group v-if="formulario.tienda_id || formulario.vid">
+                                  <template #label>
+                                    Cantidad de productos
+                                  </template>
+
+                                  <validation-provider name="cantidad" rules="required" #default="{ valid, errors }">
+                                    <b-form-spinbutton v-model="formulario.cantidad" :min="0" :max="getMaxCantidad"></b-form-spinbutton>
+                                    <b-form-invalid-feedback :state="valid">
+                                      {{ errors[0] }}
+                                    </b-form-invalid-feedback>
+                                  </validation-provider>
+
+
+                                </b-form-group>
+                      </b-col>
+                    </b-row>
+                  </b-container>
+
+
+                  <template #footer="{ hide }">
+                    <b-button-group  class="p-1">
+
+                        <b-button variant="primary" @click="guardarCarrito" v-loading="loading" :disabled="formulario.cantidad < 1 || loading">
+                              <font-awesome-icon icon="fas fa-cart-plus"/>
+                              Agregar al Carrito
+                        </b-button>
+
+                        <b-button variant="dark" @click="hide">
+                          <font-awesome-icon icon="fas fa-times"/>
+                          Cerrar
+                        </b-button>
+
+                        
+                    </b-button-group>
+                  </template>
 
             </b-sidebar>
-      
+        
 
-      </template>
-    </listado-productos>
+        </template>
+      </listado-productos>
 
 </template>
 
@@ -435,17 +435,26 @@ export default {
         if (product.value.isChino) {
           return stock.value;
         }
+        if(product.value.tiendas.length){
+          const pro = product.value.tiendas.find(val => val.id === formulario.value.tienda_id)
+          if(pro != undefined){
+            return pro.pivot ? pro.pivot.cantidad : 0
+          }else{
+            return 0
+          }
+        }
 
-        return product.value.tiendas.find(val => val.id === formulario.value.tienda_id).pivot.cantidad || 0
+        return 0;
+       
       }),
       getImagenPrincipal: (produc) => {
 
         const imagen_principal = produc.imagenes.find(val => val.portada)
 
         if (imagen_principal != undefined){
-            return `storage/productos/${imagen_principal.imagen}`
+            return `/storage/productos/${imagen_principal.imagen}`
         }
-        return `storage/productos/${produc.imagenes[0].imagen}`
+        return `/storage/productos/${produc.imagenes[0].imagen}`
 
       },
 

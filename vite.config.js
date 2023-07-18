@@ -12,7 +12,8 @@ export default defineConfig({
         laravel({
             refresh:['resources/views/**'],
             buildDirectory:'build',
-            input:['resources/js/app.js']
+            input:['resources/js/app.js'],
+            //  ssr: 'resources/js/ssr.js',
         }),
         vue({
             template: {

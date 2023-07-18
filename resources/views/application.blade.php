@@ -17,7 +17,7 @@
  
    <!-- Styles -->
   @vite(['resources/js/app.js'])
-  <link rel="stylesheet" href="./css/loader.css">
+  <link rel="stylesheet" href="/css/loader.css">
   
 </head>
 

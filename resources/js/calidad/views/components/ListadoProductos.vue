@@ -1,7 +1,6 @@
 <template>
-   <b-container fluid class="px-0 mx-0">
+  <b-container fluid class="px-0 mx-0">
     
-    <!-- Titulo -->
     <b-row>
       <b-col cols="12">
           <slot name="titulo" :total="total">
@@ -10,14 +9,11 @@
       </b-col>
     </b-row>
 
-    <!-- Contenido -->
     <b-row>
       
-      <!-- Filtro Producto -->
 
       <b-col cols="12" md="3">
         <b-card>
-            <!-- Price Slider -->
             <div class="price-slider" v-if="!hideSliderPrices">
               
               <h6 class="filter-title">
@@ -31,7 +27,6 @@
 
             </div>
 
-            <!-- Categorias -->
             
            <b-form-group :label="$t('Categorías')" >
             <b-form-checkbox-group  v-if="!cjDropShipping" v-model="categoria_id" :options="categorias" :text-field="cjDropShipping ? 'categoryFirstName' : 'nombre'" :value-field="cjDropShipping ? 'categoryFirstId' : 'id'" stacked >
@@ -49,7 +44,6 @@
 
            </b-form-group>
 
-           <!-- Tiendas -->
 
            <b-form-group :label="$t('Tiendas')" v-if="!cjDropShipping">
                <b-form-checkbox-group  v-model="tienda_id" :options="tiendas" text-field="nombre" value-field="id" stacked >
@@ -78,11 +72,9 @@
               
                   <div class="view-options d-flex flex-wrap">
               
-                    <!-- ordenar por -->
                     <v-select v-model="sortBy" :options="sortByOptions" label="text" :reduce="option => option.value" style="min-width: 150px;" v-if="!cjDropShipping">
                     </v-select>
               
-                    <!-- Tipos de vistas a listar  -->
                     <b-form-radio-group v-model="itemView" class="ml-1 ml-md-1 list item-view-radio-group" buttons size="sm"
                       button-variant="outline-primary">
                       <b-form-radio v-for="option in itemViewOptions" :key="option.value" :value="option.value">
@@ -134,7 +126,7 @@
 
     </b-row>
 
-   </b-container>
+   </b-container> 
 </template>
 
 <script>
@@ -169,6 +161,8 @@ import store from '@/store'
 import { ref, toRefs, computed, onActivated,onMounted,watch } from 'vue'
 import VueSlider from 'vue-slider-component'
 
+import vSelect from 'vue-select'
+
 export default {
 
   components: {
@@ -185,7 +179,6 @@ export default {
     BCarouselSlide,
     BInputGroupAppend,
     BImg,
-    perPage: () => import('components/PerPage.vue'),
     paginateTable: () => import('components/PaginateTable.vue'),
     BSpinner,
     VueSlider,
@@ -195,6 +188,7 @@ export default {
     BDropdownItem,
     BFormRadioGroup,
     BFormRadio,
+    vSelect
 
   },
 
@@ -220,6 +214,7 @@ export default {
   setup(props,{emit}) {
 
     const { actions, cjDropShipping } = toRefs(props)
+
     let range_precio = ref([0, 20000]);
 
     const itemView = ref('grid-view')
@@ -231,12 +226,7 @@ export default {
 
     itemView.value = localStorage.getItem('disposicion_producto') || 'grid-view';
 
-    watch(itemView , (v) => {
-        localStorage.setItem('disposicion_producto',v)
-        refetchData()
-    })
-
-    const {
+     const {
       perPageOptions,
       currentPage,
       perPage,
@@ -258,8 +248,12 @@ export default {
       sortByOptions
     } = actions.value;
 
-    onActivated(() => refetchData())
+    watch(itemView , (v) => {
+        localStorage.setItem('disposicion_producto',v)
+        refetchData()
+    })
 
+    onActivated(() => refetchData())
 
     const cargar_rango_precio = () => {
 
@@ -286,33 +280,36 @@ export default {
     const  convertDataFormat = (data) => {
       var convertedData = [];
 
-      data.forEach(function (item) {
-        var convertedItem = {
-          label: item.categoryFirstName,
-          children: []
-        };
-
-        item.categoryFirstList.forEach(function (categoryFirst) {
-          var categoryFirstItem = {
-            label: categoryFirst.categorySecondName,
+      if(data && cjDropShipping.value){
+        data.forEach(function(item) {
+          var convertedItem = {
+            label: item.categoryFirstName,
             children: []
           };
 
-          categoryFirst.categorySecondList.forEach(function (categorySecond) {
-            var categorySecondItem = {
-              label: categorySecond.categoryName,
-              children: [],
-              categoryId: categorySecond.categoryId
+          item.categoryFirstList.forEach(function (categoryFirst) {
+            var categoryFirstItem = {
+              label: categoryFirst.categorySecondName,
+              children: []
             };
 
-            categoryFirstItem.children.push(categorySecondItem);
+            categoryFirst.categorySecondList.forEach(function (categorySecond) {
+              var categorySecondItem = {
+                label: categorySecond.categoryName,
+                children: [],
+                categoryId: categorySecond.categoryId
+              };
+
+              categoryFirstItem.children.push(categorySecondItem);
+            });
+
+            convertedItem.children.push(categoryFirstItem);
           });
 
-          convertedItem.children.push(categoryFirstItem);
+          convertedData.push(convertedItem);
         });
-
-        convertedData.push(convertedItem);
-      });
+      }
+      
 
       return convertedData;
     }
@@ -328,7 +325,6 @@ export default {
 
     return {
       loading:computed(() => store.state.loading),
-
       perPageOptions,
       currentPage,
       perPage,
@@ -345,7 +341,6 @@ export default {
       categorias,
       categoria_id,
       precios,
-
       range_precio,
       itemView,
       itemViewOptions,
@@ -361,14 +356,12 @@ export default {
         categoria_id.value = null
         searchQuery.value = ''
 
-        actions.refetchData();
+        refetchData();
 
       },
       limpiar,
       nodoSelected:(nod,opt) => {
-        console.log(opt)
-        console.log(nod)
-
+      
         if('categoryId' in nod){
           categoria_id.value = nod.categoryId
         }else{

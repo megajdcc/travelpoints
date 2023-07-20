@@ -468,6 +468,10 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::post('tiendas/fetch/data', [TiendaController::class, 'fetchData']);
     Route::get('tiendas/{tienda}/fetch/data', [TiendaController::class, 'fetch']);
     Route::resource('tiendas', TiendaController::class);
+    Route::put('tiendas/{tienda}/add/telefono',[TiendaController::class,'agregarTelefono']);
+
+    Route::get('tiendas/{tienda}/aperturar/horario', [TiendaController::class, 'aperturarHorario']);
+    Route::get('tiendas/{tienda}/quitar/horario', [TiendaController::class, 'quitarHorario']);
 
 
     /*****************************/

@@ -59,14 +59,14 @@
                         </b-card-title>
 
                         <GmapMap :center="{ lat: promedioLatitud, lng: promedioLongitud }" :zoom="3" map-type-id="terrain"
-                          style="width: 100%; height: 300px" :options="{ styles: stylos }" ref="mapa">
+                          style="width: 100%; height: 300px" :options="{ styles: stylosMap }" ref="mapa"  @zoom_changed="zoomChange">
                 
                           <GmapMarker :visible="true" :draggable="false" :icon="iconMapa" :clickable="true" v-for="(tienda, i) in producto.tiendas.filter(val => val.fisica)" :key="i" :position="{
                             lat: Number(tienda.lat),
                             lng: Number(tienda.lng)
                           }">
                 
-                            <GmapInfoWindow :options="optionsPlace(tienda)">
+                            <GmapInfoWindow :options="optionsPlace(tienda)" :opened="showInfoWindow">
                             </GmapInfoWindow>
                 
                           </GmapMarker>
@@ -206,15 +206,29 @@
                       <h1>{{ $t('Disponibilidad en tiendas') }}</h1> 
                   </b-card-title>
 
-                  <GmapMap :center="{ lat: promedioLatitud, lng: promedioLongitud }" :zoom="3" map-type-id="terrain"
-                    style="width: 100%; height: 300px" :options="{ styles: stylos }" ref="mapa">
+                 
+
+                  <GmapMap
+                   :center="{ lat: promedioLatitud, lng: promedioLongitud }"
+                    :zoom="10"
+                    map-type-id="terrain"
+                    style="width: 100%; height: 300px"
+                    :options="{ styles: stylosMap }"
+                    ref="refMap"
+                    @zoom_changed="zoomChange"
+                  >
         
-                    <GmapMarker :visible="true" :draggable="false" :icon="iconMapa" :clickable="true" v-for="(tienda, i) in producto.tiendas.filter(val => val.fisica)" :key="i" :position="{
+                    <GmapMarker 
+                    :visible="true" 
+                    :draggable="false" 
+                    :icon="iconMapa" 
+                    :clickable="true" v-for="(tienda, i) in producto.tiendas.filter(val => val.fisica)" 
+                    :key="i" :position="{
                       lat: Number(tienda.lat),
                       lng: Number(tienda.lng)
                     }">
-        
-                      <GmapInfoWindow :options="optionsPlace(tienda)">
+
+                      <GmapInfoWindow :options="optionsPlace(tienda)" :opened="showInfoWindow">
                       </GmapInfoWindow>
         
                     </GmapMarker>
@@ -409,6 +423,9 @@ import {
 import vSelect from 'vue-select'
 
 import {required} from '@validations'
+
+import {getDay,getFecha} from '@core/utils/utils';
+
 import {
   BCard, BCardBody, BRow, BCol, BImg, BCardText, BLink, BButton, BDropdown, BDropdownItem, BAlert,
   BCarousel,
@@ -450,6 +467,7 @@ import router from '@/router'
 
 import useAuth from '@core/utils/useAuth'
 import iconMapa from '@images/icons/icon_map.png'
+import useMap from '@core/utils/useMap';
 
 export default {
 
@@ -519,9 +537,17 @@ export default {
     const addCarrito = ref(false);
     const { formulario,carrito } = toRefs(store.state.carrito)
     const swal = inject('swal')
+    const showInfoWindow = ref(true);
 
     const stock = ref(0)
     const tasaDivisa = ref(null)
+
+     const {
+      iconMap,
+      iconMapa,
+      stylosMap
+    } = useMap();
+
 
     const variantSelect = (vid) => {
 
@@ -570,15 +596,7 @@ export default {
     }
 
    const cargarForm = () => {
-
-      if(!productos.value.length){
-        store.dispatch('producto/fetch',id.value)
-      }else{
-        store.commit('producto/capturar',id.value)
-      }
-
-      
-
+     store.dispatch('producto/fetch', id.value)
    }
 
    cargarForm()
@@ -589,31 +607,6 @@ export default {
 
    watch([id,productos],() => cargarForm())
 
-   const iconMap =  ref({
-      path: "M531.6 103.8L474.3 13.1C469.2 5 460.1 0 450.4 0H93.6C83.9 0 74.8 5 69.7 13.1L12.3 103.8c-29.6 46.8-3.4 111.9 51.9 119.4c4 .5 8.1 .8 12.1 .8c26.1 0 49.3-11.4 65.2-29c15.9 17.6 39.1 29 65.2 29c26.1 0 49.3-11.4 65.2-29c15.9 17.6 39.1 29 65.2 29c26.2 0 49.3-11.4 65.2-29c16 17.6 39.1 29 65.2 29c4.1 0 8.1-.3 12.1-.8c55.5-7.4 81.8-72.5 52.1-119.4zM483.7 254.9l-.1 0c-5.3 .7-10.7 1.1-16.2 1.1c-12.4 0-24.3-1.9-35.4-5.3V384H112V250.6c-11.2 3.5-23.2 5.4-35.6 5.4c-5.5 0-11-.4-16.3-1.1l-.1 0c-4.1-.6-8.1-1.3-12-2.3V384v64c0 35.3 28.7 64 64 64H432c35.3 0 64-28.7 64-64V384 252.6c-4 1-8 1.8-12.3 2.3z",
-      fillColor: "#e01283",
-      fillOpacity: 1,
-      strokeWeight: 0,
-      rotation: 0,
-      scale: .1,
-    })
-
-    onMounted(() => {
-
-      // console.log(mapa.value)
-      
-      // infoWindow.addListener('closeclick', () => {
-        // Handle focus manually.
-      // });
-
-    
-
-      // iconMap.value.anchor = new google.maps.Point(15, 30);
-
-     
-
-
-    })
 
     const agregarCarrito = (produc) => {
       store.commit('producto/capturar', produc)
@@ -717,6 +710,12 @@ export default {
     const variantColor = computed(() => {
      return  producto.value.variants;
     })
+
+    const zoomChange = ( zoom ) => {
+      // console.log(zoom)
+      showInfoWindow.value = zoom >= 5
+    }   
+
    
    return {
       addCarrito,
@@ -733,8 +732,8 @@ export default {
       formulario,
       sistema,
       iconMap,
-      agregarCarrito,
       iconMapa,
+      agregarCarrito,
       guardarCarrito,
       disponibles:computed(() => {
         if(producto.value.tiendas.length){
@@ -746,7 +745,75 @@ export default {
        
       }),
 
-      optionsPlace: (tienda) => ({ content: `<strong>${tienda.nombre} <br> Disponibilidad: ${tienda.pivot.cantidad} Producto </strong>` }),
+      optionsPlace: (tienda) => {
+        let telefonos = '<br><strong>Teléfonos:<strong>';
+        if(tienda.telefonos.length){
+          tienda.telefonos.forEach(val => {
+            telefonos += `<br><a href="tel:${val.telefono}"><strong>${val.telefono}</strong></a>`
+          });
+        }
+        
+        let horarios = `<table class="table table-sm table-hover">`;
+
+        if(tienda.horarios.length){
+          tienda.horarios.forEach(val => {
+            horarios += `<tr>
+            <td>
+                ${getDay(val.dia)}
+            </td>
+
+            <td>`;
+
+            
+            if(!val.doble_turno){
+              horarios += `<section>`;
+
+                if(val.apertura[0] && val.cierre[0]){
+                  horarios += `${getFecha(val.apertura[0],'hh:mm A',true)} - ${getFecha(val.cierre[0], 'hh:mm A',true)}`
+                }else{
+                  horarios += `<strong class="text-danger">Cerrado</strong>`
+                }
+                horarios += `</section>`
+            }else{
+               horarios += `<section>`;
+
+
+                if(val.apertura.length && val.cierre.length){
+                  horarios += ` <section class="d-flex justify-content-between">`;
+                  
+                    if(val.apertura[0] && val.cierre[0]){
+                      horarios += `Mañana: (${getFecha(val.apertura[0], 'hh:mm A',true)} - ${getFecha(val.cierre[0], 'hh:mm A',true)})`;
+                    }else{
+                       horarios += `<strong class="text-danger">Cerrado</strong>`
+                    }
+                  
+                }
+
+                horarios += `</section>`
+
+              horarios += ` <section class="d-flex justify-content-between">`
+              if(val.apertura[1] && val.cierre[1]){
+                horarios += ` Tarde: (${getFecha(val.apertura[1],'hh:mm A',true)} - ${getFecha(val.cierre[1], 'hh:mm A',true) })`
+              }else{
+                horarios += `<strong class="text-danger">Cerrado</strong></section>`
+              }
+
+            }
+
+         
+            horarios += `</td></tr>`;
+          })
+
+        }
+
+        horarios += '</table>';
+        
+        let result = {
+          content: `<strong>${tienda.nombre} <br> Disponibilidad: ${tienda.pivot.cantidad} Producto </strong> ${telefonos}<br>Horario:<br>${horarios}`,
+          disableAutoPan: true
+        }
+        return result
+      },
 
       promedioLatitud:computed(() => {
 
@@ -768,8 +835,13 @@ export default {
         if(producto.value.isChino){
           return stock.value;
         }
+        const produc = producto.value.tiendas.find(val => val.id === formulario.value.tienda_id);
 
-        return producto.value.tiendas.find(val => val.id === formulario.value.tienda_id).pivot.cantidad || 0
+        if(produc != undefined){
+          return produc.pivot.cantidad
+        }
+
+        return 0;
       }),
 
       getImagenPrincipal: (produc) => {
@@ -798,90 +870,14 @@ export default {
 
       }),
 
-      stylos: [
-        { elementType: "geometry", stylers: [{ color: "#242f3e" }] },
-        { elementType: "labels.text.stroke", stylers: [{ color: "#242f3e" }] },
-        { elementType: "labels.text.fill", stylers: [{ color: "#746855" }] },
-        {
-          featureType: "administrative.locality",
-          elementType: "labels.text.fill",
-          stylers: [{ color: "#d59563" }],
-        },
-        {
-          featureType: "poi",
-          elementType: "labels.text.fill",
-          stylers: [{ color: "#d59563" }],
-        },
-        {
-          featureType: "poi.park",
-          elementType: "geometry",
-          stylers: [{ color: "#263c3f" }],
-        },
-        {
-          featureType: "poi.park",
-          elementType: "labels.text.fill",
-          stylers: [{ color: "#6b9a76" }],
-        },
-        {
-          featureType: "road",
-          elementType: "geometry",
-          stylers: [{ color: "#38414e" }],
-        },
-        {
-          featureType: "road",
-          elementType: "geometry.stroke",
-          stylers: [{ color: "#212a37" }],
-        },
-        {
-          featureType: "road",
-          elementType: "labels.text.fill",
-          stylers: [{ color: "#9ca5b3" }],
-        },
-        {
-          featureType: "road.highway",
-          elementType: "geometry",
-          stylers: [{ color: "#746855" }],
-        },
-        {
-          featureType: "road.highway",
-          elementType: "geometry.stroke",
-          stylers: [{ color: "#1f2835" }],
-        },
-        {
-          featureType: "road.highway",
-          elementType: "labels.text.fill",
-          stylers: [{ color: "#f3d19c" }],
-        },
-        {
-          featureType: "transit",
-          elementType: "geometry",
-          stylers: [{ color: "#2f3948" }],
-        },
-        {
-          featureType: "transit.station",
-          elementType: "labels.text.fill",
-          stylers: [{ color: "#d59563" }],
-        },
-        {
-          featureType: "water",
-          elementType: "geometry",
-          stylers: [{ color: "#17263c" }],
-        },
-        {
-          featureType: "water",
-          elementType: "labels.text.fill",
-          stylers: [{ color: "#515c6d" }],
-        },
-        {
-          featureType: "water",
-          elementType: "labels.text.stroke",
-          stylers: [{ color: "#17263c" }],
-        },
-      ] ,
+      stylosMap,
       mapa,
       filtrarVariant: ({ variantKey, variantImage, vid }, label, search) => {
         return (variantKey || variantImage || vid || '').toLocaleLowerCase().indexOf(search.toLocaleLowerCase()) > -1
       },
+
+      showInfoWindow,
+      zoomChange
 
     }
   },

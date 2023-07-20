@@ -2,13 +2,14 @@
 
 namespace App\Models;
 
-use App\Trais\HasDireccion;
+use App\Trais\{HasDireccion,hasHorario,hasTelefonos};
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Tienda extends Model
 {
-    use HasFactory,HasDireccion;
+    use HasFactory,HasDireccion,hasHorario, hasTelefonos;
+    public readonly string $model_type;
 
     protected $fillable = [
         'nombre',
@@ -25,6 +26,12 @@ class Tienda extends Model
     protected $casts = [
         'fisica' => 'boolean' 
     ];
+
+     public function __construct(string $model_type = 'App\Models\Tienda')
+    {
+        $this->model_type = $model_type;
+    }
+
 
     public function divisa(){
         return $this->belongsTo(Divisa::class,'divisa_id','id');
@@ -48,5 +55,15 @@ class Tienda extends Model
         return $this->hasMany(Consumo::class,'tienda_id','id');
     }
     
-
+    public function cargar(){
+        $this->divisa;
+        $this->iata;
+        $this->ciudad;
+        $this->estado?->pais;
+        $this->productos;
+        $this->direccion;
+        $this->consumos;
+        $this->horarios;
+        $this->telefonos;
+    }
 }

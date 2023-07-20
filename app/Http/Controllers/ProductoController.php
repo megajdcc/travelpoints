@@ -86,7 +86,7 @@ class ProductoController extends Controller
 
     public function fetch(Producto $producto){
 
-        $producto->load(['categoria', 'imagenes', 'tiendas', 'consumos', 'divisa','opinions']);
+        $producto->cargar();
         return response()->json($producto);
         
     }

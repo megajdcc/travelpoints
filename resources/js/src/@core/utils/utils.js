@@ -234,8 +234,14 @@ export const regresar = () => {
 
 }
 
-export const getFecha = (fecha = Date(), format = 'LLL') => {
-  return moment(fecha).format(format);
+export const getFecha = (val = Date(), format = 'LLL',time= false) => {
+  if(val && !time) {
+    return moment(new Date(val)).format(format);
+  }else if(val && time){
+    return moment(`2020-01-01 ${val}`).format(format);
+  }
+  return 'error en la fecha';
+
 } 
 
 export const getDay = (dia) => {
@@ -246,6 +252,7 @@ export const getDay = (dia) => {
   return dias[dia -1];
 
 } 
+
 
 export const diasSemana = [
   {text:'Lunes',value:1},

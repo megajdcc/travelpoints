@@ -24,17 +24,40 @@ export default defineConfig({
                 },
             },
         }),
-    //    VitePWA({
-    //         outDir: 'public/build',
-    //         injectRegister: 'inline',
-    //         registerType: 'autoUpdate',
-    //         workbox: {
-    //             globPatterns: ['**/*.{ico,png,svg,ttf}']
-    //         },
-    //         devOptions: {
-    //             enabled: true
-    //         }
-    //     })
+       VitePWA({
+            outDir: 'public/build',
+            manifest:'public/manifest.json',
+            workbox: {
+                globStrict:true,
+                globPatterns: ['**/*.{js,css,ico,png,jpg,jpeg,svg}'],
+                skipWaiting: true,
+                maximumFileSizeToCacheInBytes:2097152 * 6,
+                globIgnores: ["**\\/node_modules\\/**\\/*", "**\\/*.{html}"],
+                runtimeCaching:[{
+                    urlPattern: ({url}) => url.origin === host,
+                    handler: 'CacheFirst',
+                    options: {
+                        cacheName: 'api-cache',
+                        expiration: {
+                            maxAgeSeconds: 2592000, // 30 días en segundos
+                        },
+                    },
+                },{
+                    // urlPattern: /\.(?:css|ico|png|jpg|jpeg|svg|json)$/,
+                    urlPattern:({request}) => request.destination === 'image',
+                    handler:'CacheFirst',
+                    options: {
+                        cacheName: 'images-cache',
+                        expiration: {
+                            maxAgeSeconds: 2592000, // 30 días en segundos
+                        },
+                    },
+                }],
+            },
+            devOptions: {
+                enabled: true,
+            }
+        })
 
     ],
     resolve: {
@@ -50,8 +73,8 @@ export default defineConfig({
               'mixins': '/resources/js/mixins',
               'store': '/resources/js/src/store',
               'components': '/resources/js/calidad/views/components',
-              '@fuentes':'resources/js/src/assets/fonts/',
-              '@images':'resources/js/src/assets/images/'
+              '@fuentes':'./resources/js/src/assets/fonts/',
+              '@images':'./resources/js/src/assets/images/'
 
           }
     },
@@ -66,15 +89,13 @@ export default defineConfig({
     }, 
 
     build:{
-        assetsInlineLimit:0,
-        // cssCodeSplit:false,
+        // assetsInlineLimit:0,
         manifest:true,
         sourcemap:true,
-        chunkSizeWarningLimit:5000
+        chunkSizeWarningLimit:5000,
+        commonjsOptions: {
+            requireReturnsDefault: true,
+        },
     },
-    
-
-    // proxy: {
-    //     '/': 'https://travelpoints.dev',
-    // },
+  
 });

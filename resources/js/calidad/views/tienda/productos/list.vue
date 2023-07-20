@@ -223,7 +223,7 @@
             </b-sidebar>
         
 
-        </template>
+        </template> 
       </listado-productos>
 
 </template>
@@ -266,6 +266,7 @@ import useAuth from '@core/utils/useAuth'
 
 import {ValidationProvider} from 'vee-validate'
 import {required}  from '@validations'
+import ListadoProductos from 'components/ListadoProductos.vue'
 export default {
 
   props:{
@@ -278,7 +279,7 @@ export default {
 
   
   components: {
-    ListadoProductos: () => import('components/ListadoProductos.vue'),
+    ListadoProductos,
     BCard,
     BButtonGroup,
     BButton,
@@ -297,7 +298,7 @@ export default {
     BBadge,
     BSidebar,
     BModal,
-      BFormInvalidFeedback,
+    BFormInvalidFeedback,
     BFormGroup,
     BFormSpinbutton,
     ValidationProvider,
@@ -314,6 +315,7 @@ export default {
     const { formulario,carrito } = toRefs(store.state.carrito)
 
     const swal = inject('swal')
+
     const {
       is_loggin
     } = useAuth();

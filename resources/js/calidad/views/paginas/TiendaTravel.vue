@@ -1,14 +1,17 @@
-<template>
-    <tienda isStore>
-    </tienda>
-</template>
 
 <script>
-
+import {h} from 'vue'
+// import tienda from 'views/tienda/productos/list.vue';
 export default {
   
-  components:{
-    tienda:() => import('views/tienda/productos/list.vue')
+
+  setup(){
+    const tienda = () => import('views/tienda/productos/list.vue');
+    return () => h(tienda,{
+      props:{
+        isStore:true
+      }
+    })
   }
 
 }

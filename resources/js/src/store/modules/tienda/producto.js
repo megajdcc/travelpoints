@@ -420,6 +420,13 @@ export default {
         return new Promise((resolve, reject) => {
           axios.get(`/api/productos-cj/vid/${vid}/stock`).then(({data}) => resolve(data)).catch(e => reject(e))
         })
+      },
+
+
+      rangoPrecios({commit}){
+        return new Promise((resolve, reject) => {
+          axios.get('/api/productos/rango/precios').then(({data}) => resolve(data)).catch(e => reject(e))
+        })
       }
 
 

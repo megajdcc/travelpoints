@@ -66,7 +66,7 @@ class WelcomeUsuario extends Notification implements ShouldQueue
             'titulo' => 'Bienvenido a '.env('APP_NAME'),
             'avatar' => null,
             'usuario' => null,
-            'mensaje' => ['Hola '.$notifiable->getNombreCompleto().'!. Bienvenido a '.env('APP_NAME'), 'Puedes hacer varias cosas dentro del sistema, pero empieza por ajustar los datos de tu perfil.'],
+            'mensaje' => ['¡Hola '.$notifiable->getNombreCompleto(). '!.Bienvenido/a a TravelPoints. Estamos listos para acompañarte en este viaje.  Gana puntos en los registros de las compras que hagas en los Negocios Travel Points, invita amigos y disfruta todo lo que tenemos para tí'],
             'type' => 'light-success', // light-info , light-success, light-danger, light-warning
             'btn' => true,
             'btnTitle' => 'Ir a mi perfil',

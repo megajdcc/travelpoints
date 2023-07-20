@@ -22,13 +22,13 @@
 
               <vue-slider v-model.lazy="precios" :lazy="true" :min="0" :max="precio_maximo"
                  :tooltipFormatter="(val) => `$ ${val}`" :interval=".2" >
-                 
               </vue-slider>
 
             </div>
 
             
-           <b-form-group :label="$t('Categorías')" >
+           <b-form-group :label="$t('Categorías')">
+            
             <b-form-checkbox-group  v-if="!cjDropShipping" v-model="categoria_id" :options="categorias" :text-field="cjDropShipping ? 'categoryFirstName' : 'nombre'" :value-field="cjDropShipping ? 'categoryFirstId' : 'id'" stacked >
             
             </b-form-checkbox-group>
@@ -108,6 +108,12 @@
 
             </b-col>
 
+            <b-col cols="12" class="mt-1 px-0" v-if="iskm0">
+              <p>
+                <strong class="text-danger">IMPORTANTE:</strong>Los productos en la categoría “Km. 0” son productos locales de cada destino que solo pueden entregarse en las tiendas de cada destino. No hay envío a domicilio ni devolución en estas compras.
+              </p>
+            </b-col>
+
              <b-col cols="12" class="px-0">
               <section  class="w-100 mt-1" style="min-height:100px">
                 <slot name="contenido" :items="items" :eliminar="eliminar" :fetchData="fetchData" 
@@ -159,9 +165,10 @@ import {
 import store from '@/store'
 
 import { ref, toRefs, computed, onActivated,onMounted,watch } from 'vue'
-import VueSlider from 'vue-slider-component'
+// import VueSlider from 'vue-slider-component'
 
 import vSelect from 'vue-select'
+
 
 export default {
 
@@ -181,7 +188,7 @@ export default {
     BImg,
     paginateTable: () => import('components/PaginateTable.vue'),
     BSpinner,
-    VueSlider,
+    VueSlider: () => import('vue-slider-component').then((module) => { return module?.default }),
     BFormCheckboxGroup,
     BFormGroup,
     BDropdown,
@@ -258,9 +265,10 @@ export default {
     const cargar_rango_precio = () => {
 
       if(!cjDropShipping.value){
-         axios.get('/api/productos/rango/precios').then(({ data }) => {
-          range_precio.value = data
-          precios.value = data
+        
+        store.dispatch('producto/rangoPrecios').then((data) => {
+            range_precio.value = data
+            precios.value = data
         })
       }
      
@@ -315,13 +323,13 @@ export default {
     }
 
     const categories = computed(() => {
-      return convertDataFormat(categorias.value)
+      if(cjDropShipping.value){
+         return convertDataFormat(categorias.value)
+      }
+
+      return [];
+     
     })
-
-    const limpiar = () => {
-
-    }
-
 
     return {
       loading:computed(() => store.state.loading),
@@ -359,7 +367,7 @@ export default {
         refetchData();
 
       },
-      limpiar,
+      
       nodoSelected:(nod,opt) => {
       
         if('categoryId' in nod){
@@ -367,7 +375,15 @@ export default {
         }else{
           categoria_id.value = null
         }
-      }
+      },
+
+      iskm0:computed(() => {
+          let km0 = categorias.value.find(val => ['km0','Km 0'].includes(val.nombre))
+
+          return categoria_id.value.includes(km0 ? km0.id : 0);
+
+      })
+      
 
     }
 

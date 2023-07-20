@@ -8,6 +8,7 @@ use App\Models\Negocio\Empleado;
 use App\Models\Sistema;
 use App\Models\Venta;
 use App\Notifications\consumoInvitado;
+use App\Notifications\nuevoConsumoNegocio;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -226,6 +227,8 @@ class VentaController extends Controller
             }
 
             // Falta Notificar Venta al usuario y a los operadores si los Hubiera...
+
+            $venta->cliente->notify(new nuevoConsumoNegocio($venta));
             DB::commit();
             $venta->cargar();
             $result = true;
@@ -234,7 +237,7 @@ class VentaController extends Controller
             DB::rollBack();
             $result = false;
 
-            dd($th->getMessage());
+            // dd($th->getMessage());
 
         }
 

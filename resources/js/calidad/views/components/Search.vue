@@ -7,7 +7,7 @@
                <feather-icon icon="SearchIcon" />
             </b-input-group-prepend>
            
-            <b-form-input v-model="search" @input="remoteMethod" placeholder="¿ A Donde ?" ref="refInput">
+            <b-form-input v-model="search" @input="remoteMethod" :placeholder="$t('¿Qué te apetece hacer hoy? (lugares, experiencias, comidas, etc.)')" ref="refInput">
             </b-form-input>
          </b-input-group>
       

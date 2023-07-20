@@ -41,7 +41,7 @@
     <script>
       window.addEventListener('load',() => {
           if('serviceWorker' in navigator){
-            navigator.serviceWorker.register('/build/sw.js').then(() => {
+            navigator.serviceWorker.register('/build/sw.js',{ scope: '/build/' }).then(() => {
               console.log('Service Worker registrado!')
             }).catch(e => {
               console.log('Service Worker no pudo ser registrado')

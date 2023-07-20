@@ -73,8 +73,8 @@ trait hasCarrito{
       DB::commit();
 
       $result = true;
-
-      LimpiarCarrito::dispatch($this)->delay(\now()->addHours(2));
+      
+      // LimpiarCarrito::dispatch($this)->delay(\now()->addHours(2));
 
     } catch (\Throwable $th) {
       DB::rollBack();

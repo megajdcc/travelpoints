@@ -532,7 +532,40 @@ class UserController extends Controller
             ->orderBy($datos['sortBy'], $datos['sortDesc'] ? 'desc' : 'asc')
             ->paginate($datos['perPage'] == 0 ? 10000 : $datos['perPage']);
 
-        $usuarios = collect($paginator->items())->each(fn ($user) => $user->cargar());
+        $usuarios = collect($paginator->items())->each(function($user){
+            // $user->tokens;
+            $user->rol?->permisos;
+            // $user->rol?->academia->load('videos');
+            $user->habilidades = $user->getHabilidades();
+            $user->avatar = $user->getAvatar();
+            $user->ciudad?->estado?->pais;
+            $user->cuenta;
+            $user->cuenta?->divisa;
+            $user->telefonos;
+            $user->likes;
+
+            // $user->solicitudes;
+            // $user->destino;
+            $user->referidor;
+            $user->referidos;
+            $user->permisos;
+            // $user->reservaciones;
+            // $user->reservacionesOperadas;
+            // $user->recomendaciones;
+            // $user->seguidos;
+            // $user->cupones->each(fn ($cupon) => $cupon->cargar());
+            // $user->carritoCompra;
+            $user->datosPago?->cargar();
+            $user->retiros;
+            $user->lider?->cargar();
+            $user->promotores;
+            $user->coordinador;
+            $user->lideres;
+            $user->porcentajePerfil = $user->getFillPercentage();
+            $user->tarjeta?->lote;
+            
+        });
+
 
         return response()->json([
             'users' => $usuarios,
@@ -793,6 +826,7 @@ class UserController extends Controller
             'result' => $result,
             'carrito' => $request->user()->carritoCompra
         ]);
+        
     }
 
     public function fetchDataCarrito(Request $request)

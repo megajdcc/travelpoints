@@ -260,7 +260,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::put('negocios/{negocio}/gestion/saldo', [NegocioController::class, 'gestionSaldo']);
 
     Route::get('negocios/get/all', [NegocioController::class, 'getNegocios']);
-
+    Route::get('negocios/{negocio}/toggle-publicado',[NegocioController::class,'togglePublicado']);
 
 
     /*****************************/

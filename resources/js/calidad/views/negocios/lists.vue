@@ -74,6 +74,15 @@
                      </div>
                </template>
 
+               <template #cell(publicado)="{item}">
+                  
+                <b-form-checkbox v-model="item.publicado" name="check-button" switch @change="togglePublicado(item)" class="text-nowrap">
+                   <b>({{ getPublicado(item) }})</b>
+                 </b-form-checkbox>
+
+               </template>
+
+
               <!-- Column: Actions -->
               <template #cell(actions)="{ item }">
                   <b-button-group size="sm">
@@ -129,7 +138,8 @@ import {
    BLink,
    BMedia,
    VBTooltip,
-   BModal
+   BModal,
+   BFormCheckbox
 
 } from 'bootstrap-vue'
 
@@ -166,6 +176,7 @@ export default {
       BLink,
       Listado:() => import('components/Listado.vue'),
       BModal,
+      BFormCheckbox,
       movimientos:() => import('views/panels/negocio/movimientos.vue')
 
    },
@@ -197,6 +208,20 @@ export default {
          })
       }
 
+         const togglePublicado = (item) => {
+            
+            store.dispatch('negocio/togglePublicado',item.id).then(({result}) => {
+            if(result){
+               toast.success('Negocio actualizado con éxito')
+               actions.refetchData();
+            }else{
+               toast.info('Negocio no se pudo actualizar, inténte de nuevo mas tarde')
+            }
+            })
+
+         }
+
+
       return {
          actions,
          refTable:actions.refTable,
@@ -204,7 +229,13 @@ export default {
          promedioCalificacion: (negocio) => store.getters['negocio/promedioCalificacion'](negocio),
          mostrarBalances,
          showBalance,
-         entrarPanelnegocio
+         entrarPanelnegocio,
+         getPublicado:(negocio) => {
+            const legends = ['No publicado', 'Publicado'];
+
+            return legends[negocio.publicado ? 1 : 0]
+         },
+         togglePublicado
 
       }
 

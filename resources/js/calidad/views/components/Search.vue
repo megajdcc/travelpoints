@@ -18,7 +18,7 @@
 
                <section class="w-25">
                   <feather-icon icon="SendIcon" />
-                  Cerca de mí
+                  {{ $t('Cerca de mí') }}
                </section>
 
                <section class="w-75">
@@ -194,6 +194,7 @@ export default {
 
       onMounted(() => cargarForm())
 
+
       return {
          remoteMethod,
          loading:computed(() => store.state.loading),
@@ -205,7 +206,7 @@ export default {
          inputSearch,
          listenToggle,
          kms,
-         km
+         km,
       }
 
    }

@@ -13,7 +13,9 @@ return new class extends Migration
      */
     public function up()
     {
-        //
+        Schema::table('negocios',function(Blueprint $t){
+            $t->boolean('publicado')->default(false);
+        });
     }
 
     /**
@@ -23,6 +25,8 @@ return new class extends Migration
      */
     public function down()
     {
-        //
+        Schema::table('negocios', function (Blueprint $t) {
+            $t->dropColumn('publicado');
+        });
     }
 };

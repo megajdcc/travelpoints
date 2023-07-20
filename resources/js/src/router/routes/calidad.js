@@ -3196,7 +3196,6 @@ export default [
       path: '/negocio/:url',
       props:true,
       component: () => import('views/paginas/negocio/index.vue'),
-
       meta: {
          layout: 'travel',
          resource: 'Auth',

@@ -144,7 +144,7 @@ class VentaController extends Controller
             
             $venta = Venta::create([...$datos]);
        
-
+            
             if($venta->empleado_id = Empleado::where('negocio_id',$venta->model_id)->where('usuario_id', $request->user()->id)->first()?->id){
                 $venta->save();
             }

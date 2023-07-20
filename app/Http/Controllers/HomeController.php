@@ -80,10 +80,8 @@ class HomeController extends Controller
 
     public function searchPublic(request $request)
     {
-
         $q = $request->get('q');
         $destino = $request->get('destino');
-
         $destinos = Destino::where([
             ['nombre', 'LIKE', "%{$q}%", "OR"],
             ['descripcion', 'LIKE', "%{$q}%", "OR"],
@@ -126,10 +124,11 @@ class HomeController extends Controller
                     $query->where('id', $destino);
                 });
             });
-        })->get();
+        })->where('publicado',true)
+        ->get();
 
         foreach ($negocios as $key => $negocio) {
-            $negocio->ruta = "/{$negocio->url}";
+            $negocio->ruta = "/negocio/{$negocio->url}";
             $negocio->tipo = 'Negocio';
             $negocio->imagenes;
             $negocio->opinions;

@@ -429,11 +429,12 @@ export default {
     } 
 
     const usuarioSeleccionado = (user) => {
+
       cupones.value = [];
       formulario.value.cliente_id  = user.id
 
       verificarReservaciones(user.reservaciones)
-      cupones.value = user.cupones.filter(val => val.pivot.status == 1 && val.activo == true)
+      cupones.value = user.cupones.filter(val => val.pivot.status == 1 && val.activo == true && val.negocio_id == negocio.value.id)
     } 
 
     const cargarForm =() => {

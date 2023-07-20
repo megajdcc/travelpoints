@@ -60,6 +60,7 @@ class Negocio extends Model
         'tipo_menu', // 1 => URL , 2=> PDF 3 => image
         'menu',
         'tps_referido', // Comision en tps que se paga a los usuarios viajeros por consumir, es una propiedad se calcula convirtiendo la comision en su divisa a la divisa principal tps 
+        'publicado'
         
     ];
 
@@ -68,6 +69,7 @@ class Negocio extends Model
         'ultima_recarga'  => 'datetime: Y-m-d Hi:s',
         'floor_plan'      => 'boolean',
         'acepta_reservas' => 'boolean',
+        'publicado' => 'boolean'
         // 'precios'         => 'object'
     ];
 

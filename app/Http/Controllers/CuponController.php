@@ -37,7 +37,7 @@ class CuponController extends Controller
             $paginator = Cupon::where(function ($query) use ($destinoId) {
 
                 $query->whereHas('negocio', function (Builder $query) use ($destinoId) {
-                    $query->whereHas('iata', function (Builder $q) use ($destinoId) {
+                    $query->where('publicado',true)->whereHas('iata', function (Builder $q) use ($destinoId) {
                         $q->where('id', (Destino::find($destinoId))?->iata->id);
                     });
                 });

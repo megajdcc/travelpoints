@@ -64,9 +64,14 @@
 
 
             <template #cell(activo)="{ item }">
-              <b-form-checkbox v-model="item.activo" switch @change="cambiarEstado(item.id)">
+              <b-form-checkbox v-model="item.activo" switch @change="cambiarEstado(item.id)" v-if="['Desarrollador', 'Administrador'].includes(usuario.rol.nombre)">
                 {{ item.activo ? 'Activo (¿Desactivar?)' : 'Desactivo (¿Activar?)' }}
               </b-form-checkbox>
+
+              <span v-else>
+                  {{ item.activo ? 'Activo (¿Desactivar?)' : 'Desactivo (¿Activar?)' }}
+              </span>
+
             </template>
 
             <template #cell(id)="{ item, detailsShowing, toggleDetails }">

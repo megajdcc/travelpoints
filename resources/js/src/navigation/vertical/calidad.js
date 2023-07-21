@@ -30,6 +30,15 @@ export default [
             fontAwesome:true
          },
 
+          {
+            title: 'Coordinadores',
+            route: 'coordinadores.list',
+            action: 'read',
+            resource: 'coordinadores',
+            icon: 'fa-users-line',
+            fontAwesome:true
+         },
+
 
          {
             title: 'Retiros',
@@ -64,7 +73,17 @@ export default [
             action: 'read',
             resource: 'solicitudes',
             icon: 'fa-table-list',
-            fontAwesome:true
+            fontAwesome:true,
+            tag:true,
+            tagValue:() => {
+               return new Promise((resolve, reject) => {
+                  axios.get(`/api/negocios/get-cantidad/solicitudes`).then(({data}) => {
+                     resolve(data)
+                  }).catch(e => reject.log(e))
+               })
+            },
+            tagVariant:'danger'
+            
          },
 
       ]

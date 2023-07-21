@@ -52,7 +52,7 @@ class Sistema extends Model
     public function cargar(){
         $this->divisa;
         $this->redes;
-        $this->cuenta;
+        $this->cuenta?->divisa;
         $this->imagenes;
         $this->videos;
         $this->sucursales->load(['estado.pais','iata','telefonos']);

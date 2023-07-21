@@ -78,10 +78,11 @@ trait hasCuenta
             monto: $new_saldo,
             tipo_movimiento: Movimiento::TIPO_INGRESO,
             concepto: 'Conversión de divisa',
+            conversion:true
          );
 
-         $this->cuenta->saldo = $new_saldo;
-         $this->cuenta->save();
+         // $this->cuenta->saldo = $new_saldo;
+         // $this->cuenta->save();
 
          return $movimiento;
       }

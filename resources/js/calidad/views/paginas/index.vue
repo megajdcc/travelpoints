@@ -22,7 +22,7 @@
       <!-- <destinos :destinos="destinos" /> -->
 
 
-      <b-tabs content-class="mt-3" nav-class="fixed-top" ref="refTabs">
+      <b-tabs content-class="mt-3" nav-class="" ref="refTabs">
          <b-tab active>
 
             <template #title>

@@ -465,7 +465,13 @@ export default {
 
 		miSaldo(state){
 			return state.usuario.cuenta ? state.usuario.cuenta.saldo : 0
-		}
+		},
+
+		miDivisa:(state) => {
+			return state.usuario.cuenta ? state.usuario.cuenta.divisa.iso : 'USD'
+		},
+		
+		
 	},
 
 	actions:{
@@ -837,7 +843,7 @@ export default {
 		fetchPromotores({commit},filtro){
 			return new Promise((resolve, reject) => {
 				
-				axios.post(`/api/usuarios/promotores/fetch/data`,filtro).then(({data}) => {
+				axios.post(`/api/`,filtro).then(({data}) => {
 					commit('setUsuarios',data.promotores)
 					resolve(data)
 				}).catch(e => reject(e))
@@ -849,6 +855,17 @@ export default {
 				
 				axios.post(`/api/usuarios/lideres/fetch/data`,filtro).then(({data}) => {
 					commit('setUsuarios',data.lideres)
+					resolve(data)
+				}).catch(e => reject(e))
+			})
+		},
+
+
+		fetchCoordinadores({commit},filtro){
+			return new Promise((resolve, reject) => {
+				
+				axios.post(`/api/usuarios/coordinadores/fetch/data`,filtro).then(({data}) => {
+					commit('setUsuarios',data.coordinadores)
 					resolve(data)
 				}).catch(e => reject(e))
 			})

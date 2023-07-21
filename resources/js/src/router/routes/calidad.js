@@ -412,7 +412,8 @@ export default [
       component:() => import('views/promotores/index.vue'),
       children:[
          {
-            path:'',
+            path:':id?',
+            props:true,
             name:'promotores.list',
             component:() => import('views/promotores/list.vue'),
             meta:{
@@ -442,6 +443,29 @@ export default [
             meta:{
                pageTitle:'Lideres',
                resource:'lideres',
+               action:'read',
+               breadcrumb:[
+                  {text:'Listado',active:true}
+               ]
+            }
+         }
+      ]
+   },
+
+   /*****************************************/
+   /* Coordinadores
+   /*************************************** */
+   {
+      path:'/coordinadores',
+      component:() => import('views/coordinadores/index.vue'),
+      children:[
+         {
+            path:'',
+            name:'coordinadores.list',
+            component:() => import('views/coordinadores/list.vue'),
+            meta:{
+               pageTitle:'Coordinadores',
+               resource:'coordinadores',
                action:'read',
                breadcrumb:[
                   {text:'Listado',active:true}

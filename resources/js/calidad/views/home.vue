@@ -26,7 +26,7 @@
             colorIcon="dark" colorText="text-white" :statistic="saldoSistema" v-if="$can('read', 'Tablero balance travelpoints')">
 
             <template #statistic="{statistic}">
-               {{ statistic | currency }}
+               {{ isoSistema }}{{ statistic | currency({currency: isoSistema }) }}
             </template>
 
           </statistic-card-horizontal>
@@ -36,7 +36,7 @@
             v-if="['Promotor', 'Coordinador', 'Lider'].includes(usuario.rol ? usuario.rol.nombre : '')" :statistic="miSaldo">
 
              <template #statistic="{statistic}">
-               {{ statistic |  currency({ currency: miDivisa }) }}
+                {{ miDivisa }}{{ statistic |  currency({ currency: miDivisa }) }}
             </template>
 
           </statistic-card-horizontal>
@@ -715,6 +715,7 @@ export default {
     return {
       siteTraffic,
       saldoSistema: computed(() => store.getters['sistema/saldo']),
+      isoSistema:computed(() => store.getters['sistema/isoSistema']),
       filtro,
       paises,
       edades,

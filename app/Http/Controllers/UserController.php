@@ -923,6 +923,17 @@ class UserController extends Controller
             ->when((isset($filtro['lider']) && !is_null($filtro['lider']) && in_array($rol_user, ['Lider', 'Coordinador'])), function ($q) use ($filtro, $rol_user, $request) {
                 $q->where('lider_id', $filtro['lider']);
             })
+            ->when((isset($filtro['lider']) && !is_null($filtro['lider']) && in_array($rol_user, ['Desarrollador', 'Administrador'])), function ($q) use ($filtro, $rol_user, $request) {
+                $usuario = User::find($filtro['lider']);
+                if($usuario->rol->nombre == 'Lider'){
+                    $q->where('lider_id',$filtro['lider']);
+                }else if($usuario->rol->nombre == 'Coordinador'){
+                    $q->whereHas('lider', function(Builder $query) use($filtro){
+                        $query->where('coordinador_id',$filtro['lider']);
+                    });
+                }
+              
+            })
             ->orderBy($filtro['sortBy'] ?: 'id', $filtro['isSortDirDesc'] ? 'desc' : 'asc')
             ->paginate($filtro['perPage'] ?: 1000);
 
@@ -997,6 +1008,38 @@ class UserController extends Controller
         return response()->json([
             'total' => $pagination->total(),
             'lideres' => $lideres
+        ]);
+    }
+
+    public function fetchDataCoordinadores(Request $request)
+    {
+
+        $filtro = $request->all();
+        $rol_user = $request->user()->rol->nombre;
+
+        $pagination = User::where([
+            ['username', 'LIKE', "%{$filtro['q']}%", 'OR'],
+            ['email', 'LIKE', "%{$filtro['q']}%", 'OR'],
+            ['nombre', 'LIKE', "%{$filtro['q']}%", 'OR'],
+            ['apellido', 'LIKE', "%{$filtro['q']}%", 'OR'],
+            ['direccion', 'LIKE', "%{$filtro['q']}%", 'OR'],
+            ['fecha_nacimiento', 'LIKE', "%{$filtro['q']}%", 'OR'],
+            ['codigo_postal', 'LIKE', "%{$filtro['q']}%", 'OR'],
+            ['bio', 'LIKE', "%{$filtro['q']}%", 'OR'],
+        ])
+            ->whereHas('rol', function (Builder $q) {
+                $q->where('nombre', 'Coordinador');
+            })
+
+            ->orderBy($filtro['sortBy'] ?: 'id', $filtro['isSortDirDesc'] ? 'desc' : 'asc')
+            ->paginate($filtro['perPage'] ?: 1000);
+
+
+        $coordinadores = collect($pagination->items())->each(fn ($val) => $val->cargar());
+
+        return response()->json([
+            'total' => $pagination->total(),
+            'coordinadores' => $coordinadores
         ]);
     }
 

@@ -36,16 +36,28 @@ class Movimiento extends Model
         return $this->belongsTo(Divisa::class,'divisa_id','id');
     }
 
-    public static function add(EstadoCuenta $cuenta,$monto, $concepto = 'Apertura de cuenta', int $tipo_movimiento = 1) : Movimiento  {
-      
-        $movimiento =  Movimiento::create([
-            'estado_cuenta_id' => $cuenta->id,
-            'monto'            => $monto,
-            'tipo_movimiento'  => $tipo_movimiento,
-            'balance'          => $tipo_movimiento == 1 ? $cuenta->saldo + $monto : $cuenta->saldo - $monto,
-            'concepto' => $concepto,
-            'divisa_id' => $cuenta->divisa_id ?: null
-        ]);
+    public static function add(EstadoCuenta $cuenta,$monto, $concepto = 'Apertura de cuenta', int $tipo_movimiento = 1,bool $conversion = false) : Movimiento  {
+        
+        if($conversion){
+            $movimiento =  Movimiento::create([
+                'estado_cuenta_id' => $cuenta->id,
+                'monto'            => $monto,
+                'tipo_movimiento'  => $tipo_movimiento,
+                'balance'          => $monto,
+                'concepto' => $concepto,
+                'divisa_id' => $cuenta->divisa_id ?: null
+            ]);
+        }else{
+            $movimiento =  Movimiento::create([
+                'estado_cuenta_id' => $cuenta->id,
+                'monto'            => $monto,
+                'tipo_movimiento'  => $tipo_movimiento,
+                'balance'          => $tipo_movimiento == 1 ? $cuenta->saldo + $monto : $cuenta->saldo - $monto,
+                'concepto' => $concepto,
+                'divisa_id' => $cuenta->divisa_id ?: null
+            ]);
+        }
+       
 
         $cuenta->saldo = $movimiento->balance;
         $cuenta->save();

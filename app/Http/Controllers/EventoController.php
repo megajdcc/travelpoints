@@ -314,13 +314,16 @@ class EventoController extends Controller
                         break;
 
                     case "App\\Models\\Negocio\\Negocio":
-                        return $event->model->iata->id == (Destino::find($destino))?->iata->id;
+                        return $event->model->iata->id == (Destino::find($destino))?->iata->id && $event->model->publicado;
                         break;
                     
                     default:
                         return false;
                         break;
                 }
+
+
+
         });
         
 

@@ -5,19 +5,29 @@ import { title } from '@core/utils/filter'
 import ToastificationContent from '@core/components/toastification/ToastificationContent.vue'
 
 import useFilterTable from '@core/utils/useFilterTable';
-
+import {toRefs} from 'vue'
 export default function useUsersList() {
 
    const refUserListTable = ref(null)
-
+   const {usuario} = toRefs(store.state.usuario)
    // Table Handlers
-   const tableColumns = [
+   let tableColumns = [
       { key: 'username', sortable: true,label:'Usuario' },
       { key: 'activo',label:'Estado',sortable:true},
       { key: 'email', sortable: true,label:"Email" },
       { key: 'rol', sortable: true,label:'rol',sortKey:'rol_id' },
-      { key: 'actions',sortable:true, sortKey:'id',sortBy:'id' },
    ]
+
+   if(['Desarrollador','Administrador'].includes(usuario.value.rol ? usuario.value.rol.nombre : '')){
+        tableColumns = [
+            { key: 'username', sortable: true,label:'Usuario' },
+            { key: 'activo',label:'Estado',sortable:true},
+            { key: 'email', sortable: true,label:"Email" },
+            { key: 'rol', sortable: true,label:'rol',sortKey:'rol_id' },
+            { key: 'actions',sortable:true, sortKey:'id',sortBy:'id' } ,
+         ]
+   }
+ 
    const totalUsers = ref(0)
    
    const {

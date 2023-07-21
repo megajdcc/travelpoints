@@ -93,6 +93,7 @@ import { ref, toRefs, computed } from 'vue';
 
 import logotipo from 'storage/logotipo.png'
 import logotipoblanco from 'storage/logotipoblanco.png'
+import store from '@/store';
 
 export default {
   components: {

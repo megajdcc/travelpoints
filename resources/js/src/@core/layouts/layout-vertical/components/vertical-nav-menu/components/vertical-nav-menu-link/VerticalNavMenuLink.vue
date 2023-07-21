@@ -15,13 +15,14 @@
       <feather-icon :icon="item.icon || 'CircleIcon'" v-else />
 
       <span class="menu-title text-truncate">{{ t(item.title) }}</span>
+
       <b-badge
         v-if="item.tag"
         pill
         :variant="item.tagVariant || 'primary'"
-        class="mr-1 ml-auto"
+        class="mr-1 ml-2"
       >
-        {{ item.tag }}
+        {{ resolverPromiseTag(item) }}
       </b-badge>
     </b-link>
   </li>
@@ -33,6 +34,7 @@ import { BLink, BBadge } from 'bootstrap-vue'
 import { useUtils as useI18nUtils } from '@core/libs/i18n'
 import useVerticalNavMenuLink from './useVerticalNavMenuLink'
 import mixinVerticalNavMenuLink from './mixinVerticalNavMenuLink'
+import {ref} from 'vue'
 
 export default {
   components: {
@@ -50,8 +52,22 @@ export default {
     const { isActive, linkProps, updateIsActive } = useVerticalNavMenuLink(props.item)
     const { t } = useI18nUtils()
     const { canViewVerticalNavMenuLink } = useAclUtils()
+    const resultTag = ref(0)
 
+    const resolverPromiseTag = (item) => {
+
+      if(item.tag){
+        item.tagValue().then((data) => {
+          resultTag.value = data
+         
+        })
+        return resultTag.value;
+      }
+      return 0;
+      
+    }
     return {
+      resolverPromiseTag,
       isActive,
       linkProps,
       updateIsActive,

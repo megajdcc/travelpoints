@@ -73,14 +73,8 @@ export default {
 
             {
                value: 2,
-               label: 'Familia (niños pequeños)'
+               label: 'Familia'
             },
-
-            {
-               value: 3,
-               label: 'Familia (Adolescentes)'
-            },
-
             {
                value: 4,
                label: 'Amigos'

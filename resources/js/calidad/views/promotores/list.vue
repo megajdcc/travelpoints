@@ -58,9 +58,14 @@
         
         
             <template #cell(activo)="{ item }">
-              <b-form-checkbox v-model="item.activo" switch @change="cambiarEstado(item.id)">
+              <b-form-checkbox v-model="item.activo" switch @change="cambiarEstado(item.id)" v-if="['Desarrollador', 'Administrador'].includes(usuario ? usuario.rol.nombre : '')">
                 {{ item.activo ? 'Activo (¿Desactivar?)' : 'Desactivo (¿Activar?)' }}
               </b-form-checkbox>
+
+              <span v-else>
+                  {{ item.activo ? 'Activo (¿Desactivar?)' : 'Desactivo (¿Activar?)' }}
+              </span>
+
             </template>
 
             <!-- Column: Rol -->
@@ -347,14 +352,15 @@ export default {
     'liderId':{
       type:Number|String,
       required:false
-    }
+    },
+    id:Number|String
   },
 
 
   setup(props,{emit}){
     
     const {usuario,usuarios} = toRefs(store.state.usuario)
-    const { liderId:lider_id } = toRefs(props)
+    const { liderId:lider_id,id } = toRefs(props)
     const isShowDestino  = ref(false)
     const formUser = ref({})
     const lider = ref({
@@ -562,7 +568,8 @@ export default {
       formValidatePromotor,
       cargarUsers,
       getStatusLegendPromotor,
-      asociarDestino
+      asociarDestino,
+      usuario
     }
   }
 

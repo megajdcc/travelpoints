@@ -347,7 +347,7 @@ export const getStatusLegendPromotor = (status ) => {
 }
 
 export const getStatusLegendLider = getStatusLegendPromotor
-
+export const getStatusLegendCoordinador = getStatusLegendLider
 
 export const getExt = (archivo,separator = '.') => {
   

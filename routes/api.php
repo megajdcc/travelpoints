@@ -133,6 +133,8 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
 
     Route::post('usuarios/promotores/fetch/data', [UserController::class, 'fetchDataPromotores']);
     Route::post('usuarios/lideres/fetch/data', [UserController::class, 'fetchDataLideres']);
+    Route::post('usuarios/coordinadores/fetch/data', [UserController::class, 'fetchDataCoordinadores']);
+
     Route::post('usuarios/promotor/asignar/lider', [UserController::class, 'asignarLiderPromotor']);
     Route::post('usuarios/lider/asignar/coordinador', [UserController::class, 'asignarCoordinadorLider']);
 
@@ -222,6 +224,8 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::get('negocio/solicituds/get/all', [SolicitudController::class, 'getAll']);
     Route::get('negocio/solicituds/{solicitud}/get', [SolicitudController::class, 'getSolicitud']);
     Route::get('negocio/mis-solicitudes',[SolicitudController::class,'misSolicitudes']);
+
+    Route::get('negocios/get-cantidad/solicitudes',[SolicitudController::class, 'solicitudesSinAceptar']);
     /*****************************/
     /* Negocios
     /*****************************/

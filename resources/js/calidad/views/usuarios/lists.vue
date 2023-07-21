@@ -56,9 +56,13 @@
 
 
         <template #cell(activo)="{ item }">
-          <b-form-checkbox v-model="item.activo" switch @change="cambiarEstado(item.id)">
-            {{ item.activo ? 'Activo (¿Desactivar?)' : 'Desactivo (¿Activar?)' }}
+          <b-form-checkbox v-model="item.activo" switch @change="cambiarEstado(item.id)" v-if="['Desarrollador','Administrador'].includes(usuario.rol.nombre)">
+             {{ item.activo ? 'Activo (¿Desactivar?)' : 'Desactivo (¿Activar?)' }}
           </b-form-checkbox>
+
+          <span v-else>
+              {{ item.activo ? 'Activo (¿Desactivar?)' : 'Desactivo (¿Activar?)' }}
+          </span>
         </template>
 
         <!-- Column: Rol -->
@@ -91,7 +95,7 @@
               <span class="align-middle ml-50">Eliminar</span>
             </b-dropdown-item>
 
-            <b-dropdown-item :to="{ name: 'movimientos.user', params: { id: data.item.id } }">
+            <b-dropdown-item :to="{ name: 'movimientos.user', params: { id: data.item.id } }" v-if="['Desarrollador','Administrador'].includes(usuario.rol.nombre)">
               <font-awesome-icon icon="fas fa-money-check" />
               <span class="align-middle ml-50">Movimientos de cuenta</span>
             </b-dropdown-item>

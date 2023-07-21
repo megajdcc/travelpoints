@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\{Auth, Hash};
+use Illuminate\Support\Facades\{Auth, Hash, Storage};
 use App\Models\User;
 use Validator;
 use App\Http\Controllers\Controller;
@@ -20,6 +20,7 @@ use App\Events\UsuarioDesconectado;
 use Laravel\Socialite\Facades\Socialite;
 
 use Google\Client;
+use GuzzleHttp\Client as ClientGuzzle;
 
 
 class AuthController extends Controller
@@ -38,8 +39,16 @@ class AuthController extends Controller
       if($payload){
 
          $usuario = User::where('email',$payload['email'])->first();
-
          if(!$usuario) {
+
+           
+
+            $url = $payload['picture']; // URL de la imagen a descargar
+
+            $cliente = new ClientGuzzle();
+            $response = $cliente->get($url);
+
+            $nombreArchivo = basename($url); // Obtiene el nombre del archivo de la URL
 
             $usuario = User::create([
                'email'       => $payload['email'],
@@ -52,8 +61,26 @@ class AuthController extends Controller
                'rol_id' => Rol::where('nombre', 'Viajero')->first()->id
             ]);
 
+            $result = Storage::disk('img-perfil')->put($nombreArchivo, $response->getBody()->getContents());
+            $usuario->imagen = $nombreArchivo;
+            $usuario->save();
+
+
             $usuario->asignarPermisosPorRol();
+         }else{
+
+            $url = $payload['picture']; // URL de la imagen a descargar
+            $cliente = new ClientGuzzle();
+            $response = $cliente->get($url);
+
+            $nombreArchivo = basename($url); // Obtiene el nombre del archivo de la URL
+
+            $result = Storage::disk('img-perfil')->put($nombreArchivo, $response->getBody()->getContents());
+            $usuario->imagen = $nombreArchivo;
+            $usuario->save();
+
          }
+
          $usuario->generateLink();
          
          $usuario->ultimo_login = now();

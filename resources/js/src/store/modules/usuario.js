@@ -107,7 +107,9 @@ export default {
 		},
 
 		setUsuarios(state,usuarios){
-			state.usuarios = usuarios;
+			if(usuarios.length){
+				state.usuarios = usuarios;
+			}
 		},
 
 		setUsuario(state,usuario){
@@ -843,8 +845,8 @@ export default {
 		fetchPromotores({commit},filtro){
 			return new Promise((resolve, reject) => {
 				
-				axios.post(`/api/`,filtro).then(({data}) => {
-					commit('setUsuarios',data.promotores)
+				axios.post(`/api/usuarios/promotores/fetch/data`,filtro).then(({data}) => {
+					// commit('setUsuarios',data.promotores)
 					resolve(data)
 				}).catch(e => reject(e))
 			})

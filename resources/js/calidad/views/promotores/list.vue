@@ -360,7 +360,7 @@ export default {
   setup(props,{emit}){
     
     const {usuario,usuarios} = toRefs(store.state.usuario)
-    const { liderId:lider_id,id } = toRefs(props)
+    const { liderId:lider_id } = toRefs(props)
     const isShowDestino  = ref(false)
     const formUser = ref({})
     const lider = ref({

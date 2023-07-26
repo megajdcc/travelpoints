@@ -82,7 +82,7 @@ export default {
     const {negocios,negocio:nego} = toRefs(store.state.negocio)
     const {negocioId,destinoId} = toRefs(props)
 
-    const actions =  useNegocioList(destinoId);
+    const actions =  useNegocioList(destinoId,true);
 
     actions.refetchData();
 
@@ -97,7 +97,6 @@ export default {
       actions,
       nego,
       negocioSelected
-
     }
   }
 

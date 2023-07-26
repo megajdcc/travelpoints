@@ -53,7 +53,10 @@ class NegocioController extends Controller
             $q->whereHas('iata',function(Builder $query) use($datos){
                     $destino = Destino::find($datos['destinoId']);
                     $query->where('id',$destino->iata->id);
-            });
+            })->where('publicado', true);
+        })
+        ->when(isset($datos['isReserva']) && $datos['isReserva'],function($q){
+                $q->where('publicado',true);
         })
         ->with(['cuenta.divisa'])
         ->orderBy($datos['sortBy'] ?: 'id',$datos['isSortDirDesc'] ? 'desc' : 'desc')
@@ -65,7 +68,6 @@ class NegocioController extends Controller
         foreach ($negocios as $key => $negocio) {
             $negocio->cargar();
         }   
-
 
         return response()->json([
             'total' => $paginator->total(),

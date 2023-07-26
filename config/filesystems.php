@@ -147,6 +147,13 @@ return [
             'visibility' => 'public',
         ],
 
+        'archivos_reunion' => [
+            'driver' => 'local',
+            'root' => storage_path('app/public/reunions/archivos'),
+            'url' => env('APP_URL') . '/storage/reunions/archivos',
+            'visibility' => 'public',
+        ],
+
 
 
 

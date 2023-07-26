@@ -11,7 +11,7 @@ use App\Models\Divisa;
 use App\Http\Controllers\ImagenController;
 use App\Models\Negocio\HorarioReservacion;
 
-use App\Http\Controllers\{PaisController, CiudadController, EstadoController, LoteController, MensajesVonageController, PaginaController, TarjetaController};
+use App\Http\Controllers\{PaisController, CiudadController, EstadoController, LoteController, MensajesVonageController, PaginaController, ReunionController, TarjetaController};
 
 /*
 |--------------------------------------------------------------------------
@@ -677,6 +677,17 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     /**************************/
     Route::post('vonages/sms/fetchData',[MensajesVonageController::class,'fetchDataSms']);
     Route::delete('vonages/sms/{mensaje}/eliminar',[MensajesVonageController::class,'eliminarSMS']);
+
+    /**************************/
+    /* Reunion
+    /**************************/
+    Route::get('reunions/usuario/{usuario}/get/all',[ReunionController::class,'getAll']);
+    Route::post('reunions/fetch/data',[ReunionController::class,'fetchData']);
+    Route::get('reunions/{reunion}/fetch/data',[ReunionController::class,'fetch']);
+    Route::resource('reunions',ReunionController::class);
+
+    Route::post('reunions/{reunion}/guardar/archivo',[ReunionController::class,'guardarArchivo']);
+    Route::post('reunions/fetch/reunions',[ReunionController::class,'fetchReunions']);
 
 });
 

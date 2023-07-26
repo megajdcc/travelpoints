@@ -30,6 +30,8 @@
                    <b-img :key="i"
                      :src="`/storage/destinos/imagenes/${imagen}`" class="w-100" v-if="i <= 1"></b-img>
                </template>
+               <agendar :modelId="destino.id" :modelType="'App\\Models\\Destino'" :modelName="destino.nombre"/>
+
             </article>
          </b-col>
 
@@ -112,7 +114,8 @@ export default {
       atracciones:() => import('components/Atracciones.vue'),
       negocios:() => import('components/Negocios.vue'),
       Gallerie:() => import('components/Gallerie.vue'),
-      Negocios:() => import('components/Negocios.vue')
+      Negocios:() => import('components/Negocios.vue'),
+      agendar:() => import('components/agendar.vue')
    }, 
 
    props:{

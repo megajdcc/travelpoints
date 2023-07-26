@@ -6,6 +6,11 @@
     </component>
 
     <scroll-to-top v-if="enableScrollToTop" />
+    <mi-agenda v-model="showMiAgenda" v-if="is_loggin"/>
+    <form-agenda v-model="showAgenda" :tipo="tipoAgenda" v-if="is_loggin" :sobre="sobre"/>
+
+    <agenda-fixed  />
+  
 
   </div>
 </template>
@@ -15,7 +20,7 @@
 import ScrollToTop from '@core/components/scroll-to-top/ScrollToTop.vue'
 
 import { $themeColors, $themeBreakpoints, $themeConfig } from '@themeConfig'
-import { watch, onMounted, toRefs, onActivated, computed } from 'vue'
+import { watch, onMounted, toRefs, onActivated, computed,provide,ref } from 'vue'
 
 import useAppConfig from '@core/app-config/useAppConfig'
 
@@ -26,7 +31,7 @@ import store from '@/store'
 import { Notification } from 'element-ui'
 
 import { useRoute } from 'vue2-helpers/vue-router';
-
+import useAuth from '@core/utils/useAuth'
 
 export default {
 
@@ -37,6 +42,9 @@ export default {
     LayoutTravel: () => import('@/layouts/travel/LayoutTravel.vue'),
     LayoutNegocio: () => import('@/layouts/negocio/LayoutNegocio.vue'),
     ScrollToTop,
+    AgendaFixed:() => import('components/AgendaFixed.vue'),
+    MiAgenda:() => import('components/MiAgenda.vue'),
+    FormAgenda:() => import('components/FormAgenda.vue')
   },
 
   beforeCreate() {
@@ -69,6 +77,17 @@ export default {
     const route = useRoute();
     const contentLayoutType = computed(() => store.state.appConfig.layout.type)
     const usuario = computed(() => store.state.usuario.usuario);
+    const showMiAgenda = ref(false)
+    const showAgenda  =ref(false)
+    const tipoAgenda = ref(1)
+    const sobre = ref('')
+
+    provide('showMiAgenda', showMiAgenda)
+    provide('showAgenda', showAgenda)
+    provide('tipoAgenda', tipoAgenda)
+    provide('sobre', sobre)
+
+
 
     const layout = computed(() => {
 
@@ -79,6 +98,11 @@ export default {
       return `layout-${contentLayoutType.value}`
 
     })
+
+
+    const {
+      is_loggin
+    } = useAuth();
 
     const { skin, skinClasses } = useAppConfig()
     const { enableScrollToTop } = $themeConfig.layout
@@ -128,7 +152,12 @@ export default {
       enableScrollToTop,
       layout,
       contentLayoutType,
-      route
+      route,
+      is_loggin,
+      showMiAgenda,
+      tipoAgenda,
+      showAgenda,
+      sobre
     }
   },
 

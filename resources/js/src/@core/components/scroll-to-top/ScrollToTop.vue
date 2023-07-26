@@ -49,11 +49,13 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+
+
 .btn-scroll-to-top {
   position: fixed;
     bottom: 5%;
     right: 30px;
-    z-index: 99;
+    z-index: 95;
 
     opacity: 0;
     // transform: translateY(100px);

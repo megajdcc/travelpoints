@@ -386,9 +386,11 @@ export default {
 
 
       const cambiarDias = (tipo) => {
+         
          if(tipo == 0){
             formulario.value.recurrencia.dia_semana = [0,1,2,3,4,5,6];
          }
+
          
       } 
 

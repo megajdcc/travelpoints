@@ -1,4 +1,5 @@
 <template>
+  <section>
   <b-nav-item-dropdown right toggle-class="d-flex align-items-center dropdown-user-link" class="dropdown-user">
     <template #button-content>
       <div class="d-sm-flex d-none user-nav" v-if="is_loggin">
@@ -36,6 +37,11 @@
       <span>Mis Tarjetas</span>
     </b-dropdown-item>
 
+  <b-dropdown-item @click="mostrarAgenda" link-class="d-flex align-items-center" v-if="is_loggin">
+        <font-awesome-icon icon="fas fa-calendar-day" class="mr-1"/>
+        <span>Mi Agenda</span>
+    </b-dropdown-item>
+
     <b-dropdown-item :to="{ name: 'faqs' }" link-class="d-flex align-items-center">
       <feather-icon size="16" icon="HelpCircleIcon" class="mr-50" />
       <span>Faq</span>
@@ -50,7 +56,10 @@
       <feather-icon size="16" icon="LogInIcon" class="mr-50" />
       <span>Login</span>
     </b-dropdown-item>
+
+    
   </b-nav-item-dropdown>
+  </section>
 </template>
 
 <script>
@@ -59,7 +68,7 @@ import {
 } from 'bootstrap-vue'
 
 import { avatarText } from '@core/utils/filter'
-import { computed,toRefs } from 'vue';
+import { computed,toRefs,ref,inject } from 'vue';
 import store from '@/store';
 import useAuth from '@core/utils/useAuth'
 
@@ -69,6 +78,7 @@ export default {
     BDropdownItem,
     BDropdownDivider,
     BAvatar,
+    MiAgenda:() => import('components/MiAgenda.vue')
   }, 
 
   props:{
@@ -89,9 +99,10 @@ export default {
   setup(props){
     const usuario = computed(() => store.state.usuario.usuario)
     const { panel,negocioId } = toRefs(props)
-
+   
     const {negocio} = toRefs(store.state.negocio)
 
+    const showMiAgenda = inject('showMiAgenda')
     const {
       logout,
       is_loggin,
@@ -128,6 +139,8 @@ export default {
       return usuario.value.rol.nombre ;
     })
 
+    const mostrarAgenda  = () => showMiAgenda.value = true
+
     return {
       usuario,
       loading:computed(() => store.state.loading),
@@ -135,7 +148,8 @@ export default {
       logout,
       isNegocios,
       is_loggin,
-      getRolPanel
+      getRolPanel,
+      mostrarAgenda
 
     };
   },

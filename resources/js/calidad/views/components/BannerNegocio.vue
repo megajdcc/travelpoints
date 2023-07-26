@@ -1,5 +1,6 @@
 <template>
     <section class="banner-perfil-negocio" :style="{ 'background-image': `url(${portada})`, position:'relative' }">
+      <agendar :modelId="negocio.id" :modelName="negocio.nombre"/>
       <b-container fluid class="py-2 px-1 px-md-3">
         <b-row>
     
@@ -95,7 +96,8 @@ export default {
     BRow,
     BCol,
     NegocioReservar:() => import('components/NegocioReservar.vue'),
-    ActionsNegocio:() => import('components/ActionsNegocio.vue')
+    ActionsNegocio:() => import('components/ActionsNegocio.vue'),
+    agendar:() => import('components/agendar.vue')
   },
 
   directives:{

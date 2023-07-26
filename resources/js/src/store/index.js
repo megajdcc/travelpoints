@@ -170,6 +170,10 @@ import tarjeta from './modules/tarjeta.js'
 // vonage
 import vonage from './modules/vonage.js'
 
+// reunions
+
+import reunion from './modules/reunion.js'
+
 Vue.use(Vuex)
 
 
@@ -326,7 +330,8 @@ export default new Vuex.Store({
     pagina,
     lote,
     tarjeta,
-    vonage
+    vonage,
+    reunion
   },
   strict:false,
 

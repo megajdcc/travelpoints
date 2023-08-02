@@ -1,6 +1,28 @@
 import store from '@/store';
 
 export default [
+
+   /*****************************************/
+   /* MI Perfil
+   /*************************************** */
+
+   {
+      path:'/perfil',
+      name: 'mi-perfil',
+      component: () => import('views/perfil/index.vue'),
+      meta: {
+         pageTitle: 'Mi perfil',
+         resource: 'perfil',
+         action: 'read',
+         breadcrumb: [
+         {
+            text: 'Configuración de perfil',
+            active: true,
+         },
+         ],
+      },
+   },
+
    /*****************************************/
    /* SOCIO
    /*************************************** */

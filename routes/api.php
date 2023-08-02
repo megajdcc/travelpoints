@@ -64,6 +64,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::post('upload/avatar', [UserController::class, 'uploadAvatar'])->name('upload_avatar');
     Route::put('perfil/update/usuario/{usuario}', [UserController::class, 'updatePerfil']);
     Route::put('cambiar/contrasena/usuario/{usuario}', [UserController::class, 'changePassword']);
+    Route::post('usuarios/{usuario}/toggle-portada',[UserController::class,'togglePortada']);
 
     /*****************************/
     /* NOTIFICACIONES
@@ -146,6 +147,9 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
 
     Route::put('usuarios/{usuario}/asociar/tarjeta',[UserController::class,'asociarTarjeta']);
     Route::delete('usuarios/{usuario}/cancelar/tarjeta/{tarjeta}',[UserController::class,'cancelarTarjeta']);
+
+    Route::put('usuarios/{usuario}/get-movimiento-por-mes',[HomeController::class, 'getMovimientosPorMes']);
+    Route::get('usuarios/{usuario}/get-acumulado-por-ano',[HomeController::class,'getAcumuladoPorAno']);
 
 
     /*****************************/

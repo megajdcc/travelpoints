@@ -7,9 +7,10 @@
 
     <scroll-to-top v-if="enableScrollToTop" />
     <mi-agenda v-model="showMiAgenda" v-if="is_loggin"/>
+    <sidebar-about-profile v-model="showAboutProfile" v-if="is_loggin" :userAbout="userAbout"/>
     <form-agenda v-model="showAgenda" :tipo="tipoAgenda" v-if="is_loggin" :sobre="sobre"/>
-
     <agenda-fixed  />
+    <sidebar-retiro v-if="is_loggin" v-model="showSidebarRetiro" />
   
 
   </div>
@@ -44,7 +45,9 @@ export default {
     ScrollToTop,
     AgendaFixed:() => import('components/AgendaFixed.vue'),
     MiAgenda:() => import('components/MiAgenda.vue'),
-    FormAgenda:() => import('components/FormAgenda.vue')
+    FormAgenda:() => import('components/FormAgenda.vue'),
+    SidebarAboutProfile:() => import('components/SidebarAboutProfile.vue'),
+    SidebarRetiro:() => import('components/SidebarRetiro.vue')
   },
 
   beforeCreate() {
@@ -79,13 +82,19 @@ export default {
     const usuario = computed(() => store.state.usuario.usuario);
     const showMiAgenda = ref(false)
     const showAgenda  =ref(false)
+    const showAboutProfile  = ref(false)
+    const showSidebarRetiro= ref(false)
     const tipoAgenda = ref(1)
     const sobre = ref('')
+    const userAbout = ref({})
 
     provide('showMiAgenda', showMiAgenda)
     provide('showAgenda', showAgenda)
     provide('tipoAgenda', tipoAgenda)
     provide('sobre', sobre)
+    provide('showAboutProfile', showAboutProfile)
+    provide('userAbout', userAbout)
+    provide('showSidebarRetiro', showSidebarRetiro)
 
 
 
@@ -157,7 +166,10 @@ export default {
       showMiAgenda,
       tipoAgenda,
       showAgenda,
-      sobre
+      sobre,
+      showAboutProfile,
+      userAbout,
+      showSidebarRetiro
     }
   },
 

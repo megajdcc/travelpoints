@@ -49,6 +49,14 @@ return [
             'visibility' => 'public',
         ],
 
+        'img-portada' => [
+            'driver' => 'local',
+            'root' => storage_path('app/public/img-portada'),
+            'url' => env('APP_URL') . '/storage/img-portada',
+            'visibility' => 'public',
+        ],
+
+
         'negocio-categoria' => [
             'driver' => 'local',
             'root' => storage_path('app/public/negocios/categorias'),

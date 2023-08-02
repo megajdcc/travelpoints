@@ -2,12 +2,12 @@ import { defineConfig } from 'vite';
 import laravel from 'laravel-vite-plugin';
 import vue from '@vitejs/plugin-vue2'
 import { VitePWA } from 'vite-plugin-pwa'
-import path from 'path' 
 import fs from 'fs'; 
- 
+import path from 'path'
+
 const host = 'travelpoints.dev'; 
 export default defineConfig({
-    // base:'https://travelpoints.dev',
+    // base:import.meta.env['BASE_URL'],
     plugins: [
         laravel({
             refresh:['resources/views/**'],
@@ -74,7 +74,9 @@ export default defineConfig({
               'store': '/resources/js/src/store',
               'components': '/resources/js/calidad/views/components',
               '@fuentes':'./resources/js/src/assets/fonts/',
-              '@images':'./resources/js/src/assets/images/'
+              '@images':path.resolve(__dirname,'./resources/js/src/assets/images/'),
+            //   'images':path.resolve(__dirname,'./resources/js/src/assets/images/'),
+
 
           }
     },

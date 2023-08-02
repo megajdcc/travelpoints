@@ -197,6 +197,14 @@ export default [
       resource:'multimedias',
       action:'read'
    },
+   {
+      title:"Perfil de Cuenta",
+      route:'mi-perfil',
+      resource:'perfil',
+      action:'read',
+      icon:'fa-user-pen',
+      fontAwesome:true,
+   },
 
    {
       title:'Configuraciones',

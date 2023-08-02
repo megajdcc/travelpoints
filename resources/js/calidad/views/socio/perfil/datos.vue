@@ -1,7 +1,6 @@
 <template>
    <div>
-      <perfil-info :usuario="usuario" />
-      <invitados class="mt-1" />
+      <invitados />
    </div>
 
 </template>

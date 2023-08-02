@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Console\Commands\establecerNivel;
 use App\Models\Negocio\Solicitud;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -36,7 +37,6 @@ class User extends Authenticatable
     use agendar;
     public readonly string $model_type;
     public readonly int $divisa_id; 
-    public $porcentajePerfil = 0;
 
     public function __construct(
         string $model_type = 'App\Models\User')
@@ -47,7 +47,6 @@ class User extends Authenticatable
 
         $this->divisa_id = Divisa::where('principal', true)->first()->id;
 
-       $this->porcentajePerfil = $this->getFillPercentage();
 
     }
 
@@ -83,7 +82,15 @@ class User extends Authenticatable
         'lider_id',
         'coordinador_id',
         'tarjeta_id',
-        'destino_id'
+        'destino_id',
+        'portada',
+        'porcentaje_perfil',
+         /**
+          * Para el caso de los promotores el nivel 
+          * [1 => Visitante (1 acti), 2 => Recomendador (100 activ), 3 => Promotor(500 acti) , 4 => Consul (1000 act) , 5 => Embajador (3000 activ)]
+          * Es un Json [nivel => 0, activaciones  => 0]
+          **/
+        'nivel',
     ];
 
     /**
@@ -106,7 +113,8 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'is_password'       => 'boolean',
         'activo'            => 'boolean',
-        'tps'               => 'float'
+        'tps'               => 'float',
+        'nivel'             => 'array'
     ];
 
 
@@ -157,6 +165,19 @@ class User extends Authenticatable
              return asset('storage/img-perfil/'.$this->imagen);
         }
 
+    }
+
+
+    public function getPortada()
+    {
+
+        if (empty($this->portada)) {
+            $this->portada = 'banner-travel.jpg';
+
+            return asset('storage/img-portada/' . $this->portada);
+        } else {
+            return asset('storage/img-portada/' . $this->portada);
+        }
     }
 
     public function getNombreCompleto(){
@@ -793,19 +814,45 @@ class User extends Authenticatable
     }
 
     public function getFillPercentage()
-    {
-        $fillableProperties = $this->getFillable();
-        $totalProperties = count($fillableProperties);
+    {   
+        $arrays_except = [
+            'password',
+            'is_password',
+            'token',
+            'lenguaje',
+            'activo',
+            'ultimo_login',
+            'lider_id',
+            'coordinador_id',
+            'tarjeta_id', 
+            'porcentaje_perfil',
+            'destino_id',
+            'portada'
+        ];
+        $fillableProperties = (collect($this->getFillable()))->filter(fn($val) => !\array_search($val,$arrays_except));
+        $fillableProperties->push('telefonos');
+
+        $totalProperties = $fillableProperties->count();
         $filledProperties = 0;
 
         foreach ($fillableProperties as $property) {
-            if (!empty($this->$property)) {
+
+            if($property == 'telefonos'){
+                if($this->telefonos->count() > 0){
+                    $filledProperties++;
+                }
+            }else if(!empty($this[$property])){
                 $filledProperties++;
             }
+            
         }
 
         $percentageFilled = ($filledProperties / $totalProperties) * 100;
         
+        $this->porcentaje_perfil = $percentageFilled;
+        $this->refresh();
+        $this->update(['porcentaje_perfil' => $percentageFilled]);
+      
         return $percentageFilled;
     }
 
@@ -817,13 +864,49 @@ class User extends Authenticatable
         return $this->hasMany(Reunion::class,'usuario_id','id');
     }
 
-    
+    public function establecerNivel() : bool{
+        
+        $result = false;
+
+        if($this->rol->nombre == 'Promotor'){
+            $referidos = $this->referidos->where('activo', true);
+
+            $result =  $this->update(['nivel' => [
+                'activaciones' => $referidos->count(),
+                'nivel' => $this->getNivel($referidos->count())
+            ]]);
+
+        }
+
+        return $result;
+
+       
+    }
+
+    private function getNivel(int $activaciones) : int|null {
+        $niveles = collect([1,100,500,1000,3000]);
+        $nivel = null;
+
+        if($activaciones < 1){
+            return $nivel;
+        }
+        foreach ($niveles as $key => $n) {
+            if($activaciones <= $n){
+                $nivel = $key;
+                break;
+            }
+        }
+        return $nivel;
+    }
+
     public function cargar(): User{
+        $this->porcentaje_perfil = $this->getFillPercentage();
         $this->tokens;
         $this->rol?->permisos;
         $this->rol?->academia->load('videos');
         $this->habilidades = $this->getHabilidades();
         $this->avatar = $this->getAvatar();
+        $this->portada = $this->getPortada();
         $this->ciudad?->estado?->pais;
         $this->cuenta;
         $this->cuenta?->divisa;
@@ -851,10 +934,9 @@ class User extends Authenticatable
         $this->promotores;
         $this->coordinador;
         $this->lideres;
-        $this->porcentajePerfil = $this->getFillPercentage();
+       
         $this->tarjeta?->lote;
         $this->reunions;
-        // dd($this->porcentajePerfil);
         return $this;
     }
 

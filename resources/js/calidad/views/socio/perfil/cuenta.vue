@@ -53,60 +53,6 @@
 
 
       </listado>
-
-      <b-sidebar v-model="showDialogRetiro" :title="$t('Solicitud de retiro')">
-         <validation-observer ref="formValidate" #default="{ handleSubmit }">
-            <b-form @submit.prevent="handleSubmit(retirar)">
-               <b-container fluid>
-                  <b-row>
-                     <b-col cols="12">
-                        <b-form-group>
-                           <template #label>
-                              {{ $t('Monto') }}: <span class="text-danger">*</span>
-                           </template>
-
-                           <validation-provider name="monto" :rules="`required|mountMax:${getSaldo}`" #default="{ valid, errors }">
-                              <currency-input v-model="formulario.monto" :options="{
-                                 ...optionsCurrency, ...currencyOptions
-                              }" InputClass="form-control" />
-
-                              <b-form-invalid-feedback :state="valid">
-                                 {{ errors[0] }}
-                              </b-form-invalid-feedback>
-                           </validation-provider>
-                        </b-form-group>
-
-
-
-                        <b-form-group :label="$t('Nota')">
-                           <validation-provider name="nota" #default="{ valid, errors }">
-                              <b-form-textarea v-model="formulario.nota" :rows="3" :state="valid"/>
-
-                              <b-form-invalid-feedback :state="valid">
-                                 {{ errors[0] }}
-                              </b-form-invalid-feedback>
-
-                           </validation-provider>
-                        </b-form-group>
-
-                     </b-col>
-                  </b-row>
-
-                  <b-row>
-                     <b-col cols="12">
-                        <b-button-group size="sm">
-                           <b-button variant="primary" type="submit" v-loading="loading"
-                              :disabled="loading || !formulario.monto > 0" :title="$t('Enviar')">
-                              {{ $t('Enviar Solicitud') }}
-                           </b-button>
-                        </b-button-group>
-                     </b-col>
-                  </b-row>
-
-               </b-container>
-            </b-form>
-         </validation-observer>
-      </b-sidebar>
    </section>
 </template>
 
@@ -131,13 +77,10 @@ import {
 
 import useCuentaList from './useCuentaList.js'
 import store from '@/store'
-import { ref, toRefs, computed, onMounted } from 'vue'
+import { ref, toRefs, computed, onMounted,inject } from 'vue'
 import { useRoute } from 'vue2-helpers/vue-router'
 
-import { ValidationObserver, ValidationProvider } from 'vee-validate'
 
-import { required, mountMax } from '@validations'
-import { optionsCurrency } from '@core/utils/utils'
 
 import vSelect from 'vue-select'
 export default {
@@ -156,10 +99,7 @@ export default {
       BSidebar,
       BForm,
       BFormGroup,
-      ValidationObserver,
-      ValidationProvider,
       BFormInvalidFeedback,
-      CurrencyInput: () => import('components/CurrencyInput.vue'),
       vSelect,
       BFormTextarea
 
@@ -173,15 +113,9 @@ export default {
 
       const { usuario } = toRefs(store.state.usuario)
       const { sistema } = toRefs(store.state.sistema)
-      const showDialogRetiro = ref(false)
-
-      const { retiro: formulario } = toRefs(store.state.retiro)
-      const formValidate = ref(null)
-
-
       const { id } = toRefs(props)
-
       const route = useRoute();
+      const showSidebarRetiro = inject('showSidebarRetiro')
 
       const actions = useCuentaList({
          model_id: computed(() => route.meta.layout == 'travel' ? usuario.value.id : id.value ? id.value : sistema.value.id),
@@ -194,65 +128,20 @@ export default {
 
 
       const mostrarFormRetiro = () => {
-         showDialogRetiro.value = true;
 
+         showSidebarRetiro.value = true
       }
-
-
-      const retirar = () => {
-
-         formulario.value.usuario_id = usuario.value.id
-         formulario.value.status = 1;
-
-         store.dispatch('retiro/guardar', formulario.value).then(({ result }) => {
-            if (result) {
-               toast.success('Se ha enviado con éxito tu solicitud de retiro')
-               store.commit('retiro/clear')
-               showDialogRetiro.value = false;
-               actions.refetchData();
-
-            } else {
-               toast.info('No se pudo procesar tu retiro, inténtelo de nuevo mas tarde...')
-            }
-         }).catch(e => {
-
-            if (e.response.status === 422) {
-               formValidate.value.setErrors(e.response.data.errors)
-            }
-
-            console.log(e)
-         })
-
-      }
-
-      const getCurrency = computed(() => {
-         if (usuario.value.cuenta) {
-            return usuario.value.cuenta.divisa ? usuario.value.cuenta.divisa.iso : 'Tp'
-         } else {
-            return 'Tp'
-         }
-      })
-
+     
       return {
          refTable: actions.refTable,
          loading: computed(() => store.state.loading),
          actions,
          mostrarFormRetiro,
-         showDialogRetiro,
-         formulario,
-         retirar,
-         formValidate,
-         required,
-         optionsCurrency,
-         getCurrency,
-         mountMax,
+         showSidebarRetiro,
          getSaldo:computed(() => {
             return usuario.value.cuenta ? usuario.value.cuenta.saldo : 0
          }), 
-         currencyOptions:computed(() => ({
-            currency:getCurrency.value == 'Tp' ? 'USD' : getCurrency.value,
-            currencyDisplay: getCurrency.value == 'Tp' ? 'hidden' : 'symbol'
-         })),
+       
          
       }
 

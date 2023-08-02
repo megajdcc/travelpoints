@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\{Atraccion, Destino, User};
+use App\Models\{Atraccion, Destino, Movimiento, Retiro, User};
 use App\Models\Negocio\Negocio;
 use Illuminate\Database\Eloquent\Builder;
 
@@ -193,4 +193,107 @@ class HomeController extends Controller
 
         return response()->json($travels);
     }
+
+
+    public function getMovimientosPorMes(Request $request,User $usuario){
+
+        $ano = $request->input('anio');
+
+        $ingresos = Movimiento::selectRaw('SUM(monto) as monto, MONTH(movimientos.created_at) as mes')
+            ->join('estado_cuentas', 'movimientos.estado_cuenta_id', '=', 'estado_cuentas.id')
+            ->join('users', 'estado_cuentas.model_id', '=', 'users.id')
+            ->where('tipo_movimiento', 1)
+            ->whereYear('movimientos.created_at', $ano)
+            ->where('users.id', $usuario->id)
+            ->groupBy('mes')
+            ->orderBy('mes', 'asc')
+            ->pluck('monto', 'mes')
+            ->toArray();
+
+        $egresos = Movimiento::selectRaw('SUM(monto) as monto, MONTH(movimientos.created_at) as mes')
+            ->join('estado_cuentas', 'movimientos.estado_cuenta_id', '=', 'estado_cuentas.id')
+            ->join('users', 'estado_cuentas.model_id', '=', 'users.id')
+            ->where('tipo_movimiento', 2)
+            ->whereYear('movimientos.created_at', $ano)
+            ->where('users.id', $usuario->id)
+            ->groupBy('mes')
+            ->orderBy('mes', 'asc')
+            ->pluck('monto', 'mes')
+            ->toArray();
+
+        $retirado = Retiro::where('usuario_id',$usuario->id)->where('status',3)->get()->sum('monto');
+
+
+        $saldo = $usuario->cuenta->saldo;
+
+        // Arreglo para almacenar los montos por mes
+        $mesesIngresos = [];
+        $mesesEgresos = [];
+
+
+        // Iterar del 1 al 12 y obtener los montos para cada mes
+        for ($mes = 1; $mes <= 12; $mes++) {
+            // Obtener el monto de ingresos para el mes actual o establecer cero si no existe
+            $montoIngresos = isset($ingresos[$mes]) ? $ingresos[$mes] : 0;
+
+            // Obtener el monto de egresos para el mes actual o establecer cero si no existe
+            $montoEgresos = isset($egresos[$mes]) ? $egresos[$mes] : 0;
+
+            // Agregar los montos al arreglo de meses
+            $mesesIngresos[] = $montoIngresos;
+            $mesesEgresos[] = -$montoEgresos;
+        }
+
+        // Formar las series de ingresos y egresos con los montos de cada mes
+        $seriesIngresos = [
+            'name' => 'Ingresos',
+            'data' => $mesesIngresos,
+        ];
+
+        $seriesEgresos = [
+            'name' => 'Egresos',
+            'data' => $mesesEgresos,
+        ];
+
+        $result = [
+            $seriesIngresos,
+            $seriesEgresos,
+        ];
+
+
+        return response()->json(['graficas' => $result,'saldo' => $saldo,'iso' => $usuario?->cuenta?->divisa?->iso,'retirado' => $retirado]);
+    }
+
+
+    public function getAcumuladoPorAno(User $usuario){
+
+        
+        $acumulado = Movimiento::whereHas('cuenta',function(Builder $q) use($usuario) {
+            $q->where('model_id',$usuario->id)->where('model_type',$usuario->model_type);
+        })
+        ->where('tipo_movimiento',Movimiento::TIPO_INGRESO)
+        ->get()
+        ->sum('monto');
+
+        $ingresos_acumulados = Movimiento::selectRaw('SUM(monto) as monto, YEAR(movimientos.created_at) as ano')
+            ->join('estado_cuentas', 'movimientos.estado_cuenta_id', '=', 'estado_cuentas.id')
+            ->join('users', 'estado_cuentas.model_id', '=', 'users.id')
+            ->where('tipo_movimiento', Movimiento::TIPO_INGRESO)
+            ->where('users.id', $usuario->id)
+            ->groupBy('ano')
+            ->orderBy('ano', 'asc')
+            ->pluck('monto')
+            ->toArray();
+
+        $seriesMonto = [
+            'name' => 'Ingresos',
+            'data' => [0,...$ingresos_acumulados]
+        ];
+
+        
+
+        return response()->json(['acumulado' => $acumulado,'series' => [$seriesMonto]]);
+
+    }
+
 }

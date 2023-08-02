@@ -48,7 +48,10 @@ export default {
 				tarjeta_id:null,
 				tarjeta:null,
 				destino_id:null,
-				destino:null
+				destino:null,
+				portada:null,
+				porcentaje_perfil:0,
+				nivel:null
 			},
 
 			user: {
@@ -88,7 +91,10 @@ export default {
 				tarjeta_id:null,
 				tarjeta:null,
 				destino_id:null,
-				destino:null
+				destino:null,
+				portada:null,
+				porcentaje_perfil:0,
+				nivel:null
 			},
 
 			usuarios: [],
@@ -165,7 +171,12 @@ export default {
 				tarjeta_id:null,
 				tarjeta:null,
 				destino_id:null,
-				destino:null
+				destino:null,
+				portada:null,
+				porcentaje_perfil:0,
+				nivel:null
+
+
 			}
 		},
 
@@ -194,6 +205,13 @@ export default {
 			user.avatar = avatar;
 			localStorage.setItem('userData',JSON.stringify(user))
 			state.usuario.avatar = avatar;
+		},
+
+		updatePortada(state,portada){
+			const user = JSON.parse(localStorage.getItem('userData'))
+			user.portada = portada;
+			localStorage.setItem('userData',JSON.stringify(user))
+			state.usuario.portada = portada;
 		},
 
 		actualizarAvatarDeUsuario(state,avatar){
@@ -259,7 +277,12 @@ export default {
 				lider:null,
 				promotores:[],
 				tarjeta_id:null,
-				tarjeta:null
+				tarjeta:null,
+				portada:null,
+				porcentaje_perfil:0,
+				nivel:null
+
+
 			}
 		},
 
@@ -419,7 +442,6 @@ export default {
 					
 				});
 
-				console.log(users);
 
 				return users;
 
@@ -472,7 +494,19 @@ export default {
 		miDivisa:(state) => {
 			return state.usuario.cuenta ? state.usuario.cuenta.divisa.iso : 'USD'
 		},
-		
+
+		rolUser(state){
+			return state.usuario.rol ? state.usuario.rol.nombre : ''
+		},
+
+		activaciones(state){
+			
+			if(state.usuario.nivel){
+				return state.usuario.nivel
+			}
+			return {nivel:null,activaciones:0}
+
+		}
 		
 	},
 
@@ -604,6 +638,31 @@ export default {
 				}
 			})
 		},
+
+		updatePortada({state,commit},datos){
+
+			let formData = new FormData();
+
+			formData.append('portada',datos.portada)
+
+			return new Promise((resolve, reject) => {
+				axios.post(`/api/usuarios/${state.usuario.id}/toggle-portada`,formData,{
+					headers:{
+						ContentType:"multipart/form-data"
+					}
+				}).then(({data}) => {
+
+					if(data.result){
+						commit('updatePortada',data.portada)
+					}
+					resolve(data)
+				}).catch( e => reject(e))
+
+			})
+
+		},
+
+		
 
 		fetchUsers({state,commit},searchQuery){
 				return new Promise((resolve, reject) => {
@@ -967,6 +1026,24 @@ export default {
 					resolve(data)
 				}).catch(e => reject(e))
 				
+			})
+		},
+
+		getMovimientosPorMes({state,commit},datos){
+			return new Promise((resolve, reject) => {
+				axios.put(`/api/usuarios/${datos.usuario}/get-movimiento-por-mes`,datos).then(({data}) => {
+					resolve(data)
+				}).catch(e => reject(e))
+			})
+		},
+
+		getAcumuladoPorAno({state,commit}){
+			return new Promise((resolve,reject) => {
+
+				axios.get(`/api/usuarios/${state.usuario.id}/get-acumulado-por-ano`).then(({data}) => {
+					resolve(data)
+				}).catch(e => reject(e))
+
 			})
 		}
 

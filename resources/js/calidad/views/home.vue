@@ -2,8 +2,94 @@
   <section id="dashboard">
     <!-- Tablero Admin - Desarrollador -->
 
-    <b-container fluid>
+    <b-container fluid class="px-0">
 
+      <b-row align-v="stretch" >
+        <b-col cols="12" md="8">
+          <revenue-report :cobrar="retirar" v-model="ano" :data="dataRevenueReport" :titulo="$t('Reporte de ingresos')"  >
+            
+          </revenue-report>
+        </b-col>
+
+        <b-col cols="12" md="4">
+
+            <statistic-card-with-area-chart
+              icon="fa-sack-dollar"
+              fontAwesome
+              :statistic="acumulado"
+              :chartData="chartDataAcumulado"
+              :statistic-title="$t('Acumulado')"
+              color="primary"
+            >
+
+            <template #valor="{statistic}">
+               <h3 class="mb-25 font-weight-bolder">
+                {{ statistic | currency }}
+               </h3>
+            </template>
+
+            <template #btn-actions>
+               <b-button 
+               size="sm" 
+               :to="{name:'movimientos'}" 
+               variant="outline-primary" 
+               class="mt-0 mb-0">
+               <font-awesome-icon icon="fas fa-rectangle-list"/>
+                {{ $t('Ver mis movimientos') }}
+              </b-button>
+            </template>
+
+            </statistic-card-with-area-chart>
+
+            <statistic-card-horizontal icon="fa-percent" statisticTitle="Viajeros Activos" color="dark" colorIcon="success"
+              colorText="text-white" v-if="$can('read', 'Tablero viajeros activos')" :statistic="viajerosActivos">
+
+              <template #statistic="{ statistic }">
+                 {{ statistic }} %
+              </template>
+           
+
+              <template #filtro>
+                <flat-pickr v-model="filtro.rango_fecha" :config="configRangoFecha"
+                  class="form-control form-control-sm mt-2" placeholder="Rango de fecha" />
+
+              </template>
+
+            </statistic-card-horizontal>
+
+
+        </b-col>
+      </b-row>
+
+      <b-row>
+        <b-col cols="12" md="4">
+            <!-- Activaciones -->
+              <b-card >
+                <b-card-body class="p-0 ">
+                  <section class="d-flex justify-content-between">
+                      <h3 class="font-weight-bolder">
+                       Activaciones
+                     </h3>
+                     <h1 class="">{{ nivel.activaciones }}</h1>
+                  </section>
+                  <strong>Solo te faltan {{ siguienteNivel(nivel.nivel,nivel.activaciones).teFaltan }} para subir de nivel</strong>
+                  
+                  <article class="g-activaciones mt-1">
+                    <b-progress
+                        :value="siguienteNivel(nivel.nivel,nivel.activaciones).porcentaje"
+                        max="100"
+                        height="6px"
+                      />
+                  </article>
+
+                </b-card-body>
+              </b-card>
+            <!-- End Activaciones -->
+        </b-col>
+        <b-col cols="12" md="8">
+
+        </b-col>
+      </b-row> 
       <b-row>
         <b-col cols="12" md="4">
 
@@ -31,33 +117,10 @@
 
           </statistic-card-horizontal>
 
-          <statistic-card-horizontal icon="fa-money-bill" :statisticTitle="$t('Mi saldo')" color="success" colorIcon="dark"
-            colorText="text-white"
-            v-if="['Promotor', 'Coordinador', 'Lider'].includes(usuario.rol ? usuario.rol.nombre : '')" :statistic="miSaldo">
-
-             <template #statistic="{statistic}">
-                {{ miDivisa }}{{ statistic |  currency({ currency: miDivisa }) }}
-            </template>
-
-          </statistic-card-horizontal>
+         
 
 
-          <statistic-card-horizontal icon="fa-percent" statisticTitle="Viajeros Activos" color="dark" colorIcon="success"
-            colorText="text-white" v-if="$can('read', 'Tablero viajeros activos')" :statistic="viajerosActivos">
-
-            <template #statistic="{ statistic }">
-               {{ statistic }} %
-            </template>
-           
-
-            <template #filtro>
-              <flat-pickr v-model="filtro.rango_fecha" :config="configRangoFecha"
-                class="form-control form-control-sm mt-2" placeholder="Rango de fecha" />
-
-            </template>
-
-          </statistic-card-horizontal>
-
+         
           <statistic-card-horizontal icon="fa-map-location" statisticTitle="Destinos Activos" color="dark"
             colorIcon="success" colorText="text-white" v-if="$can('read', 'Tablero destinos activos')" :statistic="destinosActivos">
 
@@ -331,6 +394,7 @@
       <el-divider content-position="left"
         v-if="$can('read', 'Tablero total negocios afiliados') || $can('read', 'Tablero porcentaje negocios con operaciones registradas')">Negocios
         Turísticos</el-divider>
+
       <b-row>
 
         <b-col cols="12" md="6">
@@ -393,7 +457,6 @@
 
 
       <template v-if="usuario.rol.nombre == 'Promotor'">
-
         <b-row>
           <b-col cols="12">
             <movimientos />
@@ -432,13 +495,19 @@ import {
   BContainer,
   BRow,
   BCol,
-  BFormGroup
+  BFormGroup,
+  BLink,
+  BButton,
+  BCard,
+  BCardBody,
+  BCardTitle,
+  BProgress
 
 } from 'bootstrap-vue'
 
 import vSelect from 'vue-select'
 
-import { ref, onMounted, watch, toRefs, computed, onActivated } from 'vue';
+import { ref, onMounted, watch, toRefs, computed, onActivated,inject } from 'vue';
 
 // import StatisticCardWithLineChart from 'components/dashboard/StaticCardWithLineChart.vue'
 // import TarjetasAgrupadasStaticas from 'components/dashboard/TarjetasAgrupadasStaticas.vue';
@@ -458,8 +527,9 @@ import useDireccion from '@core/utils/useDireccion.js'
 
 import flatPickr from 'vue-flatpickr-component';
 import 'flatpickr/dist/flatpickr.css';
-
-import { getFecha } from '@core/utils/utils';
+import StatisticCardWithAreaChart from '@core/components/statistics-cards/StatisticCardWithAreaChart.vue'
+import { getFecha, siguienteNivel  } from '@core/utils/utils';
+import { kFormatter } from '@core/utils/filter'
 
 export default {
 
@@ -467,6 +537,12 @@ export default {
     BRow,
     BCol,
     BContainer,
+    BLink,
+    BButton,
+    BCardBody,
+    BCard,
+    BCardTitle,
+    BProgress,
     StatisticCardHorizontal,
     TotalViajeros: () => import('components/TotalViajeros.vue'),
     ApexChart: () => import('components/ApexChart/ApexChart.vue'),
@@ -478,7 +554,9 @@ export default {
     MedalCard: () => import('components/dashboard/MedalCard.vue'),
     movimientos: () => import('views/socio/perfil/cuenta.vue'),
     PromotorListado: () => import('views/promotores/list.vue'),
-    LideresListado: () => import('views/lideres/list.vue')
+    LideresListado: () => import('views/lideres/list.vue'),
+    RevenueReport:() => import('components/cards/RevenueReport.vue'),
+    StatisticCardWithAreaChart
   },
 
   setup(props) {
@@ -513,14 +591,14 @@ export default {
       totalViajerosPorCoordinador,
       porcentajeUsoViajeros
 
-    }
-      = toRefs(store.state.dashboard)
+    } = toRefs(store.state.dashboard)
+
     const viajeros_referidos = ref(0)
     const promotores_activos = ref(0)
     const lideres_activos = ref(0)
 
     const promotores = ref([])
-
+    const ano = ref(new Date().getFullYear())
     const siteTraffic = ref({});
     const rolUser = computed(() => store.getters['usuario/rolUser'])
     const { usuario } = toRefs(store.state.usuario)
@@ -531,14 +609,28 @@ export default {
       negocio_id: null
     })
 
+    const activaciones = ref({
+      nivel:0,
+      activaciones:0
+    })
 
+    const acumulado = ref(0)
+    const showSidebarRetiro = inject('showSidebarRetiro')
+    const chartDataAcumulado = ref([])
+
+    const dataRevenueReport = ref({
+        saldo: 0, 
+        retirado: 0, 
+        iso: 'USD', 
+        chart1serie: [],
+        chart2serie: [],
+    }) 
 
     const configRangoFecha = ref({
       mode: "range",
       maxDate: "today",
       dateFormat: "Y-m-d",
       conjunction: ','
-
     })
 
     const filtro = ref({
@@ -596,9 +688,7 @@ export default {
 
     const cargarDashboard = () => {
 
-      store.dispatch('dashboard/getTotalViajeros', filtro.value).then(() => {
-
-      })
+      store.dispatch('dashboard/getTotalViajeros', filtro.value).then(() => {})
 
       store.dispatch('dashboard/cargarViajerosActivos', filtro.value).then((data) => {
       })
@@ -628,47 +718,67 @@ export default {
       }
 
       if (rolUser.value == 'Promotor') {
-        store.dispatch('usuario/getStatusPromotor').then(({ referidos }) => {
-          viajeros_referidos.value = referidos.ultimo_trimestre;
-        })
+        cargarPromotor()
       }
 
       if (rolUser.value == 'Lider') {
-        store.dispatch('usuario/getStatusLider').then(({ promotores_activos: val }) => {
-          promotores_activos.value = val.ultimo_trimestre;
-        })
-
-        store.dispatch('dashboard/getEficaciaPromotores')
-        store.dispatch('dashboard/getTotalesViajeros', filtro.value)
-
-        store.dispatch('dashboard/getMisPromotores')
-        store.dispatch('dashboard/getEficaciaMes')
-        store.dispatch('dashboard/getEficaciaMesPromotores')
+        cargarLider()
       }
 
       if (rolUser.value == 'Coordinador') {
-        store.dispatch('usuario/getStatusCoordinador').then(({ lideres_activos: val }) => {
-          lideres_activos.value = val.ultimo_trimestre;
-        })
-
-        store.dispatch('dashboard/coordinadoresStatus')
-        store.dispatch('dashboard/getTotalPromotoresPorLider');
-
-        store.dispatch('dashboard/getEficaciaPromotoresCoordinador', filtro.value);
-
-        store.dispatch('usuario/getPromotores').then((data) => {
-          promotores.value = data
-        })
-
-        store.dispatch('dashboard/getTotalViajerosPorCoordinador', filtro.value)
-
-        store.dispatch('dashboard/getPorcentajeUsoViajeros')
+       cargarCoordinador()
       }
 
 
       fetchGastosTuristicos()
       fetchTiendaRegalos()
 
+    }
+
+    const cargarPromotor = () => {
+        store.dispatch('usuario/getStatusPromotor').then(({ referidos }) => {
+        viajeros_referidos.value = referidos.ultimo_trimestre;
+      })
+
+
+      getAnoPorMes(ano.value)
+
+      getAcumuladoPorAno()
+
+      getActivaciones()
+
+    }
+
+    const cargarLider = () => {
+      store.dispatch('usuario/getStatusLider').then(({ promotores_activos: val }) => {
+        promotores_activos.value = val.ultimo_trimestre;
+      })
+
+      store.dispatch('dashboard/getEficaciaPromotores')
+      store.dispatch('dashboard/getTotalesViajeros', filtro.value)
+
+      store.dispatch('dashboard/getMisPromotores')
+      store.dispatch('dashboard/getEficaciaMes')
+      store.dispatch('dashboard/getEficaciaMesPromotores')
+    }
+
+    const cargarCoordinador = () => {
+      store.dispatch('usuario/getStatusCoordinador').then(({ lideres_activos: val }) => {
+        lideres_activos.value = val.ultimo_trimestre;
+      })
+
+      store.dispatch('dashboard/coordinadoresStatus')
+      store.dispatch('dashboard/getTotalPromotoresPorLider');
+
+      store.dispatch('dashboard/getEficaciaPromotoresCoordinador', filtro.value);
+
+      store.dispatch('usuario/getPromotores').then((data) => {
+        promotores.value = data
+      })
+
+      store.dispatch('dashboard/getTotalViajerosPorCoordinador', filtro.value)
+
+      store.dispatch('dashboard/getPorcentajeUsoViajeros')
     }
 
     const fetchGastosTuristicos = () => {
@@ -681,9 +791,6 @@ export default {
       store.dispatch('dashboard/fetchTiendaRegalos')
     }
 
-    watch([() => filtro.value.rango_fecha], () => cargarDashboard());
-    cargarDashboard();
-
     const cargarGastosTuristicos = () => {
       fetchGastosTuristicos()
     }
@@ -692,6 +799,34 @@ export default {
       fetchTiendaRegalos();
     }
 
+    const getAnoPorMes = (anio) => {
+      ano.value = anio
+
+      store.dispatch('usuario/getMovimientosPorMes', { anio: ano.value, usuario: usuario.value.id }).then((data) => {
+        dataRevenueReport.value.chart1serie = data.graficas
+        dataRevenueReport.value.chart2serie = data.graficas
+        dataRevenueReport.value.saldo = data.saldo
+        dataRevenueReport.value.iso = data.iso
+        dataRevenueReport.value.retirado = data.retirado
+      })
+
+    } 
+
+    const getAcumuladoPorAno = () => {
+      store.dispatch('usuario/getAcumuladoPorAno').then((data) => {
+        acumulado.value = data.acumulado
+        chartDataAcumulado.value = data.series
+      })
+    }
+
+    const getActivaciones = () => {
+
+    }   
+
+
+    const  nivel =  computed(() => store.getters['usuario/activaciones'])
+
+    watch([() => filtro.value.rango_fecha], () => cargarDashboard());
     watch(() => filtro.value.promotor_id, () => {
 
       if (rolUser.value == 'Lider') {
@@ -704,13 +839,11 @@ export default {
       }
 
     })
-
     watch([() => filtro.value.fecha], () => store.dispatch('dashboard/getTotalComisiones', filtro.value))
-
-
-
-
+    watch(ano, (val) => getAnoPorMes(val))
+  
     onActivated(() => cargarDashboard());
+    cargarDashboard();
 
     return {
       siteTraffic,
@@ -741,8 +874,10 @@ export default {
       operacionesTravel,
       rolUser,
       viajeros_referidos,
+      ano,
       promotores_activos,
       usuario,
+      activaciones,
       miSaldo: computed(() => store.getters['usuario/miSaldo']),
       miDivisa: computed(() => store.getters['usuario/miDivisa']),
       getLegendaStatusPromotor: (status) => {
@@ -790,8 +925,16 @@ export default {
       totalEficaciaPromotoresCoordinador,
       promotores,
       totalViajerosPorCoordinador,
-      porcentajeUsoViajeros
-    };
+      porcentajeUsoViajeros,
+      dataRevenueReport,
+      chartDataAcumulado,
+      getAnoPorMes,
+      retirar:() => showSidebarRetiro.value = true,
+      kFormatter,
+      acumulado,
+      nivel,
+      siguienteNivel,
+    }
 
   }
 
@@ -802,4 +945,6 @@ export default {
 <style lang="scss">
 @import '@core/scss/vue/pages/dashboard-ecommerce.scss';
 @import '@core/scss/vue/libs/chart-apex.scss';
+
+
 </style>

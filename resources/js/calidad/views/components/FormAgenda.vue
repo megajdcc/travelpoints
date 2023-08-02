@@ -58,7 +58,7 @@
                             v-model="formulario.fecha_fin"
                             :type="!formulario.all_dia ? 'datetime' : 'date'"
                             placeholder="Seleccione la fecha de culminación"  class="w-100" :picker-options="{
-                              disabledDate: (fecha) => fecha.getTime() < (new Date(formulario.fecha_inicio).getTime())
+                              disabledDate: (fecha) => fecha < (new Date(formulario.fecha_inicio))
                             }">
                           </el-date-picker>
 
@@ -394,7 +394,12 @@ export default {
 
 
     const optionsDate = {
-      disabledDate:(fecha) => fecha.getTime() < (new Date().getTime())
+      
+      disabledDate:(fecha) => {
+        const today = new Date().setHours(0, 0, 0, 0);
+
+        return fecha < today
+      }
     }
 
     const tipoRecurrencias = ref([

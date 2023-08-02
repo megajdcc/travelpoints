@@ -43,9 +43,13 @@
 						<b-col cols="12">
 							<b-button-group size="sm">
 
-								<b-button variant="primary" type="submit" v-loading="loading">
+								<b-button variant="primary" type="submit" v-loading="loading" v-if="$can('write', 'permisos')">
 									<feather-icon icon="SaveIcon" />
-									guardar
+									Guardar
+								</b-button>
+								<b-button variant="danger" :to="{name:'create.permiso'}" v-loading="loading" v-if="formulario.id && $can('write','permisos')">
+										<feather-icon icon="PlusIcon" />
+										Nuevo
 								</b-button>
 
 								<b-button @click="regresar" variant="secondary">

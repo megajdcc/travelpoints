@@ -40,16 +40,16 @@
 
         <!-- Column: User -->
         <template #cell(username)="{ item }">
-          <b-media vertical-align="center">
+          <b-media vertical-align="center" class="cursor-pointer" @click="mostrarAboutUsuario(item)">
             <template #aside>
               <b-avatar size="32" :src="item.avatar" :text="avatarText(`${item.nombre} ${item.apellido}`)"
                 :variant="`light-${resolveUserRoleVariant(item.rol.nombre)}`"
-                :to="{ name: 'mostrar.usuario', params: { id: item.id } }" disabled />
+                @click="mostrarAboutUsuario(item)"  />
             </template>
-            <b-link :to="{ name: 'mostrar.usuario', params: { id: item.id } }" disabled
-              class="font-weight-bold d-block text-nowrap">
+            <b-button @click="mostrarAboutUsuario(item)" variant="outline-text" size="sm"
+              class="font-weight-bold d-block text-nowrap p-0">
               {{ item.nombre ? `${item.nombre} ${item.apellido}` : 'Sin definir nombre'  }}
-            </b-link>
+            </b-button>
             <small class="text-muted" v-if="item.username">{{ item.username }}</small>
           </b-media>
         </template>
@@ -147,7 +147,7 @@ import useUsersList from './useUsersList'
 
 import { mapGetters, mapMutations, mapActions } from 'vuex';
 
-import { toRefs } from 'vue'
+import { toRefs,inject } from 'vue'
 
 export default {
   components: {
@@ -189,6 +189,15 @@ export default {
 
   setup() {
     const { usuario } = toRefs(store.state.usuario)
+
+    const userAbout = inject('userAbout')
+    const showAboutProfile = inject('showAboutProfile')
+
+    const mostrarAboutUsuario = (user) => {
+      userAbout.value = user
+      showAboutProfile.value = true
+    }
+
 
     const cambiarEstado = (user_id) => {
 
@@ -246,7 +255,7 @@ export default {
       isSortDirDesc,
       refUserListTable,
       refetchData,
-
+      mostrarAboutUsuario,
       // Filter
       avatarText,
 
@@ -295,11 +304,7 @@ export default {
     }
 
 
-  },
-
-
-
-
+  }
 
 }
 </script>

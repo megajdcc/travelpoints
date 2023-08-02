@@ -27,22 +27,27 @@
       <span>Panel Negocio</span>
     </b-dropdown-item>
 
-    <b-dropdown-item :to="{ name: 'miperfil' }" link-class="d-flex align-items-center" v-if="is_loggin">
+    <b-dropdown-item :to="getToUrlperfil" link-class="d-flex align-items-center" v-if="is_loggin">
       <feather-icon size="16" icon="SettingsIcon" class="mr-50" />
       <span>Mi Perfil</span>
     </b-dropdown-item>
 
-    <b-dropdown-item :to="{ name: 'mi.tarjetas' }" link-class="d-flex align-items-center" v-if="is_loggin">
+    <b-dropdown-item :to="{ name: 'mi.tarjetas' }" link-class="d-flex align-items-center" v-if="is_loggin && $can('read','socio perfil tarjetas')">
       <font-awesome-icon icon="fas fa-credit-card" class="mr-1"/>
       <span>Mis Tarjetas</span>
     </b-dropdown-item>
 
-  <b-dropdown-item @click="mostrarAgenda" link-class="d-flex align-items-center" v-if="is_loggin">
+    <b-dropdown-item @click="mostrarAgenda" link-class="d-flex align-items-center" v-if="is_loggin">
         <font-awesome-icon icon="fas fa-calendar-day" class="mr-1"/>
         <span>Mi Agenda</span>
     </b-dropdown-item>
 
-    <b-dropdown-item :to="{ name: 'faqs' }" link-class="d-flex align-items-center">
+    <b-dropdown-item @click="mostratAboutUsuario" link-class="d-flex align-items-center" v-if="is_loggin && rolName == 'Promotor' && usuario.lider_id">
+        <font-awesome-icon icon="fas fa-user-tie" class="mr-1"/>
+        <span>Mi Lider</span>
+    </b-dropdown-item>
+
+    <b-dropdown-item :to="{ name: 'faqs' }" link-class="d-flex align-items-center" v-if="rolName != 'Promotor'">
       <feather-icon size="16" icon="HelpCircleIcon" class="mr-50" />
       <span>Faq</span>
     </b-dropdown-item>
@@ -56,21 +61,27 @@
       <feather-icon size="16" icon="LogInIcon" class="mr-50" />
       <span>Login</span>
     </b-dropdown-item>
+     <!-- <b-popover target="popover-target-1" triggers="hover" placement="bottomright">
+        <profile-about :about-data="datosPerfilLider" />
+      </b-popover> -->
 
-    
   </b-nav-item-dropdown>
+   
   </section>
 </template>
 
 <script>
 import {
   BNavItemDropdown, BDropdownItem, BDropdownDivider, BAvatar,
+  BPopover,VBPopover
 } from 'bootstrap-vue'
 
 import { avatarText } from '@core/utils/filter'
 import { computed,toRefs,ref,inject } from 'vue';
 import store from '@/store';
 import useAuth from '@core/utils/useAuth'
+import ProfileAbout from 'components/profile/ProfileAbout.vue'
+import { getFecha } from '@core/utils/utils'
 
 export default {
   components: {
@@ -78,8 +89,14 @@ export default {
     BDropdownItem,
     BDropdownDivider,
     BAvatar,
+    BPopover,
+    ProfileAbout,
     MiAgenda:() => import('components/MiAgenda.vue')
   }, 
+
+  directives:{
+    'b-popover':VBPopover
+  },
 
   props:{
     
@@ -103,6 +120,10 @@ export default {
     const {negocio} = toRefs(store.state.negocio)
 
     const showMiAgenda = inject('showMiAgenda')
+    const showAboutProfile = inject('showAboutProfile')
+    const userAbout = inject('userAbout')
+
+
     const {
       logout,
       is_loggin,
@@ -138,9 +159,29 @@ export default {
 
       return usuario.value.rol.nombre ;
     })
-
+    const lider = computed(() => usuario.value.lider ? usuario.value.lider : {});
     const mostrarAgenda  = () => showMiAgenda.value = true
+    
+    const mostratAboutUsuario = () => {
+      userAbout.value = lider.value
+      showAboutProfile.value = true
+    }
 
+   
+
+    const mostrarLider = () => {
+      
+    } 
+    const rolName = computed(() => usuario.value.rol ? usuario.value.rol.nombre : '')
+
+    const getToUrlperfil = computed(() => {
+        if(['Desarrollador','Viajero','Administrador'].includes(rolName.value)){
+          return { name: 'miperfil' }
+        }else{
+          return {name:'mi-perfil'}
+        }
+    })
+    
     return {
       usuario,
       loading:computed(() => store.state.loading),
@@ -149,7 +190,13 @@ export default {
       isNegocios,
       is_loggin,
       getRolPanel,
-      mostrarAgenda
+      getToUrlperfil,
+      mostrarAgenda,
+      mostratAboutUsuario,
+      lider,
+      mostrarLider,
+      rolName
+
 
     };
   },

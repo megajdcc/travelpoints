@@ -20,14 +20,23 @@
             <span v-html="statisticTitle" :class="[colorText]" />
           </slot>
 
-        </div>
-        <b-avatar :variant="`light-${colorIcon}`" class="avatar-icon" @click="ir">
-
-          <slot name="icon">
-            <font-awesome-icon :icon="['fa-solid', icon]" size="3x" @click="ir" />
+          <slot name="legend">
+          
           </slot>
 
-        </b-avatar>
+        </div>
+        <section class="d-flex flex-column flex-nowrap">
+          <b-avatar :variant="`light-${colorIcon}`" class="avatar-icon" @click="ir">
+            <slot name="icon">
+              <font-awesome-icon :icon="['fa-solid', icon]" size="3x" @click="ir" />
+            </slot>
+          </b-avatar>
+
+          <slot name="btn-card">
+
+          </slot>
+        </section>
+        
       </section>
 
       <div class="filtro-statistic w-100">

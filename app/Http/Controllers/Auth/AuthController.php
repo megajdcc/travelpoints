@@ -264,7 +264,6 @@ class AuthController extends Controller
          $result = false;
       }
       
-      $user->porcentajePerfil = $user->getFillPercentage();
       return response()->json([
          'result' => $result,
          'accessToken' => $token,

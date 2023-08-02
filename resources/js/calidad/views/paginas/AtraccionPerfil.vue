@@ -163,6 +163,7 @@
       <horario :horarios="atraccion.horarios" :showHorario.sync="showHorario" />
       
       <show-directions v-model="showDirections" :showDirections.sync="showDirections" :origin="origin" :destination="destination" :destinoName="atraccion.nombre"  @originChange="cambiarOrigin"></show-directions>
+      
    </b-container>
 </template>
 

@@ -380,8 +380,9 @@ class UserController extends Controller
         $user = User::find($usuario->id);
 
         $user->tokens;
-        $user->habilidades = $user->getHabilidades();
         $user->cargar();
+        $user->habilidades = $user->getHabilidades();
+      
         return response()->json(['result' => $result, 'usuario' => $user]);
     }
 
@@ -407,6 +408,35 @@ class UserController extends Controller
         }
 
         return response()->json(\url($usuario->getAvatar()));
+    }
+
+
+    public function togglePortada(Request $request, User $usuario)
+    {
+
+        $portada = $request->file('portada');
+
+        if ($usuario->portada) {
+            Storage::disk('img-portada')->delete($usuario->portada);
+        }
+
+        try {
+            DB::beginTransaction();
+
+
+            $portadaName = sha1($portada->getClientOriginalName()) . '.' . $portada->getClientOriginalExtension();
+            $result = Storage::disk('img-portada')->put($portadaName, File::get($portada));
+            $usuario->portada = $portadaName;
+            $usuario->save();
+
+            DB::commit();
+            $result = true;
+        } catch (\Exception $e) {
+            DB::rollBack();
+            $result = false;
+        }
+
+        return response()->json(['result' => $result,'portada' => \url($usuario->getPortada())]);
     }
 
     public function actualizarAvatarUsuario(Request $request, User $usuario)
@@ -533,6 +563,8 @@ class UserController extends Controller
             ->paginate($datos['perPage'] == 0 ? 10000 : $datos['perPage']);
 
         $usuarios = collect($paginator->items())->each(function($user){
+            $user->porcentajePerfil = $user->getFillPercentage();
+            $user->portada = $user->getPortada();
             // $user->tokens;
             $user->rol?->permisos;
             // $user->rol?->academia->load('videos');
@@ -561,7 +593,7 @@ class UserController extends Controller
             $user->promotores;
             $user->coordinador;
             $user->lideres;
-            $user->porcentajePerfil = $user->getFillPercentage();
+          
             $user->tarjeta?->lote;
             
         });

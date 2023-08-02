@@ -1,6 +1,5 @@
 <template>
    <div>
-      <perfil-info :usuario="usuario"></perfil-info>
       <b-card>
 
          <validation-observer ref="formValidate" #default="{ handleSubmit }">

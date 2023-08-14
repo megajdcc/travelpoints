@@ -2658,6 +2658,19 @@ export default [
       ]
    },
 
+   /*****************************************/
+   /* Estatus 
+   /****************************************/
+   {
+      path:'/estatus',
+      name:'estatus',
+      component:() => import('views/estatus/estatus.vue'),
+      meta:{
+         resource:'estatus',
+         action:'read',
+         // pageTitle:'Estatus'
+      }
+   },
 
    /*****************************************/
    /* Retiros comisiones
@@ -3333,6 +3346,55 @@ export default [
          layout:'travel',
          resource:'Auth',
          action:"read"
+      }
+   },
+
+   /*****************************************/
+   /* Reportes
+   /*************************************** */
+   {
+      path:'/reports/estados-cuenta',
+      component:() => import('views/reports/estadoCuenta.vue'),
+      name:'report.movimientos',
+      meta:{
+         resouorce:'reportes',
+         action:'read',
+         pageTitle:'Movimientos de Cuentas',
+         breadcrumb:[
+            {text:'Movimientos',active:true}
+         ]
+      }
+   },
+
+   {
+      path:'/reports/activaciones',
+      component:() => import('views/reports/activaciones.vue'),
+      name:'activaciones',
+      meta:{
+         resouorce:'reportes',
+         action:'read',
+         pageTitle:'Activaciones',
+         breadcrumb:[
+            {text:'Usuarios registrados',active:true}
+         ]
+      }
+   },
+
+   /*****************************************/
+   /* Academia
+   /*************************************** */
+
+   {
+      path:'/mi-academia',
+      component:() => import('views/academia.vue'),
+      name:'academia',
+      meta:{
+         resouorce:'Auth',
+         action:'read',
+         pageTitle:'Academia',
+         breadcrumb:[
+            {text:'Lista de Vídeos',active:true}
+         ]
       }
    },
 

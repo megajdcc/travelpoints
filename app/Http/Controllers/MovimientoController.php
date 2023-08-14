@@ -30,7 +30,6 @@ class MovimientoController extends Controller
             
             case 'User':
                 $model = User::find($datos['model_id']);
-                
                 break;
 
             case 'Negocio':
@@ -44,7 +43,6 @@ class MovimientoController extends Controller
                 if(in_array($rol->nombre,['Desarrollador','Administrador'])){
                     $model = Sistema::find($datos['model_id']);
                 }
-               
                 break;
 
         }

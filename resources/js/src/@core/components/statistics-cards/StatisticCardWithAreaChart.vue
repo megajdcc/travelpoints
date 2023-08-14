@@ -1,5 +1,5 @@
 <template>
-  <b-card no-body >
+  <b-card no-body :bg-variant="variant" >
     <b-card-body class="pb-0">
       <section class="d-flex justify-content-between">
          <div class="truncate d-flex flex-column">
@@ -87,6 +87,7 @@ export default {
       type: Object,
       default: null,
     },
+    variant:String
   },
 
 

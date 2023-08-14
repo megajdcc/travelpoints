@@ -1,5 +1,5 @@
 <template>
-  <b-card no-body class="card-revenue-budget">
+  <b-card no-body class="card-revenue-budget" :bg-variant="variant" >
 
 
     <b-row class="mx-0">
@@ -99,7 +99,8 @@ export default {
       type:Function,
       default:() => {},
       required:false,
-    }
+    },
+    variant:String
   },
 
   model:{

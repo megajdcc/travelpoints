@@ -182,40 +182,45 @@ accessibilityInit(Highcharts);
 
 // Registra Highcharts Vue Wrapper como componente global
 Highcharts.setOptions({
+   colors:  [
+    '#397DAD',
+    '#4D616C',
+    '#CD960E',
+    '#348022',
+    '#17B6AA',
+    '#5F2626',
+    '#00AEFF',
+    '#6574cd',
+    '#9561e2',
+    '#f66d9b',
+    '#38c172',
+    '#4dc0b5',
+    '#6cb2eb',
+    '#444444',
+    '#00c0ef',
+  ],
+
 	chart:{
-		backgroundColor:{
-			linearGradient:[0,0,0,0],
-			stops:[
-				[0,'rgb(255,255,255)'],
-				[1,'rgb(255,255,255)']
-			]
-		},
+    backgroundColor: {
+          linearGradient: [0, 0, 500, 500],
+          stops: [
+              [0, 'rgba(255, 255, 255, 0)'],
+              [1, 'rgba(240, 240, 255, 0)']
+          ]
+      },
+
 		// borderWidth:2,
-		borderRadius:10,
-		// options3d:{
-		// 	alfa:10,
-		// 	axisLabelPosition:'auto',
-		// 	beta:0,
-		// 	depth:100,
-		// 	enabled:true,
-		// 	fitToPlot:true,
-		// },
-		borderColor:{
-			linearGradient:[0,0,0,0],
-			stops:[
-				[0,'rgb(46,169,214)'],
-				[0.5,'rgb(228,53,149)'],
-				[1,'rgb(96,167,49)']
-			]
-		},
-		plotBackgroundColor:'rgba(255,255,255,.9)',
-		plotShadow:true,
-		plotBorderWidth:1,
+    borderColor:{
+      pattern:{
+        backgroundColor:'rgb(255,255,255)',
+        opacity:0,
+      }
+    },
 		style:{
 			"fontFamily":'Myriad Regular',
 
 		},
-		spacingTop:10,
+		spacingTop:0,
 
 	},
 	credits:{

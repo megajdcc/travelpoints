@@ -150,7 +150,10 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
 
     Route::put('usuarios/{usuario}/get-movimiento-por-mes',[HomeController::class, 'getMovimientosPorMes']);
     Route::get('usuarios/{usuario}/get-acumulado-por-ano',[HomeController::class,'getAcumuladoPorAno']);
+    Route::get('usuarios/{usuario}/get-efectividad',[HomeController::class,'getEfectividad']);
+    Route::get('usuarios/{usuario}/get-status',[UserController::class, 'getEstado']);
 
+    Route::post('usuarios/{usuario}/mis-invitados',[UserController::class,'fetchDataInvitados']);
 
     /*****************************/
     /* TELEFONOS
@@ -576,7 +579,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::get('usuarios/get/all/promotores', [UserController::class, 'getPromotores']);
     Route::post('dashboard/total/viajeros/por-coordinador', [UserController::class, 'totalViajerosCoordinador']);
     Route::get('dashboard/porcentaje-uso/viajeros', [UserController::class, 'getPorcentajeUsoViajeros']);
-
+    Route::get('dashboard/porcentaje-viajeros/por-pais',[DashboardController::class,'getPorcentajeViajerosPorPais']);
     /*****************************/
     /* Datos de pagos
     /*****************************/

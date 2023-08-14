@@ -36,9 +36,13 @@
       </section> -->
 
       <section v-loading="loading" class="w-100 mt-1" style="min-height:100px">
+
+         <slot name="header-contenido">
+
+         </slot>
          <slot name="contenido" :items="items" :eliminar="eliminar" :fetchData="fetchData" :tableColumns="tableColumns"
             :sortBy="sortBy" :isSortDirDesc="isSortDirDesc" :perPage="perPage" :refTable="refTable">
-            </slot>
+         </slot>
       </section>
 
       <slot name="prePaginate" :items="items">

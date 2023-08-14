@@ -9,7 +9,7 @@ export default function useDestinoList() {
   const isSortDirDesc = ref(true)
   const sortBy = ref('id')
   const searchQuery = ref('')
-  const perPage = ref(12)
+  const perPage = ref(8)
   const currentPage = ref(1)
   const total = ref(0);
   const items = ref([]);
@@ -71,6 +71,7 @@ export default function useDestinoList() {
     }).then(({ total: all, destinos }) => {
 
       total.value = all
+      items.value = destinos
       next(destinos)
 
     }).catch(e => {

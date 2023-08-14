@@ -3,11 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Models\EstadoCuenta;
+use App\Models\Movimiento;
 use Illuminate\Http\Request;
 
-use Illuminate\Support\Facades\{DB};
+use Illuminate\Support\Facades\{DB, Storage};
 
 use Illuminate\Database\Eloquent\Builder;
+use Barryvdh\DomPDF\Facade\Pdf;
+use Barryvdh\DomPDF\PDF as PDFB;
 
 class EstadoCuentaController extends Controller
 {
@@ -160,6 +163,35 @@ class EstadoCuentaController extends Controller
         }
 
         return response()->json(['result' => $result]);
+
+    }
+
+    public function descargar(Request $request){
+        $usuario = $request->user();
+        $movimientos = Movimiento::whereHas('cuenta', function (Builder $q) use ($usuario) {
+            $q->where('model_type', $usuario->model_type)->where('model_id', $usuario->id);
+        })->orderBy('id', 'desc')
+        ->get();
+        $imagenBase64 = "data:image/png;base64," . base64_encode(Storage::disk('public')->get('logotipo.png'));
+        
+        $pdf = Pdf::loadView('reports.movimientos',[
+            'cuenta' => $usuario->cuenta,
+            'movimientos' => $movimientos,
+            'usuario' => $usuario,
+            'logotipo' => $imagenBase64,
+            'divisa' => $usuario->cuenta->divisa
+
+        ]);
+        $pdf->setOption([
+            'dpi' => 150,
+            'defaultFont' => 'sans-serif',
+            'isHtml5ParserEnabled' => true,
+            'isRemoteEnabled' => true
+        ]);
+        
+        $pdf->setPaper('a4', 'landscape');
+        return $pdf->download('Estado de Cuenta.pdf');
+    
 
     }
 }

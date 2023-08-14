@@ -41,9 +41,8 @@ class Kernel extends ConsoleKernel
 
         // Limpiar los trabajos que esten fallidos... 
         $schedule->command('queue:flush')->daily();
-
-
         $schedule->job(new verificarReservas)->daily();
+        $schedule->command('usuario:establecer-nivel')->daily();
 
     }
 

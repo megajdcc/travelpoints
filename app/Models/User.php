@@ -891,12 +891,34 @@ class User extends Authenticatable
             return $nivel;
         }
         foreach ($niveles as $key => $n) {
-            if($activaciones <= $n){
+          
+            if($activaciones >= $n){
                 $nivel = $key;
-                break;
             }
         }
         return $nivel;
+    }
+
+
+    public function getEfectividad(){
+
+        $activos = DB::table('usuario_referencia as ur')
+        ->join('users as u', 'ur.referido_id', '=', 'u.id')
+        ->join('ventas as v', 'u.id', '=', 'v.cliente_id')
+        ->where('ur.usuario_id', $this->id)
+        ->select(DB::raw('COUNT(DISTINCT u.id) as activos'))
+        ->first();
+
+        // Accede al resultado
+        $cantidadActivos = $activos->activos;
+
+        return $cantidadActivos;
+
+    }
+
+    public function ultimaActivacion(){
+        $fecha_ultima = $this->referidos->where('activo',true)->sortByDesc('created_at')->pluck('created_at')->first();
+        return $fecha_ultima ? Carbon::now()->diffInDays($fecha_ultima) : 0;
     }
 
     public function cargar(): User{

@@ -9,7 +9,7 @@ export default function useCuentaList({model_type,model_id}) {
    const items = ref([])
    const tableColumns = ref([
       { key:'id',label:'#',sortBy:'id',sortable:true},
-      { key:'created_at', label: 'Fecha',sortable: true },
+      { key:'created_at', label: 'Fecha',sortable: true,class:"text-nowrap" },
       { key: 'concepto', label: 'Concepto', sortable: true,sortBy:'concepto' },
       { key: 'monto', label: 'Monto', sortable: true,class:'text-nowrap' },
       { key: 'balance', label: 'Balance', sortable: true },
@@ -65,7 +65,10 @@ export default function useCuentaList({model_type,model_id}) {
 
 
    }
+   
+   const descargarPdf = () => {
 
+   } 
 
    return {
 
@@ -81,7 +84,8 @@ export default function useCuentaList({model_type,model_id}) {
       refetchData,
       items,
       tableColumns,
-      fetchData
+      fetchData,
+      descargarPdf
 
    }
 

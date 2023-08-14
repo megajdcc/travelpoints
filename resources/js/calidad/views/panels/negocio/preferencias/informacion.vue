@@ -898,7 +898,16 @@ export default {
 
             }
 
-         } else {
+         } else if(formulario.value.tipo_comision == 2 && isDivisa('EUR')) {
+
+              if (formulario.value.comision < 2) {
+               formulario.value.comision = 2;
+               toast.info('El monto mínimo permitido para EUR es de 2€ EUR')
+
+            }
+
+            formulario.value.comision = formulario.value.comision || 10;
+         }else{
             formulario.value.comision = formulario.value.comision || 10;
          }
 

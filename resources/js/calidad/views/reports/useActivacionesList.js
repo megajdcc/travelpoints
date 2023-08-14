@@ -1,34 +1,23 @@
 import { ref, watch, computed,onMounted } from 'vue'
 import store from '@/store'
 import { title } from '@core/utils/filter'
-
 import ToastificationContent from '@core/components/toastification/ToastificationContent.vue'
-
 import useFilterTable from '@core/utils/useFilterTable';
 import {toRefs} from 'vue'
-export default function useUsersList() {
+
+export default function useActivacionesList() {
 
    const refUserListTable = ref(null)
    const {usuario} = toRefs(store.state.usuario)
-
+    const activaciones = ref([{data:[]}])
    // Table Handlers
    let tableColumns = [
       { key: 'username', sortable: true,label:'Usuario' },
+      { key:'created_at',label:'Creado',sortable:true,class:'text-nowrap'},
       { key: 'email', sortable: true,label:"Email" },
       { key: 'rol', sortable: true,label:'rol',sortKey:'rol_id' },
    ]
 
-   if(['Desarrollador','Administrador'].includes(usuario.value.rol ? usuario.value.rol.nombre : '')){
-        tableColumns = [
-            { key: 'username', sortable: true,label:'Usuario' },
-            { key: 'activo',label:'Estado',sortable:true},
-            { key: 'email', sortable: true,label:"Email" },
-            { key: 'rol', sortable: true,label:'rol',sortKey:'rol_id' },
-            { key: 'actions',sortable:true, sortKey:'id',sortBy:'id' } ,
-         ]
-   }
- 
-   const totalUsers = ref(0)
    
    const {
       perPageOptions,
@@ -36,7 +25,8 @@ export default function useUsersList() {
       perPage,
       searchQuery,
       sortBy,
-      isSortDirDesc
+      isSortDirDesc,
+      total
    } = useFilterTable();
 
 
@@ -49,7 +39,7 @@ export default function useUsersList() {
       return {
          from: perPage.value * (currentPage.value - 1) + (localItemsCount ? 1 : 0),
          to: perPage.value * (currentPage.value - 1) + localItemsCount,
-         of: totalUsers.value,
+         of: total.value,
       }
 
    })
@@ -65,9 +55,9 @@ export default function useUsersList() {
  
 
 
-   const fetchUsers = (ctx, callback) => {
+   const fetchData = (ctx, callback) => {
       store
-         .dispatch('usuario/fetchUsers', {
+         .dispatch('usuario/misInvitados', {
             q: searchQuery.value,
             perPage: perPage.value,
             page: currentPage.value,
@@ -75,10 +65,11 @@ export default function useUsersList() {
             sortDesc: isSortDirDesc.value,
             role: roleFilter.value,
          })
-         .then(response => {
-            const { users, total } = response.data
-            callback(users)
-            totalUsers.value = total
+         .then(({total:all,invitados,activaciones:act}) => {
+
+            total.value = all
+            activaciones.value = act
+            callback(invitados)
 
          })
          .catch(() => {
@@ -115,11 +106,11 @@ export default function useUsersList() {
    }
 
    return {
-      fetchUsers,
+      fetchData,
       tableColumns,
       perPage,
       currentPage,
-      totalUsers,
+      total,
       dataMeta,
       perPageOptions,
       searchQuery,
@@ -132,5 +123,6 @@ export default function useUsersList() {
 
       // Extra Filters
       roleFilter,
+      activaciones
    }
 }

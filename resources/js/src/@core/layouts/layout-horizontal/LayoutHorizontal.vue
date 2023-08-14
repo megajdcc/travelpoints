@@ -25,7 +25,7 @@
       <!-- Vertical Nav Menu -->
       <vertical-nav-menu :is-vertical-menu-active="isVerticalMenuActive"
         :toggle-vertical-menu-active="toggleVerticalMenuActive" class="d-block d-xl-none"
-        :navMenuItems="verticalNavMenuItems">
+        :navMenuItems="itemsMenu">
         <template #header="slotProps">
           <slot name="vertical-menu-header" v-bind="slotProps" />
         </template>
@@ -72,6 +72,9 @@ import useAppConfig from '@core/app-config/useAppConfig'
 import { BNavbar } from 'bootstrap-vue'
 import { useScrollListener } from '@core/comp-functions/misc/event-listeners'
 import verticalNavMenuItems from '@/navigation/vertical'
+import navMenuItemsPromotor from '@/navigation/vertical/promotor'
+import navMenuItemsLider from '@/navigation/vertical/lider'
+import navMenuItemsCoordinador from '@/navigation/vertical/coordinador'
 
 import { onUnmounted } from 'vue'
 
@@ -88,7 +91,8 @@ import VerticalNavMenu from '@core/layouts/layout-vertical/components/vertical-n
 import useVerticalLayout from '@core/layouts/layout-vertical/useVerticalLayout'
 import mixinLayoutHorizontal from './mixinLayoutHorizontal'
 /* eslint-enable import/order */
-
+import { computed, toRefs } from 'vue'
+import store from '@/store'
 import useComposeEmail from '@core/utils/useComposeEmail'
 export default {
   components: {
@@ -139,6 +143,32 @@ export default {
       window.removeEventListener('resize', resizeHandler)
     })
 
+    const {usuario} = toRefs(store.state.usuario)
+
+    const itemsMenu = computed(() => {
+      if(usuario.value.rol){
+
+        let RolMenus = {
+          promotor: navMenuItemsPromotor,
+          lider: navMenuItemsLider,
+          coordinador: navMenuItemsCoordinador
+        };
+        let k = Object.keys(RolMenus).find(val => val == usuario.value.rol.nombre.toLowerCase());
+
+        if(k != undefined){
+          return RolMenus[k]
+        }
+
+        return verticalNavMenuItems
+
+         
+      }else{
+        return verticalNavMenuItems
+      }
+    })
+
+
+
     const {
       navbarMenuTypeClass,
       layoutClasses,
@@ -149,6 +179,8 @@ export default {
     const { scrolledTo } = useScrollListener()
 
     return {
+      // MenuItems
+      itemsMenu,
       // skin
       skin,
 

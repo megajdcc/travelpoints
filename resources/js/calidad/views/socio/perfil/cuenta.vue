@@ -1,56 +1,51 @@
 <template>
    <section>
       <listado :actions="actions">
-
-         <template #titulo>
-            <h3>{{ $t('Movimientos de Cuentas') }}</h3>
+         <template #btn-action>
+            <b-button  href="/reports/descargar/estados-cuenta" download variant="primary" class="d-flex align-items-center font-weight-bolder" v-if="isReport">
+               <font-awesome-icon icon="fas fa-file-pdf" class="mr-1" size="2x" />
+               Descargar
+            </b-button>
          </template>
-
          <template #contenido="{ fetchData, tableColumns, isSortDirDesc, sortBy, perPage }">
-            <b-card>
-               <b-table ref="refTable" :items="fetchData" responsive :fields="tableColumns" primary-key="id"
-                  :sort-by="sortBy" :empty-text="$t('No se encontró ningun movimiento...')" :sort-desc="isSortDirDesc"
-                  sticky-header="700px" :no-border-collapse="false" borderless outlined :busy="loading" :perPage="perPage"
-                  showEmpty small stacked="md">
+            <b-table ref="refTable" :items="fetchData" responsive :fields="tableColumns" primary-key="id"
+               :sort-by="sortBy" :empty-text="$t('No se encontró ningun movimiento...')" :sort-desc="isSortDirDesc"
+               sticky-header="700px" :no-border-collapse="false" borderless outlined :busy="loading" :perPage="perPage"
+               showEmpty small stacked="md">
 
-                  <template #cell(created_at)="{ item }">
+               <template #cell(created_at)="{ item }">
                      {{ item.created_at | fecha('LLL') }}
-                  </template>
+               </template>
 
-                  <template #cell(monto)="{ item }">
-                     <span style="color:black" class="font-weight-bolder text-nowrap">
-                        {{ item.tipo_movimiento == 1 ? '+' : '-' }}
-                        {{ item.divisa_id ? item.divisa.iso : 'Tp' }}
-                        {{ item.monto | currency({
-                           symbol: item.divisa_id ? item.divisa.simbolo :
-                              '$'
-                        }) }}
-                     </span>
-                  </template>
+               <template #cell(monto)="{ item }">
+                  <span style="color:black" class="font-weight-bolder text-nowrap">
+                     {{ item.tipo_movimiento == 1 ? '+' : '-' }}
+                     {{ item.divisa_id ? item.divisa.iso : 'Tp' }}
+                     {{ item.monto | currency({
+                        symbol: item.divisa_id ? item.divisa.simbolo :
+                           '$'
+                     }) }}
+                  </span>
+               </template>
 
-                  <template #cell(balance)="{ item }">
-                     <span style="color:black" class="font-weight-bolder text-nowrap">
-                        {{ item.tipo_movimiento == 1 ? '+' : '-' }}{{ item.divisa_id ? item.divisa.iso :
-                           'Tp' }}{{ item.balance | currency({
-      symbol: item.divisa_id ?
-         item.divisa.simbolo : '$'
+               <template #cell(balance)="{ item }">
+                  <span style="color:black" class="font-weight-bolder text-nowrap">
+                     {{ item.tipo_movimiento == 1 ? '+' : '-' }}{{ item.divisa_id ? item.divisa.iso :
+                        'Tp' }}{{ item.balance | currency({
+   symbol: item.divisa_id ?
+      item.divisa.simbolo : '$'
    }) }}
-                     </span>
-                  </template>
+                  </span>
+               </template>
 
-               </b-table>
-            </b-card>
-
+            </b-table>
          </template>
 
          <template #botonera-footer>
-            <b-button size="sm" variant="primary" title="Solicitar retiro" @click="mostrarFormRetiro">
+            <b-button size="sm" variant="primary" title="Solicitar retiro" @click="mostrarFormRetiro" >
                {{ $t('Solicitar Retiro') }}
             </b-button>
          </template>
-
-
-
 
       </listado>
    </section>
@@ -106,14 +101,15 @@ export default {
    },
 
    props: {
-      id: Number | String
+      id: Number | String,
+      isReport:Boolean
    },
 
    setup(props) {
 
       const { usuario } = toRefs(store.state.usuario)
       const { sistema } = toRefs(store.state.sistema)
-      const { id } = toRefs(props)
+      const { id,isReport } = toRefs(props)
       const route = useRoute();
       const showSidebarRetiro = inject('showSidebarRetiro')
 
@@ -138,6 +134,7 @@ export default {
          actions,
          mostrarFormRetiro,
          showSidebarRetiro,
+         descargarPdf: actions.descargarPdf,
          getSaldo:computed(() => {
             return usuario.value.cuenta ? usuario.value.cuenta.saldo : 0
          }), 

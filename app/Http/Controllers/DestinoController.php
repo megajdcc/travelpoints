@@ -53,7 +53,7 @@ class DestinoController extends Controller
             ]);
         })
         ->orderBY($datos['sortBy'] ?: 'id', $datos['isSortDirDesc'] ? 'desc' : 'asc')
-        ->paginate(4);
+        ->paginate($datos['perPage'] ?: 4);
 
         $destinos = collect($pagination->items())->each(function($destino){
             // $destino->cargar();

@@ -28,6 +28,9 @@ let colorRand = () => {
    return colores[i];
 
 }
+
+import { $themeColors } from '@themeConfig';
+
 export default{
    namespaced:true,
 
@@ -186,14 +189,10 @@ export default{
 
                states: {
                   hover: {
-                     color: '#BADA55'
+                     color: $themeColors.danger
                   }
                },
-               dataLabels: {
-                  enabled: true,
-                  format: '{point.name}'
-               },
-               allAreas: false,
+
                data: [
                   ['km', 69],
                   ['mn', 145],
@@ -676,6 +675,7 @@ export default{
             },
             
             misPromotores:[],
+            viajerosPorPais:[],// [{pais:'Venezuela',porcentaje:10%},...]
 
             porcentajeEficacia:{
                series: [],
@@ -966,6 +966,11 @@ export default{
       setPorcentajeUsoViajeros(state,{porcentaje,total_viajeros}){
          state.porcentajeUsoViajeros.series = [porcentaje];
          state.porcentajeUsoViajeros.chartOptions.labels = [`Sobre ${total_viajeros} (Total Viajeros)`]
+      },
+
+      setViajerosPorPais(state,data){
+
+         state.viajerosPorPais = data
       }
 
 
@@ -976,14 +981,10 @@ export default{
 
       cargarDataDashboard({state,commit}){
          
-         commit('toggleLoading', null, { root: true })
          axios.get('/api/get/data/dashboard').then(({data}) => {
             commit('setViajerosActivos',data.viajerosActivos)
          }).catch(e => {
             console.log(e);
-
-         }).then(() => {
-            commit('toggleLoading',null,{root:true})
          })
       },
 
@@ -1285,6 +1286,17 @@ export default{
 
          })
 
+      },
+
+      getOrigenViajerosPorPais({state,commit}){
+
+         return new Promise((resolve, reject) => {
+            axios.get(`/api/dashboard/porcentaje-viajeros/por-pais`).then(({data}) => {
+               commit('setViajerosPorPais',data)
+               resolve(data)
+
+            }).catch(e => reject(e))
+         })
       }
 
    }

@@ -290,10 +290,17 @@ class HomeController extends Controller
             'data' => [0,...$ingresos_acumulados]
         ];
 
-        
+            
 
         return response()->json(['acumulado' => $acumulado,'series' => [$seriesMonto]]);
 
     }
+
+    public function getEfectividad(User $usuario){
+        return response()->json($usuario->getEfectividad());
+    }
+
+  
+
 
 }

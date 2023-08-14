@@ -127,18 +127,29 @@ class DashboardController extends Controller
         // from ventas as v 
         // where v.created_at >= DATE_SUB(NOW(), INTERVAL 1 YEAR)
 
-        $viajeros = DB::table('ventas','v')
-                        ->selectRaw('ROUND(COUNT(DISTINCT v.cliente_id) / (select count(*) from users) * 100) AS porcentaje')
-                        ->whereRaw('v.created_at >= DATE_SUB(NOW(), INTERVAL 1 YEAR)')
-                        ->when(is_iterable($rango_fecha) && count($rango_fecha) > 1 , function($q) use($rango_fecha) {
-                            $q->whereBetween('v.created_at',$rango_fecha);
-                        })
-                        ->when(in_array($rol_user,['Promotor','Coordinador','Lider']), function($q) use($data,$request){
-                                $q->join('users as u','v.cliente_id','u.id')
-                                ->join('usuario_referencia as ur','u.id','ur.referido_id')
-                                ->where('ur.usuario_id', $request->user()->id);
-                        })
-                        ->first('porcentaje');
+        if(in_array($rol_user, ['Promotor', 'Coordinador', 'Lider'])){
+
+            $viajeros = DB::table('ventas', 'v')
+                ->selectRaw("ROUND(COUNT(DISTINCT v.cliente_id) * 100 / {$request->user()->referidos->where('activo',true)->count()}) AS porcentaje")
+                ->join('users as u', 'v.cliente_id', 'u.id')
+                ->join('usuario_referencia as ur', 'u.id', 'ur.referido_id')
+                ->whereRaw('v.created_at >= DATE_SUB(NOW(), INTERVAL 1 YEAR)')
+                ->when(is_iterable($rango_fecha) && count($rango_fecha) > 1, function ($q) use ($rango_fecha) {
+                    $q->whereBetween('v.created_at', $rango_fecha);
+                })
+                ->where('ur.usuario_id', $request->user()->id)
+                ->first('porcentaje') ;
+        }else{
+            $viajeros = DB::table('ventas', 'v')
+                ->selectRaw('ROUND(COUNT(DISTINCT v.cliente_id) * 100 / (select count(*) from users)) AS porcentaje')
+                ->whereRaw('v.created_at >= DATE_SUB(NOW(), INTERVAL 1 YEAR)')
+                ->when(is_iterable($rango_fecha) && count($rango_fecha) > 1, function ($q) use ($rango_fecha) {
+                    $q->whereBetween('v.created_at', $rango_fecha);
+                })
+
+                ->first('porcentaje');
+        }
+       
 
         return response()->json($viajeros->porcentaje);
     }
@@ -174,71 +185,101 @@ class DashboardController extends Controller
 
     }
 
-    public function getPaisesActivos(){
+    public function getPaisesActivos(Request $request){
 
-        $paises = DB::table('pais', 'p' )
-                        ->selectRaw('distinct(p.codigo) as codigo, count(d.id) as destinos')
-                        ->join('estados as es','p.id','es.pais_id')
-    
-                        ->join('iatas as i','es.id','i.estado_id')
-                        ->join('destinos as d','i.id','d.iata_id')
+        $rolName = $request->user()->rol->nombre;
+
+        if(\in_array($rolName, ['Promotor', 'Lider', 'Coordinador'])){
+
+             $paises = DB::table('usuario_referencia','ur')
+                        ->join('users as u','ur.referido_id','u.id')
+                        ->join('ciudads as c','u.ciudad_id','c.id')
+                        ->join('estados as e','c.estado_id','e.id')
+                        ->join('pais as p','e.pais_id','p.id')
+                        ->selectRaw("distinct(p.codigo) as codigo,count(p.id) as cant")
+                        ->where('ur.usuario_id', $request->user()->id)
                         ->groupBy('codigo')
                         ->get();
 
-        $negocios = DB::table('pais', 'p')
-            ->selectRaw('distinct(p.codigo) as codigo, count(n.id) as negocios')
-            ->join('estados as es', 'p.id', 'es.pais_id')
-            ->join('iatas as i', 'es.id', 'i.estado_id')
-            ->join('negocios as n', 'i.id', 'n.iata_id')
-            ->where('n.status',1)
-            ->groupBy('codigo')
-            ->get();
-         
-        $paises =  [
-                    'name' => 'Destinos activos',
-                    'states' => [
-                        'hover' => [
-                            'color' => '#0097CE',
-                        ],
-                       
-                    ],
-
-                    'color' => '#60a730',
-                    'dataLabels' => [
-                        'enabled' => true,
-                        'format' => '{point.name}'
-                    ],
-                    'allAreas' => false,
-                    'enableMouseTracking' => true,
-                    'showInLegend' => true,
-                    'data' => [
-                        ...$paises->map(fn ($val) => [\strtolower($val->codigo), $val->destinos])
-                    ]
-                ];
-
-        $negocios = [
-            'name' => 'Negocios activos',
-            'states' => [
-                'hover' => [
-                    'color' => '#0097CE',
+            $paises =  [
+                'name' => 'Origen de viajeros',
+                'data' => [
+                    ...$paises->map(fn ($val) => [\strtolower($val->codigo), $val->cant])
                 ]
-            ],
-            'color' => '#0097CE',
-            'dataLabels' => [
-                'enabled' => true,
-                'format' => '{point.name}'
-            ],
-            'allAreas' => false,
-            'enableMouseTracking' => true,
-            'showInLegend' => true,
-            'data' => [
-                ...$negocios->map(fn ($val) => [\strtolower($val->codigo), $val->negocios])
-            ],
-            
-        ];
+            ];
+
+            return response()->json([$paises]);
 
 
-        return response()->json([$paises,$negocios]);
+        }else{
+            $paises = DB::table('pais', 'p')
+                ->selectRaw('distinct(p.codigo) as codigo, count(d.id) as destinos')
+                ->join('estados as es', 'p.id', 'es.pais_id')
+
+                ->join('iatas as i', 'es.id', 'i.estado_id')
+                ->join('destinos as d', 'i.id', 'd.iata_id')
+                ->groupBy('codigo')
+                ->get();
+
+            $negocios = DB::table('pais', 'p')
+                ->selectRaw('distinct(p.codigo) as codigo, count(n.id) as negocios')
+                ->join('estados as es', 'p.id', 'es.pais_id')
+                ->join('iatas as i', 'es.id', 'i.estado_id')
+                ->join('negocios as n', 'i.id', 'n.iata_id')
+                ->where('n.status', 1)
+                ->groupBy('codigo')
+                ->get();
+
+            $paises =  [
+                'name' => 'Destinos activos',
+                'states' => [
+                    'hover' => [
+                        'color' => '#0097CE',
+                    ],
+
+                ],
+
+                'color' => '#60a730',
+                'dataLabels' => [
+                    'enabled' => true,
+                    'format' => '{point.name}'
+                ],
+                'allAreas' => false,
+                'enableMouseTracking' => true,
+                'showInLegend' => true,
+                'data' => [
+                    ...$paises->map(fn ($val) => [\strtolower($val->codigo), $val->destinos])
+                ]
+            ];
+
+            $negocios = [
+                'name' => 'Negocios activos',
+                'states' => [
+                    'hover' => [
+                        'color' => '#0097CE',
+                    ]
+                ],
+                'color' => '#0097CE',
+                'dataLabels' => [
+                    'enabled' => true,
+                    'format' => '{point.name}'
+                ],
+                'allAreas' => false,
+                'enableMouseTracking' => true,
+                'showInLegend' => true,
+                'data' => [
+                    ...$negocios->map(fn ($val) => [\strtolower($val->codigo), $val->negocios])
+                ],
+
+            ];
+             return response()->json([$paises,$negocios]);
+
+        }
+
+       
+
+
+       
 
 
     }
@@ -728,6 +769,99 @@ class DashboardController extends Controller
 
         return response()->json($porcentajes);
 
+    }
+
+    public function getPorcentajeViajerosPorPais(Request $request){
+
+        $usuario = $request->user();
+        $rolName = $usuario->rol->nombre;
+
+        if(\in_array($rolName, ['Promotor', 'Lider', 'Coordinador'])){
+
+             $paises = DB::table('usuario_referencia','ur')
+                        ->join('users as u','ur.referido_id','u.id')
+                        ->join('ciudads as c','u.ciudad_id','c.id')
+                        ->join('estados as e','c.estado_id','e.id')
+                        ->join('pais as p','e.pais_id','p.id')
+                        ->selectRaw("distinct(p.pais) as pais,count(p.id) as cant")
+                        ->where('ur.usuario_id', $request->user()->id)
+                        ->groupBy('pais')
+                        ->get();
+                $data = collect([]);
+                foreach($paises as $pais){
+                    $data->push([
+                        'pais' => $pais->pais,
+                        'porcentaje' => $pais->cant *  100 / $paises->count()
+                    ]);
+                }
+            return response()->json($data);
+
+
+        }else{
+            $paises = DB::table('pais', 'p')
+                ->selectRaw('distinct(p.codigo) as codigo, count(d.id) as destinos')
+                ->join('estados as es', 'p.id', 'es.pais_id')
+
+                ->join('iatas as i', 'es.id', 'i.estado_id')
+                ->join('destinos as d', 'i.id', 'd.iata_id')
+                ->groupBy('codigo')
+                ->get();
+
+            $negocios = DB::table('pais', 'p')
+                ->selectRaw('distinct(p.codigo) as codigo, count(n.id) as negocios')
+                ->join('estados as es', 'p.id', 'es.pais_id')
+                ->join('iatas as i', 'es.id', 'i.estado_id')
+                ->join('negocios as n', 'i.id', 'n.iata_id')
+                ->where('n.status', 1)
+                ->groupBy('codigo')
+                ->get();
+
+            $paises =  [
+                'name' => 'Destinos activos',
+                'states' => [
+                    'hover' => [
+                        'color' => '#0097CE',
+                    ],
+
+                ],
+
+                'color' => '#60a730',
+                'dataLabels' => [
+                    'enabled' => true,
+                    'format' => '{point.name}'
+                ],
+                'allAreas' => false,
+                'enableMouseTracking' => true,
+                'showInLegend' => true,
+                'data' => [
+                    ...$paises->map(fn ($val) => [\strtolower($val->codigo), $val->destinos])
+                ]
+            ];
+
+            $negocios = [
+                'name' => 'Negocios activos',
+                'states' => [
+                    'hover' => [
+                        'color' => '#0097CE',
+                    ]
+                ],
+                'color' => '#0097CE',
+                'dataLabels' => [
+                    'enabled' => true,
+                    'format' => '{point.name}'
+                ],
+                'allAreas' => false,
+                'enableMouseTracking' => true,
+                'showInLegend' => true,
+                'data' => [
+                    ...$negocios->map(fn ($val) => [\strtolower($val->codigo), $val->negocios])
+                ],
+
+            ];
+             return response()->json([$paises,$negocios]);
+
+        }
+    
     }
 
 }

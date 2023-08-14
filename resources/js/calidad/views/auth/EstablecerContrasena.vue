@@ -138,6 +138,7 @@ import ToastificationContent from '@core/components/toastification/Toastificatio
 import logotipo from 'storage/logotipo.png'
 import logotipoblanco from 'storage/logotipoblanco.png'
 import { toRefs, computed } from 'vue'
+import store from '@/store'
 
 export default {
   components: {

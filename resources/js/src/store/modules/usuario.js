@@ -51,7 +51,7 @@ export default {
 				destino:null,
 				portada:null,
 				porcentaje_perfil:0,
-				nivel:null
+				nivel:{nivel:null,activaciones:0}
 			},
 
 			user: {
@@ -94,7 +94,8 @@ export default {
 				destino:null,
 				portada:null,
 				porcentaje_perfil:0,
-				nivel:null
+				nivel:{nivel:null,activaciones:0},
+				status:3,
 			},
 
 			usuarios: [],
@@ -105,7 +106,7 @@ export default {
 
 		cargarUser(state,data){
 			localStorage.setItem('userData',JSON.stringify(data))			
-			state.usuario = data;
+			state.usuario = {...state.usuario,...data};
 		},
 
 		setTelefono(state,numero){
@@ -174,7 +175,9 @@ export default {
 				destino:null,
 				portada:null,
 				porcentaje_perfil:0,
-				nivel:null
+				nivel:{nivel:null,activaciones:0},
+				status:3,
+
 
 
 			}
@@ -225,7 +228,7 @@ export default {
 
 		updatePerfil(state,data){
 			localStorage.setItem('userData',JSON.stringify(data))
-			state.usuario = data
+			state.usuario = {...state.usuario,...data}
 		},
 
 		desactivarCuenta(state, result) {
@@ -280,9 +283,8 @@ export default {
 				tarjeta:null,
 				portada:null,
 				porcentaje_perfil:0,
-				nivel:null
-
-
+				nivel:{nivel:null,activaciones:0},
+				status:3,
 			}
 		},
 
@@ -337,6 +339,19 @@ export default {
 		setLikesUser(state,likes){
 			state.usuario.likes = likes
 		},
+
+		setStatusPromotor(state,{referidos}){
+			const {ultimo_mes,ultimo_trimestre } = referidos
+
+			if(ultimo_mes > 0){
+				state.usuario.status = 1;
+			}else if(ultimo_trimestre > 0){
+				state.usuario.status = 2;
+			}else{
+				state.usuario.status = 3
+			}
+		},
+
 
 		setStatusLider(state,{promotores_activos}){
 			const {ultimo_mes,ultimo_trimestre } = promotores_activos
@@ -506,6 +521,21 @@ export default {
 			}
 			return {nivel:null,activaciones:0}
 
+		},
+
+		getStatus(state) {
+			let statuses = ['Activo','En Peligro','Inactivo']
+			return state.usuario.status != undefined ? statuses[state.usuario.status - 1] : statuses[2];
+		},
+
+		getNivel(state){
+			let niveles = ['Visitante','Recomendador','Promotor','Consul','Embajador']
+			return state.usuario.nivel ? niveles[state.usuario.nivel.nivel] : niveles[0]
+
+		},
+
+		rolName(state){
+			return state.usuario.rol ? state.usuario.rol.nombre : '';
 		}
 		
 	},
@@ -1039,11 +1069,45 @@ export default {
 
 		getAcumuladoPorAno({state,commit}){
 			return new Promise((resolve,reject) => {
+				if(state.usuario.id){
+						axios.get(`/api/usuarios/${state.usuario.id}/get-acumulado-por-ano`).then(({data}) => {
+							resolve(data)
+						}).catch(e => reject(e))
+				}else{
+					reject()
+				}
+			
 
-				axios.get(`/api/usuarios/${state.usuario.id}/get-acumulado-por-ano`).then(({data}) => {
-					resolve(data)
-				}).catch(e => reject(e))
+			})
+		},
 
+		getEfectividad({state}){
+
+			return new Promise((resolve, reject) => {
+				if(state.usuario.id){
+					axios.get(`/api/usuarios/${state.usuario.id}/get-efectividad`).then(({data})  => resolve(data)).catch(e => reject(e))
+				}else{
+					reject();
+				}
+				
+			})
+		},
+		
+		cargarStatus({state,commit}){
+
+			return new Promise((resolve, reject) => {
+				axios.get(`/api/usuarios/${state.usuario.id}/get-status`).then(({data}) => resolve(data)).catch(e => reject(e))
+			})
+		},
+
+		misInvitados({state,commit},datos){
+			return new Promise((resolve, reject) => {
+				if(state.usuario.id){
+					axios.post(`/api/usuarios/${state.usuario.id}/mis-invitados`,datos).then(({data}) => resolve(data)).catch(e => reject(e))
+				}else{
+					reject()
+				}
+					
 			})
 		}
 

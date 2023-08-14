@@ -33,6 +33,7 @@ use App\Notifications\nuevoAmigo;
 use App\Notifications\validarVentaTarjeta;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 use Illuminate\Support\Collection;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class UserController extends Controller
 {
@@ -93,10 +94,13 @@ class UserController extends Controller
             $usuario = $this->crearUsuario($datos);
 
             if ($user_register->rol->nombre == 'Promotor') {
+                
                 $user_register->referidos()->attach($usuario->id, [
                     'codigo' => $user_register->codigo_referidor ?: 'no_aplica',
                     'created_at' => now(),
                 ]);
+
+                $user_register->establecerNivel();
             }
 
             $usuario->notify(new WelcomeUsuario($usuario));
@@ -164,6 +168,7 @@ class UserController extends Controller
 
                 // Notificar al usuario referidor del nuevo amigo
                 $usuario_referidor->notify(new nuevoAmigo($usuario));
+                $usuario_referidor->establecerNivel();
             }
 
             $usuario->cargar();
@@ -1459,6 +1464,126 @@ class UserController extends Controller
         $usuario->cargar();
         
         return response()->json(['result' => $result,'usuario' => $usuario]);
+
+    }
+
+    public function getEstado(User $usuario)
+    {
+
+        return response()->json([
+            'ultimaActivacion' =>  $usuario->ultimaActivacion()
+        ]);
+    }
+
+
+    public function fetchDataInvitados(Request $request,User $usuario){
+
+        $filtro = $request->all();
+        $paginator = User::where([
+            ['username', 'LIKE', "%{$filtro['q']}%", 'OR'],
+            ['email', 'LIKE', "%{$filtro['q']}%", 'OR'],
+            ['nombre', 'LIKE', "%{$filtro['q']}%", 'OR'],
+            ['apellido', 'LIKE', "%{$filtro['q']}%", 'OR'],
+            ['direccion', 'LIKE', "%{$filtro['q']}%", 'OR'],
+            ['fecha_nacimiento', 'LIKE', "%{$filtro['q']}%", 'OR'],
+            ['codigo_postal', 'LIKE', "%{$filtro['q']}%", 'OR'],
+            ['bio', 'LIKE', "%{$filtro['q']}%", 'OR'],
+        ])->whereHas('referidor',function(Builder $q) use($filtro,$usuario){
+            $q->where('id',$usuario->id);
+        })
+        ->orderBy($filtro['sortBy'],$filtro['sortDesc'] ? 'desc' : 'asc')
+        ->paginate($filtro['perPage'] ?: 1000);
+
+        // select count(distinct(u.id)) as cant, month(u.created_at) as mes from usuario_referencia as ur 
+        // join users as u on ur.referido_id = u.id 
+        // where year(u.created_at) = year(now()) && u.activo = 1 && ur.usuario_id = 22
+        // group by mes 
+        // order by mes asc 
+        $activaciones_por_mes = DB::table('usuario_referencia','ur')
+            ->join('users as u','ur.referido_id','u.id')
+            ->whereRaw("year(u.created_at) = year(now()) && u.activo = 1")
+            ->where('ur.usuario_id',$usuario->id)
+            ->selectRaw('count(distinct(u.id)) as cant, month(u.created_at) as mes')
+            ->groupBy('mes')
+            ->orderBy('mes')
+            ->get();
+        $activaciones_por_mes_ano_anterior = DB::table('usuario_referencia', 'ur')
+        ->join('users as u', 'ur.referido_id', 'u.id')
+        ->whereRaw("year(u.created_at) = (year(now()) - 1) && u.activo = 1")
+        ->where('ur.usuario_id', $usuario->id)
+            ->selectRaw('count(distinct(u.id)) as cant, month(u.created_at) as mes')
+            ->groupBy('mes')
+            ->orderBy('mes')
+            ->get();
+        
+        $activaciones = collect([
+            [
+                'name' => now()->format('Y'),
+                'data'=> collect([])
+            ],
+            [
+                'name' => now()->subYear()->format('Y'),
+                'data' => collect([])
+            ]
+        ]);
+
+        for ($i=0; $i <= 11; $i++) {
+            
+            
+            if($activacion = $activaciones_por_mes->where('mes',($i + 1))->first()){
+                $activaciones[0]['data']->push($activacion->cant);  
+            }else{
+                $activaciones[0]['data']->push(0);
+            }
+
+            if ($activacion = $activaciones_por_mes_ano_anterior->where('mes', ($i + 1))->first()) {
+                $activaciones[1]['data']->push($activacion->cant);
+            } else {
+                $activaciones[1]['data']->push(0);
+            }
+        }
+
+        $invitados = collect($paginator->items())->each(fn($invitado) => $invitado->cargar());
+
+        return response()->json([
+            'invitados' => $invitados,
+            'total' => $paginator->total(), 
+            'activaciones' => $activaciones
+        ]);
+
+    }
+
+
+    public function descargarActivaciones(Request $request){
+
+        $usuario = $request->user();
+
+        $invitados = DB::table('users','u')
+                    ->join('rols as r','u.rol_id','r.id')
+                    ->join('usuario_referencia as ur','u.id','ur.referido_id')
+                    ->where('ur.usuario_id',$usuario->id)
+                    ->where('u.activo',true)
+                    ->selectRaw("concat(u.nombre,' ',u.apellido) as nombre, u.username, u.email, u.created_at as creado,r.nombre as rol")
+                    ->orderBy('creado')
+                    ->get();
+
+        $imagenBase64 = "data:image/png;base64," . base64_encode(Storage::disk('public')->get('logotipo.png'));
+
+        $pdf = Pdf::loadView('reports.activaciones', [
+            'invitados' => $invitados,
+            'usuario' => $usuario,
+            'logotipo' => $imagenBase64,
+
+        ]);
+        $pdf->setOption([
+            'dpi' => 150,
+            'defaultFont' => 'sans-serif',
+            'isHtml5ParserEnabled' => true,
+            'isRemoteEnabled' => true
+        ]);
+
+        $pdf->setPaper('a4', 'landscape');
+        return $pdf->download('Mis activaciones.pdf');
 
     }
 

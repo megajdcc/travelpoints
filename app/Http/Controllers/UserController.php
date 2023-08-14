@@ -1255,7 +1255,8 @@ class UserController extends Controller
             'nombre'   => 'required',
             'apellido' => 'required',
             'email'    => 'required|email|unique:users,email',
-            'lider_id' => 'nullable'
+            'lider_id' => 'nullable',
+            'divisa_id' => 'required'
         ], [
             'username.unique' => 'El nombre de usuario ya está siendo usado, intente con otro',
             'email.unique' => 'El email ya está siendo usado, intente con otro',
@@ -1273,9 +1274,10 @@ class UserController extends Controller
             ]);
 
             $promotor->asignarPermisosPorRol();
+            
 
             if (in_array($promotor->rol->nombre, ['Promotor', 'Lider', 'Coordinador'])) {
-                $promotor->aperturarCuenta(0, 'USD');
+                $promotor->aperturarCuenta(0, (Divisa::find($datos['divisa_id']))->iso);
             } else {
                 $promotor->aperturarCuenta();
             }
@@ -1288,6 +1290,8 @@ class UserController extends Controller
         } catch (\Throwable $th) {
             DB::rollBack();
             $result = false;
+
+            dd($th->getMessage());
         }
 
 

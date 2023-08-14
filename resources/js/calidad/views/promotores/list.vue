@@ -217,6 +217,20 @@
                           </validation-provider>
                     </b-form-group>
 
+                    <b-form-group label-for="divisa" description="Divisa en la que va a recibir la comisión este promotor">
+                        
+                      <template #label>
+                          Divisa: <span class="text-danger">*</span>
+                        </template>
+
+                        <validation-provider #default="{ errors, valid }" name="divisa_id" rules="required">
+                          <v-select v-model="form.divisa_id" :reduce="option => option.id" label="nombre" :options="divisas.filter(val => val.iso != 'Tp')"></v-select>
+                          <b-form-invalid-feedback :state="valid">
+                            {{ errors[0] }}
+                          </b-form-invalid-feedback>
+                          </validation-provider>
+                    </b-form-group>
+
               </b-col>
             </b-row>
 
@@ -368,6 +382,7 @@ export default {
     })  
 
     const {destinos} = toRefs(store.state.destino)
+    const {divisas} = toRefs(store.state.divisa)
 
     const actions = usePromotoresList(lider.value.id ? lider : usuario);
     
@@ -383,7 +398,8 @@ export default {
       nombre:'',
       apellido:null,
       email:'',
-      lider_id:null
+      lider_id:null,
+      divisa_id:null
     })
 
     const formulario = ref({
@@ -398,9 +414,13 @@ export default {
         store.dispatch('usuario/cargarLideres')
        }
 
+       if(!divisas.value.length){
+        store.dispatch('divisa/getDivisas')
+       }
+
     }
 
-
+    
     onMounted(() => cargarForm())
 
     watch(lider_id,() => actions.reftchData())
@@ -549,6 +569,7 @@ export default {
       avatarText,
       resolveUserRoleVariant,
       resolveUserRoleIcon,
+      divisas,
       cambiarEstado,
       asignarLider,
       showUsersLiders,

@@ -98,6 +98,7 @@ class RetiroController extends Controller
             'status'      => 'required',
             'comprobante' => 'nullable',
             'nota' => 'nullable',
+            'divisa_id' => 'nullable'
         ]));
 
 
@@ -126,7 +127,8 @@ class RetiroController extends Controller
             $retiro  = Retiro::create([
                 ...$datos->toArray(),
                 ...[
-                    'comprobante' => isset($comprobante_name) ? $comprobante_name : null
+                    'comprobante' => isset($comprobante_name) ? $comprobante_name : null,
+                    'divisa_id' => !isset($datos['divisa_id']) ? $request->user()->cuenta->divisa_id : null
                 ]
             ]);
 

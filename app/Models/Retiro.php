@@ -14,11 +14,16 @@ class Retiro extends Model
         'monto',
         'status', // 1 => Solicitado , 2 => En proceso,3 => Procesado , 4 => Rechazado
         'comprobante',
-        'nota'
+        'nota',
+        'divisa_id'
     ];
 
     public function usuario(){
         return $this->belongsTo(User::class,'usuario_id','id');
+    }
+
+    public function divisa_id(){
+        return $this->belongsTo(Divisa::class,'divisa_id','id');
     }
 
     

@@ -9,7 +9,7 @@
                   img-top
                   tag="article"
                   class="mb-3"
-                  :class="{'negSelected' : usuario.id === user.id}"
+                  :class="{'negSelected' : user && usuario.id === user.id}"
                    @click="userSelected(usuario.id)" 
                 >
 
@@ -24,8 +24,8 @@
                 </template>
 
                 <b-button @click.stop="userSelected(usuario.id)" 
-                  :variant="user.id === usuario.id ? 'success' : 'primary'" >
-                  {{ usuario.id === user.id ? 'Seleccionado' : 'Seleccionar' }}
+                  :variant="user && user.id === usuario.id ? 'success' : 'primary'" >
+                  {{ user && usuario.id === user.id ? 'Seleccionado' : 'Seleccionar' }}
                 </b-button>
 
                 </b-card>
@@ -90,6 +90,7 @@ export default {
     const {usuarioId} = toRefs(props)
 
     const actions =  useUsuariosListado();
+    
     onMounted(() => {
        actions.refetchData()
     })

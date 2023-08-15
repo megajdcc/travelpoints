@@ -55,6 +55,7 @@ export default function useUsersList() {
    })
 
    const refetchData = () => {
+      
       refUserListTable.value.refresh()
    }
 
@@ -63,7 +64,9 @@ export default function useUsersList() {
    })
    
  
-
+   watch(refUserListTable,() => {
+      refetchData()
+   })
 
    const fetchUsers = (ctx, callback) => {
       store
@@ -75,13 +78,11 @@ export default function useUsersList() {
             sortDesc: isSortDirDesc.value,
             role: roleFilter.value,
          })
-         .then(response => {
-            const { users, total } = response.data
+         .then(({total:all,users}) => {
+            totalUsers.value = all
             callback(users)
-            totalUsers.value = total
-
          })
-         .catch(() => {
+         .catch((e) => {
             toast({
                component: ToastificationContent,
                props: {

@@ -17,7 +17,7 @@
 
                <b-col md="8">
                   <b-input-group size="sm">
-                     <b-form-input v-model="searchQuery" type="search" :placeholder="searchPlaceholder" />
+                     <b-form-input :value="searchQuery" @input="updateQ" type="search" :placeholder="searchPlaceholder" />
                      <b-input-group-append >
                         <slot name="btn-action"></slot>
                      </b-input-group-append>
@@ -166,6 +166,14 @@ export default {
 
       onActivated(() => refetchData())
 
+      const updateQ = _.debounce(value => {
+            searchQuery.value = value
+      },600)
+
+      const updateValue =  _.debounce(function (value) {
+         searchQuery.value = value
+      }, 600)
+
       return {
          items,
          isSortDirDesc,
@@ -183,7 +191,8 @@ export default {
          eliminar,
          tableColumns,
          refTable,
-         irEditar: (negocio) => router.push({ name: 'negocio.edit', params: { id: negocio.id } })
+         updateQ,
+         irEditar: (negocio) => router.push({ name: 'negocio.edit', params: { id: negocio ? negocio.id : null } })
       }
 
    }

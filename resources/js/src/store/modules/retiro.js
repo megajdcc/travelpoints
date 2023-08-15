@@ -11,7 +11,9 @@ export default {
          monto      : 0,
          status     : 1,
          nota       : '',
-         comprobante: null
+         comprobante: null,
+         divisa_id:null,
+         divisa:null
       },
 
       retiros:[],
@@ -34,7 +36,9 @@ export default {
             monto      : 0,
             status     : 1,
             nota       : '',
-            comprobante: null
+            comprobante: null,
+            divisa_id:null,
+            divisa:null
         }
       },
 

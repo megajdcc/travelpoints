@@ -52,6 +52,7 @@ class MovimientoController extends Controller
             $cuenta = $model->cuenta;
         }
 
+        $divisa = $cuenta->divisa;
 
         $pagination = Movimiento::where('estado_cuenta_id',$cuenta->id)
                             ->where([
@@ -69,7 +70,8 @@ class MovimientoController extends Controller
 
                     return response()->json([
                         'total' => $pagination->total(),
-                        'movimientos' => $movimientos
+                        'movimientos' => $movimientos,
+                        'divisa' => $divisa ?: null
                     ]);
 
     }

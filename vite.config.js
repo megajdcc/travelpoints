@@ -75,6 +75,7 @@ export default defineConfig({
               'components': '/resources/js/calidad/views/components',
               '@fuentes':'./resources/js/src/assets/fonts/',
               '@images':path.resolve(__dirname,'./resources/js/src/assets/images/'),
+              '@variables':'./resources/js/src/assets/scss/variables/'
             //   'images':path.resolve(__dirname,'./resources/js/src/assets/images/'),
 
 

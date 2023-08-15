@@ -28,15 +28,12 @@
                 </b-button>
               </template>
             </b-input-group>
-
           </b-col>
         </b-row>
-
       </div>
-
-      <b-table ref="refUserListTable" class="position-relative" :items="fetchUsers" responsive :fields="tableColumns"
-        primary-key="id" :sort-by.sync="sortBy" show-empty empty-text="No matching records found"
-        :sort-desc.sync="isSortDirDesc">
+      <b-table ref="refUserListTable" class="position-relative" :items="fetchUsers" :fields="tableColumns"
+        primary-key="id" :sort-by.sync="sortBy" show-empty empty-text="Usuarios no cargados"
+        :sort-desc.sync="isSortDirDesc" stacked="md" :busy="loading">
 
         <!-- Column: User -->
         <template #cell(username)="{ item }">
@@ -108,10 +105,7 @@
         </template>
 
       </b-table>
-
       <paginate-table :dataMeta="dataMeta" :currentPage.sync="currentPage" :perPage="perPage" :total="totalUsers" />
-
-
     </b-card>
   </div>
 </template>
@@ -193,29 +187,7 @@ export default {
     const userAbout = inject('userAbout')
     const showAboutProfile = inject('showAboutProfile')
 
-    const mostrarAboutUsuario = (user) => {
-      userAbout.value = user
-      showAboutProfile.value = true
-    }
-
-
-    const cambiarEstado = (user_id) => {
-
-      store.dispatch('usuario/cambiarEstado', user_id).then(({ result }) => {
-
-        if (result) {
-          toast.success('Se ha cambiado con éxito el estado del usuario')
-          refetchData()
-        } else {
-          toast.info('No se pudo cambiar el Estado del usuario')
-          refetchData();
-        }
-      }).catch(e => console.log(e))
-
-    }
-
-
-    const {
+     const {
       fetchUsers,
       tableColumns,
       perPage,
@@ -240,8 +212,40 @@ export default {
 
 
 
-    return {
 
+    const mostrarAboutUsuario = (user) => {
+      userAbout.value = user
+      showAboutProfile.value = true
+    }
+
+
+    const cambiarEstado = (user_id) => {
+
+      store.dispatch('usuario/cambiarEstado', user_id).then(({ result }) => {
+
+        if (result) {
+          toast.success('Se ha cambiado con éxito el estado del usuario')
+          refetchData()
+        } else {
+          toast.info('No se pudo cambiar el Estado del usuario')
+          refetchData();
+        }
+      }).catch(e => console.log(e))
+
+    }
+    
+    onMounted(() => {
+      setTimeout(() => {
+        console.log('cargando')
+        refetchData();
+
+      },300)
+    })
+
+   
+
+    return {
+      loading:computed(() => store.state.loading),
       cambiarEstado,
       fetchUsers,
       tableColumns,

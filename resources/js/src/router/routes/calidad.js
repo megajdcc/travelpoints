@@ -373,7 +373,7 @@ export default [
 
             meta: {
                pageTitle: 'Agregar usuario',
-               navActiveLink: 'listar.usuarios',
+               // navActiveLink: 'listar.usuarios',
                resource: 'usuarios',
                action: 'write',
                breadcrumb: [

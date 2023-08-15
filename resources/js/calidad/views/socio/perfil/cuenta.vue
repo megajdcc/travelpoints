@@ -30,7 +30,7 @@
 
                <template #cell(balance)="{ item }">
                   <span style="color:black" class="font-weight-bolder text-nowrap">
-                     {{ item.tipo_movimiento == 1 ? '+' : '-' }}{{ item.divisa_id ? item.divisa.iso :
+                     {{ item.balance < 0 ? '-' : '' }}{{ item.divisa_id ? item.divisa.iso :
                         'Tp' }}{{ item.balance | currency({
    symbol: item.divisa_id ?
       item.divisa.simbolo : '$'

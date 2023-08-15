@@ -28,11 +28,12 @@
       </listado>
 
     <b-modal v-model="showContenido" size="xl" centered hide-footer lazy>  
-        <section class="d-flex justify-content-center flex-wrap" v-if="contenido">
+        <section class="d-flex justify-content-center flex-wrap flex-column" v-if="contenido">
             <h3 class="text-uppercase" > {{ contenido.titulo }}</h3>
 
-             <b-embed  class="mx-1"  type="video" controls="true" :aspect="relation" v-for="(video, e) in contenido.videos" :key="e" :src="`/storage/multimedias/${video.url}`" allowfullscreen >
-              </b-embed>
+
+             <video  class="mx-1 my-1"  type="video" controls="true" :aspect="relation" v-for="(video, e) in contenido.videos" :key="e" :src="`/storage/multimedias/${video.url}`" style="max-height:450px; display:block;" >
+             </video>
             <el-divider content-position="left">Descripción</el-divider>
             <span class="" v-html="contenido.descripcion">
             </span>

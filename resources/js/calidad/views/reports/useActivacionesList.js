@@ -12,7 +12,7 @@ export default function useActivacionesList() {
     const activaciones = ref([{data:[]}])
    // Table Handlers
    let tableColumns = [
-      { key: 'username', sortable: true,label:'Usuario' },
+      { key: 'username', sortable: true,label:'Viajero' },
       { key:'created_at',label:'Creado',sortable:true,class:'text-nowrap'},
       { key: 'email', sortable: true,label:"Email" },
       { key: 'rol', sortable: true,label:'rol',sortKey:'rol_id' },

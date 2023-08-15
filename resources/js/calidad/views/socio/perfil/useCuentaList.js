@@ -7,6 +7,7 @@ import useFilterTable from '@core/utils/useFilterTable';
 export default function useCuentaList({model_type,model_id}) {
 
    const items = ref([])
+   const divisa = ref(null)
    const tableColumns = ref([
       { key:'id',label:'#',sortBy:'id',sortable:true},
       { key:'created_at', label: 'Fecha',sortable: true,class:"text-nowrap" },
@@ -45,10 +46,11 @@ export default function useCuentaList({model_type,model_id}) {
             perPage: perPage.value,
             currentPage: currentPage.value,
             q: searchQuery.value
-         }).then(({ movimientos, total: all }) => {
+         }).then(({ movimientos, total: all,divisa:div }) => {
 
             total.value = all
             items.value = movimientos
+            divisa.value = div
             next(movimientos)
 
 
@@ -85,7 +87,8 @@ export default function useCuentaList({model_type,model_id}) {
       items,
       tableColumns,
       fetchData,
-      descargarPdf
+      descargarPdf,
+      divisa
 
    }
 

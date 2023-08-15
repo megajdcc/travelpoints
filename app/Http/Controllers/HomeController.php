@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\{Atraccion, Destino, Movimiento, Retiro, User};
+use App\Models\{Atraccion, Destino, Divisa, Movimiento, Retiro, User};
 use App\Models\Negocio\Negocio;
 use Illuminate\Database\Eloquent\Builder;
 
@@ -221,8 +221,21 @@ class HomeController extends Controller
             ->pluck('monto', 'mes')
             ->toArray();
 
-        $retirado = Retiro::where('usuario_id',$usuario->id)->where('status',3)->get()->sum('monto');
+        // $retirado = Retiro::where('usuario_id',$usuario->id)->where('status',3)->get()->sum('monto');
+        $retirado = Movimiento::selectRaw('sum(monto) as monto,movimientos.divisa_id')
+                        ->join('estado_cuentas','movimientos.estado_cuenta_id','estado_cuentas.id')
+                        ->join('users','estado_cuentas.model_id','users.id')
+                        ->where('estado_cuentas.model_type',"App\Models\User")
+                        ->where('users.id',$usuario->id)
+                        ->where('tipo_movimiento',2)
+                        ->where('concepto','Retiro de comisiones')
+                        ->groupBy('divisa_id')
+                        ->get();
 
+        $monto_retirado = 0;
+        foreach($retirado as $value){
+            $monto_retirado += Divisa::cambiar(Divisa::find($value->divisa_id),$usuario->cuenta->divisa,$value->monto);
+        }
 
         $saldo = $usuario->cuenta->saldo;
 
@@ -261,7 +274,7 @@ class HomeController extends Controller
         ];
 
 
-        return response()->json(['graficas' => $result,'saldo' => $saldo,'iso' => $usuario?->cuenta?->divisa?->iso,'retirado' => $retirado]);
+        return response()->json(['graficas' => $result,'saldo' => $saldo,'iso' => $usuario?->cuenta?->divisa?->iso,'retirado' => $monto_retirado]);
     }
 
 
@@ -272,9 +285,17 @@ class HomeController extends Controller
             $q->where('model_id',$usuario->id)->where('model_type',$usuario->model_type);
         })
         ->where('tipo_movimiento',Movimiento::TIPO_INGRESO)
-        ->get()
-        ->sum('monto');
+        ->where('concepto',"!=","Conversión de divisa")
+        ->groupBy('movimientos.divisa_id')
+        ->selectRaw('sum(movimientos.monto) as monto, movimientos.divisa_id')
+        ->get();
 
+        $monto_acumulado = 0;
+
+        foreach ($acumulado as $key => $value) {
+            $monto_acumulado += Divisa::cambiar(Divisa::find($value->divisa_id), $usuario->cuenta->divisa, (float) $value->monto);
+        }
+       
         $ingresos_acumulados = Movimiento::selectRaw('SUM(monto) as monto, YEAR(movimientos.created_at) as ano')
             ->join('estado_cuentas', 'movimientos.estado_cuenta_id', '=', 'estado_cuentas.id')
             ->join('users', 'estado_cuentas.model_id', '=', 'users.id')
@@ -292,7 +313,7 @@ class HomeController extends Controller
 
             
 
-        return response()->json(['acumulado' => $acumulado,'series' => [$seriesMonto]]);
+        return response()->json(['acumulado' => $monto_acumulado,'series' => [$seriesMonto]]);
 
     }
 

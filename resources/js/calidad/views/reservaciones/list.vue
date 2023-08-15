@@ -91,11 +91,11 @@
             <b-button-group size="sm">
 
               <b-button :to="{ name: 'reservacion.edit', params: { id: item.id } }" variant="primary"
-                v-if="$can('update', 'reservaciones')">
+                v-if="$can('update', 'reservaciones') && item.status == 1" >
                 Editar
               </b-button>
 
-              <b-button @click="eliminar(item.id)" variant="danger" v-if="$can('delete', 'reservaciones')">
+              <b-button @click="eliminar(item.id)" variant="danger" v-if="$can('delete', 'reservaciones') && [1, 3].includes(item.status)" >
                 Eliminar
               </b-button>
             </b-button-group>

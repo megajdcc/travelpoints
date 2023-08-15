@@ -18,12 +18,14 @@ const promotor = [
   },
 
   {
-    title: 'Registrar Usuario',
+    title: 'Registrar Viajero',
     icon:'fa-user-pen',
     fontAwesome:true,
     route:'create.usuario',
     resource:'usuarios',
-    action:'write'
+    action:'write',
+    class:'active-nav',
+    ExactPath:true
   },
 
   {

@@ -7,10 +7,7 @@
       'disabled': item.disabled
     }"
   >
-    <b-link
-      v-bind="linkProps"
-      class="d-flex align-items-center"
-    >
+    <b-link  class="d-flex align-items-center" v-bind="linkProps"  >
       <font-awesome-icon :icon="[ item.iconFa || 'fas',item.icon]" v-if="item.fontAwesome"  />
       <feather-icon :icon="item.icon || 'CircleIcon'" v-else />
 
@@ -82,3 +79,22 @@ export default {
 
 }
 </script>
+<style lang="scss">
+@import '@/assets/scss/variables/variables';
+
+  .active-nav{
+    
+    background: $danger !important;
+
+    span{
+      color:black;
+      font-weight: 400;
+    }
+    
+    svg{
+      color:black;
+    }
+
+  }
+
+</style>

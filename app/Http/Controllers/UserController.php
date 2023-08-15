@@ -547,10 +547,6 @@ class UserController extends Controller
             ['email', 'LIKE', "%{$datos['q']}%", 'OR'],
             ['nombre', 'LIKE', "%{$datos['q']}%", 'OR'],
             ['apellido', 'LIKE', "%{$datos['q']}%", 'OR'],
-            ['direccion', 'LIKE', "%{$datos['q']}%", 'OR'],
-            ['fecha_nacimiento', 'LIKE', "%{$datos['q']}%", 'OR'],
-            ['codigo_postal', 'LIKE', "%{$datos['q']}%", 'OR'],
-            ['bio', 'LIKE', "%{$datos['q']}%", 'OR'],
         ])
             ->when(isset($datos['role']), function ($query) use ($datos) {
                 $query->where('rol_id', $datos['role'] ? $datos['role'] : '>', 0);
@@ -565,7 +561,7 @@ class UserController extends Controller
             // })
 
             ->orderBy($datos['sortBy'], $datos['sortDesc'] ? 'desc' : 'asc')
-            ->paginate($datos['perPage'] == 0 ? 10000 : $datos['perPage']);
+            ->paginate($datos['perPage'] == 0 ? 10000 : $datos['perPage'],pageName: 'currentPage');
 
         $usuarios = collect($paginator->items())->each(function($user){
             $user->porcentajePerfil = $user->getFillPercentage();

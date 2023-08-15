@@ -2729,8 +2729,17 @@ export default [
 
       ]
    },
-
-
+   {
+      path:'/mis-retiros',
+      name:'mis-retiros',
+      component:() => import('views/retiros/misRetiros.vue'),
+      meta:{
+         resource:'retiros',
+         action:'read',
+         pageTitle:'Mis Retiros',
+         
+      }
+   },
    /*****************************************/
    /* Pais
    /****************************************/

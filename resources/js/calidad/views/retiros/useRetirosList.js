@@ -6,6 +6,7 @@ export default function useRetirosList(){
 
   const tableColumns = ref([
     {key:'id',label:'#',sortable:true},
+    {key:'created_at',label:'Fecha de la solicitud'},
     {key:'monto',label:'Monto',sortable:true},
     {key:'status',label:'Status',sortable:true},
     {key:'usuario_id',label:'Usuario',sortable:true,sortKey:'id'},

@@ -46,6 +46,15 @@ const promotor = [
     },
 
      {
+      title:'Retiros',
+      icon:'fa-circle-dollar-to-slot',
+      route:'mis-retiros',
+      resource:'retiros',
+      action:'read',
+      fontAwesome:true,
+    },
+
+     {
       title:'Estatus & Nivel',
       icon:'fa-heart-pulse',
       route:'estatus',

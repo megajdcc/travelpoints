@@ -37,6 +37,7 @@ class RetiroController extends Controller
 
     public function fetchData(Request $request){
 
+
         $datos = $request->all();
 
         $paginate = Retiro::where([
@@ -54,6 +55,10 @@ class RetiroController extends Controller
                 ['email', 'LIKE', "%{$datos['q']}%", 'OR'],
             ]);
 
+        })
+
+        ->when(\in_array($request->user()->rol->nombre,['Promotor']), function($q) use($request){
+            $q->where('usuario_id',$request->user()->id);   
         })
 
         ->orderBy($datos['sortBy'] ?: 'id',$datos['isSortDirDesc'] ? 'desc' : 'asc')

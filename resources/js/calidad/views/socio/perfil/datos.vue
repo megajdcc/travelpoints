@@ -1,6 +1,8 @@
 <template>
    <div>
-      <invitados />
+      <!-- <invitados /> -->
+      <perfil-info :usuario="usuario" />
+      <invitados class="mt-1" />
    </div>
 
 </template>

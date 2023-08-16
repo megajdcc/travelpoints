@@ -65,7 +65,7 @@ const promotor = [
     },
 
      {
-        title: 'Usuarios Registrados',
+        title: 'Viajeros Registrados',
         route: 'listar.usuarios',
         action: 'read',
         resource: 'usuarios',

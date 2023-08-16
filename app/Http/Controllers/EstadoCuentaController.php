@@ -173,13 +173,17 @@ class EstadoCuentaController extends Controller
         })->orderBy('id', 'desc')
         ->get();
         $imagenBase64 = "data:image/png;base64," . base64_encode(Storage::disk('public')->get('logotipo.png'));
-        
+        $logowhite = "data:image/png;base64," . base64_encode(Storage::disk('public')->get('logotipoblancohorizontal.png'));
+        $avatar  = "data:image/png;base64," . base64_encode(Storage::disk('img-perfil')->get($usuario->imagen ?: 'default.jpg'));
+
         $pdf = Pdf::loadView('reports.movimientos',[
             'cuenta' => $usuario->cuenta,
             'movimientos' => $movimientos,
             'usuario' => $usuario,
+            'divisa' => $usuario->cuenta->divisa,
             'logotipo' => $imagenBase64,
-            'divisa' => $usuario->cuenta->divisa
+            'logotipoblanco' => $logowhite,
+            'avatar' => $avatar
 
         ]);
         $pdf->setOption([

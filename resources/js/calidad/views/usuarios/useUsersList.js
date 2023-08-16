@@ -13,7 +13,7 @@ export default function useUsersList() {
 
    // Table Handlers
    let tableColumns = [
-      { key: 'username', sortable: true,label:'Usuario' },
+      { key: 'username', sortable: true,label:'Viajero' },
       { key: 'email', sortable: true,label:"Email" },
       { key: 'rol', sortable: true,label:'rol',sortKey:'rol_id' },
    ]

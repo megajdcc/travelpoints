@@ -356,7 +356,7 @@ export default [
             meta:{
                resource: 'usuarios',
                action: 'read',
-               pageTitle:'Usuarios',
+               pageTitle:'Viajeros',
                breadcrumb:[
                   {
                      text:'listado',
@@ -3384,7 +3384,7 @@ export default [
          action:'read',
          pageTitle:'Activaciones',
          breadcrumb:[
-            {text:'Usuarios registrados',active:true}
+            {text:'Viajeros registrados',active:true}
          ]
       }
    },

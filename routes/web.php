@@ -33,22 +33,34 @@ Route::get('/reports/view/activaciones',function(Request $request){
 
    $usuario = $request->user();
 
-   $invitados = DB::table('users', 'u')
-      ->join('rols as r', 'u.rol_id', 'r.id')
-      ->join('usuario_referencia as ur', 'u.id', 'ur.referido_id')
+   $invitados = User::join('usuario_referencia as ur', 'users.id', 'ur.referido_id')
       ->where('ur.usuario_id', $usuario->id)
-      ->where('u.activo', true)
-      ->selectRaw("concat(u.nombre,' ',u.apellido) as nombre, u.username, u.email, u.created_at as creado,r.nombre as rol")
-      ->orderBy('creado')
+      ->where('users.activo', true)
+      ->orderBy('users.created_at','desc')
       ->get();
+   $invitados->each(fn($invitado) => $invitado->cargar());
+   // dd($invitados);
+   // $invitados = DB::table('users', 'u')
+   //    ->join('rols as r', 'u.rol_id', 'r.id')
+   //    ->join('usuario_referencia as ur', 'u.id', 'ur.referido_id')
+   //    ->where('ur.usuario_id', $usuario->id)
+   //    ->where('u.activo', true)
+   //    ->selectRaw("u.id,concat(u.nombre,' ',u.apellido) as nombre, u.username, u.email, u.created_at as creado,r.nombre as rol")
+   //    ->orderBy('creado')
+   //    ->get();
 
    $imagenBase64 = "data:image/png;base64," . base64_encode(Storage::disk('public')->get('logotipo.png'));
+   $logowhite = "data:image/png;base64," . base64_encode(Storage::disk('public')->get('logotipoblancohorizontal.png'));
+   $avatar  = "data:image/png;base64," . base64_encode(Storage::disk('img-perfil')->get($usuario->imagen));
+
 
    return view('reports.activaciones', [
       'invitados' => $invitados,
       'usuario' => $usuario,
       'logotipo' => $imagenBase64,
-
+      'logotipoblanco' => $logowhite,
+      'avatar' => $avatar,
+      
    ]);
 
 });

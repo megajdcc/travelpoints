@@ -883,7 +883,7 @@ class User extends Authenticatable
        
     }
 
-    private function getNivel(int $activaciones) : int|null {
+    public function getNivel(int $activaciones) : int|null {
         $niveles = collect([1,100,500,1000,3000]);
         $nivel = null;
 
@@ -899,6 +899,15 @@ class User extends Authenticatable
         return $nivel;
     }
 
+    public function activacionesRestante(){
+        $niveles = collect([1, 100, 500, 1000, 3000]);
+        
+        if(!is_null($this->nivel['nivel'])){
+            return $niveles[$this->nivel['nivel'] + 1] - $this->nivel['activaciones'];
+        }
+
+        return 1;
+    }
 
     public function getEfectividad(){
 

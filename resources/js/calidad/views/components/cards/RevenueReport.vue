@@ -34,13 +34,16 @@
           </template>
          
         </b-dropdown>
-
-        <h2 class="mb-25">
-           {{data.iso}} {{ data.saldo  | currency({symbol:''}) }}
-        </h2>
+        <section class="d-flex flex-column align-items-center">
+          <small class="font-weight-bolder mr-25">{{ $t('Disponible') }}</small>
+          <h2 class="mb-25">
+             {{ data.iso }} {{ data.saldo | currency({ symbol: '' }) }}{{ symbolDivisa }}
+          </h2>
+        </section>
+       
         <div class="d-flex justify-content-center">
           <small class="font-weight-bolder mr-25">{{ $t('Retirado') }}:</small>
-          <small>  {{ data.iso }} {{ data.retirado | currency({ symbol: '' }) }}</small>
+          <small>  {{ data.iso }} {{ data.retirado | currency({ symbol: '' }) }}{{ symbolDivisa }}</small>
         </div>
         <vue-apex-charts id="budget-chart" type="line" height="80" :options="budgetChart.options"
           :series="budgetChart.series" />
@@ -111,6 +114,7 @@ export default {
   setup(props,{emit}){
     const {data,ano} = toRefs(props)
     const char1refRevenue = ref(null)
+    const {usuario} = toRefs(store.state.usuario)
     const revenue_report = ref({
       // options
        chartOptions: {
@@ -235,7 +239,13 @@ export default {
       ultimosTresAnos,
       anoSeleccionado: computed(() => ano.value),
       seleccionarAno,
-      char1refRevenue
+      char1refRevenue,
+      symbolDivisa:computed(() => {
+        if(usuario.value.cuenta){
+            return usuario.value.cuenta.divisa.simbolo
+        }
+        return '$'
+      })
     }
   }
 }

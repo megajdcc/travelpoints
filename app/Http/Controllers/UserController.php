@@ -1558,23 +1558,28 @@ class UserController extends Controller
 
         $usuario = $request->user();
 
-        $invitados = DB::table('users','u')
-                    ->join('rols as r','u.rol_id','r.id')
-                    ->join('usuario_referencia as ur','u.id','ur.referido_id')
-                    ->where('ur.usuario_id',$usuario->id)
-                    ->where('u.activo',true)
-                    ->selectRaw("concat(u.nombre,' ',u.apellido) as nombre, u.username, u.email, u.created_at as creado,r.nombre as rol")
-                    ->orderBy('creado')
-                    ->get();
+        $invitados = User::join('usuario_referencia as ur', 'users.id', 'ur.referido_id')
+        ->where('ur.usuario_id', $usuario->id)
+        ->where('users.activo', true)
+        ->orderBy('users.created_at', 'desc')
+        ->get();
+        $invitados->each(fn ($invitado) => $invitado->cargar());
 
         $imagenBase64 = "data:image/png;base64," . base64_encode(Storage::disk('public')->get('logotipo.png'));
+        $logowhite = "data:image/png;base64," . base64_encode(Storage::disk('public')->get('logotipoblancohorizontal.png'));
+        $avatar  = "data:image/png;base64," . base64_encode(Storage::disk('img-perfil')->get($usuario->imagen ?: 'default.jpg'));
 
-        $pdf = Pdf::loadView('reports.activaciones', [
+        $datos = [
             'invitados' => $invitados,
             'usuario' => $usuario,
             'logotipo' => $imagenBase64,
+            'logotipoblanco' => $logowhite,
+            'avatar' => $avatar
+        ];
 
-        ]);
+
+        $pdf = Pdf::loadView('reports.activaciones',$datos);
+
         $pdf->setOption([
             'dpi' => 150,
             'defaultFont' => 'sans-serif',

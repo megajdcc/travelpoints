@@ -3,14 +3,13 @@
     <listado :actions="actions" isTable hideFooter>
 
       <template #btn-action>
-        <b-button type="variant" :to="{ name: 'retiro.create' }" v-if="$can('write', 'retiros')"
+        <b-button type="button" variant="primary" @click="() => showSidebarRetiro = !showSidebarRetiro"
           class="d-flex flex-column justify-content-center">
-          Generar Solicitud
+          Generar Retiro
         </b-button>
       </template>
 
       <template #contenido="{  fetchData, perPage, sortBy, isSortDirDesc, tableColumns }">
-
         <b-card class="mt-1">
           <b-table ref="refTable" :items="fetchData" responsive :fields="tableColumns" primary-key="id" :sort-by="sortBy"
             empty-text="No se encontró ningún Retiro" :sort-desc="isSortDirDesc" sticky-header="700px"
@@ -79,8 +78,6 @@
 
           </b-table>
         </b-card>
-
-
       </template>
 
     </listado>
@@ -90,7 +87,7 @@
 
 <script>
 
-import { toRefs, watch, computed, onMounted, ref } from 'vue'
+import { toRefs, watch, computed, onMounted, ref,inject } from 'vue'
 
 
 import Listado from 'components/Listado.vue'
@@ -161,6 +158,8 @@ export default {
 
     const actions = useRetirosList()
 
+    const showSidebarRetiro = inject('showSidebarRetiro')
+
     onMounted(() => setTimeout(() => {
       actions.refetchData()
     },
@@ -176,7 +175,8 @@ export default {
       getMetodoPago: (metodo) => {
         let metodos = ['Transferencia Bancaria', 'Paypal', 'Stripe']
         return metodos[metodo - 1];
-      }
+      },
+      showSidebarRetiro
 
 
     }

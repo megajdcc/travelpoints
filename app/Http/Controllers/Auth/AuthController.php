@@ -43,13 +43,7 @@ class AuthController extends Controller
 
            
 
-            $url = $payload['picture']; // URL de la imagen a descargar
-
-            $cliente = new ClientGuzzle();
-            $response = $cliente->get($url);
-
-            $nombreArchivo = basename($url); // Obtiene el nombre del archivo de la URL
-
+            $url = isset($payload['picture']) ? $payload['picture'] : null; // URL de la imagen a descargar
             $usuario = User::create([
                'email'       => $payload['email'],
                'username'    => $payload['email'],
@@ -61,23 +55,33 @@ class AuthController extends Controller
                'rol_id' => Rol::where('nombre', 'Viajero')->first()->id
             ]);
 
-            $result = Storage::disk('img-perfil')->put($nombreArchivo, $response->getBody()->getContents());
-            $usuario->imagen = $nombreArchivo;
-            $usuario->save();
+            if($url){
+               $cliente = new ClientGuzzle();
+               $response = $cliente->get($url);
+
+               $nombreArchivo = basename($url); // Obtiene el nombre del archivo de la URL
+
+               $result = Storage::disk('img-perfil')->put($nombreArchivo, $response->getBody()->getContents());
+               $usuario->imagen = $nombreArchivo;
+               $usuario->save();
+            }
 
 
             $usuario->asignarPermisosPorRol();
          }else{
+            $url = isset($payload['picture']) ? $payload['picture'] : null;
 
-            $url = $payload['picture']; // URL de la imagen a descargar
-            $cliente = new ClientGuzzle();
-            $response = $cliente->get($url);
+            if($url){
+               $cliente = new ClientGuzzle();
+               $response = $cliente->get($url);
 
-            $nombreArchivo = basename($url); // Obtiene el nombre del archivo de la URL
+               $nombreArchivo = basename($url); // Obtiene el nombre del archivo de la URL
 
-            $result = Storage::disk('img-perfil')->put($nombreArchivo, $response->getBody()->getContents());
-            $usuario->imagen = $nombreArchivo;
-            $usuario->save();
+               $result = Storage::disk('img-perfil')->put($nombreArchivo, $response->getBody()->getContents());
+               $usuario->imagen = $nombreArchivo;
+               $usuario->save();
+            }
+            
 
          }
 

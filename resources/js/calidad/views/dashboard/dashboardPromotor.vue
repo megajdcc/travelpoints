@@ -23,7 +23,7 @@
 
               <template #valor="{ statistic }">
                  <h3 class="mb-25 font-weight-bolder">
-                  {{ statistic | currency }}
+                  {{ statistic | currency(usuario.cuenta ? usuario.cuenta.divisa.iso : 'USD') }}{{ symbolDivisa }}
                  </h3>
               </template>
 
@@ -625,6 +625,12 @@ export default {
       colorRand:colorRand,
       dominacionMundial:computed(() => {
         return redondeo(viajerosPorPais.value.length * 100 / 195,2)
+      }),
+      symbolDivisa: computed(() => {
+        if (usuario.value.cuenta) {
+          return usuario.value.cuenta.divisa.simbolo
+        }
+        return '$'
       })
 
     }

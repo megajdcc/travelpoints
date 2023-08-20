@@ -1058,4 +1058,16 @@ class DashboardController extends Controller
 
     }
 
+
+    public function eficaciaViajeros(Request $request){
+
+        $usuario = $request->user();
+        $uso = $usuario->viajerosActivos() * 100 / $usuario->totalViajeros();
+        $activos = $usuario->viajerosActivosConsumo() * 100 / $usuario->totalViajeros();
+        return response()->json([
+            'uso' => $uso,
+            'activos' => $activos
+        ]);
+    }
+
 }

@@ -583,7 +583,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::get('dashboard/tres-mayores-comisiones-promotores',[DashboardController::class,'comisionesAltasMesPromotores']);
 
     Route::get('dashboard/total-viajeros',[DashboardController::class, 'totalViajerosRegistrados']);
-    
+    Route::get('dashboard/porcentaje-efectividad',[DashboardController::class, 'eficaciaViajeros']);
     
     /*****************************/
     /* Datos de pagos

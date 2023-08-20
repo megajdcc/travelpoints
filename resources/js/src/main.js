@@ -173,9 +173,16 @@ import Maps from "highcharts/modules/map";
 
 Maps(Highcharts);
 
+import highchartsMore from "highcharts/highcharts-more.js"
+
+highchartsMore(Highcharts);
+
 // Opcionalmente, también puedes importar módulos adicionales de Highcharts, como exporting o accessibility
 import exportingInit from 'highcharts/modules/exporting';
 exportingInit(Highcharts);
+
+import SolidGaugeInit from 'highcharts/modules/solid-gauge'
+SolidGaugeInit(Highcharts);
 
 import accessibilityInit from 'highcharts/modules/accessibility';
 accessibilityInit(Highcharts);

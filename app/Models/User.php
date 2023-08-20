@@ -955,17 +955,33 @@ class User extends Authenticatable
         return $viajeros;
     }
 
-    // public function totalViajeros() : int{
+    public function viajerosActivosConsumo() :int{
 
-    //     $viajeros = User::whereHas('rol', fn ($q) => $q->where('nombre', 'Viajero'))
-    //                     ->whereHas('referidor', function (Builder $q) {
-    //                         $q->when($this->rol->nombre == 'Promotor', fn ($query) => $query->where('id', $this->id))
-    //                             ->when($this->rol->nombre == 'Lider', fn ($query) => $query->where('lider_id', $this->id));
-    //                     })
-    //                         ->where('activo', true)
-    //                         ->whereBetween('ultimo_login', [now()->subMonth(), now()])
-    //                         ->count();
-    // }
+        $viajeros =
+        User::whereHas('rol', fn ($q) => $q->where('nombre', 'Viajero'))
+        ->whereHas('consumos', fn (Builder $q) =>  $q->whereBetween('ultimo_login', [now()->subMonth(), now()]))
+        ->whereHas('referidor', function (Builder $q) {
+            $q->when($this->rol->nombre == 'Promotor', fn ($query) => $query->where('id', $this->id))
+                ->when($this->rol->nombre == 'Lider', fn ($query) => $query->where('lider_id', $this->id));
+        })
+        
+            ->where('activo', true)
+            ->count();
+
+        return $viajeros;
+    }
+
+    public function totalViajeros() : int{
+
+        $viajeros = User::whereHas('rol', fn ($q) => $q->where('nombre', 'Viajero'))
+                        ->whereHas('referidor', function (Builder $q) {
+                            $q->when($this->rol->nombre == 'Promotor', fn ($query) => $query->where('id', $this->id))
+                                ->when($this->rol->nombre == 'Lider', fn ($query) => $query->where('lider_id', $this->id));
+                        })
+                        ->where('activo', true)
+                        ->count();
+        return $viajeros;
+    }
 
     public function cargar(): User{
         $this->porcentaje_perfil = $this->getFillPercentage();

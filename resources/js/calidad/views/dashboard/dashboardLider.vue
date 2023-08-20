@@ -102,6 +102,16 @@
             </b-card>
           <!-- End total viajeros -->
 
+          <!-- Efectividad de Viajeros -->
+            <b-card body-class="card-body-content text-white" :bg-variant="'transparent'">
+                <section class="d-flex justify-content-between align-items-center py-1">
+                     <highcharts  class="g1 w-100" :options="chart3"></highcharts>
+                </section>
+            </b-card>
+
+            <!-- End Efectividad -->
+
+
           <!-- Tres Mayores comisiones -->
               <b-card body-class="card-body-content text-white" :bg-variant="'dark'">
                 <article class="flex-shrink-0 d-flex align-items-center flex-column justify-content-start">
@@ -374,6 +384,11 @@ export default {
     const efectividad = ref({
       userReg: 0,
     })
+
+    const porcentajeViajerosEfectivos = ref({
+      uso:60,
+      activos:80
+    })
     const filtro_gastos_turisticos = ref({
       pais_id: null,
       rango_fecha: null,
@@ -417,7 +432,7 @@ export default {
 
     const porcentajeEfectividad = computed(() => {
       if (totalViajeros.value.activos > 0) {
-        return [totalViajeros.value.activos * 100 / totalViajeros.value.total]
+        return [redondeo(totalViajeros.value.activos * 100 / totalViajeros.value.total)]
       }
 
       return [0];
@@ -457,10 +472,10 @@ export default {
               },
               value: {
                 color: '#5e5873',
-                fontSize: '2.5rem',
+                fontSize: '1.8rem',
                 fontWeight: '200',
                 fontFamily: 'Myriad Regular',
-                offsetY: 15,
+                offsetY: 12,
               },
               total: {
                 show: false
@@ -641,6 +656,147 @@ export default {
         series:[]
     })
 
+    const chart3 = ref({
+      chart: {
+          type: 'gauge',
+          plotBackgroundColor: null,
+          plotBackgroundImage: null,
+          plotBorderWidth: 0,
+          plotShadow: false,
+          height: '200px'
+      },
+
+      exporting: {
+          enabled: false,
+      },
+
+      title: {
+        align: 'left',
+        style: {
+          color: colorText,
+        },
+        text: 'Efectividad',
+
+      },
+
+      subtitle: {
+        align: 'left',
+        style: {
+          color: colorText,
+          fontSize:'7pt',
+        },
+        text: 'Viajeros que han hecho uso del sistema / Último mes',
+
+      },
+
+      pane: {
+        startAngle: -90,
+        endAngle: 89.9,
+        background: null,
+        center: ['50%', '75%'],
+        size: '110%'
+      },
+
+      // the value axis
+      yAxis: {
+        min: 0,
+        max: 100,
+        tickPixelInterval: 72,
+        tickPosition: 'inside',
+        tickColor: colorText,
+        tickLength: 20,
+        tickWidth: 2,
+        minorTickInterval: null,
+        labels: {
+          distance: 20,
+          style: {
+            fontSize: '14px',
+            color:colorText
+          }
+        },
+        lineWidth: 0,
+        plotBands: [{
+          from: 0,
+          to: 50,
+          color:$themeColors.danger, // rojiso
+          thickness: 20
+        }, {
+          from: 50,
+          to: 80,
+          color: $themeColors.warning, // naranja
+          thickness: 20
+        }, {
+          from: 80,
+          to: 100,
+          color: $themeColors.success, // verde
+          thickness: 20
+        }]
+      },
+
+    
+
+      series: [
+        {
+        name: 'Porcentaje de uso',
+        data: computed(() => [redondeo(porcentajeViajerosEfectivos.value.uso)]),
+        tooltip: {
+          valueSuffix: '%'
+        },
+        dataLabels: {
+          format: '{y} %',
+          borderWidth: 0,
+          color:'#333333',
+          style: {
+            fontSize: '16px',
+            color:colorText,
+          }
+        },
+        dial: {
+          radius: '80%',
+          backgroundColor: 'gray',
+          baseWidth: 12,
+          baseLength: '0%',
+          rearLength: '0%'
+        },
+        pivot: {
+          backgroundColor: 'gray',
+          radius: 6
+        }
+
+      },
+
+      {
+          name: 'Porcentaje con consumo',
+          data: computed(() => [redondeo(porcentajeViajerosEfectivos.value.activos)]),
+          tooltip: {
+            valueSuffix: '%'
+          },
+          dataLabels: {
+            format: '{y} %',
+            borderWidth: 0,
+            color: colorText,
+            style: {
+              fontSize: '16px',
+              color: colorText,
+            }
+          },
+          dial: {
+            radius: '80%',
+            backgroundColor: $themeColors.primary,
+            baseWidth: 12,
+            baseLength: '0%',
+            rearLength: '0%'
+          },
+          pivot: {
+            backgroundColor: 'black',
+            radius: 6
+          }
+
+        },
+    ]
+
+    })
+
     const cargarDashboard = () => {
       store.dispatch('dashboard/cargarPaisesActivos')
       store.dispatch('dashboard/cargarViajerosActivos', filtro.value)
@@ -660,6 +816,12 @@ export default {
           viajerosRegistrados,
           viajerosRegistradosActivos
         ]
+      })
+
+      store.dispatch('dashboard/porcentajeEfectividad').then(({uso,activos}) => {
+        porcentajeViajerosEfectivos.value.uso = uso
+        porcentajeViajerosEfectivos.value.activos = activos
+
       })
 
     }
@@ -758,6 +920,7 @@ export default {
       chartEfectividad,
       chart1,
       chart2,
+      chart3,
       usuario,
       totalViajerosRegistrados,
       totalViajerosConsumos,

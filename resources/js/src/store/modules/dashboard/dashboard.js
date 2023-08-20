@@ -1316,6 +1316,14 @@ export default{
             axios.get('/api/dashboard/total-viajeros').then(({data}) => resolve(data)).catch(e => reject(e));
 
          })
+      },
+
+      porcentajeEfectividad({commit}){
+         return new Promise((resolve, reject) => {
+            axios.get(`/api/dashboard/porcentaje-efectividad`).then(({data}) => {
+               resolve(data)
+            }).catch(e => reject(e))
+         })
       }
 
    }

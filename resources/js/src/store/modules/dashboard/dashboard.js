@@ -1297,6 +1297,25 @@ export default{
 
             }).catch(e => reject(e))
          })
+      },
+
+      tresMayoresComisionesPromotors({commit}){
+         return new Promise((resolve, reject) => {
+            axios.get(`/api/dashboard/tres-mayores-comisiones-promotores`).then(({data}) => {
+
+               resolve(data)
+
+            }).catch(e => reject(e))
+         })
+      },
+
+
+      totalViajerosLider({commit}){
+
+         return new Promise((resolve, reject) => {
+            axios.get('/api/dashboard/total-viajeros').then(({data}) => resolve(data)).catch(e => reject(e));
+
+         })
       }
 
    }

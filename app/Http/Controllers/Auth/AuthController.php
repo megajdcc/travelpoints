@@ -239,7 +239,7 @@ class AuthController extends Controller
          }
 
          $user = $request->user();
-         $user->ultimo_login = now();
+         $user->ultimo_login = now(); // Ultima vez que el usuario Inició Sesión
        
          $user->save();
 

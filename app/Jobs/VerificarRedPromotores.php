@@ -37,17 +37,17 @@ class VerificarRedPromotores implements ShouldQueue
             $q->where('nombre','Promotor');
         })->get();
 
-        $lideres = User::whereHas('rol', function (Builder $q) {
-            $q->where('nombre', 'Lider');
-        })->get();
+        $lideres = User::whereHas('rol', fn($q) => $q->where('nombre', 'Lider'))->get();
 
 
         foreach ($promotores as $key => $promotor) {
 
             $referidos_ultimo_trimestre =  DB::table('users', 'u')
-                ->join('usuario_referencia as ur', 'u.id', 'ur.usuario_id')
-                ->whereRaw('u.id = :usuario && ur.created_at >= DATE_SUB(CURDATE(), INTERVAL 89 DAY)', [':usuario' => $promotor->id])
-                ->selectRaw('count(ur.referido_id) as referidos')
+                ->join('usuario_referencia as ur', 'u.id', 'ur.referido_id')
+                ->join('users as promotor','ur.usuario_id','promotor.id')
+                ->whereRaw('promotor.id = :usuario && ur.created_at >= DATE_SUB(CURDATE(), INTERVAL 89 DAY)', 
+                [':usuario' => $promotor->id])
+                ->selectRaw("count(distinct('u.id')) as referidos")
                 ->first('referidos');
 
                 // Si El promotor en los ultimos 90 días no ha invitado a ningun viajero al uso del sistema, eliminamos su red de referidos 
@@ -61,7 +61,7 @@ class VerificarRedPromotores implements ShouldQueue
 
             $status_user = $lider->getStatusUser();
 
-            if ($status_user['referidos']['ultimo_trimestre'] < 1) {
+            if ($status_user['promotores_activos']['ultimo_trimestre'] < 1) {
                 $lider->promotores->each(function($val){
                     $val->lider_id = null;
                     $val->save();

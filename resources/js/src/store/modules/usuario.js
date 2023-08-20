@@ -466,10 +466,8 @@ export default {
 
 		isRol(state){
 			return (rol) => {
-
 				let role = state.usuario.roles.find((val) => val.name == rol);
 				return (role != undefined);
-			
 			}
 		},
 
@@ -481,9 +479,7 @@ export default {
 		getCoordinadoresHotel:(state) => {
 
 			return (rol) => {
-				
 				return state.usuarios.filter(val => val.rol.nombre == rol)
-
 			}
 
 		},
@@ -536,7 +532,12 @@ export default {
 
 		rolName(state){
 			return state.usuario.rol ? state.usuario.rol.nombre : '';
+		},
+
+		totalPromotores(state){
+			return state.usuario.promotores ? state.usuario.promotores.length : 0
 		}
+
 		
 	},
 
@@ -889,7 +890,7 @@ export default {
 
 			return new Promise((resolve, reject) => {
 				axios.get(`/api/dashboard/tablero/lider/get-status`).then(({data}) => {
-					commit('setStatusLider',data)
+					commit('setStatusLider',data.status)
 					resolve(data)
 				}).catch(e => reject(e))
 

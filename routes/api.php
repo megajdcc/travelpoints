@@ -580,6 +580,11 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::post('dashboard/total/viajeros/por-coordinador', [UserController::class, 'totalViajerosCoordinador']);
     Route::get('dashboard/porcentaje-uso/viajeros', [UserController::class, 'getPorcentajeUsoViajeros']);
     Route::get('dashboard/porcentaje-viajeros/por-pais',[DashboardController::class,'getPorcentajeViajerosPorPais']);
+    Route::get('dashboard/tres-mayores-comisiones-promotores',[DashboardController::class,'comisionesAltasMesPromotores']);
+
+    Route::get('dashboard/total-viajeros',[DashboardController::class, 'totalViajerosRegistrados']);
+    
+    
     /*****************************/
     /* Datos de pagos
     /*****************************/

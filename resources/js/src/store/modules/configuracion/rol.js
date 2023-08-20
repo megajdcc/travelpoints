@@ -178,12 +178,16 @@ export default{
 
 		cargarRoles({commit}){
 			
-			
-			axios.get('/api/listar/roles').then(respon => {
-				commit('setRoles',respon.data);
-			}).catch(e => {
-				console.log(e)
+			return new Promise((resolve, reject) => {
+				axios.get('/api/listar/roles').then(({data}) => {
+					commit('setRoles',data);
+					resolve(data)
+				}).catch(e => {
+					reject(e)
+					console.log(e)
+				})
 			})
+			
 
 		},
 

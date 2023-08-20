@@ -874,12 +874,39 @@ class UserController extends Controller
 
     public function getStatus(Request $request)
     {
-
         $user = $request->user();
-
         $resultado = $user->getStatusUser();
 
-        return response()->json($resultado);
+        
+        $total_usuarios =  User::when($user->rol->nombre == 'Promotor',function($q) use($user) {
+                $q->whereHas('referidor',fn($query) => $query->where('id',$user->id));
+        })
+        ->when($user->rol->nombre == 'Lider',function($q) use($user){
+            $q->whereHas('referidor', fn($query) => $query->where('lider_id', $user->id)); 
+        })
+        ->where('activo',true)
+        ->get()
+        ->count();
+
+        $total_usuarios_activos = DB::table('users','u')
+                                        ->join('usuario_referencia as ur','u.id','ur.referido_id')
+                                        ->join('ventas as v', 'u.id', 'v.cliente_id')
+                                        ->join('users as promotor', 'ur.usuario_id', 'promotor.id')
+                                        ->when($user->rol->nombre == 'Promotor',fn($q) => $q->where('promotor.id',$user->id))
+                                        ->when($user->rol->nombre == 'Lider',fn($q) => $q->where('promotor.lider_id',$user->id))
+                                        ->where('u.activo',true)
+                                        ->whereBetween('v.created_at',[now()->subDays(89),now()])
+                                        ->selectRaw("count(distinct(u.id)) as usuarios")
+                                        ->pluck('usuarios')
+                                        ->first();
+                                       
+
+
+        return response()->json([
+            'status' => $resultado,
+            'totalViajeros' => $total_usuarios,
+            'totalViajerosActivos' => $total_usuarios_activos
+        ]);
     }
 
 

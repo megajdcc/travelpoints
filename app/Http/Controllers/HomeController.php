@@ -203,7 +203,7 @@ class HomeController extends Controller
             ->join('estado_cuentas', 'movimientos.estado_cuenta_id', '=', 'estado_cuentas.id')
             ->join('users', 'estado_cuentas.model_id', '=', 'users.id')
             ->where('tipo_movimiento', 1)
-            ->whereYear('movimientos.created_at', $ano)
+            ->whereYear('movimientos.created_at',$ano)
             ->where('users.id', $usuario->id)
             ->groupBy('mes')
             ->orderBy('mes', 'asc')

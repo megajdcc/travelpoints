@@ -146,7 +146,7 @@
                                  <!-- User Role -->
                                
                                     
-                              <b-form-group label-for="user-role" v-if="!['Promotor'].includes(usuario.rol ? usuario.rol.nombre : '')">
+                              <b-form-group label-for="user-role" v-if="!isPromotor">
 
                                     <template #label>
                                        Rol de usuario: <span class="text-danger">*</span>
@@ -167,14 +167,14 @@
                               </b-form-group>
                                 
                               </b-col>
-
+ 
                               <b-col md="4">
                                  <b-form-group  label-for="user-gender">
                                        <template #label>
                                           Género: <span class="text-danger">*</span>
                                        </template>
 
-                                       <validation-provider #default="{ errors, valid }" name="rol_id" rules="required">
+                                       <validation-provider #default="{ errors, valid }" name="genero" rules="required">
                                  
                                           <b-form-radio-group v-model="form.genero" :options="optionsGenders" :state="valid" >
                                           </b-form-radio-group>
@@ -513,7 +513,7 @@
                               <font-awesome-icon icon="fas fa-map"/>
                               <span class="d-none d-sm-inline">{{ $t('Destino') }}</span>
                         </template> -->
-                        <template v-if="isPromotor">
+                        <template v-if="isRolPromotor">
                              <span class="d-none d-sm-inline">{{ $t('Destino') }}</span>
 
                            <b-row>
@@ -668,7 +668,7 @@ export default {
 
    setup(props, { emit }) {
       
-      const {usuario} = toRefs(store.state.usuario)
+      const {usuario,user:form} = toRefs(store.state.usuario)
       const {divisas} = toRefs(store.state.divisa)
       const {destinos} = toRefs(store.state.destino)
       const resetuserData = () => store.commit('usuario/clearUsuario')
@@ -676,7 +676,14 @@ export default {
       const getRols = computed(() => store.getters['rol/getRols'])
       const { refFormObserver, getValidationState, resetForm } = formValidation(resetuserData)
       const profileFile = ref(null)
-      const form = computed(() => store.state.usuario.user)
+      // const form = computed(() => store.state.usuario.user)
+
+      const  isPromotor =  computed(() => {
+         if (usuario.value.rol) {
+            return usuario.value.rol.nombre == 'Promotor' ? true : false;
+         }
+         return false;
+      })
 
       const { 
          paises,
@@ -691,9 +698,14 @@ export default {
 
       const cargarform = () => {
 
-         if(!getRols.value.length){
-            store.dispatch('rol/cargarRoles')
-         }
+         store.dispatch('rol/cargarRoles').then((roles) => {
+            if (isPromotor.value) {
+               let rol_viajero = roles.find(val => val.nombre == 'Viajero');
+               if (rol_viajero != undefined) {
+                  form.value.rol_id = rol_viajero.id
+               }
+            }
+         })
 
          if(!divisas.value.length){
             store.dispatch('divisa/getDivisas')
@@ -715,13 +727,7 @@ export default {
      
 
       const guardar =  () => {
-         if(['Promotor'].includes(usuario.value.rol.nombre)){
-            let rol_viajero = getRols.value.find(val => val.nombre == 'Viajero');
-            if(rol_viajero != undefined){
-                form.value.rol_id = rol_viajero.id
-            }
-           
-         }
+        
          emit('save',form.value,refFormObserver.value)
       }
 
@@ -855,7 +861,10 @@ export default {
          pais_id,
          estado_id,
          optionsGenders,
-         isPromotor:computed(() => {
+
+         isPromotor,
+
+         isRolPromotor:computed(() => {
             
             if(form.value.rol_id){
                 return getRols.value.find(val => val.id == form.value.rol_id).label == 'Promotor'
@@ -863,6 +872,7 @@ export default {
                return false
             }
          }),
+
          form,
          getNombre:computed(() => {
             if(form.value.nombre){

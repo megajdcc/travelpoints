@@ -26,6 +26,7 @@ use App\Models\Negocio\Negocio;
 use App\Models\Negocio\Reservacion;
 use App\Models\Usuario\Permiso;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\{Collection,Str};
 
 class User extends Authenticatable
@@ -223,6 +224,10 @@ class User extends Authenticatable
         return $this->belongsTo(Ciudad::class,'ciudad_id','id');
     }
 
+    public function consumos(){
+        return $this->hasMany(Venta::class,'cliente_id','id');
+    }
+
     /** 
      * Un usuario puede tener muchos referidos 
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -351,6 +356,7 @@ class User extends Authenticatable
 
             $referidos['ultimo_mes'] = $referidos_ultimo_mes->referidos;
             $referidos['ultimo_trimestre'] = $referidos_ultimo_trimestre->referidos;
+            
         } else if ($this->rol->nombre == 'Lider') {
 
             $activos_ultimo_mes =  DB::table('users', 'u')
@@ -913,8 +919,10 @@ class User extends Authenticatable
 
         $activos = DB::table('usuario_referencia as ur')
         ->join('users as u', 'ur.referido_id', '=', 'u.id')
+        ->join('users as promotor', 'ur.usuario_id','promotor.id')
         ->join('ventas as v', 'u.id', '=', 'v.cliente_id')
-        ->where('ur.usuario_id', $this->id)
+        ->when($this->rol->nombre == 'Promotor',fn($q) => $q->where('promotor.id',$this->id))
+        ->when($this->rol->nombre == 'Lider', fn ($q) => $q->where('promotor.lider_id', $this->id))
         ->select(DB::raw('COUNT(DISTINCT u.id) as activos'))
         ->first();
 
@@ -929,6 +937,35 @@ class User extends Authenticatable
         $fecha_ultima = $this->referidos->where('activo',true)->sortByDesc('created_at')->pluck('created_at')->first();
         return $fecha_ultima ? Carbon::now()->diffInDays($fecha_ultima) : 0;
     }
+
+
+    /**
+     * @return Integer cantidad de viajeros de un promotor o lider a traves de sus promotores que han usado el sistema
+     */
+    public function viajerosActivos() : int{
+        $viajeros = User::whereHas('rol',fn($q) => $q->where('nombre','Viajero'))
+                    ->whereHas('referidor',function(Builder $q){
+                        $q->when($this->rol->nombre == 'Promotor',fn($query) => $query->where('id',$this->id))
+                        ->when($this->rol->nombre == 'Lider',fn($query) => $query->where('lider_id',$this->id));
+                    })
+                    ->where('activo',true)
+                    ->whereBetween('ultimo_login',[now()->subMonth(),now()])
+                    ->count();
+
+        return $viajeros;
+    }
+
+    // public function totalViajeros() : int{
+
+    //     $viajeros = User::whereHas('rol', fn ($q) => $q->where('nombre', 'Viajero'))
+    //                     ->whereHas('referidor', function (Builder $q) {
+    //                         $q->when($this->rol->nombre == 'Promotor', fn ($query) => $query->where('id', $this->id))
+    //                             ->when($this->rol->nombre == 'Lider', fn ($query) => $query->where('lider_id', $this->id));
+    //                     })
+    //                         ->where('activo', true)
+    //                         ->whereBetween('ultimo_login', [now()->subMonth(), now()])
+    //                         ->count();
+    // }
 
     public function cargar(): User{
         $this->porcentaje_perfil = $this->getFillPercentage();
@@ -968,6 +1005,7 @@ class User extends Authenticatable
        
         $this->tarjeta?->lote;
         $this->reunions;
+        $this->consumos;
         return $this;
     }
 

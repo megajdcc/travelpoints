@@ -47,6 +47,11 @@
         <span>Mi Lider</span>
     </b-dropdown-item>
 
+    <b-dropdown-item @click="mostratAboutUsuario('Lider')" link-class="d-flex align-items-center" v-if="is_loggin && rolName == 'Lider' && usuario.coordinador_id">
+        <font-awesome-icon icon="fas fa-user-tie" class="mr-1"/>
+        <span>Mi Coordinador</span>
+    </b-dropdown-item>
+
     <b-dropdown-item :to="{ name: 'faqs' }" link-class="d-flex align-items-center" v-if="rolName != 'Promotor'">
       <feather-icon size="16" icon="HelpCircleIcon" class="mr-50" />
       <span>Faq</span>
@@ -160,11 +165,22 @@ export default {
       return usuario.value.rol.nombre ;
     })
     const lider = computed(() => usuario.value.lider ? usuario.value.lider : {});
+    const coordinador = computed(() => usuario.value.coordinador ? usuario.value.coordinador : {});
+
     const mostrarAgenda  = () => showMiAgenda.value = true
     
-    const mostratAboutUsuario = () => {
-      userAbout.value = lider.value
+    const mostratAboutUsuario = (rol_name = 'Promotor') => {
+
+      if(rol_name == 'Lider'){
+        userAbout.value = coordinador.value
+      }else{
+        userAbout.value = lider.value
+      }
+
       showAboutProfile.value = true
+
+
+     
     }
 
    

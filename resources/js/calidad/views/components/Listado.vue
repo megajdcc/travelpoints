@@ -4,6 +4,9 @@
       <slot name="titulo" :total="total">
          
       </slot>
+
+      <slot name="header-table" :total="total"></slot>
+      
       <!-- Table Container Card -->
       <b-card no-body class="mb-0" v-if="!hideHeader">
 

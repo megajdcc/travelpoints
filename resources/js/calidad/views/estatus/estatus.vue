@@ -2,7 +2,7 @@
     <b-container fluid class="mx-0 px-0 status-card">
       <b-row class="mx-0 px-0">
         <b-col cols="12" class="mx-0 px-0">
-          <b-card>
+          <b-card v-if="$store.getters['usuario/isRol']('Promotor')">
             <strong>Última activación hace {{ ultimaActivacion }}</strong>
           </b-card>
         </b-col> 
@@ -19,7 +19,7 @@
               <section class=" ml-1 flex-grow-0 d-flex flex-column">
                 <h3>ACTIVO</h3>
                 <p class="text-justify">
-                  Registra al menos 1 Viajero al mes, y que este registre cualquier consumo en cualquiera de los negocios afiliados a Travel Points.
+                 {{ getMessageStatus(1) }} 
                 </p>
               </section>
 
@@ -36,7 +36,8 @@
             <section class=" ml-1 flex-grow-0 d-flex flex-column">
                 <h3>PELIGRO</h3>
                 <p class="text-justify">
-                  No has hecho ningún registro en más de 30 días. ¡Rápido!, registra al menos un nuevo viajero. El dia 60 sin registros, el sistema borrará el vinculo con tus viajeros.
+                   {{ getMessageStatus(2) }} 
+                 
                 </p>
             </section>
           </section>
@@ -53,7 +54,9 @@
             <section class=" ml-1 flex-grow-0 d-flex flex-column">
                   <h3>INACTIVO</h3>
                   <p class="text-justify">
-                   No ha registrado viajeros en 60 días. Tus viajeros han sido desvinculados de tu cuenta. Puedes activarla en cualquier momento, pero no recuperarás los viajeros  registrados.
+                      {{ getMessageStatus(3) }} 
+
+                  
                   </p>
               </section>
           </section>
@@ -62,7 +65,9 @@
         </b-col>
       </b-row>
 
-      <b-row>
+
+      <!-- niveles -->
+      <b-row v-if="$store.getters['usuario/isRol']('Promotor')">
         <b-col cols="12">
           <b-card no-body>
             <b-container fluid>
@@ -97,6 +102,7 @@
           </b-card>
         </b-col>
       </b-row>
+
     </b-container>
 </template>
 
@@ -173,13 +179,40 @@ export default {
         ultimaActivacion.value = ult
       })
 
-      store.dispatch('usuario/getStatusPromotor')
+      if(store.getters['usuario/isRol']('Promotor')){
+          store.dispatch('usuario/getStatusPromotor')
+      }
+
+      if (store.getters['usuario/isRol']('Lider')) {
+        store.dispatch('usuario/getStatusLider')
+      }
+
+    
 
     }
 
     // onMounted(() => cargarStatus());
 
     cargarStatus();
+
+    const getMessageStatus = (status) => {
+      let mensajes =  [
+        'Registra al menos 1 Viajero al mes, y que este registre cualquier consumo en cualquiera de los negocios afiliados a Travel Points.',
+        ' No has hecho ningún registro en más de 30 días. ¡Rápido!, registra al menos un nuevo viajero. El dia 60 sin registros, el sistema borrará el vinculo con tus viajeros.',
+        ' No ha registrado viajeros en 60 días. Tus viajeros han sido desvinculados de tu cuenta. Puedes activarla en cualquier momento, pero no recuperarás los viajeros  registrados.'
+      ];
+
+      if(store.getters['usuario/isRol']('Lider')){
+        mensajes = [
+          'Almenos uno de tus promotores debe estar activo',
+          'No tiene promotores activos en más de 1 día y menos de 59.',
+          'Cuando pasan 60 días sin un promotor activo. Pierde su red de viajeros que pasan a Travel Points. Su cuenta se resetea y pierde su red, pero no se borra.'
+        ];
+      }
+
+      return mensajes[status -1];
+
+    } 
 
     return {
       ultimaActivacion:computed(() => {
@@ -197,7 +230,9 @@ export default {
 
       decoreright,
       decoreleft,
-      getStatus:computed(() => store.getters['usuario/getStatus'])
+      getStatus:computed(() => store.getters['usuario/getStatus']),
+      getMessageStatus,
+      
     } 
 
   }

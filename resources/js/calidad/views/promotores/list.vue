@@ -1,8 +1,26 @@
 
 <template>
   <section>
+
+
     <listado hideFooter :actions="actions" isTable>
-    
+      
+      <template #header-table="{total}">
+        <b-container fluid >
+          <b-row>
+             <b-col cols="12" md="4">
+                <statistic-card-horizontal icon="fa-people-group" statisticTitle="Promotores a cargo"
+                      color="primary" colorIcon="white" colorText="text-white" :statistic="total">
+                      <template #btn-card>
+                        <b-button variant="danger" size="sm" :to="{ name: 'create.usuario' }" class="mt-1" v-if="$can('write', 'usuarios')" >
+                          Crear Promotor
+                        </b-button>
+                      </template>
+                </statistic-card-horizontal>
+             </b-col>
+          </b-row>
+        </b-container>
+      </template>
       <template #btn-action>
         <b-button type="variant" @click="agregarPromotor" v-if="$can('write', 'promotores')"
           class="d-flex flex-column justify-content-center">
@@ -16,97 +34,47 @@
               empty-text="No se encontró ningún Promotor" :sort-desc="isSortDirDesc" sticky-header="700px"
               :no-border-collapse="false" borderless outlined :busy="loading" :perPage="perPage" showEmpty small stacked="md">
 
+            <template #cell(ranking)="{index}">
+              {{ index + 1}}
+            </template>
+
+            
             <!-- Column: User -->
             <template #cell(username)="{ item }">
-              <b-media vertical-align="center">
-                <template #aside>
-                  <b-avatar size="32" :src="item.avatar" :text="avatarText(`${item.nombre} ${item.apellido}`)"
-                    :variant="`light-${resolveUserRoleVariant(item.rol ? item.rol.nombre : '')}`"
-                    :to="{ name: 'mostrar.usuario', params: { id: item.id } }" disabled />
-                </template>
-                <b-link :to="{ name: 'mostrar.usuario', params: { id: item.id } }" disabled
-                  class="font-weight-bold d-block text-nowrap"> 
-                  {{ `${item.nombre} ${item.apellido}` }}
-                </b-link>
-                <small class="text-muted" v-if="item.username">{{ item.username }}</small>
-              </b-media>
-            </template>
-
-             <template #cell(lider_id)="{ item }">
-                <b-media vertical-align="center" v-if="item.lider">
-                  <template #aside>
-                    <b-avatar size="32" :src="item.avatar" :text="avatarText(`${item.lider ? item.lider.nombre : ''} ${item.lider ? item.lider.apellido : ''}`)"
-                      :variant="`light-${resolveUserRoleVariant(item.lider ? item.lider.rol.nombre : '')}`"
-                      :to="{ name: 'mostrar.usuario', params: { id: item.lider ? item.lider.id : null } }" disabled />
-                  </template>
-                  <b-link :to="{ name: 'mostrar.usuario', params: { id: item.lider ? item.lider.id : null } }" disabled
-                    class="font-weight-bold d-block text-nowrap"> 
-                    {{ `${item.lider ? item.lider.nombre : ''} ${item.lider ? item.lider.apellido : ''}` }}
-                  </b-link>
-                  <small class="text-muted" v-if="item.lider">{{ item.lider.username }}</small>
-                   <b-button variant="danger" title="Quitar Lider" @click="quitarLider(item.id)" v-loading="loading" size="sm">
-                    <font-awesome-icon icon="fas fa-trash"/>
-                    Quitar Lider
-                  </b-button>
-                </b-media>
-
-                <b-button v-else variant="primary" title="Asignar Lider" @click="asignarLider(item.id)" v-loading="loading" size="sm">
-                  Sin lider (¿Asignar?)
-                </b-button>
-
+             <b-media vertical-align="center" class="cursor-pointer" @click="mostrarAboutUsuario(item)">
+              <template #aside>
+                <b-avatar size="32" :src="`/storage/img-perfil/${item.imagen}`" :text="avatarText(`${item.nombre} ${item.apellido}`)"
+                  :variant="`light-${resolveUserRoleVariant(item.rol.nombre)}`"
+                  @click="mostrarAboutUsuario(item)"  />
               </template>
-        
-        
-            <template #cell(activo)="{ item }">
-              <b-form-checkbox v-model="item.activo" switch @change="cambiarEstado(item.id)" v-if="['Desarrollador', 'Administrador'].includes(usuario ? usuario.rol.nombre : '')">
-                {{ item.activo ? 'Activo (¿Desactivar?)' : 'Desactivo (¿Activar?)' }}
-              </b-form-checkbox>
-
-              <span v-else>
-                  {{ item.activo ? 'Activo (¿Desactivar?)' : 'Desactivo (¿Activar?)' }}
-              </span>
-
+              <b-button @click="mostrarAboutUsuario(item)" variant="outline-text" size="sm"
+                class="font-weight-bold d-block text-nowrap p-0">
+                {{ item.nombre ? `${item.nombre} ${item.apellido}` : 'Sin definir nombre' }}
+              </b-button>
+              <small class="text-muted" v-if="item.username">{{ item.username }}</small>
+            </b-media>
             </template>
-
-            <!-- Column: Rol -->
-            <template #cell(rol)="{ item }">
-              <div class="text-nowrap">
-                <feather-icon :icon="resolveUserRoleIcon(item.rol ? item.rol.nombre : '')" size="18" class="mr-50"
-                  :class="`text-${resolveUserRoleVariant(item.rol ? item.rol.nombre : '')}`" />
-                <span class="align-text-top text-capitalize">{{ item.rol ? item.rol.nombre : '' }}</span>
-              </div>
-            </template>
-
 
             <template #cell(status)="{item}">
-              <span class="text-nowrap">
-                {{ getStatusLegendPromotor(item.status) }}
-              </span>
+              <font-awesome-icon :icon="['fas','fa-circle']" size="2x" :color="getColorsStatus(item.status)" />
             </template>
 
-            <template #cell(destino_id)="{ item }">
-
-              <b-button @click="showDestino(item)" variant="primary" size="sm" >
-                {{ item.destino_id ? item.destino ? item.destino.nombre : '' : 'Sin destino, ¿Asociar?' }}
-               </b-button>
-            
-             
+            <template #cell(nivel)="{item}">
+              {{ getNivels(item.nivel) }}
             </template>
+
+             <template #cell(comision_mes)="{ item }">
+                <span class="text-nowrap">
+                  {{ item.comision_mes ? item.comision_mes : 0  | currency(item.cuenta.divisa.iso) }} {{ item.cuenta.divisa.simbolo}}
+                </span>
+              </template>
             
             <!-- Column: Actions -->
             <template #cell(actions)="{item}">
-              <b-dropdown variant="link" no-caret :right="$store.state.appConfig.isRTL">
-
-                <template #button-content>
-                  <feather-icon icon="MoreVerticalIcon" size="16" class="align-middle text-body" />
-                </template>
-
-                <b-dropdown-item :to="{name:'edit.usuario',params:{id:item.id}}" v-if="$can('update','usuarios')">
-                  <font-awesome-icon icon="fas fa-edit"/>
-                  Editar
-                </b-dropdown-item>
-             
-              </b-dropdown>
+                <b-button size="sm" variant="primary">
+                  <font-awesome-icon icon="fas fa-user" />
+                  Ver Promotor
+                </b-button>
             </template>
            
 
@@ -288,7 +256,7 @@
 <script>
 
 import store from '@/store'
-import {computed,toRefs,ref,onMounted,watch} from 'vue'
+import {computed,toRefs,ref,onMounted,watch,inject} from 'vue'
 import { avatarText } from '@core/utils/filter'
 
 import usePromotoresList from './usePromotoresList.js'
@@ -297,6 +265,7 @@ import {resolveUserRoleVariant, resolveUserRoleIcon } from '@core/utils/utils'
 import {required,email} from '@validations'
 
 import { getStatusLegendPromotor } from '@core/utils/utils'
+import StatisticCardHorizontal from 'components/dashboard/StatisticCardHorizontal.vue'
 
 import {
   BCard,
@@ -356,7 +325,8 @@ export default {
     ValidationObserver,
     ValidationProvider,
     vSelect,
-    BButtonGroup
+    BButtonGroup,
+    StatisticCardHorizontal
 
 
   },
@@ -375,10 +345,13 @@ export default {
     
     const {usuario,usuarios} = toRefs(store.state.usuario)
     const { liderId:lider_id } = toRefs(props)
+
+    const userAbout = inject('userAbout')
+    const showAboutProfile = inject('showAboutProfile')
     const isShowDestino  = ref(false)
     const formUser = ref({})
     const lider = ref({
-      id:computed(() => lider_id.value)
+      id:null
     })  
 
     const {destinos} = toRefs(store.state.destino)
@@ -408,7 +381,7 @@ export default {
     })
 
     const cargarForm = () => {
-       setTimeout(() => actions.refetchData(), 1000)
+       
 
        if(!usuarios.value.length){
         store.dispatch('usuario/cargarLideres')
@@ -418,12 +391,30 @@ export default {
         store.dispatch('divisa/getDivisas')
        }
 
+       if(store.getters['usuario/isRol']('Lider')){
+          lider.value.id = usuario.value.id
+       }
+
+
+       setTimeout(() => actions.refetchData(), 1000)
+
     }
 
     
     onMounted(() => cargarForm())
 
-    watch(lider_id,() => actions.reftchData())
+    watch(lider_id,() => {
+      lider.value.id = lider_id.value
+    })
+
+
+    watch(() => lider.value.id,() => {
+      actions.refetchData()
+    })
+
+    watch(() => usuario.value.rol,() => {
+      cargarForm()
+    })
 
     const cambiarEstado = (user_id) => {
 
@@ -558,8 +549,22 @@ export default {
       })
     }
 
+    const getColorsStatus = (status) => {
+      let colors = ['green','#F4B223','#E11383'];
+
+      return colors[status -1];
+    } 
+
+    const mostrarAboutUsuario = (user) => {
+      console.log('mostrar')
+      userAbout.value = user
+      showAboutProfile.value = true
+    }
+
+
 
     return {
+      mostrarAboutUsuario,
       loading:computed(() => store.state.loading),
       actions,
       destinos,
@@ -590,7 +595,12 @@ export default {
       cargarUsers,
       getStatusLegendPromotor,
       asociarDestino,
-      usuario
+      usuario,
+      getColorsStatus,
+      getNivels: (nivel) => {
+      
+        return nivel.nivel == null ? 'No activo' : nivel.nivel + 1
+      } 
     }
   }
 

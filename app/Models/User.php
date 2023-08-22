@@ -322,6 +322,7 @@ class User extends Authenticatable
 
     public function getStatusUser(): array
     {
+       
         $referidos = [
             'ultimo_mes' => 0,
             'ultimo_trimestre' => 0,
@@ -341,21 +342,23 @@ class User extends Authenticatable
             'data' => 0
         ];
 
-        if ($this->rol->nombre == 'Promotor') {
-            $referidos_ultimo_mes =  DB::table('users', 'u')
-                ->join('usuario_referencia as ur', 'u.id', 'ur.usuario_id')
-                ->whereRaw('u.id = :usuario && ur.created_at >= DATE_SUB(CURDATE(), INTERVAL 30 DAY)', [':usuario' => $this->id])
-                ->selectRaw('count(ur.referido_id) as referidos')
-                ->first('referidos');
+        if ($this->rol->nombre    == 'Promotor') {
+            $referidos_ultimo_mes = User::whereHas('referidor' ,function(Builder $q) {
+                    $q->where('id',$this->id);
+            })
+            ->whereBetween('created_at',[now()->subMonth(), now()])
+            ->count();
 
-            $referidos_ultimo_trimestre =  DB::table('users', 'u')
-                ->join('usuario_referencia as ur', 'u.id', 'ur.usuario_id')
-                ->whereRaw('u.id = :usuario && ur.created_at >= DATE_SUB(CURDATE(), INTERVAL 89 DAY)', [':usuario' => $this->id])
-                ->selectRaw('count(ur.referido_id) as referidos')
-                ->first('referidos');
+            $referidos_ultimo_trimestre = User::whereHas('referidor',function(Builder $q){
+                $q->where('id',$this->id);
+            })
+            ->whereBetween('created_at',[now()->subDays(89), now()])
+            ->count();
 
-            $referidos['ultimo_mes'] = $referidos_ultimo_mes->referidos;
-            $referidos['ultimo_trimestre'] = $referidos_ultimo_trimestre->referidos;
+            $referidos['ultimo_mes']       = $referidos_ultimo_mes;
+            $referidos['ultimo_trimestre'] = $referidos_ultimo_trimestre;
+            
+
             
         } else if ($this->rol->nombre == 'Lider') {
 
@@ -1016,7 +1019,8 @@ class User extends Authenticatable
         $this->retiros;
         $this->lider?->cargar();
         $this->promotores;
-        $this->coordinador;
+        $this->coordinador?->cargar();
+
         $this->lideres;
        
         $this->tarjeta?->lote;

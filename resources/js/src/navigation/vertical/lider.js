@@ -64,13 +64,13 @@ const lider = [
 
     },
 
-     {
-        title: 'Viajeros Registrados',
-        route: 'listar.usuarios',
-        action: 'read',
-        resource: 'usuarios',
-        icon: 'UsersIcon',
-      },
+    {
+      title: 'Mis Promotores',
+      route: 'promotores.list',
+      action: 'read',
+      resource: 'promotores',
+      icon: 'UsersIcon',
+    },
 
     {
         title: 'Reportes',

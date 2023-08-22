@@ -466,8 +466,10 @@ export default {
 
 		isRol(state){
 			return (rol) => {
-				let role = state.usuario.roles.find((val) => val.name == rol);
-				return (role != undefined);
+				if(state.usuario.rol){
+					return rol  == state.usuario.rol.nombre
+				}
+				return false;
 			}
 		},
 
@@ -879,7 +881,7 @@ export default {
 
 			return new Promise((resolve, reject) => {
 				axios.get(`/api/dashboard/tablero/promotor/get-status`).then(({data}) => {
-					commit('setStatusPromotor',data)
+					commit('setStatusPromotor',data.status)
 					resolve(data)
 				}).catch(e => reject(e))
 

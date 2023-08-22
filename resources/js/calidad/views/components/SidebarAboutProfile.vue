@@ -74,14 +74,14 @@ export default {
         if(userAbout.value.nombre){
           return {
             nombre: userAbout.value.nombre ? userAbout.value.nombre + " " + userAbout.value.apellido : userAbout.value.username,
-            portada: userAbout.value.portada,
+            portada: userAbout.value.portada || '/storage/img-portada/banner-travel.jpg',
             avatar: userAbout.value.avatar,
             direccion: userAbout.value.direccion,
             rol: userAbout.value.rol ? userAbout.value.rol.nombre : '',
             pais: userAbout.value.ciudad ? userAbout.value.ciudad.estado.pais.pais : '',
-            'teléfono': `<a href="tel:${userAbout.value.telefonos.length ? userAbout.value.telefonos[0].telefono : ''}">${userAbout.value.telefonos.length ? userAbout.value.telefonos[0].telefono : ''}</a>`,
+            'teléfono': userAbout.value.telefonos && userAbout.value.telefonos.length ? `<a href="tel:${ userAbout.value.telefonos && userAbout.value.telefonos.length ? userAbout.value.telefonos[0].telefono : ''}">${ userAbout.value.telefonos && userAbout.value.telefonos.length ? userAbout.value.telefonos[0].telefono : ''}</a>` : null,
             'Registrado desde': getFecha(userAbout.value.created_at),
-            'Sitio web': `<a href="${userAbout.value.website}" target="_blank">${userAbout.value.website}</a>`,
+            'Sitio web': userAbout.value.website ?  `<a href="${userAbout.value.website}" target="_blank">${userAbout.value.website}</a>` : null,
             email: `<a href="mailto:${userAbout.value.email}" target="_blank">${userAbout.value.email}</a>`,
             'Acerca': userAbout.value.bio
           }

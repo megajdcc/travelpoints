@@ -434,7 +434,7 @@ export default {
 
     const porcentajeEfectividad = computed(() => {
       if(efectividad.value.userReg > 0){
-        return [efectividad.value.userReg * 100 / store.getters['usuario/activaciones'].activaciones ] 
+        return [redondeo(efectividad.value.userReg * 100 / store.getters['usuario/activaciones'].activaciones)] 
       }
 
       return [0];
@@ -474,7 +474,7 @@ export default {
               },
               value: {
                 color: '#5e5873',
-                fontSize: '2.5rem',
+                fontSize: '1.8rem',
                 fontWeight: '200',
                 fontFamily:'Myriad Regular',
                 offsetY:15,
@@ -519,7 +519,8 @@ export default {
 
     const cargarPromotor = () => {
       
-      store.dispatch('usuario/getStatusPromotor').then(({ referidos }) => {
+      store.dispatch('usuario/getStatusPromotor').then(({ status }) => {
+        const {referidos} = status
         viajeros_referidos.value = referidos.ultimo_trimestre;
       })
 

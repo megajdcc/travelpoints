@@ -57,7 +57,7 @@ class RetiroController extends Controller
 
         })
 
-        ->when(\in_array($request->user()->rol->nombre,['Promotor']), function($q) use($request){
+        ->when(\in_array($request->user()->rol->nombre,['Promotor','Lider','Coordinador']), function($q) use($request){
             $q->where('usuario_id',$request->user()->id);   
         })
 

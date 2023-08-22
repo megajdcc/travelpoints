@@ -46,7 +46,13 @@ export default {
           lider: navMenuItemsLider,
           coordinador: navMenuItemsCoordinador
         };
-        let k = Object.keys(RolMenus).find(val => val == usuario.value.rol.nombre.toLowerCase());
+        let k = Object.keys(RolMenus).find(val => {
+          if(usuario.value.rol){
+            return val == usuario.value.rol.nombre.toLowerCase()
+          }
+          return false
+         
+        });
 
         if(k != undefined){
           return RolMenus[k]

@@ -323,19 +323,21 @@ class User extends Authenticatable
     public function getStatusUser(): array
     {
        
+        // Esto es para el promotor
         $referidos = [
             'ultimo_mes' => 0,
             'ultimo_trimestre' => 0,
             'data' => 0
         ];
 
+        // Esto es para el lider
         $promotores_activos = [
             'ultimo_mes' => 0,
             'ultimo_trimestre' => 0,
             'data' => 0
         ];
 
-
+        // Esto es para el coordinador
         $lideres_activos = [
             'ultimo_mes' => 0,
             'ultimo_trimestre' => 0,
@@ -362,20 +364,35 @@ class User extends Authenticatable
             
         } else if ($this->rol->nombre == 'Lider') {
 
-            $activos_ultimo_mes =  DB::table('users', 'u')
-                ->join('usuario_referencia as ur', 'u.id', 'ur.usuario_id')
-                ->whereRaw('u.lider_id = :usuario && ur.created_at >= DATE_SUB(CURDATE(), INTERVAL 30 DAY)', [':usuario' => $this->id])
-                ->selectRaw('count(distinct(ur.usuario_id)) as promotores')
-                ->first('referidos');
+            // $activos_ultimo_mes =  DB::table('users', 'u')
+            //     ->join('usuario_referencia as ur', 'u.id', 'ur.usuario_id')
+            //     ->whereRaw('u.lider_id = :usuario && ur.created_at >= DATE_SUB(CURDATE(), INTERVAL 30 DAY)', [':usuario' => $this->id])
+            //     ->selectRaw('count(distinct(ur.usuario_id)) as promotores')
+            //     ->first('referidos');
 
-            $activos_ultimo_trimestre =  DB::table('users', 'u')
-                ->join('usuario_referencia as ur', 'u.id', 'ur.usuario_id')
-                ->whereRaw('u.lider_id = :usuario && ur.created_at >= DATE_SUB(CURDATE(), INTERVAL 89 DAY)', [':usuario' => $this->id])
-                ->selectRaw('count(distinct(ur.usuario_id)) as promotores')
-                ->first('referidos');
+            $activos_ultimo_mes = DB::table('users','u')
+                ->join('usuario_referencia as ur', 'u.id', 'ur.referido_id')
+                ->join('users as promotor','ur.usuario_id','promotor.id')
+                ->where('promotor.lider_id',$this->id)
+                ->whereBetween('u.created_at',[now()->subMonth(),now()])
+                ->count();
 
-            $promotores_activos['ultimo_mes'] = $activos_ultimo_mes->promotores;
-            $promotores_activos['ultimo_trimestre'] = $activos_ultimo_trimestre->promotores;
+            // $activos_ultimo_trimestre =  DB::table('users', 'u')
+            //     ->join('usuario_referencia as ur', 'u.id', 'ur.usuario_id')
+            //     ->whereRaw('u.lider_id = :usuario && ur.created_at >= DATE_SUB(CURDATE(), INTERVAL 89 DAY)', [':usuario' => $this->id])
+            //     ->selectRaw('count(distinct(ur.usuario_id)) as promotores')
+            //     ->first('referidos');
+
+
+            $activos_ultimo_trimestre = DB::table('users', 'u')
+            ->join('usuario_referencia as ur', 'u.id', 'ur.referido_id')
+            ->join('users as promotor', 'ur.usuario_id', 'promotor.id')
+            ->where('promotor.lider_id', $this->id)
+            ->whereBetween('u.created_at', [now()->subMonths(3), now()])
+            ->count();
+
+            $promotores_activos['ultimo_mes'] = $activos_ultimo_mes;
+            $promotores_activos['ultimo_trimestre'] = $activos_ultimo_trimestre;
 
         } else if ($this->rol->nombre == 'Coordinador') {
 

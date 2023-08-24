@@ -13,15 +13,12 @@ export default {
 
       const {id} = toRefs(props)
 
-      const {usuarios} = toRefs(store.state.usuario)
+      const {user:usuario} = toRefs(store.state.usuario)
 
       const cargarForm = () => {
+         if(!usuario.value.id){
             store.dispatch('usuario/getUsuario', id.value)
-         // if(!usuarios.value.length){
-            
-         // }else{
-         //    store.commit('usuario/capturarUsuario', Number(id.value))
-         // }
+         }
       }
 
       cargarForm()

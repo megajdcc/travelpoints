@@ -6,10 +6,17 @@ h1,h2,h3,h4,h5,h6{
    font-weight: bolder;
 }
 
+html{
+   box-sizing: border-box;
+   font-size: 10pt;
+}
+
 body{
    font-family: 'Myriad Regular' !important;
-   font-size: 12pt;
+   // font-size: 12pt;
    line-height: 13.3pt;
+   overflow-wrap: normal !important;
+
 }
 
 strong{
@@ -173,12 +180,7 @@ strong{
    left: calc(0%) !important;
 }
 
-body {
-   // -moz-transform: scale(0.9, 0.9);
-   // zoom: 0.9;
-   // zoom: 90%;
-   overflow-wrap: normal !important;
-}
+
 
 .el-table {
    overflow-wrap: normal !important;

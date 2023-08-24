@@ -1,63 +1,66 @@
 <template>
   <b-card no-body class="card-revenue-budget" :bg-variant="variant" >
 
-
-    <b-row class="mx-0">
-      <b-col md="8" class="revenue-report-wrapper">
-        <div class="d-sm-flex justify-content-between align-items-center mb-3">
-          <h4 class="card-title mb-50 mb-sm-0">
-            {{ titulo }}
-          </h4>
-          <div class="d-flex align-items-center">
-            <div class="d-flex align-items-center mr-2">
-              <span class="bullet bullet-primary svg-font-small-3 mr-50 cursor-pointer" />
-              <span>{{ $t('Ganancias') }}</span>
-            </div>
-            <div class="d-flex align-items-center ml-75">
-              <span class="bullet bullet-warning svg-font-small-3 mr-50 cursor-pointer" />
-              <span>{{  $t('Retiros')  }}</span>
+    <b-container fluid>
+      <b-row class="mx-0 px-0">
+        <b-col md="8" class="revenue-report-wrapper px-0">
+          <div class="d-sm-flex justify-content-between align-items-center mb-3">
+            <h4 class="card-title mb-50 mb-sm-0">
+              {{ titulo }}
+            </h4>
+            <div class="d-flex align-items-center">
+              <div class="d-flex align-items-center mr-2">
+                <span class="bullet bullet-primary svg-font-small-3 mr-50 cursor-pointer" />
+                <span>{{ $t('Ganancias') }}</span>
+              </div>
+              <div class="d-flex align-items-center ml-75">
+                <span class="bullet bullet-warning svg-font-small-3 mr-50 cursor-pointer" />
+                <span>{{ $t('Retiros') }}</span>
+              </div>
             </div>
           </div>
-        </div>
 
-        <!-- chart -->
-        <vue-apex-charts id="revenue-report-chart" ref="char1refRevenue" type="bar" height="230" :options="revenue_report.chartOptions"
-          :series="revenue_report.series" />
-      </b-col>
+          <!-- chart -->
+          <vue-apex-charts id="revenue-report-chart" ref="char1refRevenue" type="bar" height="230" :options="revenue_report.chartOptions"
+            :series="revenue_report.series" />
+        </b-col>
 
-      <b-col md="4" class="budget-wrapper">
-        <b-dropdown :text="anoSeleccionado.toString()" size="sm" class="budget-dropdown" variant="outline-primary">
-          <template v-for="year in ultimosTresAnos" >
-           <b-dropdown-item :key="year" @click="seleccionarAno(year)" v-if="anoSeleccionado != year">
-              {{ year }}
-            </b-dropdown-item>
-          </template>
+        <b-col md="4" class="budget-wrapper px-0">
+          <b-dropdown :text="anoSeleccionado.toString()" size="sm" class="budget-dropdown" variant="outline-primary">
+            <template v-for="year in ultimosTresAnos" >
+             <b-dropdown-item :key="year" @click="seleccionarAno(year)" v-if="anoSeleccionado != year">
+                {{ year }}
+              </b-dropdown-item>
+            </template>
          
-        </b-dropdown>
-        <section class="d-flex flex-column align-items-center">
-          <small class="font-weight-bolder mr-25">{{ $t('Disponible') }}</small>
-          <h2 class="mb-25">
-             {{ data.iso }} {{ data.saldo | currency({ symbol: '' }) }}{{ symbolDivisa }}
-          </h2>
-        </section>
+          </b-dropdown>
+          <section class="d-flex flex-column align-items-center">
+            <small class="font-weight-bolder mr-25">{{ $t('Disponible') }}</small>
+            <h2 class="mb-25">
+               {{ data.iso }} {{ data.saldo | currency({ symbol: '' }) }}{{ symbolDivisa }}
+            </h2>
+          </section>
        
-        <div class="d-flex justify-content-center">
-          <small class="font-weight-bolder mr-25">{{ $t('Retirado') }}:</small>
-          <small>  {{ data.iso }} {{ data.retirado | currency({ symbol: '' }) }}{{ symbolDivisa }}</small>
-        </div>
-        <vue-apex-charts id="budget-chart" type="line" height="80" :options="budgetChart.options"
-          :series="budgetChart.series" />
+          <div class="d-flex justify-content-center">
+            <small class="font-weight-bolder mr-25">{{ $t('Retirado') }}:</small>
+            <small>  {{ data.iso }} {{ data.retirado | currency({ symbol: '' }) }}{{ symbolDivisa }}</small>
+          </div>
+          <vue-apex-charts id="budget-chart" type="line" height="80" :options="budgetChart.options"
+            :series="budgetChart.series" />
 
-        <b-button v-ripple.400="'rgba(255, 255, 255, 0.15)'" variant="primary" @click="cobrar()">
-         {{ $t('Cobrar') }}
-        </b-button>
-      </b-col>
-    </b-row>
+          <b-button v-ripple.400="'rgba(255, 255, 255, 0.15)'" variant="primary" @click="cobrar()">
+           {{ $t('Cobrar') }}
+          </b-button>
+        </b-col>
+      </b-row>
+    </b-container>
+    
   </b-card>
 </template>
 
 <script>
 import {
+  BContainer,
   BCard, BRow, BCol, BDropdown, BDropdownItem, BButton,
 } from 'bootstrap-vue'
 import VueApexCharts from 'vue-apexcharts'
@@ -77,6 +80,7 @@ export default {
     BButton,
     BRow,
     BCol,
+    BContainer
   },
   directives: {
     Ripple,
@@ -122,6 +126,7 @@ export default {
           stacked: true,
           type: 'bar',
           toolbar: { show: true },
+          width:'320'
         },
         grid: {
           padding: {

@@ -71,7 +71,7 @@
             
             <!-- Column: Actions -->
             <template #cell(actions)="{item}">
-                <b-button size="sm" variant="primary">
+                <b-button size="sm" variant="primary" :to="{name:'promotor.ficha',params:{id:item.id}}">
                   <font-awesome-icon icon="fas fa-user" />
                   Ver Promotor
                 </b-button>

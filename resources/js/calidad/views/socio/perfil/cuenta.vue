@@ -3,7 +3,7 @@
      <listado :actions="actions">
 
             <template #titulo>
-               <h3>{{ $t('Movimientos de Cuentas') }}</h3>
+               <h3 v-if="!hideTitle">{{ $t('Movimientos de Cuentas') }}</h3>
             </template>
 
             <template #contenido="{ fetchData, tableColumns, isSortDirDesc, sortBy, perPage }">
@@ -164,7 +164,8 @@ export default {
 
    props: {
       id: Number | String,
-      isReport:Boolean
+      isReport:Boolean,
+      hideTitle:Boolean
    },
 
    setup(props) {

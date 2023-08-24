@@ -990,7 +990,7 @@ export default{
 
       cargarViajerosActivos({commit},dato){
          return new Promise((resolve, reject) => {
-            axios.post(`/api/dashboard/get/viajeros/activos`,dato).then(({data}) => {
+            axios.post(`/api/dashboard/get/viajeros/activos/${dato.usuario}`,dato).then(({data}) => {
                commit('setViajerosActivos',data)
                resolve(data)
             }).catch( e => reject(e))
@@ -1020,9 +1020,9 @@ export default{
          })
       },
 
-      cargarPaisesActivos({commit}){
+      cargarPaisesActivos({commit},usuario_id){
          return new Promise((resolve, reject) => {
-               axios.get(`/api/dashboard/get/paises/activos`).then(({data}) => {
+               axios.get(`/api/dashboard/get/paises/activos/${usuario_id}`).then(({data}) => {
                   commit('setPaisesActivos',data)
                   resolve(data)
                }).catch(e => reject(e))
@@ -1132,10 +1132,10 @@ export default{
          })
       },
 
-      getTotalViajerosRegistradoAnual({commit}){
+      getTotalViajerosRegistradoAnual({commit},usuario_id){
 
          return new Promise((resolve, reject) => {
-            axios.get(`/api/dashboard/total/viajeros/anual`).then(({data}) => {
+            axios.get(`/api/dashboard/total/viajeros/anual/${usuario_id}`).then(({data}) => {
                
                commit('setViejerosTotalesAnuales',data)
                commit('setTotalViajerosRegistrados',data.total_usuarios_registrados)
@@ -1288,10 +1288,10 @@ export default{
 
       },
 
-      getOrigenViajerosPorPais({state,commit}){
+      getOrigenViajerosPorPais({state,commit},usuario_id){
 
          return new Promise((resolve, reject) => {
-            axios.get(`/api/dashboard/porcentaje-viajeros/por-pais`).then(({data}) => {
+            axios.get(`/api/dashboard/porcentaje-viajeros/por-pais/${usuario_id}`).then(({data}) => {
                commit('setViajerosPorPais',data)
                resolve(data)
 

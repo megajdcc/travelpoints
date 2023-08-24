@@ -38,7 +38,7 @@ use Barryvdh\DomPDF\Facade\Pdf;
 
 class UserController extends Controller
 {
-
+    
     public function getUsuario(User $usuario)
     {
         $usuario->cargar();
@@ -873,9 +873,9 @@ class UserController extends Controller
         return response()->json($response);
     }
 
-    public function getStatus(Request $request)
+    public function getStatus(Request $request, User $usuario = null)
     {
-        $user = $request->user();
+        $user = $usuario ?: $request->user();
         $resultado = $user->getStatusUser();
 
         
@@ -931,9 +931,8 @@ class UserController extends Controller
         
     }
 
-    public function cambiarStatus(User $usuario)
+    public function cambiarStatus(Request $request,User $usuario)
     {
-
         try {
             DB::beginTransaction();
             $usuario->activo = !$usuario->activo;
@@ -942,11 +941,14 @@ class UserController extends Controller
             DB::commit();
             $result = true;
 
-            // Quitar saldo y ponerselo al sistema Travel, solo si el usuario es Promotor, Lider o Coordinador;
-            if (in_array($usuario->rol->nombre, ['Promotor', 'Lider', 'Coordinador']) && !$usuario->activo) {
-
-                $usuario->removerSaldo("Consignación de saldo por cuenta desactivada a {$usuario->rol->nombre} - {$usuario->getNombreCompleto()}");
+            if(\in_array($request->user()->rol->nombre,['Desarrollador','Administrador'])){
+                // Quitar saldo y ponerselo al sistema Travel, solo si el usuario es Promotor, Lider o Coordinador;
+                if (in_array($usuario->rol->nombre, ['Promotor', 'Lider', 'Coordinador']) && !$usuario->activo) {
+                    $usuario->removerSaldo("Consignación de saldo por cuenta desactivada a {$usuario->rol->nombre} - {$usuario->getNombreCompleto()}");
+                }
             }
+
+           
         } catch (\Throwable $th) {
             DB::rollBack();
             $result = false;

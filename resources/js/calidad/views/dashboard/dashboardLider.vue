@@ -507,7 +507,6 @@ export default {
         },
       },
     })
-    
   
     const chart1 = ref({
       chart: {
@@ -798,9 +797,10 @@ export default {
     })
 
     const cargarDashboard = () => {
-      store.dispatch('dashboard/cargarPaisesActivos')
+      filtro.value.usuario = usuario.value.id
+      store.dispatch('dashboard/cargarPaisesActivos',usuario.value.id)
       store.dispatch('dashboard/cargarViajerosActivos', filtro.value)
-      store.dispatch('dashboard/getTotalViajerosRegistradoAnual')
+      store.dispatch('dashboard/getTotalViajerosRegistradoAnual',usuario.value.id)
       
       store.dispatch('dashboard/tresMayoresComisionesPromotors').then(({categories,series}) => {
        
@@ -862,7 +862,7 @@ export default {
 
     const getAcumuladoPorAno = () => {
       if (usuario.value.id) {
-        store.dispatch('usuario/getAcumuladoPorAno').then((data) => {
+        store.dispatch('usuario/getAcumuladoPorAno',usuario.value.id).then((data) => {
           acumulado.value = data.acumulado
           chartDataAcumulado.value = data.series
         })
@@ -873,7 +873,7 @@ export default {
 
     const getOrigenViajeroPorPais = () => {
 
-      store.dispatch('dashboard/getOrigenViajerosPorPais')
+      store.dispatch('dashboard/getOrigenViajerosPorPais',usuario.value.id)
 
     }
 

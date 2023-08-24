@@ -112,34 +112,30 @@ class DashboardController extends Controller
     }
 
 
-    public function viajerosActivos(Request $request){
+    public function viajerosActivos(Request $request, User $usuario = null){
 
-
-        $rol_user = $request->user()->rol->nombre;
+        $user = $usuario ?: $request->user();
+        $rol_user = $user->rol->nombre;
         $data = $request->all();
         $rango_fecha = false;
         $rango_fecha = preg_replace('/ +/', ' ', $data['rango_fecha']);
-        $usuario = $request->user();
+
         if(!empty($rango_fecha)){
             $rango_fecha = \explode('to', $rango_fecha);
         }
-
-        // select  COUNT(DISTINCT v.cliente_id) / (select count(*) from users) * 100 AS porcentaje
-        // from ventas as v 
-        // where v.created_at >= DATE_SUB(NOW(), INTERVAL 1 YEAR)
 
         if(in_array($rol_user, ['Promotor', 'Coordinador', 'Lider'])){
 
             $referidos = 0;
 
             if($rol_user == 'Promotor'){
-                $referidos = $request->user()->referidos->where('activo', true)->count();
+                $referidos = $user->referidos->where('activo', true)->count();
             }
 
             if($rol_user == 'Lider'){
-                $referidos += $request->user()->referidos->where('activo', true)->count();
+                $referidos += $user->referidos->where('activo', true)->count();
 
-                foreach($usuario->promotores as $promotor){
+                foreach($user->promotores as $promotor){
                     $referidos += $promotor->referidos->where('activo',true)->count();
                 }
             }
@@ -153,8 +149,8 @@ class DashboardController extends Controller
                 ->when(is_iterable($rango_fecha) && count($rango_fecha) > 1, function ($q) use ($rango_fecha) {
                     $q->whereBetween('v.created_at', $rango_fecha);
                 })
-                ->when($rol_user == 'Promotor',fn($q) => $q->where('promotor.id', $request->user()->id))
-                ->when($rol_user == 'Lider', fn($q) => $q->where('promotor.lider_id', $request->user()->id))
+                ->when($rol_user == 'Promotor',fn($q) => $q->where('promotor.id', $user->id))
+                ->when($rol_user == 'Lider', fn($q) => $q->where('promotor.lider_id', $user->id))
                 ->first('porcentaje') ;
 
         }else{
@@ -203,10 +199,10 @@ class DashboardController extends Controller
 
     }
 
-    public function getPaisesActivos(Request $request){
+    public function getPaisesActivos(Request $request, User $usuario = null){
 
-        $rolName = $request->user()->rol->nombre;
-        $usuario = $request->user();
+        $user = $usuario?: $request->user();
+        $rolName = $user->rol->nombre;
 
 
         if(\in_array($rolName, ['Promotor', 'Lider', 'Coordinador'])){
@@ -218,8 +214,8 @@ class DashboardController extends Controller
                         ->join('estados as e','c.estado_id','e.id')
                         ->join('pais as p','e.pais_id','p.id')
                         ->selectRaw("distinct(p.codigo) as codigo,count(p.id) as cant")
-                        ->when($rolName == 'Promotor',fn($q) => $q->where('promotor.id',$usuario->id))
-                        ->when($rolName == 'Lider', fn ($q) => $q->where('promotor.lider_id',$usuario->id))
+                        ->when($rolName == 'Promotor',fn($q) => $q->where('promotor.id',$user->id))
+                        ->when($rolName == 'Lider', fn ($q) => $q->where('promotor.lider_id',$user->id))
                         ->groupBy('codigo')
                         ->get();
 
@@ -297,13 +293,6 @@ class DashboardController extends Controller
              return response()->json([$paises,$negocios]);
 
         }
-
-       
-
-
-       
-
-
     }
 
     public function totalNegociosAfiliados(){
@@ -589,17 +578,17 @@ class DashboardController extends Controller
 
     }
 
-    public function getTotalReferidosRegistradoAnual(Request $request){
+    public function getTotalReferidosRegistradoAnual(Request $request,User $usuario = null){
 
-        $usuario = $request->user();
+        $user = $usuario ?: $request->user();
 
         $usuarios_registrados = DB::table("users" ,'u')
         ->selectRaw('count(u.id) as usuarios,month(u.created_at) as mes')
         ->join('usuario_referencia as ur','u.id','ur.referido_id')
         ->join('users as promotor','ur.usuario_id','promotor.id')
         ->whereRaw("year(u.created_at) = year(now())")
-        ->when($usuario->rol->nombre == 'Promotor',fn($q) => $q->where('promotor.id',$usuario->id))
-        ->when($usuario->rol->nombre == 'Lider', fn ($q) => $q->where('promotor.lider_id', $usuario->id))
+        ->when($user->rol->nombre == 'Promotor',fn($q) => $q->where('promotor.id',$user->id))
+        ->when($user->rol->nombre == 'Lider', fn ($q) => $q->where('promotor.lider_id', $user->id))
         ->groupBy('mes')
         ->orderBy('mes','asc')
         ->get();
@@ -612,8 +601,8 @@ class DashboardController extends Controller
         ->join('users as promotor', 'ur.usuario_id', 'promotor.id')
         ->join('ventas as v', 'u.id','v.cliente_id')
         ->whereRaw("year(v.created_at) = year(now())")
-        ->when($usuario->rol->nombre == 'Promotor', fn ($q) => $q->where('promotor.id', $usuario->id))
-        ->when($usuario->rol->nombre == 'Lider', fn ($q) => $q->where('promotor.lider_id', $usuario->id))
+        ->when($user->rol->nombre == 'Promotor', fn ($q) => $q->where('promotor.id', $user->id))
+        ->when($user->rol->nombre == 'Lider', fn ($q) => $q->where('promotor.lider_id', $user->id))
         ->groupBy('mes')
         ->orderBy('mes', 'asc')
         ->get();
@@ -801,10 +790,11 @@ class DashboardController extends Controller
 
     }
 
-    public function getPorcentajeViajerosPorPais(Request $request){
+    public function getPorcentajeViajerosPorPais(Request $request,User $usuario =  null){
 
-        $usuario = $request->user();
-        $rolName = $usuario->rol->nombre;
+        $user = $usuario ?: $request->user();
+
+        $rolName = $user->rol->nombre;
 
         if(\in_array($rolName, ['Promotor', 'Lider', 'Coordinador'])){
 
@@ -815,8 +805,8 @@ class DashboardController extends Controller
                         ->join('estados as e','c.estado_id','e.id')
                         ->join('pais as p','e.pais_id','p.id')
                         ->selectRaw("distinct(p.pais) as pais,count(p.id) as cant")
-                        ->when($rolName == 'Promotor',fn($q) => $q->where('promotor.id',$usuario->id))
-                        ->when($rolName == 'Lider', fn ($q) => $q->where('promotor.lider_id', $usuario->id))
+                        ->when($rolName == 'Promotor',fn($q) => $q->where('promotor.id',$user->id))
+                        ->when($rolName == 'Lider', fn ($q) => $q->where('promotor.lider_id', $user->id))
                         ->groupBy('pais')
                         ->get();
                 $data = collect([]);

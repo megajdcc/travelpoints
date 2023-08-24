@@ -6,8 +6,6 @@ import lang from 'element-ui/lib/locale/lang/es';
 import locale from 'element-ui/lib/locale';
 import '../../scss/app.scss';
 // import '../../scss/loader.css';
-
-
 Vue.prototype.$eventHub = new Vue();
 
 locale.use(lang);
@@ -260,6 +258,7 @@ Vue.component('font-awesome-icon', FontAwesomeIcon)
 Vue.config.productionTip = false
 
 import _ from 'lodash';
+
 window._ = _;
 
 let app = new Vue({

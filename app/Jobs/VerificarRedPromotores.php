@@ -32,11 +32,13 @@ class VerificarRedPromotores implements ShouldQueue
      * @return void
      */
     public function handle()
-    {
+    {   
+        // captura a todos los promotores 
         $promotores = User::whereHas('rol',function(Builder $q){
             $q->where('nombre','Promotor');
         })->get();
 
+        // Captura a todos los lideres
         $lideres = User::whereHas('rol', fn($q) => $q->where('nombre', 'Lider'))->get();
 
 
@@ -63,7 +65,7 @@ class VerificarRedPromotores implements ShouldQueue
 
             if ($status_user['promotores_activos']['ultimo_trimestre'] < 1) {
                 $lider->promotores->each(function($val){
-                    $val->lider_id = null;
+                    $val->lider_id = null; // desvincula del lider
                     $val->save();
                 });
                 $lider->referidos()->detach();

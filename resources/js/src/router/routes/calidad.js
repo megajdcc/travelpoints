@@ -398,7 +398,16 @@ export default [
             props:true,
             name: 'edit.usuario',
             component: () => import('views/usuarios/edit.vue'),
-            
+            beforeEnter:(to,from,next) => {
+               store.dispatch('usuario/getUsuario',to.params.id).then((data) => {
+                  if(data){
+                     next()
+                  }else{
+                     next({name:'error-404'})
+                  }
+               }).catch(e => next({name:'error-404'}))
+               
+            },
 
             meta: {
                pageTitle: 'Editar usuario',
@@ -444,6 +453,38 @@ export default [
                action:'read',
                breadcrumb:[
                   {text:'Listado',active:true}
+               ]
+            }
+         },
+         {
+            path:':id?/ficha',
+            props:true,
+            name:'promotor.ficha',
+            component:() => import('views/promotores/ficha.vue'),
+            beforeEnter:(to,f,n) => {
+               store.dispatch('usuario/fetchUser',to.params.id).then((data) => {
+                     
+                     if(data){
+                        n()
+                     }else{
+                        n({name:'error-404'})
+                     }
+
+               }).catch(e => {
+                        n({name:'error-404'})
+               })
+
+
+            },
+            meta:{
+               pageTitle:'Ficha de promotor',
+               resource:'promotores',
+               action:'read',
+               navActiveLink:'promotores.list',
+               breadcrumb:[
+                  {text:'Listado',active:false, to:{name:'promotores.list'}},
+                  {text:'Ficha',active:true},
+
                ]
             }
          }

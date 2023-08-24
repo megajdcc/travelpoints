@@ -341,8 +341,9 @@ export default {
 		},
 
 		setStatusPromotor(state,{referidos}){
+			
 			const {ultimo_mes,ultimo_trimestre } = referidos
-
+			
 			if(ultimo_mes > 0){
 				state.usuario.status = 1;
 			}else if(ultimo_trimestre > 0){
@@ -350,6 +351,7 @@ export default {
 			}else{
 				state.usuario.status = 3
 			}
+			
 		},
 
 
@@ -877,11 +879,11 @@ export default {
 		},
 
 
-		getStatusPromotor({commit}){
+		getStatusPromotor({commit},usuario_id){
 
 			return new Promise((resolve, reject) => {
-				axios.get(`/api/dashboard/tablero/promotor/get-status`).then(({data}) => {
-					commit('setStatusPromotor',data.status)
+				axios.get(`/api/dashboard/tablero/promotor/get-status/${usuario_id}`).then(({data}) => {
+					// commit('setStatusPromotor',data.status)
 					resolve(data)
 				}).catch(e => reject(e))
 
@@ -1069,10 +1071,10 @@ export default {
 			})
 		},
 
-		getAcumuladoPorAno({state,commit}){
+		getAcumuladoPorAno({state,commit},usuario_id){
 			return new Promise((resolve,reject) => {
 				if(state.usuario.id){
-						axios.get(`/api/usuarios/${state.usuario.id}/get-acumulado-por-ano`).then(({data}) => {
+						axios.get(`/api/usuarios/${usuario_id}/get-acumulado-por-ano`).then(({data}) => {
 							resolve(data)
 						}).catch(e => reject(e))
 				}else{
@@ -1083,11 +1085,11 @@ export default {
 			})
 		},
 
-		getEfectividad({state}){
+		getEfectividad({state},usuario_id){
 
 			return new Promise((resolve, reject) => {
-				if(state.usuario.id){
-					axios.get(`/api/usuarios/${state.usuario.id}/get-efectividad`).then(({data})  => resolve(data)).catch(e => reject(e))
+				if(usuario_id){
+					axios.get(`/api/usuarios/${usuario_id}/get-efectividad`).then(({data})  => resolve(data)).catch(e => reject(e))
 				}else{
 					reject();
 				}
@@ -1110,6 +1112,15 @@ export default {
 					reject()
 				}
 					
+			})
+		},
+
+		fetchUser({state,commit},id_user){
+			return new Promise((resolve, reject) => {
+				axios.get(`/api/usuarios/${id_user}/fetch-data-user`).then(({data}) => {
+					commit('setUsuario',data)
+					resolve(data)
+				}).catch(e => reject(e))
 			})
 		}
 

@@ -154,7 +154,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::get('usuarios/{usuario}/get-status',[UserController::class, 'getEstado']);
 
     Route::post('usuarios/{usuario}/mis-invitados',[UserController::class,'fetchDataInvitados']);
-
+    Route::get('usuarios/{usuario}/fetch-data-user',[UserController::class, 'getUsuario']);
     /*****************************/
     /* TELEFONOS
     /*****************************/
@@ -546,10 +546,10 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     /*****************************/
 
     Route::post('dashboard/total/viajeros', [DashboardController::class, 'totalViajeros']);
-    Route::post('dashboard/get/viajeros/activos', [DashboardController::class, 'viajerosActivos']);
+    Route::post('dashboard/get/viajeros/activos/{usuario?}', [DashboardController::class, 'viajerosActivos']);
     Route::post('dashboard/get/destinos/activos', [DashboardController::class, 'destinosActivos']);
     Route::get('dashboard/total/destinos/activos', [DashboardController::class, 'destinosActivosChart']);
-    Route::get('dashboard/get/paises/activos', [DashboardController::class, 'getPaisesActivos']);
+    Route::get('dashboard/get/paises/activos/{usuario?}', [DashboardController::class, 'getPaisesActivos']);
     Route::get('dashboard/total/negocios/afiliados', [DashboardController::class, 'totalNegociosAfiliados']);
     Route::get('dashboard/porcentaje/negocios', [DashboardController::class, 'porcentajeNegocio']);
     Route::post('dashboard/gastos/turisticos', [DashboardController::class, 'fetchGastosTuristicos']);
@@ -558,11 +558,11 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::get('dashboard/total/coordinadores', [DashboardController::class, 'fetchTotalCoordinadores']);
     Route::get('dashboard/total/comisiones/generadas', [DashboardController::class, 'fetchComisionesGeneradas']);
     Route::get('dashboard/total/operaciones/travel', [DashboardController::class, 'getTotalOperacionesTravel']);
-    Route::get('dashboard/tablero/promotor/get-status', [UserController::class, 'getStatus']);
+    Route::get('dashboard/tablero/promotor/get-status/{usuario?}', [UserController::class, 'getStatus']);
     Route::get('dashboard/tablero/lider/get-status', [UserController::class, 'getStatus']);
     Route::get('dashboard/tablero/coordinador/get-status', [UserController::class, 'getStatus']);
 
-    Route::get('dashboard/total/viajeros/anual', [DashboardController::class, 'getTotalReferidosRegistradoAnual']);
+    Route::get('dashboard/total/viajeros/anual/{usuario?}', [DashboardController::class, 'getTotalReferidosRegistradoAnual']);
     Route::post('dashboard/total/comisiones/promotor', [DashboardController::class, 'comisiones']);
     Route::get('dashboard/promotores/status', [DashboardController::class, 'getStatusPromotores']);
     Route::get('dashboard/coordinadores/status', [DashboardController::class, 'getStatusCoordinadores']);
@@ -579,7 +579,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::get('usuarios/get/all/promotores', [UserController::class, 'getPromotores']);
     Route::post('dashboard/total/viajeros/por-coordinador', [UserController::class, 'totalViajerosCoordinador']);
     Route::get('dashboard/porcentaje-uso/viajeros', [UserController::class, 'getPorcentajeUsoViajeros']);
-    Route::get('dashboard/porcentaje-viajeros/por-pais',[DashboardController::class,'getPorcentajeViajerosPorPais']);
+    Route::get('dashboard/porcentaje-viajeros/por-pais/{usuario?}',[DashboardController::class,'getPorcentajeViajerosPorPais']);
     Route::get('dashboard/tres-mayores-comisiones-promotores',[DashboardController::class,'comisionesAltasMesPromotores']);
 
     Route::get('dashboard/total-viajeros',[DashboardController::class, 'totalViajerosRegistrados']);

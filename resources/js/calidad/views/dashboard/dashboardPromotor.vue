@@ -5,12 +5,12 @@
       <b-container fluid class="px-0">
 
         <b-row align-v="stretch" >
-          <b-col cols="12" md="8">
+          <b-col cols="12" md="8" >
             <revenue-report :cobrar="retirar" v-model="ano" :data="dataRevenueReport" :titulo="$t('Reporte de ingresos')"   >
             </revenue-report>
           </b-col>
 
-          <b-col cols="12" md="4">
+          <b-col cols="12" md="4" >
 
               <statistic-card-with-area-chart
                 icon="fa-sack-dollar"
@@ -23,7 +23,7 @@
 
               <template #valor="{ statistic }">
                  <h3 class="mb-25 font-weight-bolder">
-                  {{ statistic | currency(usuario.cuenta ? usuario.cuenta.divisa.iso : 'USD') }}{{ symbolDivisa }}
+                  {{ statistic | currency(promotor.cuenta ? promotor.cuenta.divisa.iso : 'USD') }}{{ symbolDivisa }}
                  </h3>
               </template>
 
@@ -32,7 +32,7 @@
                  size="sm" 
                  :to="{ name: 'movimientos' }" 
                  variant="outline-primary" 
-                 class="mt-0 mb-0">
+                 class="mt-0 mb-0" v-if="$store.getters['usuario/isRol']('Promotor')">
                  <font-awesome-icon icon="fas fa-rectangle-list"/>
                   {{ $t('Ver mis movimientos') }}
                 </b-button>
@@ -128,14 +128,14 @@
 
                 <!-- Status -->
 
-                <b-card :bg-variant="skin == 'dark' ? 'dark' : 'success'" no-body class="card-status" :class="{ 'card-status-dark': skin == 'dark' }" v-if="$can('read', 'Tablero medal card promotor')">
+                <b-card :bg-variant="skin == 'dark' ? 'dark' : 'success'" no-body class="card-status" :class="{ 'card-status-dark': skin == 'dark' }">
                 
                   <section class="d-flex justify-content-around card-header-status">
                     <div>
                        <h3>Estatus</h3>
                     </div>
                      <div>
-                        <h3>{{ $store.getters['usuario/getStatus'] }}</h3>
+                        <h3>{{ getStatusPromotor }}</h3>
                       </div>
                   </section>
 
@@ -144,14 +144,14 @@
                        <span>Activaciones / Mes</span>
                     </div>
                      <div>
-                        <strong>{{ usuario.nivel.activaciones }}</strong>
+                        <strong>{{ promotor ? promotor.nivel.activaciones : 0 }}</strong>
                       </div>
                   </section>
 
                 </b-card>
 
                  <!-- Nivel -->
-                <b-card :bg-variant="skin == 'dark' ? 'dark' : 'dark'" v-if="$can('read', 'Tablero medal card promotor')">
+                <b-card :bg-variant="skin == 'dark' ? 'dark' : 'dark'" >
                   <b-card-body class="p-0 text-white">
                     <section class="d-flex justify-content-between text-white align-items-center">
                         <h3 class="font-weight-bolder text-white">
@@ -326,8 +326,18 @@ export default {
     VueApexCharts
   },
 
+  props:{
+    promotor:{
+      type:Object,
+      required:true,
+
+    }
+  },
+
   setup(props) {
 
+    const {promotor} = toRefs(props)
+    const status = ref(0)
     const { 
       paisesActivos,
       viajerosActivos,
@@ -388,7 +398,6 @@ export default {
 
     const viajeros_referidos = ref(0)
     const ano = ref(new Date().getFullYear())
-    const { usuario } = toRefs(store.state.usuario)
     const efectividad = ref({
         userReg:0,
     })
@@ -416,6 +425,10 @@ export default {
         chart2serie: [],
     }) 
 
+    const activacionesPromotor = computed(() => {
+      return promotor.value.nivel ? promotor.value.nivel.activaciones : 0
+    })
+
     const configRangoFecha = ref({
       mode: "range",
       maxDate: "today",
@@ -434,7 +447,7 @@ export default {
 
     const porcentajeEfectividad = computed(() => {
       if(efectividad.value.userReg > 0){
-        return [redondeo(efectividad.value.userReg * 100 / store.getters['usuario/activaciones'].activaciones)] 
+        return [redondeo(efectividad.value.userReg * 100 / activacionesPromotor.value)] 
       }
 
       return [0];
@@ -511,16 +524,26 @@ export default {
     })
 
     const cargarDashboard = () => {
-      store.dispatch('dashboard/cargarPaisesActivos')
+      filtro.value.usuario = promotor.value.id
+      store.dispatch('dashboard/cargarPaisesActivos',promotor.value.id)
       store.dispatch('dashboard/cargarViajerosActivos', filtro.value)
-      store.dispatch('dashboard/getTotalViajerosRegistradoAnual')
+      store.dispatch('dashboard/getTotalViajerosRegistradoAnual',promotor.value.id)
         
     }
 
     const cargarPromotor = () => {
       
-      store.dispatch('usuario/getStatusPromotor').then(({ status }) => {
+      store.dispatch('usuario/getStatusPromotor',promotor.value.id).then(({ status }) => {
         const {referidos} = status
+        
+        if(referidos.ultimo_mes > 0){
+          status.value = 1;
+        }else if(referidos.ultimo_trimestre > 0){
+          status.value = 2;
+        }else{
+          status.value = 3
+        }
+
         viajeros_referidos.value = referidos.ultimo_trimestre;
       })
 
@@ -539,8 +562,8 @@ export default {
 
     const getAnoPorMes = (anio) => {
       ano.value = anio
-      if(usuario.value.id){
-        store.dispatch('usuario/getMovimientosPorMes', { anio: ano.value, usuario: usuario.value.id }).then((data) => {
+      if(promotor.value.id){
+        store.dispatch('usuario/getMovimientosPorMes', { anio: ano.value, usuario: promotor.value.id }).then((data) => {
           dataRevenueReport.value.chart1serie = data.graficas
           dataRevenueReport.value.chart2serie = data.graficas
           dataRevenueReport.value.saldo = data.saldo
@@ -548,35 +571,28 @@ export default {
           dataRevenueReport.value.retirado = data.retirado
         })
       }
-      
-
     } 
 
     const getAcumuladoPorAno = () => {
-       if(usuario.value.id){
-          store.dispatch('usuario/getAcumuladoPorAno').then((data) => {
+       if(promotor.value.id){
+          store.dispatch('usuario/getAcumuladoPorAno', promotor.value.id).then((data) => {
             acumulado.value = data.acumulado
             chartDataAcumulado.value = data.series
           })
       }
     }
 
-
-
     const getEfectividad = () => {
-      store.dispatch('usuario/getEfectividad').then((data) => {
+      store.dispatch('usuario/getEfectividad',promotor.value.id).then((data) => {
           efectividad.value.userReg = data
       })
     }   
 
     const getOrigenViajeroPorPais = () => {
-
-      store.dispatch('dashboard/getOrigenViajerosPorPais')
-
+      store.dispatch('dashboard/getOrigenViajerosPorPais',promotor.value.id)
     }
-    
 
-    const  nivel =  computed(() => store.getters['usuario/activaciones'])
+    const  nivel =  computed(() => promotor.value.nivel)
     
     watch(ano, (val) => getAnoPorMes(val))  
     onActivated(() => cargarDashboard());
@@ -588,8 +604,8 @@ export default {
     return {
     
       filtro_gastos_turisticos,
-      miSaldo: computed(() => store.getters['usuario/miSaldo']),
-      miDivisa: computed(() => store.getters['usuario/miDivisa']),
+      miSaldo: computed(() => promotor.value.cuenta ? promotor.value.cuenta.saldo : 0),
+      miDivisa: computed(() => promotor.value.cuenta ? promotor.value.cuenta.divisa.iso : 'USD'),
 
       getLegendaStatusPromotor: (status) => {
         let legenda = ['Activo, con al menos un Viajero al mes', 'En peligro, no registra nuevos viajeros en los ultimos 30 días', 'Inactivo, no registra nuevos viajeros en los ultimos 90 días'];
@@ -615,12 +631,12 @@ export default {
       efectividad,
       porcentajeEfectividad,
       chartEfectividad,
-      usuario,
       totalViajerosRegistrados,
       totalViajerosConsumos,
       retirar: () => showSidebarRetiro.value = true,
       getAnoPorMes,
       paisesActivos,
+      activacionesPromotor,
       chartOptionMap,
       viajerosPorPais,
       colorRand:colorRand,
@@ -628,10 +644,16 @@ export default {
         return redondeo(viajerosPorPais.value.length * 100 / 195,2)
       }),
       symbolDivisa: computed(() => {
-        if (usuario.value.cuenta) {
-          return usuario.value.cuenta.divisa.simbolo
-        }
-        return '$'
+        
+        return promotor.value.cuenta ? promotor.value.cuenta.divisa.simbolo : '$'
+
+      }),
+
+      getStatusPromotor:computed(() => {
+      	
+        let statuses = ['Activo', 'En Peligro', 'Inactivo']
+        return promotor.value.status != undefined ? statuses[promotor.value.status - 1] : statuses[2];        
+        
       })
 
     }

@@ -711,13 +711,21 @@ export default {
             store.dispatch('divisa/getDivisas')
          }  
 
+         if(!destinos.value.length){
+            store.dispatch('destino/getDestinos')
+         }
+
          cargarPaises();
 
-      }
 
-      onMounted(() => {
-         cargarform()
-      })
+         if(form.value.ciudad_id){
+            pais_id.value = form.value.ciudad.estado.pais_id
+            estado_id.value = form.value.ciudad.estado_id
+         }
+
+      }  
+
+      cargarform()
 
 
       watch([form], () => {
@@ -867,7 +875,12 @@ export default {
          isRolPromotor:computed(() => {
             
             if(form.value.rol_id){
-                return getRols.value.find(val => val.id == form.value.rol_id).label == 'Promotor'
+
+               let rol = getRols.value.find(val => val.id == form.value.rol_id)
+               if(rol != undefined ){
+                  return rol.label == 'Promotor'
+               }
+               return false
             }else{
                return false
             }

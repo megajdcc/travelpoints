@@ -72,6 +72,16 @@ const lider = [
       icon: 'UsersIcon',
     },
 
+
+     {
+      title: 'Viajeros Registrados',
+      route: 'listar.viajeros',
+      action: 'read',
+      resource: 'Listado de viajeros',
+      icon: 'fa-rectangle-list',
+      fontAwesome:true
+    },
+
     {
         title: 'Reportes',
         icon: 'fa-chart-pie',

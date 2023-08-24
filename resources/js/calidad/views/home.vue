@@ -27,7 +27,8 @@ export default {
       } else if (rolName.value == 'Coordinador') {
          dashboardShow.value = dashboardCoordinador
       } else {
-        return dashboard;
+        dashboardShow.value = dashboard
+
       }
 
     }

@@ -556,7 +556,6 @@ export default {
     } 
 
     const mostrarAboutUsuario = (user) => {
-      console.log('mostrar')
       userAbout.value = user
       showAboutProfile.value = true
     }

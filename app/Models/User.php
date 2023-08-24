@@ -1023,7 +1023,11 @@ class User extends Authenticatable
         $this->solicitudes;
         $this->destino;
         // $this->faqs;
-        $this->referidor;
+
+        if($this->referidor){
+            $this->referidor->first()?->cargar();
+        }
+
         $this->referidos;
         $this->permisos;
         $this->reservaciones;

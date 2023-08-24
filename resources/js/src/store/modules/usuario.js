@@ -1122,6 +1122,14 @@ export default {
 					resolve(data)
 				}).catch(e => reject(e))
 			})
+		},
+
+		fetchViajeros({commit},datos){
+
+			return new Promise((resolve, reject) => {
+				axios.post(`/api/usuarios-viajeros/fetch-data`,datos).then(({data}) => resolve(data)).catch(e => reject(e))
+				
+			})
 		}
 
 

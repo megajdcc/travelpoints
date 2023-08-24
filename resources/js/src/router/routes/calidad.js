@@ -538,6 +538,24 @@ export default [
       ]
    },
 
+   /*****************************************/
+   /* Viajeros
+   /*************************************** */
+
+   {
+      path:'/viajeros',
+      component: () => import('views/usuarios/viajeros.vue'),
+      name:'listar.viajeros',
+      meta:{
+         resource:'Listado de viajeros',
+         action:'read',
+         pageTitle:'Viajeros Registrados',
+         breadcrumb:[
+            {text:'Listado',active:true}
+         ]
+      }
+   },
+
 
 
    /*****************************************/

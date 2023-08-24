@@ -39,6 +39,30 @@ use Barryvdh\DomPDF\Facade\Pdf;
 class UserController extends Controller
 {
     
+
+    public function fetchDataViajeros(Request $request){
+        $filtro = $request->all();
+        $usuario = $request->user();
+
+        $searchs = collect(['username','nombre','apellido','email','bio','direccion','fecha_nacimiento']);
+
+        $pagination = User::where(fn(Builder $q) => $searchs->each(fn($s) => $q->orWhere($s,'LIKE',"%{$filtro['q']}%",'OR')))
+        ->whereHas('referidor' ,function(Builder $q) use($usuario,$filtro,$searchs){
+            $q->where('lider_id', $usuario->id);  // el promotor tiene que tener al lider como su asignado
+            // ->where(fn (Builder $qu) => $searchs->each(fn ($s) => $qu->orWhere($s, 'LIKE', "%{$filtro['q']}%", 'OR')));
+        })
+        ->orderBy($filtro['sortBy'] ?: 'id',$filtro['isSortDirDesc'] ? 'desc' : 'asc')
+        ->paginate($filtro['perPage'] ?: 1000);
+
+        $viajeros = collect($pagination->items())->each(fn($viajero) => $viajero->cargar()); // cargamos toda la data del viajero
+
+
+        return response()->json([
+            'total' => $pagination->total(),
+            'viajeros' => $viajeros
+        ]);
+    }
+
     public function getUsuario(User $usuario)
     {
         $usuario->cargar();

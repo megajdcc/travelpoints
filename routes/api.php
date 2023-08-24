@@ -155,6 +155,10 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
 
     Route::post('usuarios/{usuario}/mis-invitados',[UserController::class,'fetchDataInvitados']);
     Route::get('usuarios/{usuario}/fetch-data-user',[UserController::class, 'getUsuario']);
+
+    Route::post('usuarios-viajeros/fetch-data',[UserController::class,'fetchDataViajeros']);
+
+    
     /*****************************/
     /* TELEFONOS
     /*****************************/

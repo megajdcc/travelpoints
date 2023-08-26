@@ -4,6 +4,33 @@
 
             <template #titulo>
                <h3 v-if="!hideTitle">{{ $t('Movimientos de Cuentas') }}</h3>
+            </template> 
+
+            <template #btn-action>
+              <b-button variant="primary" size="sm" @click="descargarPdf()">
+                  <font-awesome-icon icon="fas fa-download" size="lg"/>
+                  Descargar
+              </b-button>
+            </template>
+
+            <template #header-table>
+              <b-card>
+                <b-container fluid>
+                  <b-row>
+                    <b-col cols="12" md="6">
+                      <b-form-group label="Filtre por rango de fechas">
+                      <flat-pickr v-model="fechas" 
+                      :config="configDate"
+                       class="form-control" required
+                      placeholder="Seleccione las fechas" name="date"
+                      />
+                  </b-form-group>
+                    </b-col>
+                  </b-row> 
+                </b-container>
+                
+              </b-card>
+
             </template>
 
             <template #contenido="{ fetchData, tableColumns, isSortDirDesc, sortBy, perPage }">
@@ -14,7 +41,7 @@
                      showEmpty small stacked="md">
 
                      <template #cell(created_at)="{ item }">
-                        {{ item.created_at | fecha('LLL') }}
+                        {{ item.created_at | fecha('DD/MM/YYYY h:m A') }}
                      </template>
 
                      <template #cell(monto)="{ item }">
@@ -124,17 +151,19 @@ import {
    BSidebar,
    BForm, BFormGroup,
    BFormInvalidFeedback,
-   BFormTextarea
+   BFormTextarea,
 
 } from 'bootstrap-vue'
-
-import useCuentaList from './useCuentaList.js'
+import flatPickr from 'vue-flatpickr-component'
+import 'flatpickr/dist/flatpickr.css';
+import { Spanish } from "flatpickr/dist/l10n/es.js"
 import store from '@/store'
 import { ref, toRefs, computed, onMounted,inject } from 'vue'
 import { useRoute } from 'vue2-helpers/vue-router'
 import { ValidationObserver, ValidationProvider } from 'vee-validate'
 import { required, mountMax } from '@validations'
 import { optionsCurrency } from '@core/utils/utils'
+import useCuentaList from './useCuentaList.js'
 
 import vSelect from 'vue-select'
 export default {
@@ -159,17 +188,19 @@ export default {
       ValidationObserver,
       ValidationProvider,
       CurrencyInput: () => import('components/CurrencyInput.vue'),
+       flatPickr
 
    },
 
    props: {
-      id: Number | String,
-      isReport:Boolean,
-      hideTitle:Boolean,
-      isFilter:Boolean
+     id:Number|String,
+     isReport:Boolean,
+     hideTitle:Boolean,
+    
    },
 
    setup(props) {
+
 
       const { usuario } = toRefs(store.state.usuario)
       const { sistema } = toRefs(store.state.sistema)
@@ -182,14 +213,9 @@ export default {
       const showSidebarRetiro = inject('showSidebarRetiro')
 
       const actions = useCuentaList({
-         model_id: computed(() => route.meta.layout == 'travel' ? usuario.value.id : id.value ? id.value : sistema.value.id),
-         model_type: route.meta.layout == 'travel' ? 'User' : id.value ? 'User' : 'Sistema'
-      });
-
-      onMounted(() => {
-         setTimeout(() => actions.refetchData(), 1000)
+        model_id: computed(() => route.meta.layout == 'travel' ? usuario.value.id : id.value ? id.value : sistema.value.id),
+        model_type: route.meta.layout == 'travel' ? 'User' : id.value ? 'User' : 'Sistema'
       })
-
 
       const mostrarFormRetiro = () => {
          
@@ -215,6 +241,7 @@ export default {
             console.log(e)
          })
       }
+
       const getCurrency = computed(() => {
          if (usuario.value.cuenta) {
             return usuario.value.cuenta.divisa ? usuario.value.cuenta.divisa.iso : 'Tp'
@@ -223,6 +250,12 @@ export default {
          }
       })
 
+      const configDate = ref({
+          enableTime:false,
+          mode:'range',
+          locale:Spanish,
+          maxDate:new Date(),
+      })
      
       return {
          refTable: actions.refTable,
@@ -236,9 +269,11 @@ export default {
          required,
          optionsCurrency,
          getCurrency,
+         configDate,
          mountMax,
          showSidebarRetiro,
          descargarPdf: actions.descargarPdf,
+         fechas:actions.fechas,
          getSaldo:computed(() => {
             return usuario.value.cuenta ? usuario.value.cuenta.saldo : 0
          }), 

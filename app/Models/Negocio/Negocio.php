@@ -81,6 +81,12 @@ class Negocio extends Model
             );
     }
 
+
+    public function getImagen()
+    {
+        return $this->logo;
+    }
+
     public function categoria(){
         return $this->belongsTo(NegocioCategoria::class,'categoria_id','id');
     }

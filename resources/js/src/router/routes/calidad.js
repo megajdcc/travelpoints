@@ -3435,6 +3435,21 @@ export default [
    },
 
    {
+      path:'/reports/estados-cuenta-full',
+      component:() => import('views/reports/estadoCuentaFull.vue'),
+      name:'report.movimientos.full',
+      meta:{
+         resouorce:'reportes',
+         action:'read',
+         pageTitle:'Movimientos de Cuentas',
+         breadcrumb:[
+            {text:'Movimientos',active:true}
+         ]
+      }
+   },
+
+
+   {
       path:'/reports/activaciones',
       component:() => import('views/reports/activaciones.vue'),
       name:'activaciones',

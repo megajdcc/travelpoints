@@ -294,6 +294,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     /*****************************/
 
     Route::post('/movimientos/fetch/data', [MovimientoController::class, 'fetchData']);
+    Route::post('/movimientos/fetch/data/descargar',[MovimientoController::class,'descargarReport']);
 
     /*****************************/
     /* Iata

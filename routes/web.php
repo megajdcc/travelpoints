@@ -29,6 +29,7 @@ use Illuminate\Support\Facades\Storage;
 |
 */
 
+
 Route::get('/reports/view/activaciones',function(Request $request){
 
    $usuario = $request->user();

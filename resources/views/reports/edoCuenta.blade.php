@@ -232,8 +232,6 @@
 						</td>
 						<td>
 							<h4 class="text-primary my-0" >Saldo: {{$usuario->cuenta->divisa->iso}} {{ $usuario->cuenta->saldo }}{{ $usuario->cuenta->divisa->simbolo }}</h4>
-							<h4 class="text-success my-0" >Lapso: {{ now()->firstOfMonth()->toFormattedDateString() }} - {{ now()->lastOfMonth()->toFormattedDateString()  }}</h4>
-							
 							<h4 class="text-danger my-0">Número de movimientos:{{$movimientos->count()}}</h4>
 						</td>
 					</tr>
@@ -251,7 +249,7 @@
 						<th class="">Num.</th>
 						<th class="">Fecha</th>
 						<th class="">Concepto</th>
-						<th class="">Monto</th>
+						<th class="" style="width:70px;">Monto</th>
 						<th class="">Balance</th>
 					</tr>
 					
@@ -262,8 +260,8 @@
 						<tr style="border-bottom:1px solid rgba(0,0,0,0.4)">
 								<td>{{ $key + 1  }}</td>
                 <td>{{ $movimiento->created_at->format('d/m/Y') }}</td>
-								<td>{{ $movimiento->concepto }}</td>
-								<td style="text-align:justify">{{ $movimiento->divisa->iso}} {{ number_format((float)$movimiento->monto,2,'.',',')  }}{{ $movimiento->divisa->simbolo}}</td>
+								<td><small>{{ $movimiento->concepto }}</small></td>
+								<td style="text-align:justify; min-width:50px">{{ $movimiento->divisa->iso}} {{ number_format((float)$movimiento->monto,2,'.',',')  }}{{ $movimiento->divisa->simbolo}}</td>
 								<td>{{ $movimiento->divisa->iso}} {{ number_format((float)$movimiento->balance,2,'.',',')  }}{{ $movimiento->divisa->simbolo}}</td>
 							</tr>
 					@endforeach

@@ -110,6 +110,19 @@ export default {
       },
 
 
+      descargarfetchData({commit},datos){
+         return new Promise((resolve, reject) => {
+
+            axios.post(`/api/movimientos/fetch/data/descargar`, datos).then(({ data }) => {
+               resolve(data)
+            }).catch(e => reject(e))
+            
+
+         })
+
+      }
+
+
 
 
 

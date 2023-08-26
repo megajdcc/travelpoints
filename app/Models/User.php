@@ -432,6 +432,10 @@ class User extends Authenticatable
         return ['referidos' => $referidos, 'promotores_activos' => $promotores_activos,'lideres_activos' => $lideres_activos];
     }
 
+    public function getImagen(){
+        return $this->imagen;
+    }
+    
     function totalPromotores(){
         
         $promotores_activos = DB::table('users','u')

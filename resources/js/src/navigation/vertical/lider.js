@@ -93,6 +93,13 @@ const lider = [
             resource:'reportes',
             action:'read',
           },
+          {
+            title:'Estados de Cuenta',
+            route:'report.movimientos.full',
+            resource:'reportes',
+            action:'read',
+          },
+
          
         ]
 

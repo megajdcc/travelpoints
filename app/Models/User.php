@@ -28,6 +28,8 @@ use App\Models\Usuario\Permiso;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\{Collection,Str};
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use SebastianBergmann\Type\NullType;
 
 class User extends Authenticatable
 {
@@ -959,6 +961,12 @@ class User extends Authenticatable
     }
 
 
+    public function ultimoRegistro(){
+        $fecha_uiltimo_registro = $this->referidos->sortByDesc('created_at')->pluck('created_at')->first();
+        return $fecha_uiltimo_registro ? Carbon::now()->diffInDays($fecha_uiltimo_registro) : 0;
+    }
+
+
     /**
      * @return Integer cantidad de viajeros de un promotor o lider a traves de sus promotores que han usado el sistema
      */
@@ -1001,6 +1009,78 @@ class User extends Authenticatable
                         ->where('activo', true)
                         ->count();
         return $viajeros;
+    }
+
+    public function activacionesMes(){
+        $referidos = User::whereHas('referidor',fn($q) => $q->where('id',$this->id))->where('activo',true)
+        ->whereBetween('created_at',[now()->subMonth(),now()])
+        ->count();
+        return $referidos;
+
+    }   
+
+    public function allPromotores(bool $paginado = false, Collection|NullType $searchs = null,array $filtro = [])
+    {   
+        $primer_dia = null;
+        $ultimo_dia = null;
+
+        if(isset($filtro['mes']) && !empty($filtro['mes'])){
+            $primer_dia = (new Carbon(new \DateTime($filtro['mes'])))->firstOfMonth();
+            $ultimo_dia = (new Carbon(new \DateTime($filtro['mes'])))->lastOfMonth();
+        }
+
+        if($paginado){
+            $resultado = User::where('lider_id', $this->id)
+                ->withCount(['referidos as total_viajeros_registrados' => function ($query) use ($primer_dia, $ultimo_dia) {
+                        $query->when(!is_null($primer_dia) && !is_null($ultimo_dia), function ($q) use ($primer_dia, $ultimo_dia) {
+                            $q->whereBetween('usuario_referencia.created_at', [$primer_dia, $ultimo_dia]);
+                        });
+                    },
+                    'referidos as total_viajeros_activos' => function ($query) use ($primer_dia, $ultimo_dia) {
+                        $query->where('activo', true)
+                            ->when(!is_null($primer_dia) && !is_null($ultimo_dia), function ($q) use ($primer_dia, $ultimo_dia) {
+                                $q->whereBetween('usuario_referencia.created_at', [$primer_dia, $ultimo_dia]);
+                            });
+                    },
+                    'referidos as total_viajeros_activos_mes' => function ($query) use ($primer_dia, $ultimo_dia) {
+                        $query->where('activo', true)
+                            ->when(is_null($primer_dia) && is_null($ultimo_dia), function ($q) {
+                                $q->whereBetween('usuario_referencia.created_at', [now()->firstOfMonth(), now()->lastOfMonth()]);
+                            })
+                            ->when(!is_null($primer_dia) && !is_null($ultimo_dia), function ($q) use ($primer_dia, $ultimo_dia) {
+                                $q->whereBetween('usuario_referencia.created_at', [$primer_dia, $ultimo_dia]);
+                            });
+                    }
+                ])
+                ->with(['referidos' => function ($query) use ($primer_dia, $ultimo_dia) {
+                    $query->where('activo', true)
+                        ->when(!is_null($primer_dia) && !is_null($ultimo_dia), function ($q) use ($primer_dia, $ultimo_dia) {
+                            $q->whereBetween('usuario_referencia.created_at', [$primer_dia, $ultimo_dia]);
+                        })
+                        ->orderBy('usuario_referencia.created_at', 'desc')
+                        ->take(1); // Obtener solo el primer resultado (última fecha)
+                }])
+                ->where(fn ($q) => $searchs->each(fn ($s) => $q->orWhere($s, 'LIKE', "%{$filtro['q']}%", 'OR')))
+                ->orderBy($filtro['sortBy'], $filtro['isSortDirDesc'] ? 'desc' : 'asc')
+                ->paginate($filtro['perPage'] ?: 1000);
+
+        }else{
+            $resultado = User::whereHas('lider',fn(Builder $q) => $q->where('id', $this->id))
+            ->addSelect([
+                'activacions' => function($query) {
+                        $query->selectRaw('count(distinct(u.id)) as activacions')
+                        ->from('users as u')
+                        ->join('usuario_referencia as ur','u.id','ur.referido_id')
+                        ->where('u.activo',true)
+                        ->whereColumn('ur.usuario_id','users.id');
+                }
+            ])
+            ->orderBy('activacions','desc')
+            ->get();
+        }
+
+
+       return $resultado;
     }
 
     public function cargar(): User{
@@ -1047,6 +1127,19 @@ class User extends Authenticatable
         $this->tarjeta?->lote;
         $this->reunions;
         $this->consumos;
+
+        if($this->rol->nombre == 'Promotor'){
+            $this->ultimaActivacion = $this->ultimaActivacion();
+            $this->totalActivaciones = $this->nivel['activaciones'];
+            $this->totalRegistros = $this->referidos->count();
+            $this->ultimoRegistro = $this->ultimoRegistro();
+            $this->activaciones = [
+                'acumulada' => $this->nivel['activaciones'],
+                'mes' => $this->activacionesMes(),
+                'promedio' => $this->nivel['activaciones'] > 0 ? $this->activacionesMes() * 100 / $this->nivel['activaciones'] : 0
+            ];
+        }
+
         return $this;
     }
 

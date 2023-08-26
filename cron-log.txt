@@ -3918,3 +3918,1049 @@
 
    INFO  No scheduled commands are ready to run.  
 
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   ParseError 
+
+  syntax error, unexpected token "}"
+
+  at jdcc/sistemas/Mario/travelpoints_2.0/routes/api.php:717
+    713▕         Route::post('/fetch-data-promotores',[UserController::class,'fetchDataPromotores']);
+    714▕     });
+    715▕ 
+    716▕     Route::post('')
+  ➜ 717▕ });
+    718▕ 
+    719▕ Route::put('usuario/{usuario}/establecer/contrasena', [UserController::class, 'EstablecerContrasena'])->name('establecercontrasena');
+    720▕ 
+    721▕ Route::get('get/paises', function () {
+
+      [2m+3 vendor frames [22m
+  4   jdcc/sistemas/Mario/travelpoints_2.0/app/Providers/RouteServiceProvider.php:45
+      Illuminate\Routing\RouteRegistrar::group()
+
+      [2m+15 vendor frames [22m
+  20  [internal]:0
+      Illuminate\Foundation\Application::Illuminate\Foundation\{closure}()
+
+   ParseError 
+
+  syntax error, unexpected token "}"
+
+  at jdcc/sistemas/Mario/travelpoints_2.0/routes/api.php:717
+    713▕         Route::post('/fetch-data-promotores',[UserController::class,'fetchDataPromotores']);
+    714▕     });
+    715▕ 
+    716▕     Route::post('')
+  ➜ 717▕ });
+    718▕ 
+    719▕ Route::put('usuario/{usuario}/establecer/contrasena', [UserController::class, 'EstablecerContrasena'])->name('establecercontrasena');
+    720▕ 
+    721▕ Route::get('get/paises', function () {
+
+      [2m+3 vendor frames [22m
+  4   jdcc/sistemas/Mario/travelpoints_2.0/app/Providers/RouteServiceProvider.php:45
+      Illuminate\Routing\RouteRegistrar::group()
+
+      [2m+15 vendor frames [22m
+  20  [internal]:0
+      Illuminate\Foundation\Application::Illuminate\Foundation\{closure}()
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+  2023-08-25 00:00:02 Running [Callback] .......................... 548ms DONE
+  2023-08-25 00:00:03 Running ['artisan' queue:flush] ............. 541ms DONE
+  ⇂ '/usr/bin/php8.1' 'artisan' queue:flush > '/dev/null' 2>&1  
+  2023-08-25 00:00:03 Running [App\Jobs\verificarReservas] ........ 335ms DONE
+  2023-08-25 00:00:04 Running ['artisan' usuario:establecer-nivel]  1,099ms DONE
+  ⇂ '/usr/bin/php8.1' 'artisan' usuario:establecer-nivel > '/dev/null' 2>&1  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+  2023-08-26 00:00:01 Running [Callback] .......................... 209ms DONE
+  2023-08-26 00:00:01 Running ['artisan' queue:flush] ............. 227ms DONE
+  ⇂ '/usr/bin/php8.1' 'artisan' queue:flush > '/dev/null' 2>&1  
+  2023-08-26 00:00:01 Running [App\Jobs\verificarReservas] ......... 16ms DONE
+  2023-08-26 00:00:01 Running ['artisan' usuario:establecer-nivel]  754ms DONE
+  ⇂ '/usr/bin/php8.1' 'artisan' usuario:establecer-nivel > '/dev/null' 2>&1  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+

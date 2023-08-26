@@ -88,17 +88,12 @@ const lider = [
         fontAwesome:true,
         children:[
           {
-            title:'Estados de Cuenta',
-            route:'report.movimientos',
+            title:'Promotores',
+            route:'report.promotores',
             resource:'reportes',
             action:'read',
           },
-           {
-            title:'Activaciones',
-            route:'activaciones',
-            resource:'reportes',
-            action:'read',
-          }
+         
         ]
 
       },

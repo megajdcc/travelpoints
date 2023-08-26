@@ -1130,6 +1130,27 @@ export default {
 				axios.post(`/api/usuarios-viajeros/fetch-data`,datos).then(({data}) => resolve(data)).catch(e => reject(e))
 				
 			})
+		},
+
+		fetchDataReportPromotores({commit},datos){
+			
+			return new Promise((resolve, reject) => {
+				axios.post(`/api/reporte/fetch-data-promotores`,datos).then(({data}) => resolve(data)).catch(e => reject(e))
+				
+			})
+
+		},
+
+		downloadReportPromotores(_,datos){
+
+			return new Promise((resolve, reject) => {
+				axios.post(`/api/reporte/descargar/fetch-data-promotores`,datos).then(({data}) => {
+						resolve(data)
+				}).catch(e => {
+					reject(e)
+				})
+			})
+		
 		}
 
 

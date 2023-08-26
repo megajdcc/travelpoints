@@ -90,6 +90,8 @@ Route::get('/reset-password/{token}', function ($token) {
 // Reportes
 Route::get('reports/descargar/estados-cuenta',[EstadoCuentaController::class,'descargar']);
 Route::get('reports/descargar/activaciones',[UserController::class,'descargarActivaciones']);
+Route::get('reports/descargar/estado-promotores', [UserController::class, 'descargarPromotoresReport']);
+
 
 // Mensajes y apis
 Route::get('/auth/redirect',[AuthController::class, 'redirectGoogle']);

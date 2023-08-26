@@ -3448,6 +3448,21 @@ export default [
       }
    },
 
+
+   {
+      path:'/reports/promotores',
+      component:() => import('views/reports/promotores.vue'),
+      name:'report.promotores',
+      meta:{
+         resouorce:'reportes',
+         action:'read',
+         pageTitle:'Promotores y sus resultados',
+         breadcrumb:[
+            {text:'Listado',active:true}
+         ]
+      }
+   },
+
    /*****************************************/
    /* Academia
    /*************************************** */

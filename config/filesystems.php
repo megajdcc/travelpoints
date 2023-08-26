@@ -162,6 +162,14 @@ return [
             'visibility' => 'public',
         ],
 
+        'reportes' => [
+            'driver' => 'local',
+            'root' => storage_path('app/public/reportes'),
+            'url' => env('APP_URL') . '/storage/reportes',
+            'visibility' => 'public',
+        ],
+
+
 
 
 

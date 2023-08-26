@@ -1669,5 +1669,110 @@ class UserController extends Controller
 
     }
 
+    public function descargarPromotoresReport(Request $request){
+        $usuario = $request->user();
+        $filtro = $request->all();
+        $searchs = collect(['username', 'nombre', 'apellido', 'email', 'bio', 'direccion']);
+        $pagination = $usuario->allPromotores(true, $searchs, $filtro);
+
+        $promotores = collect($pagination->items())->each(function ($promotor) {
+
+            $promotor->avatar = $promotor->getAvatar();
+            $promotor->portada = $promotor->getPortada();
+
+            $fecha_ultima = $promotor->referidos->where('activo', true)->sortByDesc('created_at')->pluck('created_at')->first();
+            $promotor->ultimaActivacion = $fecha_ultima ? Carbon::now()->diffInDays($fecha_ultima) : 0;
+            $promotor->totalActivaciones = $promotor->nivel['activaciones'];
+            $promotor->totalRegistros = $promotor->referidos->count();
+            $promotor->ultimoRegistro = $promotor->ultimoRegistro();
+            $promotor->activaciones = [
+                'acumulada' => $promotor->total_viajeros_registrados,
+                'mes' => $promotor->total_viajeros_activos_mes,
+                'promedio' =>  $promotor->total_viajeros_registrados > 0 ? $promotor->total_viajeros_activos_mes * 100 / $promotor->total_viajeros_registrados : 0
+            ];
+        });
+
+
+    
+
+        $imagenBase64 = "data:image/png;base64," . base64_encode(Storage::disk('public')->get('logotipo.png'));
+        $logowhite = "data:image/png;base64," . base64_encode(Storage::disk('public')->get('logotipoblancohorizontal.png'));
+        $avatar  = "data:image/png;base64," . base64_encode(Storage::disk('img-perfil')->get($usuario->imagen ?: 'default.jpg'));
+
+        $datos = [
+            'promotores' => $promotores,
+            'usuario' => $usuario,
+            'logotipo' => $imagenBase64,
+            'logotipoblanco' => $logowhite,
+            'avatar' => $avatar
+        ];
+
+
+        $pdf = Pdf::loadView('reports.promotores', $datos);
+
+        $pdf->setOption([
+            'dpi' => 150,
+            'defaultFont' => 'sans-serif',
+            'isHtml5ParserEnabled' => true,
+            'isRemoteEnabled' => true
+        ]);
+
+        $pdf->setPaper('a4', 'landscape');
+
+        $nombre = 'Promotores y sus resultados.pdf';
+        $pdf->save($nombre, 'reportes');
+
+        // return $pdf->save($nombre,'reportes')->download($nombre);
+        // return response()->download();
+        
+
+        return response()->json([
+            'url' => Storage::url('public/reportes/'.$nombre),
+            'filename' => $nombre
+        ]);
+
+    }
+
+
+    public function fetchDataPromotoresReport(Request $request){
+
+        $filtro = $request->all();
+        $searchs = collect(['username','nombre','apellido','email','bio','direccion']);
+        $usuario = $request->user();
+
+
+        $pagination = $usuario->allPromotores(true,$searchs,$filtro);
+            
+        $promotores = collect($pagination->items())->each(function($promotor){
+          
+            $promotor->avatar = $promotor->getAvatar();
+            $promotor->portada = $promotor->getPortada();
+
+                // dd($promotor);
+                $fecha_ultima = $promotor->referidos->where('activo', true)->sortByDesc('created_at')->pluck('created_at')->first();
+                $promotor->ultimaActivacion = $fecha_ultima ? Carbon::now()->diffInDays($fecha_ultima) : 0;
+                // $promotor->ultimaActivacion = $promotor->ultimaActivacion();
+                $promotor->totalActivaciones = $promotor->nivel['activaciones'];
+                $promotor->totalRegistros = $promotor->referidos->count();
+                $promotor->ultimoRegistro = $promotor->ultimoRegistro();
+                // $promotor->activaciones = [
+                //     'acumulada' => $promotor->nivel['activaciones'],
+                //     'mes' => $promotor->activacionesMes(),
+                //     'promedio' => $promotor->nivel['activaciones'] > 0 ? $promotor->activacionesMes() * 100 / $promotor->nivel['activaciones'] : 0
+                // ];
+
+                 $promotor->activaciones = [
+                    'acumulada' => $promotor->total_viajeros_registrados,
+                    'mes' => $promotor->total_viajeros_activos_mes,
+                    'promedio' =>  $promotor->total_viajeros_registrados > 0 ? $promotor->total_viajeros_activos_mes * 100 / $promotor->total_viajeros_registrados : 0
+                ];
+        });
+
+        return response()->json([
+            'total' => $pagination->total(),
+            'promotores' => $promotores
+        ]);
+    }
+
 
 }

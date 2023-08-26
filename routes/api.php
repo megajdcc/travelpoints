@@ -705,6 +705,15 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::post('reunions/{reunion}/guardar/archivo',[ReunionController::class,'guardarArchivo']);
     Route::post('reunions/fetch/reunions',[ReunionController::class,'fetchReunions']);
 
+
+    /**************************/
+    /* Reportes
+    /**************************/
+    Route::prefix('reporte')->group(function(){
+        Route::post('fetch-data-promotores', [UserController::class, 'fetchDataPromotoresReport']);
+        Route::post('descargar/fetch-data-promotores', [UserController::class, 'descargarPromotoresReport']);
+    });
+
 });
 
 Route::put('usuario/{usuario}/establecer/contrasena', [UserController::class, 'EstablecerContrasena'])->name('establecercontrasena');

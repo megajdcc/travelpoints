@@ -25,6 +25,7 @@ use App\Models\Like;
 use App\Models\Movimiento;
 use App\Models\Negocio\Cargo;
 use App\Models\Pais;
+use App\Models\Panel;
 use App\Models\Producto;
 use App\Models\Tarjeta;
 use App\Models\Usuario\Permiso;
@@ -73,10 +74,10 @@ class UserController extends Controller
     private function validar(Request $request, User $usuario = null)
     {
         return $request->validate([
-            'username'         => ['required', $usuario ? Rule::unique('users', 'username')->ignore($usuario) : 'unique:users,username'],
+            'username'         => ['required', $usuario ? Rule::unique('users', 'username')->ignore($usuario): 'unique: users,username'],
             'nombre'           => 'nullable',
             'apellido'         => 'nullable',
-            'email'            => ['required', $usuario ? Rule::unique('users', 'email')->ignore($usuario)   : 'unique:users,email'],
+            'email'            => ['required', $usuario ? Rule::unique('users', 'email')->ignore($usuario)   : 'unique: users,email'],
             'direccion'        => 'nullable',
             'fecha_nacimiento' => 'nullable',
             'rol_id'           => 'required',
@@ -88,8 +89,9 @@ class UserController extends Controller
             'codigo_postal'    => 'nullable',
             'ciudad_id'        => 'nullable',
             'codigo_referidor' => 'nullable',
-            'bio' => 'nullable',
-            'destino_id' => 'nullable'
+            'bio'              => 'nullable',
+            'destino_id'       => 'nullable',
+            'lider_business'   => 'nullable'
         ], [
             'username.unique' => 'El nombre de usuario ya está siendo usado, inténta con otro',
             'email.unique'    => 'El email ya está siendo usado, el mismo debe ser único',
@@ -996,9 +998,9 @@ class UserController extends Controller
             'id',
             'username',
             'imagen',
-            DB::raw('concat(nombre," ",apellido) as nombre'),
-            DB::raw('COALESCE(nivel->>"$.nivel", 0) as nivel'),
-            DB::raw('COALESCE(nivel->>"$.activaciones", 0) as activaciones'),
+            DB::raw('CONCAT(nombre, " ", apellido) AS nombre'),
+            DB::raw('COALESCE(JSON_UNQUOTE(JSON_EXTRACT(nivel, "$.nivel")), 0) AS nivel'),
+            DB::raw('COALESCE(JSON_UNQUOTE(JSON_EXTRACT(nivel, "$.activaciones")), 0) AS activaciones'),
             'email'
         ])
         ->addSelect([
@@ -1027,7 +1029,7 @@ class UserController extends Controller
         ])
 
         ->where(fn($q) => $filas->each(fn($fila) => $q->orWhere($fila,'LIKE',"%{$filtro['q']}%")))
-       
+        ->whereHas('rol',fn($q) => $q->where('nombre','Promotor'))
 
          ->when((isset($filtro['lider']) && !is_null($filtro['lider']) && in_array($rol_user, ['Lider', 'Coordinador'])), function ($q) use ($filtro, $rol_user, $request) {
                 $q->where('users.lider_id', $filtro['lider']);
@@ -1054,7 +1056,9 @@ class UserController extends Controller
             $status_user = $promotor->getStatusUser();
             $promotor->portada = $promotor->getPortada();
             $promotor->avatar = $promotor->getAvatar();
-
+            $promotor->destino;
+            $promotor->lider?->cargar();
+    
             if ($status_user['referidos']['ultimo_mes'] > 0) {
                 $promotor->status = 1;
             } else if ($status_user['referidos']['ultimo_trimestre'] > 0) {
@@ -1273,27 +1277,29 @@ class UserController extends Controller
     public function guardarLider(Request $request)
     {
 
-        $datos  = $request->validate([
+        $datos  = collect($request->validate([
             'username'       => 'required|unique:users,username',
             'nombre'         => 'required',
             'apellido'       => 'required',
             'email'          => 'required|email|unique:users,email',
             'lider_id'       => 'nullable',
             'coordinador_id' => 'nullable',
-            'tipo_usuario'   => 'nullable'
+            'tipo_usuario'   => 'nullable',
+            'lider_business' => 'nullable',
+            'divisa_id' => 'required'
         ], [
             'username.unique' => 'El nombre de usuario ya está siendo usado, intente con otro',
             'email.unique' => 'El email ya está siendo usado, intente con otro',
-        ]);
+        ]));
 
         try {
             DB::beginTransaction();
 
             $lider = User::create(
                 [
-                    ...$datos,
+                    ...$datos->except(['divisa_id'])->toArray(),
                     ...[
-                        'password' => '20464273jd',
+                        'password' => fake()->password(),
                         'rol_id' => Rol::where('nombre', 'Lider')->first()->id,
                     ]
                 ]
@@ -1301,10 +1307,22 @@ class UserController extends Controller
 
             $lider->asignarPermisosPorRol();
 
-            if (in_array($lider->rol->nombre, ['Promotor', 'Lider', 'Coordinador'])) {
-                $lider->aperturarCuenta(0, 'USD');
-            } else {
-                $lider->aperturarCuenta();
+            $lider->aperturarCuenta(0,Divisa::find($datos['divisa_id'])->iso);
+
+            if($lider->lider_business){
+               
+                if($permiso = Permiso::where('nombre', 'Gestionar comisión promotores')->first()){
+                    $lider->addPermiso($permiso);
+                }else{
+                    
+                    $permiso = Permiso::create([
+                        'nombre' => 'Gestionar comisión promotores',
+                        'panel_id' => Panel::where('nombre','Travel')->first()->id
+                    ]);
+
+                    $lider->addPermiso($permiso);
+
+                }
             }
 
             $lider->cargar();
@@ -1772,6 +1790,37 @@ class UserController extends Controller
             'total' => $pagination->total(),
             'promotores' => $promotores
         ]);
+    }
+
+
+    public function updateComisionPromotor(Request $request, User $usuario){
+
+        $datos = $request->validate([
+            'comision_promotores' => 'required'
+        ],[
+            'comision_promotores.required' => 'La comisión es importante, no lo olvides'
+        ]);
+
+        try {
+            DB::beginTransaction();
+
+            $usuario->update($datos);
+
+            $usuario->cargar();
+
+            DB::commit();
+            $result = true;
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            $result =false;
+        }
+
+        return response()->json([
+            'result' => $result,
+            'usuario' => $usuario
+        ]);
+        
+
     }
 
 

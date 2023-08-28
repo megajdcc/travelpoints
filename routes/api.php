@@ -158,6 +158,8 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
 
     Route::post('usuarios-viajeros/fetch-data',[UserController::class,'fetchDataViajeros']);
 
+    Route::put('usuarios/{usuario}/update-comision-promotors',[UserController::class,'updateComisionPromotor']);
+
     
     /*****************************/
     /* TELEFONOS

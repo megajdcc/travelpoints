@@ -25,6 +25,7 @@ use App\Models\Negocio\Cupon;
 use App\Models\Negocio\Negocio;
 use App\Models\Negocio\Reservacion;
 use App\Models\Usuario\Permiso;
+use App\Models\Usuario\Rol;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\{Collection,Str};
@@ -88,6 +89,9 @@ class User extends Authenticatable
         'destino_id',
         'portada',
         'porcentaje_perfil',
+        'lider_business',
+        'comision_promotores',
+
          /**
           * Para el caso de los promotores el nivel 
           * [1 => Visitante (1 acti), 2 => Recomendador (100 activ), 3 => Promotor(500 acti) , 4 => Consul (1000 act) , 5 => Embajador (3000 activ)]
@@ -117,7 +121,8 @@ class User extends Authenticatable
         'is_password'       => 'boolean',
         'activo'            => 'boolean',
         'tps'               => 'float',
-        'nivel'             => 'array'
+        'nivel'             => 'array',
+        'lider_business' => 'boolean'
     ];
 
 
@@ -195,7 +200,7 @@ class User extends Authenticatable
     }
 
     public function rol(){
-        return $this->belongsTo('App\Models\Usuario\Rol','rol_id','id');
+        return $this->belongsTo(Rol::class,'rol_id','id');
     }
 
     public function permisos(){
@@ -902,7 +907,7 @@ class User extends Authenticatable
 
         if($this->rol->nombre == 'Promotor'){
             $referidos = $this->referidos->where('activo', true);
-
+            
             $result =  $this->update(['nivel' => [
                 'activaciones' => $referidos->count(),
                 'nivel' => $this->getNivel($referidos->count())
@@ -1087,6 +1092,7 @@ class User extends Authenticatable
        return $resultado;
     }
 
+    
     public function cargar(): User{
         $this->porcentaje_perfil = $this->getFillPercentage();
         $this->tokens;

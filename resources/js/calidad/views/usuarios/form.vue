@@ -155,7 +155,7 @@
 
                                     <validation-provider #default="{ errors,valid }" name="rol_id" rules="required">
                                  
-                                    <v-select v-model="form.rol_id" :options="getRols"
+                                    <v-select v-model="form.rol_id" :options="getRols.filter(val => !['Lider','Coordinador','Promotor'].includes(val.label))"
                                        :reduce="val => val.value" :clearable="false" input-id="user-role" :selectable="verificarRol" 
                                        :class="{'border-danger': !valid }"   />
 

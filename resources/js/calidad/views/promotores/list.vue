@@ -32,7 +32,7 @@
         <b-card class="mt-1">
             <b-table ref="refTable" :items="fetchData" responsive :fields="tableColumns" primary-key="id" :sort-by="sortBy"
               empty-text="No se encontró ningún Promotor" :sort-desc="isSortDirDesc" sticky-header="700px"
-              :no-border-collapse="false" borderless outlined :busy="loading" :perPage="perPage" showEmpty small stacked="md">
+              :no-border-collapse="false" borderless outlined :busy="loading" :perPage="perPage" showEmpty small stacked="md" thead-class="text-nowrap">
 
             <template #cell(ranking)="{index}">
               {{ index + 1}}
@@ -63,11 +63,48 @@
               {{ getNivels(item.nivel) }}
             </template>
 
-             <template #cell(comision_mes)="{ item }">
-                <span class="text-nowrap">
-                  {{ item.comision_mes ? item.comision_mes : 0  | currency(item.cuenta.divisa.iso) }} {{ item.cuenta.divisa.simbolo}}
-                </span>
-              </template>
+            <template #cell(comision_mes)="{ item }">
+              <span class="text-nowrap">
+                {{ item.comision_mes ? item.comision_mes : 0  | currency(item.cuenta ? item.cuenta.divisa.iso : 'USD') }} {{ item.cuenta ? item.cuenta.divisa.simbolo : '$' }}
+              </span>
+            </template>
+
+            <template #cell(lider_id)="{item}">
+                   <b-media v-if="item.lider_id" vertical-align="center" class="cursor-pointer" @click="mostrarAboutUsuario(item.lider)">
+                    <template #aside>
+                      <b-avatar size="32" :src="`/storage/img-perfil/${item.lider.imagen}`" :text="avatarText(`${item.lider.nombre} ${item.lider.apellido}`)"
+                        :variant="`light-${resolveUserRoleVariant(item.lider.rol.nombre)}`"
+                        @click="mostrarAboutUsuario(item.lider)"  />
+                    </template>
+                    <b-button @click="mostrarAboutUsuario(item.lider)" variant="outline-text" size="sm"
+                      class="font-weight-bold d-block text-nowrap p-0">
+                      {{ item.lider.nombre ? `${item.lider.nombre} ${item.lider.apellido}` : 'Sin definir nombre' }}
+                    </b-button>
+                    <small class="text-muted" v-if="item.lider.username">{{ item.lider.username }}</small>
+                    <b-button size="sm" v-if="$store.getters['usuario/isRol']('Desarrollador')" variant="text" @click="quitarLider(item.id)" title="Quitar Lider">
+                      <font-awesome-icon icon="fas fa-trash" class="my-0" color="#E11383" />
+                    </b-button>
+                  </b-media>
+
+                  <b-button variant="primary" v-else-if="$store.getters['usuario/isRol']('Desarrollador')" @click="asignarLider(item.id)" size="sm" >
+                    Asignar
+                  </b-button>
+
+                  <span v-else>
+                    Sin Asignar
+                  </span>
+            </template>
+
+            <template #cell(destino_id)="{item}">
+                <b v-if="item.destino_id">
+                  {{ item.destino.nombre }}
+                </b>
+
+                <b-button v-else size="sm" variant="danger" @click="showDestino(item)">
+                  Asignar Destino
+                </b-button>
+
+            </template>
             
             <!-- Column: Actions -->
             <template #cell(actions)="{item}">
@@ -85,7 +122,7 @@
 
     </listado>
 
-    <b-sidebar v-model="showUsersLiders" title="Asignar Lider a Promotor" @shown="cargarUsers">
+    <b-sidebar v-model="showUsersLiders" title="Asignar Lider a Promotor" @shown="cargarUsers" backdrop>
       <validation-observer ref="formValidate" #default="{handleSubmit}">
         <b-form @submit.prevent="handleSubmit(guardarAsignacion)">
           <b-container fluid>
@@ -124,7 +161,7 @@
       </validation-observer>
     </b-sidebar>
 
-    <b-sidebar v-model="showFormularioPromotor" title="Agregar Promotor">
+    <b-sidebar v-model="showFormularioPromotor" title="Agregar Promotor" backdrop>
       <validation-observer ref="formValidatePromotor" #default="{handleSubmit}">
         <b-form @submit.prevent="handleSubmit(guardarPromotor)">
           <b-container fluid>
@@ -142,9 +179,6 @@
                         </b-form-invalid-feedback>
                        </validation-provider>
                   </b-form-group>
-
-               
-
                
                   <b-form-group label="Nombre" label-for="nombre">
                      <validation-provider #default="{ errors,valid }" name="nombre" rules="required">
@@ -218,7 +252,7 @@
       </validation-observer>
     </b-sidebar>
 
-    <b-sidebar v-model="isShowDestino" title="Destino">
+    <b-sidebar v-model="isShowDestino" title="Destino" backdrop>
       <validation-observer ref="formValidateUser" #default="{handleSubmit}">
         <b-form @submit.prevent="handleSubmit(asociarDestino)">
           <b-container fluid>
@@ -351,7 +385,10 @@ export default {
     const isShowDestino  = ref(false)
     const formUser = ref({})
     const lider = ref({
-      id:null
+      id:null,
+      rol:{
+        nombre:'Lider'
+      }
     })  
 
     const {destinos} = toRefs(store.state.destino)
@@ -392,7 +429,8 @@ export default {
        }
 
        if(store.getters['usuario/isRol']('Lider')){
-          lider.value.id = usuario.value.id
+          lider.value.id = usuario.value.id,
+          lider.value.rol = usuario.value.rol 
        }
 
 
@@ -400,11 +438,12 @@ export default {
 
     }
 
-    
-    onMounted(() => cargarForm())
+    cargarForm()
 
     watch(lider_id,() => {
       lider.value.id = lider_id.value
+      lider.value.rol = {nombre:'Lider'}
+
     })
 
 
@@ -596,9 +635,12 @@ export default {
       asociarDestino,
       usuario,
       getColorsStatus,
-      getNivels: (nivel) => {
-      
-        return nivel.nivel == null ? 'No activo' : nivel.nivel + 1
+      getNivels: (nivel = null) => {
+        if(nivel){
+          return nivel.nivel == null ? 'No activo' : nivel.nivel + 1
+        }
+
+        return 'No activo';
       } 
     }
   }

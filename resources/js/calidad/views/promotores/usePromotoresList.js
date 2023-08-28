@@ -2,20 +2,25 @@
 import useFilterTable from '@core/utils/useFilterTable';
 
 import store from '@/store'
-import {ref} from 'vue'
+import {ref,computed} from 'vue'
 
 
 export default function usePromotoresList(lider){
 
- const tableColumns = [
-      { key:'ranking', sortable:'sortable',label:'Ranking'},
+  const tableColumns = ref([
+     { key:'ranking', sortable:'sortable',label:'Ranking'},
       { key: 'username', sortable: true,label:'Promotor' },
       { key: 'status',label:'Estatus',sortable:true},
       { key: 'nivel', sortable: true,label:"Nivel" },
       { key: 'comision_mes', sortable: true,label:'Comisiones del mes' },
       { key: 'activaciones', sortable: true,label:'Activaciones',sortKey:'lider_id' },
+      { key: 'lider_id', sortable: true,label:'Lider Asignado',sortKey:'lider_id' },
+      { key: 'destino_id', sortable: true,label:'Destino Asignado',sortKey:'destino_id' },
       { key: 'actions',label:"Contacto", sortable:true, sortKey:'comision',sortBy:'comision' },
-   ]
+  ])
+
+ 
+
 
   const {
       perPageOptions,

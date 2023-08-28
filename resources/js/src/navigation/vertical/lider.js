@@ -29,6 +29,18 @@ const lider = [
   },
 
   {
+    title: 'Comisiones de promotores',
+    icon:'fa-percent',
+    fontAwesome:true,
+    route:'comisiones.promotor',
+    resource:'Gestionar comisión promotores',
+    action:'write',
+    // class:'active-nav',
+    ExactPath:true
+  },
+
+
+  {
     title:'Hacer Reserva',
     route:'reservaciones.list',
     action:'read',

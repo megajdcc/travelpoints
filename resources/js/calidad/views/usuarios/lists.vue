@@ -31,7 +31,7 @@
           </b-col>
         </b-row>
       </div>
-      <b-table ref="refUserListTable" class="position-relative" :items="fetchUsers" :fields="tableColumns"
+      <b-table ref="refUserListTable" responsive class="position-relative" :items="fetchUsers" :fields="tableColumns"
         primary-key="id" :sort-by.sync="sortBy" show-empty empty-text="Usuarios no cargados"
         :sort-desc.sync="isSortDirDesc" stacked="md" :busy="loading">
 

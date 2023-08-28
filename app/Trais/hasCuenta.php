@@ -106,6 +106,31 @@ trait hasCuenta
 
    }
 
+   public function getDivisa() : Divisa{
+        
+        if($this->isCuenta()){
+            return  $this->cuenta->divisa;
+        }
+        
+        return Divisa::where('iso','USD')->first();
+    }
+
+
+
+   public function isCuenta() : bool{
+      return $this->cuenta ? true : false;
+   }  
+
+
+
+   public function crearCuentaSiNoExiste(){
+
+      if(!$this->isCuenta()){
+            $this->aperturarCuenta(0,$this->getDivisa()->iso);
+      }
+
+   }
+
 
    
 

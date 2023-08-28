@@ -516,6 +516,36 @@ export default [
    },
 
    /*****************************************/
+   /* Comisiones
+   /*************************************** */
+   {
+      path:'/comisiones-promotores',
+      component:() => import('views/comisiones-promotor/index.vue'),
+      children:[
+         {
+            path:'',
+            name:'comisiones.promotor',
+            component:() => import('views/comisiones-promotor/configuracion.vue'),
+
+            meta:{
+               pageTitle:'Configurar las comisiones',
+               resource:'Comisiones de promotores',
+               action:'read',
+               breadcrumb:[
+                  {
+                     text:'Configuración',
+                     active:true
+                  }
+               ]
+            }
+
+         }
+      ]
+   },
+
+
+
+   /*****************************************/
    /* Coordinadores
    /*************************************** */
    {

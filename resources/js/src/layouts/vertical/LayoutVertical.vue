@@ -47,7 +47,7 @@ export default {
           coordinador: navMenuItemsCoordinador
         };
         let k = Object.keys(RolMenus).find(val => {
-          if(usuario.value.rol){
+          if(usuario.value.rol && usuario.value.rol.nombre){
             return val == usuario.value.rol.nombre.toLowerCase()
           }
           return false

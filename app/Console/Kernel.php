@@ -43,6 +43,7 @@ class Kernel extends ConsoleKernel
         $schedule->command('queue:flush')->daily();
         $schedule->job(new verificarReservas)->daily();
         $schedule->command('usuario:establecer-nivel')->daily();
+        $schedule->command('usuario:aperturar-cuenta')->daily();
 
     }
 

@@ -51,7 +51,9 @@ export default {
 				destino:null,
 				portada:null,
 				porcentaje_perfil:0,
-				nivel:{nivel:null,activaciones:0}
+				nivel:{nivel:null,activaciones:0},
+				lider_business:false,
+				comision_promotores:null
 			},
 
 			user: {
@@ -177,6 +179,8 @@ export default {
 				porcentaje_perfil:0,
 				nivel:{nivel:null,activaciones:0},
 				status:3,
+				lider_business:false,
+				comision_promotores:null
 
 
 
@@ -285,6 +289,8 @@ export default {
 				porcentaje_perfil:0,
 				nivel:{nivel:null,activaciones:0},
 				status:3,
+				lider_business:false,
+				comision_promotores:null
 			}
 		},
 
@@ -378,6 +384,23 @@ export default {
 				}else{
 					state.usuario.status = 3
 				}
+		},
+
+
+		updateComisionPromotors(state,{id,comision_promotores}){
+
+
+			if(state.usuario.id == id){
+				state.usuario.comision_promotores = comision_promotores
+				localStorage.setItem('userData',JSON.stringify(state.usuario))
+			}else{
+				let i = state.usuarios.findIndex(val => val.id === id)
+
+				if(i != -1){
+					state.usuarios[i].comision_promotores = comision_promotores
+				}
+
+			}
 		}
 
 	},
@@ -1151,6 +1174,20 @@ export default {
 				})
 			})
 		
+		},
+
+		guardarComisionPromotor({commit,state},datos){
+			return new Promise((resolve, reject) => {
+				
+				axios.put(`/api/usuarios/${datos.id}/update-comision-promotors`,datos).then(({data}) => {
+					if(data.result){
+						commit('updateComisionPromotors',datos)
+					}
+					resolve(data)
+
+				}).catch(e => reject(e))
+
+			})
 		}
 
 

@@ -915,7 +915,7 @@ class DashboardController extends Controller
                 ];
             }),
             'categories' => $tres_mayores_comisiones_mes->pluck('username'),
-            'divisa' => ['iso' => $tres_mayores_comisiones_mes->first()->iso, 'simbolo' => $tres_mayores_comisiones_mes->first()->simbolo]
+            'divisa' => ['iso' => $tres_mayores_comisiones_mes->first()?->iso ?: 'USD', 'simbolo' => $tres_mayores_comisiones_mes->first()?->simbolo ?: '$']
         ]);
     }
 
@@ -1052,8 +1052,8 @@ class DashboardController extends Controller
     public function eficaciaViajeros(Request $request){
 
         $usuario = $request->user();
-        $uso = $usuario->viajerosActivos() * 100 / $usuario->totalViajeros();
-        $activos = $usuario->viajerosActivosConsumo() * 100 / $usuario->totalViajeros();
+        $uso = $usuario->totalViajeros() > 0 ? $usuario->viajerosActivos() * 100 / $usuario->totalViajeros() : 0;
+        $activos = $usuario->totalViajeros() > 0 ? $usuario->viajerosActivosConsumo() * 100 / $usuario->totalViajeros() : 0;
         return response()->json([
             'uso' => $uso,
             'activos' => $activos

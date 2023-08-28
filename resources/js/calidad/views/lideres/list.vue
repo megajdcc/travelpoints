@@ -5,7 +5,7 @@
 
       <template #btn-action>
 
-        <b-button variant="primary" @click="agregarUsuario('lider')" v-if="$can('write', 'Gestion de coordinador') && ['Coordinador'].includes(usuario.rol ? usuario.rol.nombre : '')"
+        <b-button variant="primary" @click="agregarUsuario('lider')" v-if="$can('write', 'Gestion de coordinador') && ['Coordinador','Desarrollador'].includes(usuario.rol ? usuario.rol.nombre : '')"
           class="d-flex flex-column justify-content-center">
           Agregar Lider
         </b-button>
@@ -231,6 +231,37 @@
                   </validation-provider>
                 </b-form-group>
 
+                <!-- Divisa -->
+                 <b-form-group label-for="divisa" description="Divisa en la que va a recibir la comisión este lider">
+                        
+                    <template #label>
+                      Divisa: <span class="text-danger">*</span>
+                    </template>
+
+                    <validation-provider #default="{ errors, valid }" name="divisa_id" rules="required">
+                      <v-select v-model="form.divisa_id" :reduce="option => option.id" label="nombre" :options="divisas.filter(val => val.iso != 'Tp')"></v-select>
+                      <b-form-invalid-feedback :state="valid">
+                        {{ errors[0] }}
+                      </b-form-invalid-feedback>
+                    </validation-provider>
+
+                </b-form-group>
+                <!-- Lider Business -->
+                <b-form-group description="Los lideres business, pueden gestionar cuanto cobrarán sus promotores asignados" >
+                  <template #label>
+                    ¿ Lider Business ? 
+                  </template>
+
+                  <validation-provider name="lider_business" #default="{errors,valid}" rules="required">
+                    <b-form-radio-group v-model="form.lider_business" :options="[{text:'Sí',value:true},{text:'No',value:false}]" >
+                    </b-form-radio-group>
+                    
+                       <b-form-invalid-feedback :state="valid">
+                          {{ errors[0] }}
+                        </b-form-invalid-feedback>
+                  </validation-provider>
+
+                </b-form-group>
               </b-col>
             </b-row>
 
@@ -266,6 +297,7 @@ import { required, email } from '@validations'
 
 import { getStatusLegendLider} from '@core/utils/utils'
 
+
 import {
   BCard,
   BRow,
@@ -288,7 +320,8 @@ import {
   BForm,
   BFormGroup,
   BFormInvalidFeedback,
-  BButtonGroup
+  BButtonGroup,
+  BFormRadioGroup
 
 } from 'bootstrap-vue';
 
@@ -325,6 +358,7 @@ export default {
     ValidationProvider,
     vSelect,
     BButtonGroup,
+    BFormRadioGroup,
     Promotores:() => import('views/promotores/list.vue')
 
 
@@ -333,6 +367,8 @@ export default {
   setup(props, { emit }) {
 
     const { usuario } = toRefs(store.state.usuario)
+    const {divisas} = toRefs(store.state.divisa)
+
     const lideres = ref([])
     const coordinadores = ref([])
 
@@ -352,6 +388,8 @@ export default {
       lider_id: null,
       coordinador_id:null,
       tipo_usuario:1, // 1 => Lider , 2 => Promotor
+      divisa_id: null,
+      lider_business:false,
     })
 
     const formulario = ref({
@@ -366,6 +404,7 @@ export default {
       store.dispatch('usuario/cargarLideres').then((data)  => lideres.value = data)
       store.dispatch('usuario/cargarCoordinadores').then((data) => coordinadores.value = data)
       
+      store.dispatch('divisa/getDivisas')
 
     }
 
@@ -505,7 +544,9 @@ export default {
         email: '',
         lider_id: null,
         coordinador_id: null,
+        divisa_id:null,
         tipo_usuario: 1, // 1 => Lider , 2 => Promotor
+        lider_business:false
 
       }
     }
@@ -538,7 +579,8 @@ export default {
       getStatusLegendLider,
       tipo,
       clearForm,
-      usuario:computed(() => store.state.usuario.usuario)
+      usuario:computed(() => store.state.usuario.usuario),
+      divisas
     }
 
   }

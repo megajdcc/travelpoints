@@ -25,7 +25,7 @@ class EstablecerNivel implements ShouldQueue
      *
      * @return void
      */
-    public function __construct(string $user_type = 'promotor')
+    public function __construct(string $user_type = 'Promotor')
     {
         // Todos los promotores por defecto en base al tipo de usuario
         $this->users = User::whereHas('rol',fn(Builder $q) => $q->where('nombre',$user_type))->get();

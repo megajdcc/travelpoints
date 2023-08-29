@@ -112,17 +112,19 @@
 
             <!-- Column: Actions -->
             <template #cell(actions)="{item}">
-              <b-dropdown variant="link" no-caret :right="$store.state.appConfig.isRTL">
-                <template #button-content>
-                  <feather-icon icon="MoreVerticalIcon" size="16" class="align-middle text-body" />
-                </template>
 
-                <b-dropdown-item @click="agregarUsuario('promotor',item.id)" title="Asignar Promotor" v-if="$can('write','Gestion de coordinador')">
-                  <font-awesome-icon icon="fas fa-user-plus"/>
-                  Asignar promotor
-                </b-dropdown-item>
+              <b-button-group size="sm">
+                  <b-button variant="warning" @click="agregarUsuario('promotor', item.id)" title="Asignar Promotor" v-if="$can('write', 'Gestion de coordinador')">
+                    <font-awesome-icon icon="fas fa-user-plus"/>
+                    Asignar promotor
+                  </b-button>
 
-              </b-dropdown>
+                  <b-button variant="outline-primary" @click="editarLider(item)" title="Editar Lider">
+                    <font-awesome-icon icon="fas fa-edit"/>
+                  </b-button>
+
+              </b-button-group>
+        
             </template>
 
 
@@ -247,7 +249,7 @@
 
                 </b-form-group>
                 <!-- Lider Business -->
-                <b-form-group description="Los lideres business, pueden gestionar cuanto cobrarán sus promotores asignados" >
+                <b-form-group description="Los lideres business, pueden gestionar cuanto cobrarán sus promotores asignados" v-if="form.tipo_usuario == 1" >
                   <template #label>
                     ¿ Lider Business ? 
                   </template>
@@ -367,7 +369,7 @@ export default {
   setup(props, { emit }) {
 
     const { usuario } = toRefs(store.state.usuario)
-    const {divisas} = toRefs(store.state.divisa)
+    const { divisas } = toRefs(store.state.divisa)
 
     const lideres = ref([])
     const coordinadores = ref([])
@@ -381,6 +383,7 @@ export default {
     const tipo  =ref(1) // 1 lider  2 => promotor
 
     const form = ref({
+      id:null,
       username: '',
       nombre: '',
       apellido: null,
@@ -400,16 +403,13 @@ export default {
 
     const cargarForm = () => {
 
-      setTimeout(() => actions.refetchData(), 1500)
       store.dispatch('usuario/cargarLideres').then((data)  => lideres.value = data)
       store.dispatch('usuario/cargarCoordinadores').then((data) => coordinadores.value = data)
-      
       store.dispatch('divisa/getDivisas')
 
     }
 
-
-    onMounted(() => cargarForm())
+    cargarForm()
 
     const cambiarEstado = (user_id) => {
 
@@ -435,7 +435,6 @@ export default {
     }
 
     const guardarAsignacion = () => {
-      
 
       store.dispatch('usuario/asignarCoordinadorLider', formulario.value).then(({ result }) => {
 
@@ -479,7 +478,6 @@ export default {
         }
        
       }else{
-        form.value.coordinador_id = usuario.value.id
         form.value.tipo_usuario = 1
         tipo.value = 1
         showFormularioAdd.value = true;
@@ -490,10 +488,14 @@ export default {
 
     const guardarUsuario = () => {
 
-      if (['Coordinador'].includes(usuario.value.rol ? usuario.value.rol.nombre : '') && form.value.tipo_usuario == 1){
-        form.value.coordinador_id = usuario.value.id
-      }
       let url_dispatch = 'usuario/guardarLider';
+
+
+      if (usuario.value.rol) {
+        if(!form.value.coordinador_id){
+          form.value.coordinador_id = form.value.rol.nombre == 'Coordinador' ? usuario.value.id : null
+        }
+      }
 
       if(form.value.tipo_usuario == 2){
         url_dispatch = 'usuario/guardarPromotor'
@@ -502,7 +504,7 @@ export default {
       store.dispatch(url_dispatch, form.value).then(({ result }) => {
 
         if (result) {
-          toast.success(`Se ha agregado con éxito al ${tipo.value == 1 ? 'Lider' : 'Promotor'}`)
+          toast.success(`Se ha guardado con éxito al ${tipo.value == 1 ? 'Lider' : 'Promotor'}`)
           actions.refetchData();
           emit('change')
 
@@ -511,7 +513,6 @@ export default {
           showFormularioAdd.value = false;
         } else {
           toast.info(`No se pudo guardar, al ${tipo.value == 1 ? 'Lider' : 'Promotor'}, inténtelo de nuevo mas tarde.`)
-
         }
       }).catch(e => {
 
@@ -537,19 +538,37 @@ export default {
     }
 
     const clearForm = () => {
-      form.value = {
-        username: '',
-        nombre: '',
-        apellido: null,
-        email: '',
-        lider_id: null,
-        coordinador_id: null,
-        divisa_id:null,
-        tipo_usuario: 1, // 1 => Lider , 2 => Promotor
-        lider_business:false
+      Object.keys(form.value).forEach((val) => {
 
-      }
-    }
+        if (val == 'tipo_usuario') {
+         form.value[val] = 1
+        }
+
+        if (val == 'lider_business') {
+          form.value[val] = false
+        }
+
+      })
+
+    } 
+
+    const editarLider = (lid) => {
+
+      Object.keys(form.value).forEach(val => {
+        if(val == 'tipo_usuario'){
+          form.value[val] = 1
+        }else if(val == 'divisa_id'){
+          form.value[val] = lid.cuenta.divisa_id
+        }else{
+            form.value[val] = lid[val]
+        }
+      })
+
+      showFormularioAdd.value = true
+
+
+    } 
+
 
     return {
 
@@ -580,7 +599,8 @@ export default {
       tipo,
       clearForm,
       usuario:computed(() => store.state.usuario.usuario),
-      divisas
+      divisas,
+      editarLider
     }
 
   }

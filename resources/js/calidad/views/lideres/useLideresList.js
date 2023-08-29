@@ -2,7 +2,7 @@
 import useFilterTable from '@core/utils/useFilterTable';
 
 import store from '@/store'
-import {ref} from 'vue'
+import {ref,watch} from 'vue'
 
 
 export default function useLideresList(coordinador){
@@ -78,6 +78,9 @@ export default function useLideresList(coordinador){
   } 
 
 
+  watch(refTable,() => refetchData())
+
+  
 
   return {
      perPageOptions,

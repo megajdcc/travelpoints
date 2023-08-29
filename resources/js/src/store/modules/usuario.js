@@ -1043,7 +1043,6 @@ export default {
 					resolve(data)
 
 				}).catch(e => reject(e))
-
 			})
 		},
 

@@ -8,16 +8,16 @@
               <b-row>
                 <b-col cols="12" md="6">
 
-                  <b-form-group>
+                  <b-form-group description="Este porcentaje se lo daremos a tus promotores ">
                     <template #label>
-                      Comisión a tus promotores: <span class="text-danger"> * </span>
+                      Comisión a tus promotores: <span class="text-danger">*</span> <b>{{ formulario.comision_promotores }}%</b>
                     </template> 
 
                     <validation-provider name="comision_promotores" rules="required" #default="{errors,valid}" >
                       
                         <el-slider
                           v-model="formulario.comision_promotores"
-                          show-input>
+                          show-input :format-tooltip="(val) => `${val} %` ">
                         </el-slider>
 
                       <b-form-invalid-feedback :state="valid">

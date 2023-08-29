@@ -1080,20 +1080,10 @@ class UserController extends Controller
         $filtro = $request->all();
         $rol_user = $request->user()->rol->nombre;
 
-        $pagination = User::where([
-            ['username', 'LIKE', "%{$filtro['q']}%", 'OR'],
-            ['email', 'LIKE', "%{$filtro['q']}%", 'OR'],
-            ['nombre', 'LIKE', "%{$filtro['q']}%", 'OR'],
-            ['apellido', 'LIKE', "%{$filtro['q']}%", 'OR'],
-            ['direccion', 'LIKE', "%{$filtro['q']}%", 'OR'],
-            ['fecha_nacimiento', 'LIKE', "%{$filtro['q']}%", 'OR'],
-            ['codigo_postal', 'LIKE', "%{$filtro['q']}%", 'OR'],
-            ['bio', 'LIKE', "%{$filtro['q']}%", 'OR'],
-        ])
-            ->whereHas('rol', function (Builder $q) {
-                $q->where('nombre', 'Lider');
-            })
+        $searchs = collect(['username','email','nombre','apellido','direccion','fecha_nacimiento','codigo_postal','bio']);
 
+        $pagination = User::where(fn($q) => $searchs->each(fn($v) => $q->orWhere($v,"LIKE","%{$filtro['q']}%")))
+            ->whereHas('rol', fn($q) =>  $q->where('nombre', 'Lider'))
             ->when(isset($filtro['coordinador']) && !is_null($filtro['coordinador']) && $rol_user == 'Coordinador', function ($q) use ($filtro) {
                 $q->where('coordinador_id', $filtro['coordinador']);
             })
@@ -1104,12 +1094,7 @@ class UserController extends Controller
         $lideres = collect($pagination->items())->each(fn ($val) => $val->cargar());
 
         foreach ($lideres as $lider) {
-
-            $lider->coordinador?->cargar();
-
-            // dd($promotor);
             $status_user = $lider->getStatusUser();
-
             if ($status_user['promotores_activos']['ultimo_mes'] > 0) {
                 $lider->status = 1;
             } else if ($status_user['promotores_activos']['ultimo_trimestre'] > 0) {
@@ -1276,12 +1261,17 @@ class UserController extends Controller
 
     public function guardarLider(Request $request)
     {
+        $lider = null;
+
+        if($request->get('id') && !empty($request->get('id'))){
+            $lider = User::find($request->get('id'));
+        }
 
         $datos  = collect($request->validate([
-            'username'       => 'required|unique:users,username',
+            'username'       => ['required', $lider ? Rule::unique('users','username')->ignore($lider) : 'required|unique:users,username' ] ,
             'nombre'         => 'required',
             'apellido'       => 'required',
-            'email'          => 'required|email|unique:users,email',
+            'email'          => ['required', $lider ? Rule::unique('users', 'email')->ignore($lider) : 'required|unique:users,email'],
             'lider_id'       => 'nullable',
             'coordinador_id' => 'nullable',
             'tipo_usuario'   => 'nullable',
@@ -1295,19 +1285,28 @@ class UserController extends Controller
         try {
             DB::beginTransaction();
 
-            $lider = User::create(
-                [
-                    ...$datos->except(['divisa_id'])->toArray(),
-                    ...[
-                        'password' => fake()->password(),
-                        'rol_id' => Rol::where('nombre', 'Lider')->first()->id,
+            if($request->has('id') && !empty($request->get('id'))){
+                $lider->update([
+                        ...$datos->except(['divisa_id'])->toArray()
+                    ]);
+
+            }else{
+
+                $lider = User::create(
+                    [
+                        ...$datos->except(['divisa_id'])->toArray(),
+                        ...[
+                            'password' => fake()->password(),
+                            'rol_id' => Rol::where('nombre', 'Lider')->first()->id,
+                        ]
                     ]
-                ]
-            );
+                );
 
-            $lider->asignarPermisosPorRol();
+                $lider->asignarPermisosPorRol();
 
-            $lider->aperturarCuenta(0,Divisa::find($datos['divisa_id'])->iso);
+                $lider->aperturarCuenta(0, Divisa::find($datos['divisa_id'])->iso);
+            }
+
 
             if($lider->lider_business){
                
@@ -1322,6 +1321,10 @@ class UserController extends Controller
 
                     $lider->addPermiso($permiso);
 
+                }
+            }else{
+                if($permiso = Permiso::where('nombre', 'Gestionar comisión promotores')->first()) {
+                    $lider->quitarPermisos(collect([$permiso]));
                 }
             }
 

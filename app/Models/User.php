@@ -1109,7 +1109,7 @@ class User extends Authenticatable
         foreach ($this->negocios as $key => $negocio) {
             $negocio->descripcion = '';
         }
-        
+       
         $this->solicitudes;
         $this->destino;
         // $this->faqs;

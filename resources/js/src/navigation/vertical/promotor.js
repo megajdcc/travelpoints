@@ -28,6 +28,9 @@ const promotor = [
     ExactPath:true
   },
 
+ 
+
+
   {
     title:'Hacer Reserva',
     route:'reservaciones.list',
@@ -91,6 +94,17 @@ const promotor = [
           }
         ]
 
+      },
+
+      {
+          title: 'Simulador de Ingresos',
+          icon:'fa-calculator',
+          fontAwesome:true,
+          route:'simulador.promotor',
+          resource:'Simulador de ingresos',
+          action:'read',
+          // class:'active-nav',
+          ExactPath:true
       },
 
       {

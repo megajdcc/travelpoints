@@ -28,6 +28,18 @@ const lider = [
     ExactPath:true
   },
 
+   {
+    title: 'Simulador de Ingresos',
+    icon:'fa-calculator',
+    fontAwesome:true,
+    route:'simulador.lider',
+    resource:'Simulador de ingresos',
+    action:'read',
+    class:'active-nav',
+    ExactPath:true
+  },
+
+
   {
     title: 'Comisiones de promotores',
     icon:'fa-percent',

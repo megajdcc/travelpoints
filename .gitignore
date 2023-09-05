@@ -14,3 +14,4 @@ queue.log
 public/mix-manifest.json
 public/service-worker.js
 cron-log.txt
+.env.testing

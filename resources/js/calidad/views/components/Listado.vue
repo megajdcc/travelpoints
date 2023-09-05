@@ -22,6 +22,9 @@
                   <b-input-group size="sm">
                      <b-form-input :value="searchQuery" @input="updateQ" type="search" :placeholder="searchPlaceholder" />
                      <b-input-group-append >
+                        <b-button size="sm" @click="refetchData()" :title="$t('Recargar')">
+                           <font-awesome-icon  icon="fas fa-rotate-right"/>
+                        </b-button>
                         <slot name="btn-action"></slot>
                      </b-input-group-append>
                   </b-input-group>

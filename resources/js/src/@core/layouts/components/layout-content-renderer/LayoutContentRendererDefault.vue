@@ -14,10 +14,7 @@
       </slot>
 
       <div class="content-body">
-        <transition
-          :name="routerTransition"
-          mode="out-in"
-        >
+        <transition :name="routerTransition" mode="out-in">
           <slot />
         </transition>
       </div>

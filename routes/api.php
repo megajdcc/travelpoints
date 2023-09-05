@@ -5,13 +5,13 @@ use App\Http\Controllers\Auth\{AuthController};
 use App\Http\Controllers\{AcademiaVideoController, AmenidadController, ApplicationController, CargoController, CategoriaFaqController, CategoriaProductoController, ComisionController, ConsumoController, CuponController, DashboardController, DatosPagosController, DestinoController, DivisaController, EmpleadoController, EventoController, FaqController, FormaPagoController, HomeController, HorarioController, HorarioReservacionController, IataController, MovimientoController, NegocioCategoriaController, NegocioController, UserController, NotificacionController, RolController, PermisoController, SolicitudController, TelefonoController, OpinionController, PanelController, ProductoController, PublicacionController, ReservacionController, RetiroController, SistemaController, SucursalController, TiendaController, VentaController};
 use App\Http\Middleware\convertirNull;
 use Laravel\Socialite\Facades\Socialite;
-use App\Models\{CategoriaFaq, CategoriaProducto, Pais, Estado, Ciudad,};
+use App\Models\{CategoriaFaq, CategoriaProducto, Pais, Estado, Ciudad, Invitacion, };
 use App\Http\Controllers\AtraccionController;
 use App\Models\Divisa;
 use App\Http\Controllers\ImagenController;
 use App\Models\Negocio\HorarioReservacion;
 
-use App\Http\Controllers\{PaisController, CiudadController, EstadoController, LoteController, MensajesVonageController, PaginaController, ReunionController, TarjetaController};
+use App\Http\Controllers\{PaisController, CiudadController, EstadoController, InvitacionController, LoteController, MensajesVonageController, PaginaController, ReunionController, TarjetaController};
 
 /*
 |--------------------------------------------------------------------------
@@ -143,7 +143,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::get('usuarios/lider/{lider}/quitar/coordinador', [UserController::class, 'quitarCoordinadorLider']);
 
     Route::post('usuarios/promotor/save', [UserController::class, 'guardarPromotor']);
-    Route::post('usuarios/lider/save', [UserController::class, 'guardarLider']);
+    Route::post('usuarios/lider/save', [UserController::class, 'guardarLiusuarios/lideres/fetch/datader']);
 
     Route::put('usuarios/{usuario}/asociar/tarjeta',[UserController::class,'asociarTarjeta']);
     Route::delete('usuarios/{usuario}/cancelar/tarjeta/{tarjeta}',[UserController::class,'cancelarTarjeta']);
@@ -208,7 +208,6 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::get('negocio/categorias/{categoria}/get', [NegocioCategoriaController::class, 'getCategoria']);
     Route::resource('negocio/categorias', NegocioCategoriaController::class);
     Route::post('negocio/categorias/fetch/data', [NegocioCategoriaController::class, 'fetchData']);
-    Route::get('negocio/categorias/get/all', [NegocioCategoriaController::class, 'getAll']);
 
 
     /*****************************/
@@ -288,7 +287,6 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::post('divisas/fetch/data', [DivisaController::class, 'fetchData']);
     Route::resource('divisas', DivisaController::class);
     Route::get('divisas/get/principal', [DivisaController::class, 'getPrincipal']);
-    Route::get('divisas/get/all', fn () => response()->json(Divisa::all()));
 
 
     /*****************************/
@@ -305,7 +303,6 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::get('iatas/{iata}/fetch/data', [IataController::class, 'fetch']);
     Route::post('iatas/fetch/data', [IataController::class, 'fetchData']);
     Route::resource('iatas', IataController::class);
-    Route::get('iatas/get/all', [IataController::class, 'getIatas']);
 
     /*****************************/
     /* Imagenes
@@ -588,9 +585,12 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::get('dashboard/porcentaje-uso/viajeros', [UserController::class, 'getPorcentajeUsoViajeros']);
     Route::get('dashboard/porcentaje-viajeros/por-pais/{usuario?}',[DashboardController::class,'getPorcentajeViajerosPorPais']);
     Route::get('dashboard/tres-mayores-comisiones-promotores',[DashboardController::class,'comisionesAltasMesPromotores']);
+    Route::get('dashboard/tres-mayores-comisiones-liders', [DashboardController::class, 'comisionesAltasMesLideres']);
+
 
     Route::get('dashboard/total-viajeros',[DashboardController::class, 'totalViajerosRegistrados']);
     Route::get('dashboard/porcentaje-efectividad',[DashboardController::class, 'eficaciaViajeros']);
+    Route::get('dashboard/coordinador/{usuario}/fetch-data',[DashboardController::class,'fetchDataCoordinador']);
     
     /*****************************/
     /* Datos de pagos
@@ -717,6 +717,16 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
         Route::post('descargar/fetch-data-promotores', [UserController::class, 'descargarPromotoresReport']);
     });
 
+    /**************************/
+    /* Invitacions
+    /**************************/
+    Route::post("invitacions/fetch-data", [InvitacionController::class, 'fetchData']);
+    Route::get('invitacions/{invitacion}/recordar',[InvitacionController::class,'recordar']);
+    Route::resource('invitacions',InvitacionController::class);
+
+
+   
+
 });
 
 Route::put('usuario/{usuario}/establecer/contrasena', [UserController::class, 'EstablecerContrasena'])->name('establecercontrasena');
@@ -777,6 +787,7 @@ Route::post('eventos/fetch/eventos', [EventoController::class, 'fetchEventos']);
 // Negocios
 
 Route::post('negocios/fetch/data/public', [NegocioController::class, 'fetchDataPublic']);
+Route::get('negocio/categorias/get/all', [NegocioCategoriaController::class, 'getAll']);
 
 // Rango de precios Productos
 
@@ -812,3 +823,15 @@ Route::get('travels/map/destino/{destino}', [HomeController::class, 'getTravels'
 // Cupones
 
 Route::post('cupons/fetch-data/public',[CuponController::class,'fetchDataPublic']);
+
+// invitador
+Route::get("invitacions/{invitacion}/fetch-data",[InvitacionController::class,'fetch']);
+Route::post('solicituds/afiliar-invitacion',[InvitacionController::class,'AfiliarNegocio']);
+Route::put('invitacion/assets/solicitud/{solicitud}',[InvitacionController::class, 'assetsPostNegocioSolicitud']);
+
+// Divisas
+Route::get('divisas/get/all', fn () => response()->json(Divisa::all()));
+
+// Iatas
+Route::get('iatas/get/all', [IataController::class, 'getIatas']);
+

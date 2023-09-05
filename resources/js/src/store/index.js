@@ -174,6 +174,10 @@ import vonage from './modules/vonage.js'
 
 import reunion from './modules/reunion.js'
 
+// Invitacions
+import invitacion from './modules/invitacion.js'
+
+
 Vue.use(Vuex)
 
 
@@ -331,7 +335,8 @@ export default new Vuex.Store({
     lote,
     tarjeta,
     vonage,
-    reunion
+    reunion,
+    invitacion
   },
   strict:false,
 

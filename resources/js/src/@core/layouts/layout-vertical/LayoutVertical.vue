@@ -29,12 +29,12 @@
 
     <!-- CONTENT TYPE: Left -->
     <transition :name="routerTransition" mode="out-in">
-      <component :is="layoutContentRenderer"
-        :key="layoutContentRenderer === 'layout-content-renderer-left' ? $route.meta.navActiveLink || $route.name : null">
-        <template v-for="(index, name) in $scopedSlots" v-slot:[name]="data">
-          <slot :name="name" v-bind="data" />
-        </template>
-      </component>
+        <component :is="layoutContentRenderer"
+          :key="layoutContentRenderer === 'layout-content-renderer-left' ? $route.meta.navActiveLink || $route.name : null">
+          <template v-for="(index, name) in $scopedSlots" v-slot:[name]="data">
+            <slot :name="name" v-bind="data" />
+          </template>
+        </component>
     </transition>
     <!--/ Content -->
 

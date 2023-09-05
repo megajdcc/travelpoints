@@ -46,7 +46,7 @@ axiosIns.interceptors.response.use((response) => {
       if (response.data.message == "Unauthenticated.") {
 
         localStorage.removeItem('token');
-        // localStorage.removeItem('userData');
+        localStorage.removeItem('userData');
         localStorage.removeItem('usuarioId');
         localStorage.removeItem('habilidades');
 
@@ -61,15 +61,13 @@ axiosIns.interceptors.response.use((response) => {
       } else if (response.data.message == 'Unauthorized.') {
         
         localStorage.removeItem('token');
-        // localStorage.removeItem('userData');
+        localStorage.removeItem('userData');
         localStorage.removeItem('usuarioId');
-
         localStorage.removeItem('habilidades');
-
-        // console.log('Cerrando')
         if (window.location.pathname != '/login') {
-          router.push({ name: 'login' })
           useAuth().logout();
+          router.push({ name: 'login' })
+          
          
         }
 

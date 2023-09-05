@@ -1,6 +1,5 @@
 
-import store from '@/store'
-import {ref,toRefs,computed} from 'vue';
+import {ref} from 'vue';
 import iconMapa from '@images/icons/icon_map.png' 
 
 export default function useMap(){

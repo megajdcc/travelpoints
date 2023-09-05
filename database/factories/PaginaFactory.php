@@ -27,14 +27,18 @@ class PaginaFactory extends Factory
      */
     public function definition()
     {   
-         
-
         return [
-            'nombre' => $this->faker->name(),
-            'contenido' => $this->faker->text(3000),
-            'ruta' => $this->faker->unique()->slug(20),
-            'usuario_id' => User::get()->random(),
-            'activo' => $this->faker->boolean(),
+            'nombre' > fake()->text(),
+            'contenido' => fake()->realText(),
+            'is_termino' => false,
+            'is_politica' => false,
+            'ruta' => fake()->slug(),
+            'usuario_id' => User::factory()->create(),
+            'activo' => true,
+            'is_contacto' => false,
+            'showHeader' => false,
         ];
+
+      
     }
 }

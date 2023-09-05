@@ -852,4 +852,10 @@ class NegocioController extends Controller
     }
 
 
+    public function invitar(Request $request, User $usuario){
+
+        return response()->json();
+    }
+
+
 }

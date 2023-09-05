@@ -40,7 +40,7 @@ class VerificarRedPromotores implements ShouldQueue
 
         // Captura a todos los lideres
         $lideres = User::whereHas('rol', fn($q) => $q->where('nombre', 'Lider'))->get();
-
+        $coordinadores = User::whereHas('rol', fn ($q) => $q->where('nombre', 'Coordinador'))->get();
 
         foreach ($promotores as $key => $promotor) {
 
@@ -70,6 +70,17 @@ class VerificarRedPromotores implements ShouldQueue
                 });
                 $lider->referidos()->detach();
 
+            }
+        }
+
+        foreach($coordinadores as $coordinador){
+            $status = $coordinador->getStatus();
+
+            if($status == 'Inactivo'){
+                $coordinador->lideres->each(function($lidr){
+                    $lidr->coordinador_id = null;
+                    $lidr->save();
+                });
             }
         }
     }

@@ -74,10 +74,10 @@ class UserController extends Controller
     private function validar(Request $request, User $usuario = null)
     {
         return $request->validate([
-            'username'         => ['required', $usuario ? Rule::unique('users', 'username')->ignore($usuario): 'unique: users,username'],
+            'username'         => ['required', $usuario ? Rule::unique('users', 'username')->ignore($usuario) : 'unique:users,username'],
             'nombre'           => 'nullable',
             'apellido'         => 'nullable',
-            'email'            => ['required', $usuario ? Rule::unique('users', 'email')->ignore($usuario)   : 'unique: users,email'],
+            'email'            => ['required', $usuario ? Rule::unique('users', 'email')->ignore($usuario)   : 'unique:users,email'],
             'direccion'        => 'nullable',
             'fecha_nacimiento' => 'nullable',
             'rol_id'           => 'required',
@@ -99,7 +99,6 @@ class UserController extends Controller
             'email.required'  => 'Este campo es obligatorio',
             'email.email'     => 'El email no es valido por favor verifique',
             'email.unique'    => 'El email debe ser único ya otro usuario lo esta usando.',
-
         ]);
     }
 
@@ -140,6 +139,8 @@ class UserController extends Controller
 
             DB::rollBack();
             $result = false;
+
+            dd($e->getMessage());
         }
 
         return response()->json(['result' => $result, 'usuario' => ($result) ? $usuario : null]);
@@ -1080,6 +1081,11 @@ class UserController extends Controller
         $filtro = $request->all();
         $rol_user = $request->user()->rol->nombre;
 
+        if($request->has('coordinador') && !empty($request->get('coordinador'))){
+            $user = User::find($request->get('coordinador'));
+            $rol_user = $user->rol->nombre;
+        }
+
         $searchs = collect(['username','email','nombre','apellido','direccion','fecha_nacimiento','codigo_postal','bio']);
 
         $pagination = User::where(fn($q) => $searchs->each(fn($v) => $q->orWhere($v,"LIKE","%{$filtro['q']}%")))
@@ -1268,10 +1274,10 @@ class UserController extends Controller
         }
 
         $datos  = collect($request->validate([
-            'username'       => ['required', $lider ? Rule::unique('users','username')->ignore($lider) : 'required|unique:users,username' ] ,
+            'username'       => ['required', $lider ? Rule::unique('users','username')->ignore($lider) : 'unique:users,username' ] ,
             'nombre'         => 'required',
             'apellido'       => 'required',
-            'email'          => ['required', $lider ? Rule::unique('users', 'email')->ignore($lider) : 'required|unique:users,email'],
+            'email'          => ['required', $lider ? Rule::unique('users', 'email')->ignore($lider) : 'unique:users,email'],
             'lider_id'       => 'nullable',
             'coordinador_id' => 'nullable',
             'tipo_usuario'   => 'nullable',
@@ -1567,7 +1573,6 @@ class UserController extends Controller
 
     public function getEstado(User $usuario)
     {
-
         return response()->json([
             'ultimaActivacion' =>  $usuario->ultimaActivacion()
         ]);

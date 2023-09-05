@@ -175,19 +175,23 @@ export default {
 
     const cargarStatus = () => {
 
-      store.dispatch('usuario/cargarStatus').then(({ultimaActivacion:ult}) => {
-        ultimaActivacion.value = ult
-      })
+     
 
       if(store.getters['usuario/isRol']('Promotor')){
-          store.dispatch('usuario/getStatusPromotor')
+        store.dispatch('usuario/cargarStatus').then(({ultimaActivacion:ult}) => {
+          ultimaActivacion.value = ult
+        })
+
+          store.dispatch('usuario/getStatusPromotor',usuario.value.id)
       }
 
       if (store.getters['usuario/isRol']('Lider')) {
         store.dispatch('usuario/getStatusLider')
       }
 
-    
+      if (store.getters['usuario/isRol']('Coordinador')) {
+        store.dispatch('usuario/getStatusCoordinador')
+      }
 
     }
 
@@ -209,6 +213,15 @@ export default {
           'Cuando pasan 60 días sin un promotor activo. Pierde su red de viajeros que pasan a Travel Points. Su cuenta se resetea y pierde su red, pero no se borra.'
         ];
       }
+
+      if(store.getters['usuario/isRol']('Coordinador')){
+        mensajes = [
+          'Almenos tienes 10 líderes activos',
+          'Tienes menos de 10 líderes activos más de 1 día y menos de 29 días.',
+          'Cuando pasan 30 días sin al menos 10 líderes activos. Perderás tu red de lideres y pasarán a TravelPoints'
+        ];
+      }
+
 
       return mensajes[status -1];
 

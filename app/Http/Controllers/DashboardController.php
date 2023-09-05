@@ -207,17 +207,20 @@ class DashboardController extends Controller
 
         if(\in_array($rolName, ['Promotor', 'Lider', 'Coordinador'])){
 
-             $paises = DB::table('usuario_referencia','ur')
-                        ->join('users as u','ur.referido_id','u.id')
-                        ->join('users as promotor','ur.usuario_id','promotor.id')
-                        ->join('ciudads as c','u.ciudad_id','c.id')
-                        ->join('estados as e','c.estado_id','e.id')
-                        ->join('pais as p','e.pais_id','p.id')
-                        ->selectRaw("distinct(p.codigo) as codigo,count(p.id) as cant")
-                        ->when($rolName == 'Promotor',fn($q) => $q->where('promotor.id',$user->id))
-                        ->when($rolName == 'Lider', fn ($q) => $q->where('promotor.lider_id',$user->id))
-                        ->groupBy('codigo')
-                        ->get();
+
+            $paises = Pais::selectRaw("distinct(pais.codigo) as codigo, count(pais.id) as cant")
+                            ->join('estados as e','pais.id','e.pais_id')
+                            ->join('ciudads as c','e.id','c.estado_id')
+                            ->join('users as u','c.id', 'u.ciudad_id')
+                            ->join('usuario_referencia as ur','u.id','ur.referido_id')
+                            ->join('users as prom', 'ur.usuario_id','prom.id')
+                            ->when($rolName == 'Promotor',fn($q) => $q->where('prom.id',$user->id))
+                            ->when($rolName == 'Lider',fn($q) => $q->where('prom.lider_id',$user->id))
+                            ->when($rolName == 'Coordinador',function($q) use($user){
+                                $q->join('users as lider','prom.lider_id','lider.id')
+                                ->where('lider.coordinador_id',$user->id);
+                            })
+                            ->groupBy('codigo')->get();
 
             $paises =  [
                 'name' => 'Origen de viajeros',
@@ -581,31 +584,63 @@ class DashboardController extends Controller
     public function getTotalReferidosRegistradoAnual(Request $request,User $usuario = null){
 
         $user = $usuario ?: $request->user();
+        
+        $usuarios_registrados = User::selectRaw('count(id) as usuarios,month(created_at) as mes')
+                                    ->whereHas('referidor',function(Builder $q) use($user){
+                                        $q->when($user->rol->nombre == 'Promotor',fn($qu) => $qu->where('id',$user->id))
+                                        ->when($user->rol->nombre == 'Lider', fn ($qu) => $q->where('lider_id', $user->id))
+                                        ->when($user->rol->nombre == 'Coordinador', function($qu) use($user){
+                                            $qu->whereHas('lider', function($query) use($user){
+                                                $query->where('coordinador_id',$user->id);
+                                            });
+                                        });
+                                    })
+                                    ->whereRaw("year(users.created_at) = year(now())")
+                                    ->groupBY('mes')
+                                    ->orderBy('mes', 'asc')
+                                    ->get();
 
-        $usuarios_registrados = DB::table("users" ,'u')
-        ->selectRaw('count(u.id) as usuarios,month(u.created_at) as mes')
-        ->join('usuario_referencia as ur','u.id','ur.referido_id')
-        ->join('users as promotor','ur.usuario_id','promotor.id')
-        ->whereRaw("year(u.created_at) = year(now())")
-        ->when($user->rol->nombre == 'Promotor',fn($q) => $q->where('promotor.id',$user->id))
-        ->when($user->rol->nombre == 'Lider', fn ($q) => $q->where('promotor.lider_id', $user->id))
-        ->groupBy('mes')
-        ->orderBy('mes','asc')
-        ->get();
 
+        // $usuarios_registrados = DB::table("users" ,'u')
+        // ->selectRaw('count(u.id) as usuarios,month(u.created_at) as mes')
+        // ->join('usuario_referencia as ur','u.id','ur.referido_id')
+        // ->join('users as promotor','ur.usuario_id','promotor.id')
+        // ->whereRaw("year(u.created_at) = year(now())")
+        // ->when($user->rol->nombre == 'Promotor',fn($q) => $q->where('promotor.id',$user->id))
+        // ->when($user->rol->nombre == 'Lider', fn ($q) => $q->where('promotor.lider_id', $user->id))
+        // ->groupBy('mes')
+        // ->orderBy('mes','asc')
+        // ->get();
+        // dd($usuarios_registrados);
+        $usuarios_con_consumos = User::selectRaw('count(distinct(users.id)) as usuarios,month(users.created_at) as mes')
+        ->has('consumos')
+        ->whereHas('referidor', function (Builder $q) use ($user) {
+            $q->when($user->rol->nombre == 'Promotor', fn ($qu) => $qu->where('id', $user->id))
+                ->when($user->rol->nombre == 'Lider', fn ($qu) => $q->where('lider_id', $user->id))
+                ->when($user->rol->nombre == 'Coordinador', function ($qu) use ($user) {
+                    $qu->whereHas('lider', function ($query) use ($user) {
+                        $query->where('coordinador_id', $user->id);
+                    });
+                });
+        })
+            ->whereRaw("year(users.created_at) = year(now())")
+            ->groupBY('mes')
+            ->orderBy('mes', 'asc')
+            ->get();
+        // $usuarios_con_consumos =
+        // DB::table("users", 'u')
+        // ->selectRaw('count(distinct(u.id)) as usuarios,month(u.created_at) as mes')
+        // ->join('usuario_referencia as ur', 'u.id', 'ur.referido_id')
+        // ->join('users as promotor', 'ur.usuario_id', 'promotor.id')
+        // ->join('ventas as v', 'u.id','v.cliente_id')
+        // ->whereRaw("year(v.created_at) = year(now())")
+        // ->when($user->rol->nombre == 'Promotor', fn ($q) => $q->where('promotor.id', $user->id))
+        // ->when($user->rol->nombre == 'Lider', fn ($q) => $q->where('promotor.lider_id', $user->id))
+        // ->groupBy('mes')
+        // ->orderBy('mes', 'asc')
+        // ->get();
 
-        $usuarios_con_consumos =
-        DB::table("users", 'u')
-        ->selectRaw('count(distinct(u.id)) as usuarios,month(u.created_at) as mes')
-        ->join('usuario_referencia as ur', 'u.id', 'ur.referido_id')
-        ->join('users as promotor', 'ur.usuario_id', 'promotor.id')
-        ->join('ventas as v', 'u.id','v.cliente_id')
-        ->whereRaw("year(v.created_at) = year(now())")
-        ->when($user->rol->nombre == 'Promotor', fn ($q) => $q->where('promotor.id', $user->id))
-        ->when($user->rol->nombre == 'Lider', fn ($q) => $q->where('promotor.lider_id', $user->id))
-        ->groupBy('mes')
-        ->orderBy('mes', 'asc')
-        ->get();
+        // dd($usuarios_con_consumos);
 
         $categorias = collect([
             'Enero',
@@ -798,22 +833,25 @@ class DashboardController extends Controller
 
         if(\in_array($rolName, ['Promotor', 'Lider', 'Coordinador'])){
 
-             $paises = DB::table('usuario_referencia','ur')
-                        ->join('users as u','ur.referido_id','u.id')
-                        ->join('users as promotor','ur.usuario_id','promotor.id')
-                        ->join('ciudads as c','u.ciudad_id','c.id')
-                        ->join('estados as e','c.estado_id','e.id')
-                        ->join('pais as p','e.pais_id','p.id')
-                        ->selectRaw("distinct(p.pais) as pais,count(p.id) as cant")
-                        ->when($rolName == 'Promotor',fn($q) => $q->where('promotor.id',$user->id))
-                        ->when($rolName == 'Lider', fn ($q) => $q->where('promotor.lider_id', $user->id))
-                        ->groupBy('pais')
-                        ->get();
+            $paises = Pais::selectRaw("distinct(pais.pais) as pais, count(pais.id) as cant")
+                        ->join('estados as e','pais.id','e.pais_id')
+                        ->join('ciudads as c','e.id','c.estado_id')
+                        ->join('users as u','c.id', 'u.ciudad_id')
+                        ->join('usuario_referencia as ur','u.id','ur.referido_id')
+                        ->join('users as prom', 'ur.usuario_id','prom.id')
+                        ->when($rolName == 'Promotor',fn($q) => $q->where('prom.id',$user->id))
+                        ->when($rolName == 'Lider',fn($q) => $q->where('prom.lider_id',$user->id))
+                        ->when($rolName == 'Coordinador',function($q) use($user){
+                            $q->join('users as lider','prom.lider_id','lider.id')
+                            ->where('lider.coordinador_id',$user->id);
+                        })
+                        ->groupBy('pais')->get();
+
                 $data = collect([]);
                 foreach($paises as $pais){
                     $data->push([
                         'pais' => $pais->pais,
-                        'porcentaje' => $pais->cant *  100 / $paises->count()
+                        'porcentaje' => round($pais->cant * 100 / $paises->reduce(fn(int $car, $p) => $p->cant + $car , 0),2)
                     ]);
                 }
             return response()->json($data);
@@ -917,6 +955,40 @@ class DashboardController extends Controller
             'categories' => $tres_mayores_comisiones_mes->pluck('username'),
             'divisa' => ['iso' => $tres_mayores_comisiones_mes->first()?->iso ?: 'USD', 'simbolo' => $tres_mayores_comisiones_mes->first()?->simbolo ?: '$']
         ]);
+    }
+
+
+    public function comisionesAltasMesLideres(Request $request){
+
+        $usuario = $request->user();
+
+        $tres_mayores_comisiones_mes = DB::table('users', 'u')
+            ->join('estado_cuentas as ec', 'ec.model_id', 'u.id')
+            ->join('movimientos as m', 'ec.id', 'm.estado_cuenta_id')
+            ->join('divisas as d', 'ec.divisa_id', 'd.id')
+            ->where('ec.model_type', $usuario->model_type)
+            ->where('u.coordinador_id', $usuario->id)
+            ->where('m.tipo_movimiento', Movimiento::TIPO_INGRESO)
+            ->whereBetween('m.created_at', [now()->subMonths(1), now()]) // Mayores comisiones del ultimo mes
+            ->select(DB::raw("sum(m.monto) as monto, u.username,d.iso,d.simbolo"))
+            ->groupBy('u.username', 'simbolo', 'iso')
+            ->orderBy('monto', 'desc')
+            ->limit(3)
+            ->get();
+
+        return response()->json([
+            'series' => $tres_mayores_comisiones_mes->map(function ($val) {
+                return [
+                    'y' => (int) $val->monto,
+                    'dataLabels' => [
+                        'format' => $val->iso . ' ' . number_format((float) $val->monto, 2, ',', '.') . $val->simbolo
+                    ]
+                ];
+            }),
+            'categories' => $tres_mayores_comisiones_mes->pluck('username'),
+            'divisa' => ['iso' => $tres_mayores_comisiones_mes->first()?->iso ?: 'USD', 'simbolo' => $tres_mayores_comisiones_mes->first()?->simbolo ?: '$']
+        ]);
+
     }
 
 
@@ -1058,6 +1130,15 @@ class DashboardController extends Controller
             'uso' => $uso,
             'activos' => $activos
         ]);
+    }
+
+
+    public function fetchDataCoordinador(Request $request,User $usuario){
+
+        return response()->json([
+            'totalLideres' => $usuario->lideres->count(),
+        ]);
+        
     }
 
 }

@@ -104,6 +104,172 @@ export default {
 
 		}),
 
+
+	getters:{
+
+		draft(state){
+			return clone(state.user);
+		},
+
+		draftUsuario(state){
+			return clone(state.usuario)
+		},
+
+
+		isLikeModel:(state) => {
+
+			return ({model_id,model_type}) => {
+				return state.usuario.likes.filter(val => val.model_id === model_id && val.model_type == model_type).length ? true : false
+			}
+		},
+
+		conPermiso:(state) => {
+
+
+			return (permiso) => {
+
+				if(state.usuario){
+					return (state.usuario.roles[0].permissions.find((permission) => permission.name == permiso))
+				}
+
+				return false;
+				
+			}
+		},
+
+		getUsuarios: (state) => {
+			return (rol) => {
+				return state.usuarios.filter(user => {
+					
+
+					let i  = user.roles.findIndex((val,i ) => roles.name == rol)
+					if(i > 0 ){
+						return true;
+					}else{
+						return false;
+					}
+
+				});
+			} 
+		},
+
+
+		getUsuario:(state) => {
+			return (id) => {
+				return state.usuarios.find(user => user.id ==  id);
+			}
+		},
+
+
+		getListado:(state) => {
+			return (users_id) => {
+
+				var users = [];
+
+				users_id.forEach((e,i) => {
+
+					var us = state.usuarios.find((u) => {
+
+					 return (u.id == e.user_id);
+					})
+
+					if(us != undefined){
+						if(users.find((u) => u.id == us.id)  == undefined){
+							users.push(us);
+						}
+						
+					}
+					
+				});
+
+
+				return users;
+
+			}
+		},
+
+
+		isRol(state){
+			return (rol) => {
+				if(state.usuario.rol){
+					return rol  == state.usuario.rol.nombre
+				}
+				return false;
+			}
+		},
+
+
+		getFullName : (state) => `${state.usuario.nombre} ${state.usuario.apellido}`, 
+
+		avatar:(state) => state.usuario.avatar,
+		
+		getCoordinadoresHotel:(state) => {
+
+			return (rol) => {
+				return state.usuarios.filter(val => val.rol.nombre == rol)
+			}
+
+		},
+
+		getFilterUsers:(state) => {
+			return (roles_name) => {
+
+
+				let result =  state.usuarios.filter(val => {
+					return (roles_name.find(value => value == val.rol.nombre) != undefined) ? true : false
+				});
+				
+				return result.map(val => {
+					return {label:val.nombre,value:val.id,id:val.id,email:val.email};
+				})
+			}
+		},
+
+		miSaldo(state){
+			return state.usuario.cuenta ? state.usuario.cuenta.saldo : 0
+		},
+
+		miDivisa:(state) => {
+			return state.usuario.cuenta ? state.usuario.cuenta.divisa.iso : 'USD'
+		},
+
+		rolUser(state){
+			return state.usuario.rol ? state.usuario.rol.nombre : ''
+		},
+
+		activaciones(state){
+			
+			if(state.usuario.nivel){
+				return state.usuario.nivel
+			}
+			return {nivel:null,activaciones:0}
+
+		},
+
+		getStatus(state) {
+			let statuses = ['Activo','En Peligro','Inactivo']
+			return state.usuario.status != undefined ? statuses[state.usuario.status - 1] : statuses[2];
+		},
+
+		getNivel(state){
+			let niveles = ['Visitante','Recomendador','Promotor','Consul','Embajador']
+			return state.usuario.nivel ? niveles[state.usuario.nivel.nivel] : niveles[0]
+
+		},
+
+		rolName(state){
+			return state.usuario.rol ? state.usuario.rol.nombre : '';
+		},
+
+		totalPromotores(state){
+			return state.usuario.promotores ? state.usuario.promotores.length : 0
+		},
+
+	
+
+		
+	},
+
 	mutations:{
 
 		cargarUser(state,data){
@@ -375,9 +541,10 @@ export default {
 
 
 		setStatusCoordinador(state,{lideres_activos}){
+				console.log(lideres_activos);
 				const {ultimo_mes,ultimo_trimestre } = lideres_activos
 
-				if(ultimo_mes > 0){
+				if(ultimo_mes >= 10){
 					state.usuario.status = 1;
 				}else if(ultimo_trimestre > 0){
 					state.usuario.status = 2;
@@ -401,172 +568,15 @@ export default {
 				}
 
 			}
+		},
+
+		setInvitador(state,invitador) {
+			state.user = invitador
 		}
 
 	},
 
-	getters:{
-
-		draft(state){
-			return clone(state.user);
-		},
-
-		draftUsuario(state){
-			return clone(state.usuario)
-		},
-
-
-		isLikeModel:(state) => {
-
-			return ({model_id,model_type}) => {
-				return state.usuario.likes.filter(val => val.model_id === model_id && val.model_type == model_type).length ? true : false
-			}
-		},
-
-		conPermiso:(state) => {
-
-
-			return (permiso) => {
-
-				if(state.usuario){
-					return (state.usuario.roles[0].permissions.find((permission) => permission.name == permiso))
-				}
-
-				return false;
-				
-			}
-		},
-
-		getUsuarios: (state) => {
-			return (rol) => {
-				return state.usuarios.filter(user => {
-					
-
-					let i  = user.roles.findIndex((val,i ) => roles.name == rol)
-					if(i > 0 ){
-						return true;
-					}else{
-						return false;
-					}
-
-				});
-			} 
-		},
-
-
-		getUsuario:(state) => {
-			return (id) => {
-				return state.usuarios.find(user => user.id ==  id);
-			}
-		},
-
-
-		getListado:(state) => {
-			return (users_id) => {
-
-				var users = [];
-
-				users_id.forEach((e,i) => {
-
-					var us = state.usuarios.find((u) => {
-
-					 return (u.id == e.user_id);
-					})
-
-					if(us != undefined){
-						if(users.find((u) => u.id == us.id)  == undefined){
-							users.push(us);
-						}
-						
-					}
-					
-				});
-
-
-				return users;
-
-			}
-		},
-
-
-		isRol(state){
-			return (rol) => {
-				if(state.usuario.rol){
-					return rol  == state.usuario.rol.nombre
-				}
-				return false;
-			}
-		},
-
-
-		getFullName : (state) => `${state.usuario.nombre} ${state.usuario.apellido}`, 
-
-		avatar:(state) => state.usuario.avatar,
-		
-		getCoordinadoresHotel:(state) => {
-
-			return (rol) => {
-				return state.usuarios.filter(val => val.rol.nombre == rol)
-			}
-
-		},
-
-		getFilterUsers:(state) => {
-			return (roles_name) => {
-
-
-				let result =  state.usuarios.filter(val => {
-					return (roles_name.find(value => value == val.rol.nombre) != undefined) ? true : false
-				});
-				
-				return result.map(val => {
-					return {label:val.nombre,value:val.id,id:val.id,email:val.email};
-				})
-			}
-		},
-
-		miSaldo(state){
-			return state.usuario.cuenta ? state.usuario.cuenta.saldo : 0
-		},
-
-		miDivisa:(state) => {
-			return state.usuario.cuenta ? state.usuario.cuenta.divisa.iso : 'USD'
-		},
-
-		rolUser(state){
-			return state.usuario.rol ? state.usuario.rol.nombre : ''
-		},
-
-		activaciones(state){
-			
-			if(state.usuario.nivel){
-				return state.usuario.nivel
-			}
-			return {nivel:null,activaciones:0}
-
-		},
-
-		getStatus(state) {
-			let statuses = ['Activo','En Peligro','Inactivo']
-			return state.usuario.status != undefined ? statuses[state.usuario.status - 1] : statuses[2];
-		},
-
-		getNivel(state){
-			let niveles = ['Visitante','Recomendador','Promotor','Consul','Embajador']
-			return state.usuario.nivel ? niveles[state.usuario.nivel.nivel] : niveles[0]
-
-		},
-
-		rolName(state){
-			return state.usuario.rol ? state.usuario.rol.nombre : '';
-		},
-
-		totalPromotores(state){
-			return state.usuario.promotores ? state.usuario.promotores.length : 0
-		}
-
-		
-	},
+	
 
 	actions:{
 
@@ -906,7 +916,7 @@ export default {
 
 			return new Promise((resolve, reject) => {
 				axios.get(`/api/dashboard/tablero/promotor/get-status/${usuario_id}`).then(({data}) => {
-					// commit('setStatusPromotor',data.status)
+					commit('setStatusPromotor',data.status)
 					resolve(data)
 				}).catch(e => reject(e))
 
@@ -928,7 +938,8 @@ export default {
 
 			return new Promise((resolve, reject) => {
 				axios.get(`/api/dashboard/tablero/coordinador/get-status`).then(({data}) => {
-					commit('setStatusCoordinador',data)
+
+					commit('setStatusCoordinador',data.status)
 					resolve(data)
 				}).catch(e => reject(e))
 
@@ -1187,7 +1198,19 @@ export default {
 				}).catch(e => reject(e))
 
 			})
-		}
+		},
+
+		cargarDashboardCoordinador({commit,state},usuario_id){
+			return new Promise((resolve, reject) => {
+				axios.get(`/api/dashboard/coordinador/${usuario_id}/fetch-data`).then(({data}) => {
+					resolve(data)
+				}).catch(e => reject(e))
+			})
+
+		},
+
+
+		
 
 
 	}

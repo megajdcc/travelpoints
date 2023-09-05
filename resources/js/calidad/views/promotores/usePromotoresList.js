@@ -44,7 +44,7 @@ export default function usePromotoresList(lider){
     sortBy:sortBy.value,
     isSortDirDesc:isSortDirDesc.value,
     q:searchQuery.value,
-    lider:lider && lider.value ? lider.value.id : null
+    lider:lider.value.id
    }).then(({total:all,promotores}) => {
 
     total.value = all

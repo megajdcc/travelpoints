@@ -1,13 +1,13 @@
 <template>
     <b-card>
-      <b-container>
+      <b-container fluid>
           <b-row >
             <b-col cols="12" md="6">
               <b-form-group v-if="para == 'Lider'" label="Promotores" description="Cuántos promotores participarán en tu equipo">
                 <el-slider v-model="form.promotores" show-input></el-slider>
               </b-form-group>
 
-              <b-form-group label="Activaciones diarias" description="Anota a cuántos nuevos viajeros calculas que puedas invitar a Travel Points.">
+              <b-form-group label="Activaciones diarias" description="Anota a cuántos nuevos viajeros calculas que puedas invitar en el día a Travel Points.">
                   <el-slider v-model="form.acti_diarias" show-input></el-slider>
                 </b-form-group>
 

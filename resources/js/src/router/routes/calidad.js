@@ -443,7 +443,7 @@ export default [
       component:() => import('views/promotores/index.vue'),
       children:[
          {
-            path:':id?',
+            path:':liderId?',
             props:true,
             name:'promotores.list',
             component:() => import('views/promotores/list.vue'),
@@ -3358,6 +3358,45 @@ export default [
          },
          
          
+      ]
+   },
+
+
+
+   {
+      path:'/negocios-invitados',
+      component:() => import('views/negocios-invitados/index.vue'),
+      children:[
+         {
+            path:'',
+            component:() => import('views/negocios-invitados/list.vue'),
+            name:'negocios-invitados.list',
+            meta:{
+               resource:'Negocios invitados',
+               action:'read',
+               pageTitle:'Negocios invitados',
+
+               breadcrumb:[
+                  {text:'Listado',active:true}
+               ]
+            }
+         },
+         {
+            path:"create",
+            name:'negocios-invitados.create',
+            component:() => import('views/negocios-invitados/create.vue'),
+             meta:{
+               resource:'Negocios invitados',
+               action:'write',
+               pageTitle:'Invitar a negocio',
+               navActiveLink:'negocios-invitados.list',
+               breadcrumb:[
+                  {text:'Listado',active:false,to:{name:'negocios-invitados.list'}},
+                  {text:'Crear invitación',active:true}
+
+               ]
+            }
+         }
       ]
    },
 

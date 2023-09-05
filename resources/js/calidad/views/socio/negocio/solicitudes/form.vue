@@ -454,7 +454,7 @@
                         <label for="map-canvas">Posici&oacute;n en el mapa <span class="required">*</span></label>
                         <p class="text-grey">
                         <ul>
-                           <li class="text-grey">Arrastra el marcador hacia la ubicaci&oacute;n del hotel.</li>
+                           <li class="text-grey">Arrastra el marcador hacia la ubicaci&oacute;n del negocio.</li>
                            <li class="text-grey">Puedes apoyarte escribiendo una ubicaci&oacute;n como una ciudad,
                               municipio, colonia, etc. y seleccionar una de las opciones sugeridas.</li>
                         </ul>

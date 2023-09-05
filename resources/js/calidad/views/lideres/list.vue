@@ -19,69 +19,15 @@
             :no-border-collapse="false" borderless outlined :busy="loading" :perPage="perPage" showEmpty small
             stacked="md">
 
-            <!-- Column: User -->
-            <template #cell(username)="{ item }">
-              <b-media vertical-align="center">
-                <template #aside>
-                  <b-avatar size="32" :src="item.avatar" :text="avatarText(`${item.nombre} ${item.apellido}`)"
-                    :variant="`light-${resolveUserRoleVariant(item.rol ? item.rol.nombre : '')}`"
-                    :to="{ name: 'mostrar.usuario', params: { id: item.id } }" disabled />
-                </template>
-                <b-link :to="{ name: 'mostrar.usuario', params: { id: item.id } }" disabled
-                  class="font-weight-bold d-block text-nowrap">
-                  {{ `${item.nombre} ${item.apellido}` }}
-                </b-link>
-                <small class="text-muted" v-if="item.username">{{ item.username }}</small>
-              </b-media>
-            </template>
-
-            <template #cell(coordinador_id)="{ item }">
-              <b-media vertical-align="center" v-if="item.coordinador">
-                <template #aside>
-                  <b-avatar size="32" :src="item.avatar"
-                    :text="avatarText(`${item.coordinador ? item.coordinador.nombre : ''} ${item.coordinador ? item.coordinador.apellido : ''}`)"
-                    :variant="`light-${resolveUserRoleVariant(item.coordinador ? item.coordinador.rol.nombre : '')}`"
-                    :to="{ name: 'mostrar.usuario', params: { id: item.coordinador ? item.coordinador.id : null } }" disabled />
-                </template>
-                <b-link :to="{ name: 'mostrar.usuario', params: { id: item.coordinador ? item.coordinador.id : null } }" disabled
-                  class="font-weight-bold d-block text-nowrap">
-                  {{ `${item.coordinador ? item.coordinador.nombre : ''} ${item.coordinador ? item.coordinador.apellido : ''}` }}
-                </b-link>
-                <small class="text-muted" v-if="item.coordinador">{{ item.coordinador.username }}</small>
-                <b-button variant="danger" title="Quitar Coordinador" @click="quitarCoordinador(item.id)" v-loading="loading"
-                  size="sm">
-                  <font-awesome-icon icon="fas fa-trash" />
-                  Quitar Coordinador
-                </b-button>
-              </b-media>
-
-             <b-button v-else variant="primary" title="Asignar Coordinador" @click="asignarCoordinador(item.id)" v-loading="loading"
-                size="sm">
-                Sin coordinador (¿Asignar?)
-              </b-button> 
-
-            </template>
-
-
-            <template #cell(activo)="{ item }">
-              <b-form-checkbox v-model="item.activo" switch @change="cambiarEstado(item.id)" v-if="['Desarrollador', 'Administrador'].includes(usuario.rol.nombre)">
-                {{ item.activo ? 'Activo (¿Desactivar?)' : 'Desactivo (¿Activar?)' }}
-              </b-form-checkbox>
-
-              <span v-else>
-                  {{ item.activo ? 'Activo (¿Desactivar?)' : 'Desactivo (¿Activar?)' }}
-              </span>
-
-            </template>
-
-            <template #cell(id)="{ item, detailsShowing, toggleDetails }">
-                  <b-button @click="toggleDetails" variant="primary" size="sm" >
-                      # {{ item.id }}
+            <template #cell(id)="{ item }">
+                #{{ item.id }}
+                  <!-- <b-button @click="toggleDetails" variant="primary" size="sm" class="text-nowrap" >
+                    
                       <font-awesome-icon :icon="['fas' , detailsShowing ? 'fa-angle-up' : 'fa-angle-down']"/>
-                  </b-button>
+                  </b-button> -->
             </template>
 
-             <template #row-details="{ item }">
+             <!-- <template #row-details="{ item }">
 
                <el-divider content-position="left">Promotores</el-divider>
                 <b-container fluid>
@@ -92,6 +38,33 @@
                   </b-row>
                 </b-container>
 
+            </template> -->
+
+
+            <!-- Column: User -->
+            <template #cell(username)="{ item }">
+              <b-media vertical-align="center" class="cursor-pointer" @click="mostrarAboutUsuario(item)">
+                <template #aside>
+                  <b-avatar size="32" :src="item.avatar" :text="avatarText(`${item.nombre} ${item.apellido}`)"
+                    :variant="`light-${resolveUserRoleVariant(item.rol.nombre)}`"
+                    @click="mostrarAboutUsuario(item)"  />
+                </template>
+                <b-button @click="mostrarAboutUsuario(item)" variant="outline-text" size="sm"
+                  class="font-weight-bold d-block text-nowrap p-0">
+                  {{ item.nombre ? `${item.nombre} ${item.apellido}` : 'Sin definir nombre' }}
+                </b-button>
+                <small class="text-muted" v-if="item.username">{{ item.username }}</small>
+              </b-media>
+            </template>
+
+
+            <template #cell(activo)="{ item }">
+              <b-form-checkbox v-model="item.activo" switch @change="cambiarEstado(item.id)" v-if="['Desarrollador', 'Administrador','Coordinador'].includes(usuario.rol.nombre)"  >
+                {{ item.activo ? 'Activo' : 'Desactivado' }}
+              </b-form-checkbox>
+              <span v-else>
+                  {{ item.activo ? 'Activo' : 'Desactivado' }}
+              </span>
             </template>
 
             <!-- Column: Rol -->
@@ -102,6 +75,31 @@
                 <span class="align-text-top text-capitalize">{{ item.rol ? item.rol.nombre : '' }}</span>
               </div>
             </template>
+
+             <template #cell(coordinador_id)="{ item }">
+              <b-media vertical-align="center" v-if="item.coordinador" @click="mostrarAboutUsuario(item.coordinador)">
+                <template #aside>
+                  <b-avatar size="32" :src="item.avatar"
+                    :text="avatarText(`${item.coordinador ? item.coordinador.nombre : ''} ${item.coordinador ? item.coordinador.apellido : ''}`)"
+                    variant="light-primary"
+                    class="cursor-pointer"
+                     />
+                </template>
+               <b-button @click="mostrarAboutUsuario(item.coordinador)" variant="outline-text" size="sm"
+                    class="font-weight-bold d-block text-nowrap p-0">
+                    {{ item.coordinador ? `${item.coordinador.nombre} ${item.coordinador.apellido}` : 'Sin definir nombre' }}
+                  </b-button>
+                <small class="text-muted" v-if="item.coordinador">{{ item.coordinador.username }}</small>
+               
+              </b-media>
+
+             <b-button v-else variant="primary" title="Asignar Coordinador" @click="asignarCoordinador(item.id)" v-loading="loading"
+                size="sm">
+                Sin coordinador (¿Asignar?)
+              </b-button> 
+
+            </template>
+
 
 
             <template #cell(status)="{ item }">
@@ -114,9 +112,17 @@
             <template #cell(actions)="{item}">
 
               <b-button-group size="sm">
-                  <b-button variant="warning" @click="agregarUsuario('promotor', item.id)" title="Asignar Promotor" v-if="$can('write', 'Gestion de coordinador')">
-                    <font-awesome-icon icon="fas fa-user-plus"/>
-                    Asignar promotor
+
+                  <b-button variant="danger" title="Quitar Coordinador" @click="quitarCoordinador(item.id)" v-loading="loading"
+                    size="sm" class="text-nowrap" v-if="item.coordinador_id">
+                    <font-awesome-icon icon="fas fa-trash" />
+                    Quitar Coordinador
+                  </b-button>
+
+                  
+                  <b-button variant="warning" :to="{name:'promotores.list',params:{liderId:item.id}}" title="Ver sus Promotores" v-if="$can('write', 'promotores')" class="text-nowrap">
+                    <font-awesome-icon icon="fas fa-list"/>
+                    Promotores
                   </b-button>
 
                   <b-button variant="outline-primary" @click="editarLider(item)" title="Editar Lider">
@@ -289,7 +295,7 @@
 <script>
 
 import store from '@/store'
-import { computed, toRefs, ref, onMounted, watch } from 'vue'
+import { computed, toRefs, ref, onMounted, watch,onActivated ,inject} from 'vue'
 import { avatarText } from '@core/utils/filter'
 
 import useLideresList from './useLideresList.js'
@@ -378,6 +384,9 @@ export default {
     const showUsersCoordinador = ref(false)
     const formValidate = ref(null)
     const formValidateLider = ref(null)
+    const userAbout = inject('userAbout')
+    const showAboutProfile = inject('showAboutProfile')
+
 
     const showFormularioAdd = ref(false)
     const tipo  =ref(1) // 1 lider  2 => promotor
@@ -569,6 +578,13 @@ export default {
 
     } 
 
+    onMounted(() => actions.refetchData())
+
+    const mostrarAboutUsuario = (user) => {
+      userAbout.value = user
+      showAboutProfile.value = true
+    }
+
 
     return {
 
@@ -600,7 +616,8 @@ export default {
       clearForm,
       usuario:computed(() => store.state.usuario.usuario),
       divisas,
-      editarLider
+      editarLider,
+      mostrarAboutUsuario
     }
 
   }

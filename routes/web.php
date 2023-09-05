@@ -7,8 +7,10 @@ use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\EstadoCuentaController;
 use App\Http\Controllers\MensajesVonageController;
 use App\Http\Controllers\UserController;
+use App\Mail\InvitacionNegocio;
 use App\Mail\NuevoConsumo;
 use App\Models\Consumo;
+use App\Models\Invitacion;
 use App\Models\Movimiento;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Barryvdh\DomPDF\PDF as PDFB;
@@ -18,17 +20,13 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
 
-/*
-|--------------------------------------------------------------------------
-| Web Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| contains the "web" middleware group. Now create something great!
-|
-*/
 
+
+// Route::get('/render/invitacion-negocio',function(){
+//    $invitacion = Invitacion::first();
+
+//    return new InvitacionNegocio($invitacion);
+// });
 
 Route::get('/reports/view/activaciones',function(Request $request){
 

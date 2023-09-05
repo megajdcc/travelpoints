@@ -1,9 +1,10 @@
 <template>
   <div id="app" :class="{ 'h-100': route.meta.layout != 'travel', ...skinClasses }" style="min-height:100%">
 
-    <component :is="layout">
-      <router-view />
-    </component>
+      <component :is="layout">
+        <router-view />
+      </component>
+  
 
     <scroll-to-top v-if="enableScrollToTop" />
     <mi-agenda v-model="showMiAgenda" v-if="is_loggin"/>
@@ -11,6 +12,7 @@
     <form-agenda v-model="showAgenda" :tipo="tipoAgenda" v-if="is_loggin" :sobre="sobre"/>
     <agenda-fixed  />
     <sidebar-retiro v-if="is_loggin" v-model="showSidebarRetiro" />
+    <form-user v-if="is_loggin" v-model="showFormUser"   @cerrar="() => showFormUser = false" :tipo="tipoFormUser" :liderId="liderId" />
   
 
   </div>
@@ -47,7 +49,8 @@ export default {
     MiAgenda:() => import('components/MiAgenda.vue'),
     FormAgenda:() => import('components/FormAgenda.vue'),
     SidebarAboutProfile:() => import('components/SidebarAboutProfile.vue'),
-    SidebarRetiro:() => import('components/SidebarRetiro.vue')
+    SidebarRetiro:() => import('components/SidebarRetiro.vue'),
+    FormUser:() => import('components/FormUser.vue')
   },
 
   beforeCreate() {
@@ -84,10 +87,13 @@ export default {
     const showAgenda  =ref(false)
     const showAboutProfile  = ref(false)
     const showSidebarRetiro= ref(false)
+    const showFormUser = ref(false)
     const tipoAgenda = ref(1)
     const sobre = ref('')
     const userAbout = ref({})
-
+    const tipoFormUser = ref(1) // 1 Lider 2 Promotor
+    const liderId = ref(null)
+    
     provide('showMiAgenda', showMiAgenda)
     provide('showAgenda', showAgenda)
     provide('tipoAgenda', tipoAgenda)
@@ -95,8 +101,9 @@ export default {
     provide('showAboutProfile', showAboutProfile)
     provide('userAbout', userAbout)
     provide('showSidebarRetiro', showSidebarRetiro)
-
-
+    provide('showFormUser',showFormUser);
+    provide('tipoFormUser', tipoFormUser);
+    provide('liderId',liderId);
 
     const layout = computed(() => {
 
@@ -169,7 +176,10 @@ export default {
       sobre,
       showAboutProfile,
       userAbout,
-      showSidebarRetiro
+      showSidebarRetiro,
+      showFormUser,
+      tipoFormUser,
+      liderId
     }
   },
 

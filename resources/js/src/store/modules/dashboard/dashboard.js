@@ -1022,7 +1022,7 @@ export default{
 
       cargarPaisesActivos({commit},usuario_id = ''){
          return new Promise((resolve, reject) => {
-               axios.get(`/api/dashboard/get/paises/activos/${usuario_id}`).then(({data}) => {
+            axios.get(`/api/dashboard/get/paises/activos/${usuario_id}`).then(({data}) => {
                   commit('setPaisesActivos',data)
                   resolve(data)
                }).catch(e => reject(e))
@@ -1308,6 +1308,17 @@ export default{
             }).catch(e => reject(e))
          })
       },
+
+      tresMayoresComisionesLiders({commit}){
+          return new Promise((resolve, reject) => {
+            axios.get(`/api/dashboard/tres-mayores-comisiones-liders`).then(({data}) => {
+
+               resolve(data)
+
+            }).catch(e => reject(e))
+         })
+      },
+
 
 
       totalViajerosLider({commit}){

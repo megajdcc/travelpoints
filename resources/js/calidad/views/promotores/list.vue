@@ -12,7 +12,7 @@
                 <statistic-card-horizontal icon="fa-people-group" statisticTitle="Promotores a cargo"
                       color="primary" colorIcon="white" colorText="text-white" :statistic="total">
                       <template #btn-card>
-                        <b-button variant="danger" size="sm" :to="{ name: 'create.usuario' }" class="mt-1" v-if="$can('write', 'usuarios')" >
+                        <b-button variant="danger" size="sm" @click="crearPromotor()" class="mt-1 d-block" v-if="$can('write', 'promotores')" >
                           Crear Promotor
                         </b-button>
                       </template>
@@ -382,6 +382,10 @@ export default {
 
     const userAbout = inject('userAbout')
     const showAboutProfile = inject('showAboutProfile')
+    const showFormUser = inject('showFormUser')
+    const tipoFormUser = inject('tipoFormUser')
+    const lider_id_form = inject('liderId')
+
     const isShowDestino  = ref(false)
     const formUser = ref({})
     const lider = ref({
@@ -394,7 +398,7 @@ export default {
     const {destinos} = toRefs(store.state.destino)
     const {divisas} = toRefs(store.state.divisa)
 
-    const actions = usePromotoresList(lider.value.id ? lider : usuario);
+    const actions = usePromotoresList(lider);
     
     const showUsersLiders = ref(false)
     const formValidate =ref(null)
@@ -418,7 +422,12 @@ export default {
     })
 
     const cargarForm = () => {
-       
+      
+      if(lider_id.value){
+        lider.value.id = lider_id.value
+        lider.value.rol = { nombre: 'Lider' }
+
+      }
 
        if(!usuarios.value.length){
         store.dispatch('usuario/cargarLideres')
@@ -440,11 +449,7 @@ export default {
 
     cargarForm()
 
-    watch(lider_id,() => {
-      lider.value.id = lider_id.value
-      lider.value.rol = {nombre:'Lider'}
-
-    })
+    watch(lider_id,() => cargarForm())
 
 
     watch(() => lider.value.id,() => {
@@ -600,9 +605,19 @@ export default {
     }
 
 
+    const crearPromotor  = () => {
+      tipoFormUser.value = 2
+
+      if(lider_id.value){
+        lider_id_form.value = lider_id.value
+      }
+      showFormUser.value = true
+    }
+
 
     return {
       mostrarAboutUsuario,
+      crearPromotor,
       loading:computed(() => store.state.loading),
       actions,
       destinos,

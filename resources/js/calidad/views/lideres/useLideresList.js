@@ -31,22 +31,25 @@ export default function useLideresList(coordinador){
       refetchData,
   } = useFilterTable()
 
+  watch([coordinador], () => refetchData())
   const fetchData = (ctx,next) => {
 
-   store.dispatch('usuario/fetchLideres',{
-    page:currentPage.value,
-    perPage:perPage.value,
-    sortBy:sortBy.value,
-    isSortDirDesc:isSortDirDesc.value,
-    q:searchQuery.value,
-    coordinador:coordinador.value ? coordinador.value.id : null
-   }).then(({total:all,lideres}) => {
+    store.dispatch('usuario/fetchLideres',{
+      page:ctx.currentPage,
+      perPage:ctx.perPage,
+      sortBy:ctx.sortBy,
+      isSortDirDesc:ctx.sortDesc,
+      q:searchQuery.value,
+      coordinador:coordinador.value ? coordinador.value.id : null
+    }).then(({total:all,lideres}) => {
 
-    total.value = all
-    next(lideres)
-   }).catch(e => {
-    toast.info('Error trayendo Data...')
-   })
+      total.value = all
+      next(lideres)
+    }).catch(e => {
+      toast.info('Error trayendo Data...')
+    })
+
+   return null
   }
 
 
@@ -77,8 +80,6 @@ export default function useLideresList(coordinador){
     })
   } 
 
-
-  watch(refTable,() => refetchData())
 
   
 

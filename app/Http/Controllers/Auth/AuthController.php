@@ -176,7 +176,7 @@ class AuthController extends Controller
             'apellido' => $request->apellido,
             'email' => $request->email,
             'password' => $request->password,
-            'rol_id' => Rol::where('nombre','Invitado')->first()->id
+            'rol_id' => Rol::where('nombre', 'Viajero')->first()->id
         ]);
         $user->generateLink();
         if($user->save()){

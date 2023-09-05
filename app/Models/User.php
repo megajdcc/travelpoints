@@ -27,10 +27,12 @@ use App\Models\Negocio\Reservacion;
 use App\Models\Usuario\Permiso;
 use App\Models\Usuario\Rol;
 use Carbon\Carbon;
+use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\{Collection,Str};
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use SebastianBergmann\Type\NullType;
+use Illuminate\Database\Eloquent\Factories\Factory;
 
 class User extends Authenticatable
 {
@@ -39,20 +41,8 @@ class User extends Authenticatable
     use Has_roles;
     use hasCuenta,hasTelefonos,hasCarrito;
     use agendar;
-    public readonly string $model_type;
-    public readonly int $divisa_id; 
-
-    public function __construct(
-        string $model_type = 'App\Models\User')
-    {
-        $this->model_type = $model_type;
-
-        $roles = collect(['Promotor','Lider','Coordinador']);
-
-        $this->divisa_id = Divisa::where('principal', true)->first()->id;
-
-
-    }
+    public string $model_type = 'App\models\User';
+    public readonly int|null $divisa_id; 
 
     /**
      * The attributes that are mass assignable.
@@ -124,21 +114,6 @@ class User extends Authenticatable
         'nivel'             => 'array',
         'lider_business' => 'boolean'
     ];
-
-
-    // protected $attributes = [
-    //     'activo' => true,
-    // ];
-
-
-    // public function genero():Attribute{
-
-    //     return Attribute::make(
-    //         get:fn($val) => $val,
-    //         set:fn($val) => $val == 'Masculino' ? 1 : 2,
-    //     );
-
-    // }
 
     public function password(): Attribute
     {
@@ -327,9 +302,53 @@ class User extends Authenticatable
         
     }
 
+
+    public function getStatus(){
+
+        $statuses = ['Activo','En peligro','Inactivo'];
+
+        $status  = $this->getStatusUser();
+
+        if($this->rol->nombre == 'Promotor'){
+
+            if($status['referidos']['ultimo_mes'] > 0){
+                return $statuses[0];
+            }else if($status['referidos']['ultimo_trimestre'] > 0 ){
+                return $statuses[1];
+            }else{
+                return $statuses[2];
+            }
+        }else if($this->rol->nombre == 'Lider'){
+
+            if ($status['promotores_activos']['ultimo_mes'] > 0) {
+                return $statuses[0];
+            } else if ($status['promotores_activos']['ultimo_trimestre'] > 0) {
+                return $statuses[1];
+            } else {
+                return $statuses[2];
+            }
+
+        }else if($this->rol->coordinador == 'Coordinador') {
+
+            if ($status['lideres_activos']['ultimo_mes'] >= 10) {
+                return $statuses[0];
+            } else if ($status['lideres_activos']['ultimo_trimestre'] > 0) {
+                return $statuses[1];
+            } else {
+                return $statuses[2];
+            }
+
+        }else{
+            return $statuses[2];
+        }
+    }
+
+
     public function getStatusUser(): array
     {
-       
+        
+
+
         // Esto es para el promotor
         $referidos = [
             'ultimo_mes' => 0,
@@ -367,8 +386,6 @@ class User extends Authenticatable
             $referidos['ultimo_mes']       = $referidos_ultimo_mes;
             $referidos['ultimo_trimestre'] = $referidos_ultimo_trimestre;
             
-
-            
         } else if ($this->rol->nombre == 'Lider') {
 
             // $activos_ultimo_mes =  DB::table('users', 'u')
@@ -405,12 +422,13 @@ class User extends Authenticatable
 
             $activos_ultimo_mes = 0;
             $activos_ultimo_trimestre = 0;
-
+            $liders_activos = 0;
             foreach ($this->lideres as $key => $lider) {
                 
+
                 $activos_ultimo_mes_val =  DB::table('users', 'u')
                     ->join('usuario_referencia as ur', 'u.id', 'ur.usuario_id')
-                    ->whereRaw('u.lider_id = :usuario && ur.created_at >= DATE_SUB(CURDATE(), INTERVAL 30 DAY)', [':usuario' => $lider->id])
+                    ->whereRaw('u.lider_id = :usuario && ur.created_at >= DATE_SUB(CURDATE(), INTERVAL 29 DAY)', [':usuario' => $lider->id])
                     ->selectRaw('count(distinct(ur.usuario_id)) as promotores')
                     ->first('referidos');
 
@@ -418,13 +436,18 @@ class User extends Authenticatable
                         $activos_ultimo_mes++;
                     }
 
-                $activos_ultimo_trimestre_val =  DB::table('users', 'u')
-                    ->join('usuario_referencia as ur', 'u.id', 'ur.usuario_id')
-                    ->whereRaw('u.lider_id = :usuario && ur.created_at >= DATE_SUB(CURDATE(), INTERVAL 89 DAY)', [':usuario' => $lider->id])
-                    ->selectRaw('count(distinct(ur.usuario_id)) as promotores')
-                    ->first('referidos');
+                $activos_ultimo_trimestre_val = User::join('usuario_referencia as ur','users.id','ur.usuario_id')
+                ->where('users.lider_id', $lider->id)
+                ->whereBetween('ur.created_at',[now()->subDays(29),now()->subDay()])
+                ->selectRaw('count(distinct(ur.usuario_id)) as promotores')
+                ->first();
+                // $activos_ultimo_trimestre_val =  DB::table('users', 'u')
+                //     ->join('usuario_referencia as ur', 'u.id', 'ur.usuario_id')
+                //     ->whereRaw('u.lider_id = :usuario && ur.created_at >= DATE_SUB(CURDATE(), INTERVAL 29 DAY)', [':usuario' => $lider->id])
+                //     ->selectRaw('count(distinct(ur.usuario_id)) as referidos')
+                //     ->first('referidos');
 
-                if ($activos_ultimo_trimestre_val->promotores > 0) {
+                if($activos_ultimo_trimestre_val->promotores > 0){
                     $activos_ultimo_trimestre++;
                 }
             }
@@ -843,9 +866,23 @@ class User extends Authenticatable
             $this->codigo_referidor = Str::slug($this->username);
             $this->save();
         }
+
+        return $this;
     }
 
+    public function asignarToken(){
+        $this->token = ($this->createToken($this->nombre . '-' . $this->id))?->plainTextToken;
+        $this->save();
+        return $this;
+    }
 
+    public function postCreate(){
+        $this->generateLink()
+        ->asignarToken()
+        ->asignarPermisosPorRol()
+        ->aperturarCuenta(0,'Tp');
+        return $this;
+    }
     public function tarjeta(){
         return $this->belongsTo(Tarjeta::class,'tarjeta_id','id');
     }

@@ -10407,3 +10407,21 @@ Fatal error: Composer detected issues in your platform: Your Composer dependenci
 PHP Fatal error:  Composer detected issues in your platform: Your Composer dependencies require a PHP version ">= 8.2.0". You are running 8.1.23. in /home/megajdcc/jdcc/sistemas/Mario/travelpoints_2.0/vendor/composer/platform_check.php on line 24
 
 Fatal error: Composer detected issues in your platform: Your Composer dependencies require a PHP version ">= 8.2.0". You are running 8.1.23. in /home/megajdcc/jdcc/sistemas/Mario/travelpoints_2.0/vendor/composer/platform_check.php on line 24
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+

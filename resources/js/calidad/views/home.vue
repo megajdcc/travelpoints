@@ -24,6 +24,7 @@ export default {
         propiedades.value.promotor = usuario.value
       } else if (rolName.value == 'Lider') {
          dashboardShow.value = dashboardLider
+         propiedades.value.lider = usuario.value
       } else if (rolName.value == 'Coordinador') {
          dashboardShow.value = dashboardCoordinador
       } else {

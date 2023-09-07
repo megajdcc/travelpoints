@@ -17,7 +17,7 @@
 
             <template #valor="{ statistic }">
               <h3 class="mb-25 font-weight-bolder">
-                {{ statistic | currency(usuario.cuenta ? usuario.cuenta.divisa.iso : 'USD') }}{{ symbolDivisa }}
+                {{ statistic | currency(lider.cuenta ? lider.cuenta.divisa.iso : 'USD') }}{{ symbolDivisa }}
               </h3>
             </template>
 
@@ -56,11 +56,11 @@
 
           <!-- Total Promotores -->
           <statistic-card-horizontal icon="fa-people-group" statisticTitle="Promotores a cargo"
-                    color="primary" colorIcon="white" colorText="text-white" :statistic="$store.getters['usuario/totalPromotores']">
+                    color="primary" colorIcon="white" colorText="text-white" :statistic="lider.promotores.length">
                     <template #btn-card>
-                      <b-button variant="danger" size="sm" :to="{name:'create.usuario'}" class="mt-1" v-if="$can('write','usuarios')" >
+                      <!-- <b-button variant="danger" size="sm" :to="{name:'create.usuario'}" class="mt-1" v-if="$can('write','usuarios')" >
                         Crear Promotor
-                      </b-button>
+                      </b-button> -->
                     </template>
           </statistic-card-horizontal>
           <!-- End Total promotor -->
@@ -140,7 +140,7 @@
                 <h3 class="font-weight-bolder text-white">
                   Nivel
                 </h3>
-                <h1 class="text-white">{{ $store.getters['usuario/getNivel'] }}</h1>
+                <h1 class="text-white">{{ lider.nivel }}</h1>
               </section>
               <article class="g-activaciones mt-1">
                 <b-progress :value="siguienteNivel(nivel.nivel, nivel.activaciones).porcentaje" max="100" height="10px"
@@ -306,7 +306,14 @@ export default {
     
   },
 
+  props:{
+    lider:Object,
+    required:true,
+  },
+
   setup(props) {
+
+    const {lider} = toRefs(props)
 
     const {
       paisesActivos,
@@ -315,6 +322,7 @@ export default {
       totalViajerosConsumos,
       viajerosPorPais
     } = toRefs(store.state.dashboard)
+
     const chart1ref = ref(null)
     const totalViajeros = ref({
         total:0,
@@ -324,8 +332,6 @@ export default {
     const colorText = computed(() => skin.value == 'dark' ? 'white' : 'black')
 
     const viajerosRegistrados =  ref([])
-
-
     const comisionesAltas = ref([{data:[]}])
 
     const chartOptionMap = ref({
@@ -380,7 +386,6 @@ export default {
 
     const viajeros_referidos = ref(0)
     const ano = ref(new Date().getFullYear())
-    const { usuario } = toRefs(store.state.usuario)
     const efectividad = ref({
       userReg: 0,
     })
@@ -427,7 +432,7 @@ export default {
       genero: null,
       rango_fecha: null,
       fecha: null,
-      promotor_id: null
+      usuario_id: computed(() => lider.value.id)
     })
 
     const porcentajeEfectividad = computed(() => {
@@ -797,12 +802,12 @@ export default {
     })
 
     const cargarDashboard = () => {
-      filtro.value.usuario = usuario.value.id
-      store.dispatch('dashboard/cargarPaisesActivos',usuario.value.id)
+
+      store.dispatch('dashboard/cargarPaisesActivos',lider.value.id)
       store.dispatch('dashboard/cargarViajerosActivos', filtro.value)
-      store.dispatch('dashboard/getTotalViajerosRegistradoAnual',usuario.value.id)
+      store.dispatch('dashboard/getTotalViajerosRegistradoAnual',lider.value.id)
       
-      store.dispatch('dashboard/tresMayoresComisionesPromotors').then(({categories,series}) => {
+      store.dispatch('dashboard/tresMayoresComisionesPromotors',lider.value.id).then(({categories,series}) => {
        
         chart1.value.xAxis.categories = categories.map(val => val.toUpperCase())
         comisionesAltas.value = series
@@ -810,7 +815,7 @@ export default {
       })
 
 
-      store.dispatch('dashboard/totalViajerosLider').then(({viajerosRegistrados,categories, viajerosRegistradosActivos }) => {
+      store.dispatch('dashboard/totalViajerosLider',lider.value.id).then(({viajerosRegistrados,categories, viajerosRegistradosActivos }) => {
         viajerosRegistrados.value = categories
         chart2.value.series = [
           viajerosRegistrados,
@@ -818,37 +823,29 @@ export default {
         ]
       })
 
-      store.dispatch('dashboard/porcentajeEfectividad').then(({uso,activos}) => {
+      store.dispatch('dashboard/porcentajeEfectividad',lider.value.id).then(({uso,activos}) => {
         porcentajeViajerosEfectivos.value.uso = uso
         porcentajeViajerosEfectivos.value.activos = activos
-
       })
 
     }
 
     const cargarLider = () => {
 
-      store.dispatch('usuario/getStatusLider').then(({ totalViajeros:allviajeros,totalViajerosActivos:viajerosActivos }) => {
+      store.dispatch('usuario/getStatusLider',lider.value.id).then(({ totalViajeros:allviajeros,totalViajerosActivos:viajerosActivos }) => {
         totalViajeros.value.total = allviajeros
         totalViajeros.value.activos = viajerosActivos
       })
-
-
       getAnoPorMes(ano.value)
-
       getAcumuladoPorAno()
-
-
       getOrigenViajeroPorPais();
-
-
 
     }
 
     const getAnoPorMes = (anio) => {
       ano.value = anio
-      if (usuario.value.id) {
-        store.dispatch('usuario/getMovimientosPorMes', { anio: ano.value, usuario: usuario.value.id }).then((data) => {
+      if (lider.value.id) {
+        store.dispatch('usuario/getMovimientosPorMes', { anio: ano.value, usuario: lider.value.id}).then((data) => {
           dataRevenueReport.value.chart1serie = data.graficas
           dataRevenueReport.value.chart2serie = data.graficas
           dataRevenueReport.value.saldo = data.saldo
@@ -861,8 +858,8 @@ export default {
     }
 
     const getAcumuladoPorAno = () => {
-      if (usuario.value.id) {
-        store.dispatch('usuario/getAcumuladoPorAno',usuario.value.id).then((data) => {
+      if (lider.value.id) {
+        store.dispatch('usuario/getAcumuladoPorAno',lider.value.id).then((data) => {
           acumulado.value = data.acumulado
           chartDataAcumulado.value = data.series
         })
@@ -872,13 +869,12 @@ export default {
 
 
     const getOrigenViajeroPorPais = () => {
-
-      store.dispatch('dashboard/getOrigenViajerosPorPais',usuario.value.id)
+      store.dispatch('dashboard/getOrigenViajerosPorPais',lider.value.id)
 
     }
 
 
-    const nivel = computed(() => store.getters['usuario/activaciones'])
+    const nivel = computed(() => lider.value.activaciones)
 
     watch(ano, (val) => getAnoPorMes(val))
     onActivated(() => cargarDashboard());
@@ -890,8 +886,8 @@ export default {
     return {
 
       filtro_gastos_turisticos,
-      miSaldo: computed(() => store.getters['usuario/miSaldo']),
-      miDivisa: computed(() => store.getters['usuario/miDivisa']),
+      miSaldo: computed(() => lider.cuenta ? lider.cuenta.saldo : 0),
+      miDivisa: computed(() => lider.divisa ? lider.divisa.iso : 'USD'),
 
       getLegendaStatusPromotor: (status) => {
         let legenda = ['Activo, con al menos un Viajero al mes', 'En peligro, no registra nuevos viajeros en los ultimos 30 días', 'Inactivo, no registra nuevos viajeros en los ultimos 90 días'];
@@ -921,7 +917,6 @@ export default {
       chart1,
       chart2,
       chart3,
-      usuario,
       totalViajerosRegistrados,
       totalViajerosConsumos,
       retirar: () => showSidebarRetiro.value = true,
@@ -935,18 +930,13 @@ export default {
         return redondeo(viajerosPorPais.value.length * 100 / 195, 2)
       }),
       symbolDivisa: computed(() => {
-        if (usuario.value.cuenta) {
-          return usuario.value.cuenta.divisa.simbolo
+        if (lider.value.cuenta) {
+          return lider.value.cuenta.divisa.simbolo
         }
         return '$'
       })
-
     }
-
   }
-
-
-
 }
 </script>
 

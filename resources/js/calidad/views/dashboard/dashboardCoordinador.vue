@@ -68,6 +68,41 @@
               </b-card>
             <!-- End -->
 
+             <!-- Negocios Referidos / Activos -->
+              <b-card body-class="card-body-content text-white" :bg-variant="skin == 'dark' ? 'dark' : 'warning'">
+                  <section class="d-flex justify-content-between align-items-center">
+              
+                    <section class="d-flex flex-column flex-grow-1">
+                      <h5 class="font-weight-bolder">
+                          Total Negocios Invitados
+                        </h5>
+                        <table border="0" class="table table-sm table-borderless table-hover">
+                        <tbody>
+                          <tr>
+                            <td>Referidos</td>
+                            <td><h3>{{ totalNegocios.total }}</h3></td>
+                          </tr>
+                          <tr>
+                            <td>Activos.</td>
+                            <td><h3>{{ totalNegocios.activos }}</h3></td>
+                          </tr>
+                        </tbody>
+                        </table>
+                
+                    </section>
+
+                    <article class="flex-shrink-0 d-flex align-items-center">
+                      <vue-apex-charts
+                        type="radialBar"
+                        height="150"
+                        :options="chartEfectividad.chartOptions"
+                        :series="chartEfectividad.series"
+                        style="width:150px; padding:0; margin:0"
+                      />
+                    </article>
+
+                  </section>
+              </b-card>
 
           </b-col>
 
@@ -230,7 +265,7 @@ export default {
     } = toRefs(store.state.dashboard)
 
     
-    const totalViajeros = ref({
+    const totalNegocios = ref({
       total: 0,
       activos: 0
     })
@@ -239,6 +274,7 @@ export default {
     const colorText = computed(() => skin.value == 'dark' ? 'white' : 'black')
     const comisionesAltas = ref([{ data: [] }])
     const chart1ref = ref(null)
+
     const chartOptionMap = ref({
       title: {
         enabled: false,
@@ -288,11 +324,12 @@ export default {
       },
       series: []
     });
+    
     const ano = ref(new Date().getFullYear())
     const { usuario } = toRefs(store.state.usuario)
     const showFormUser = inject('showFormUser')
 
-     const chart1 = ref({
+    const chart1 = ref({
       chart: {
         type: 'bar',
         height: 200,
@@ -420,9 +457,6 @@ export default {
       store.dispatch('dashboard/cargarPaisesActivos', usuario.value.id)
       store.dispatch('dashboard/cargarViajerosActivos', filtro.value)
       store.dispatch('dashboard/getTotalViajerosRegistradoAnual', usuario.value.id)
-
-    
-
     } 
 
     const cargarCoordinador = () => {
@@ -435,6 +469,12 @@ export default {
         chart1.value.xAxis.categories = categories.map(val => val.toUpperCase())
         comisionesAltas.value = series
       })
+
+       store.dispatch('dashboard/getTotalNegocios',usuario.value.id).then(({ totalInvitaciones, totalInvitacionesAceptadas }) => {
+        totalNegocios.value.total = totalInvitaciones
+        totalNegocios.value.activos = totalInvitacionesAceptadas
+      })
+
 
       getAnoPorMes(ano.value)
       getAcumuladoPorAno()
@@ -484,6 +524,86 @@ export default {
     watch(showFormUser,() => {
       cargarCoordinador();
     })
+
+    const porcentajeEfectividadNegocio = computed(() => {
+      if (totalNegocios.value.activos > 0) {
+        return [redondeo(totalNegocios.value.activos * 100 / totalNegocios.value.total)]
+      }
+
+      return [0];
+    });
+
+    const chartEfectividad = ref({
+      series: computed(() => porcentajeEfectividadNegocio.value),
+      chartOptions: {
+        chart: {
+          sparkline: {
+            enabled: true,
+          },
+          dropShadow: {
+            enabled: true,
+            blur: 3,
+            left: 1,
+            top: 1,
+            opacity: 0.1,
+          },
+        },
+        colors: [$themeColors.danger],
+        plotOptions: {
+          radialBar: {
+            offsetY: -10,
+            startAngle: 0,
+            endAngle: 350,
+            hollow: {
+              size: '65%',
+            },
+            track: {
+              background: '#ebe9f1',
+              strokeWidth: '50%',
+            },
+            dataLabels: {
+              name: {
+                show: false,
+              },
+              value: {
+                color: '#5e5873',
+                fontSize: '1.8rem',
+                fontWeight: '200',
+                fontFamily: 'Myriad Regular',
+                offsetY: 12,
+              },
+              total: {
+                show: false
+              }
+            },
+          },
+        },
+        fill: {
+          type: 'gradient',
+          gradient: {
+            shade: 'dark',
+            type: 'horizontal',
+            shadeIntensity: 1,
+            gradientToColors: [$themeColors.primary],
+            inverseColors: true,
+            opacityFrom: 1,
+            opacityTo: 1,
+            stops: [0, 100],
+          },
+        },
+        stroke: {
+          lineCap: 'round',
+        },
+        grid: {
+          padding: {
+            bottom: 0,
+            right: 0,
+          },
+        },
+      },
+    })
+
+
     return {
       usuario,
       retirar: () => showSidebarRetiro.value = true,
@@ -517,13 +637,14 @@ export default {
 
       skin,
       getAnoPorMes,
-      totalViajeros,
+      totalNegocios,
       colorRand: colorRand,
 
       totalLideres,
       chart1ref,
       chart1,
-      agregarLider
+      agregarLider,
+      chartEfectividad
     
       
 

@@ -3,7 +3,7 @@
 
        <b-sidebar :visible="showSidebarAboutProfile" @change="$emit('update:showSidebarAboutProfile', $event)"  
         sidebar-class="agenda-form-content" backdrop :width="getAncho > 720 ? '420px' : '320px'" no-header>
-          <profile-about :about-data="aboutData"/>
+          <profile-about :about-data="aboutData" :showEditActive="showEditActive" @toggleActivePromotor="toggleActivePromotor"/>
         </b-sidebar>
          
     </section>
@@ -50,7 +50,8 @@ export default {
     userAbout:{
       type:Object,
       default:() => ({})
-    }
+    },
+    showEditActive:Boolean
   },
 
 
@@ -66,7 +67,12 @@ export default {
     const {usuario} = toRefs(store.state.usuario)
     const {userAbout} = toRefs(props)
 
+    const toggleActivePromotor = (valor) => {
+      store.dispatch('usuario/cambiarEstado',userAbout.value.id)
+    }
+
     return {
+      toggleActivePromotor,  
       currentBreakpoint,
       loading:computed(() => store.state.loading),
       getAncho: computed(() => store.state.app.windowWidth),
@@ -83,7 +89,8 @@ export default {
             'Registrado desde': getFecha(userAbout.value.created_at),
             'Sitio web': userAbout.value.website ?  `<a href="${userAbout.value.website}" target="_blank">${userAbout.value.website}</a>` : null,
             email: `<a href="mailto:${userAbout.value.email}" target="_blank">${userAbout.value.email}</a>`,
-            'Acerca': userAbout.value.bio
+            'Acerca': userAbout.value.bio,
+            activo:userAbout.value.activo
           }
         }else{
           return {}

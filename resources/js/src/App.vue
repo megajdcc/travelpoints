@@ -8,7 +8,7 @@
 
     <scroll-to-top v-if="enableScrollToTop" />
     <mi-agenda v-model="showMiAgenda" v-if="is_loggin"/>
-    <sidebar-about-profile v-model="showAboutProfile" v-if="is_loggin" :userAbout="userAbout"/>
+    <sidebar-about-profile v-model="showAboutProfile" v-if="is_loggin" :userAbout="userAbout" :showEditActive="showEditActive"/>
     <form-agenda v-model="showAgenda" :tipo="tipoAgenda" v-if="is_loggin" :sobre="sobre"/>
     <agenda-fixed  />
     <sidebar-retiro v-if="is_loggin" v-model="showSidebarRetiro" />
@@ -88,6 +88,7 @@ export default {
     const showAboutProfile  = ref(false)
     const showSidebarRetiro= ref(false)
     const showFormUser = ref(false)
+    const showEditActive = ref(false)
     const tipoAgenda = ref(1)
     const sobre = ref('')
     const userAbout = ref({})
@@ -104,6 +105,7 @@ export default {
     provide('showFormUser',showFormUser);
     provide('tipoFormUser', tipoFormUser);
     provide('liderId',liderId);
+    provide('showEditActive', showEditActive)
 
     const layout = computed(() => {
 
@@ -179,7 +181,8 @@ export default {
       showSidebarRetiro,
       showFormUser,
       tipoFormUser,
-      liderId
+      liderId,
+      showEditActive
     }
   },
 

@@ -12,7 +12,7 @@
                 <statistic-card-horizontal icon="fa-people-group" statisticTitle="Promotores a cargo"
                       color="primary" colorIcon="white" colorText="text-white" :statistic="total">
                       <template #btn-card>
-                        <b-button variant="danger" size="sm" @click="crearPromotor()" class="mt-1 d-block" v-if="$can('write', 'promotores')" >
+                        <b-button variant="danger" size="sm" @click="agregarPromotor()" class="mt-1 d-block" v-if="$can('write', 'promotores')" >
                           Crear Promotor
                         </b-button>
                       </template>
@@ -177,6 +177,7 @@
                         <b-form-invalid-feedback :state="valid">
                           {{ errors[0] }}
                         </b-form-invalid-feedback>
+
                        </validation-provider>
                   </b-form-group>
                
@@ -213,6 +214,21 @@
                           <b-form-input id="email" v-model="form.email"
                             :state="valid" trim />
 
+                          <b-form-invalid-feedback :state="valid">
+                            {{ errors[0] }}
+                          </b-form-invalid-feedback>
+                          </validation-provider>
+                    </b-form-group>
+
+
+                    <b-form-group label-for="lideer" description="Elija a un lider para este promotor" v-if="$store.getters['usuario/isRol']('Coordinador')">
+                        
+                      <template #label>
+                          Lider: <span class="text-danger">*</span>
+                        </template>
+
+                        <validation-provider #default="{ errors, valid }" name="lider_id" rules="required">
+                          <v-select v-model="form.lider_id" :reduce="option => option.id" label="nombre" :options="lideresCoordinador"></v-select>
                           <b-form-invalid-feedback :state="valid">
                             {{ errors[0] }}
                           </b-form-invalid-feedback>
@@ -385,12 +401,13 @@ export default {
     const showFormUser = inject('showFormUser')
     const tipoFormUser = inject('tipoFormUser')
     const lider_id_form = inject('liderId')
-
+    const showEditActive = inject('showEditActive')
+    const lideresCoordinador = ref([])
     const isShowDestino  = ref(false)
     const formUser = ref({})
     const lider = ref({
       id:null,
-      rol:{
+    rol:{
         nombre:'Lider'
       }
     })  
@@ -442,6 +459,16 @@ export default {
           lider.value.rol = usuario.value.rol 
        }
 
+
+       if(!lideresCoordinador.value.length){
+
+        if(store.getters['usuario/isRol']('Coordinador')){
+          store.dispatch('usuario/fetchLideresCoordinador',usuario.value.id).then((datos) => {
+            lideresCoordinador.value = datos
+          })
+        }
+       
+       }
 
        setTimeout(() => actions.refetchData(), 1000)
 
@@ -601,9 +628,13 @@ export default {
 
     const mostrarAboutUsuario = (user) => {
       userAbout.value = user
+      if(store.getters['usuario/isRol']('Coordinador')){
+        showEditActive.value = true
+      }
       showAboutProfile.value = true
-    }
 
+
+    }
 
     const crearPromotor  = () => {
       tipoFormUser.value = 2
@@ -650,6 +681,7 @@ export default {
       asociarDestino,
       usuario,
       getColorsStatus,
+      lideresCoordinador,
       getNivels: (nivel = null) => {
         if(nivel){
           return nivel.nivel == null ? 'No activo' : nivel.nivel + 1

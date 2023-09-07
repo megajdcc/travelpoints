@@ -923,10 +923,10 @@ export default {
 			})
 		},
 
-		getStatusLider({commit}){
+		getStatusLider({commit},usuario_id){
 
 			return new Promise((resolve, reject) => {
-				axios.get(`/api/dashboard/tablero/lider/get-status`).then(({data}) => {
+				axios.get(`/api/dashboard/tablero/lider/${usuario_id}/get-status`).then(({data}) => {
 					commit('setStatusLider',data.status)
 					resolve(data)
 				}).catch(e => reject(e))
@@ -1208,6 +1208,23 @@ export default {
 			})
 
 		},
+
+
+		fetchLideresCoordinador({commit},coordinador_id){
+
+			return new Promise((resolve,reject) => {
+				axios.get(`/api/coordinador/${coordinador_id}/fetch-lideres`).then(({data}) => resolve(data)).catch(e => reject(e))
+			})
+			
+		},
+
+		fetchViajeros({commit},filtro){
+			return new Promise((resolve, reject) => {
+				axios.post(`/api/usuarios-viajeros/fetch-data`,filtro).then(({data}) => {
+					resolve(data)
+				}).catch(e => reject(e))
+			})
+		}
 
 
 		

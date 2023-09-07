@@ -42,15 +42,22 @@ class UserController extends Controller
     
 
     public function fetchDataViajeros(Request $request){
+
         $filtro = $request->all();
         $usuario = $request->user();
 
         $searchs = collect(['username','nombre','apellido','email','bio','direccion','fecha_nacimiento']);
 
         $pagination = User::where(fn(Builder $q) => $searchs->each(fn($s) => $q->orWhere($s,'LIKE',"%{$filtro['q']}%",'OR')))
-        ->whereHas('referidor' ,function(Builder $q) use($usuario,$filtro,$searchs){
-            $q->where('lider_id', $usuario->id);  // el promotor tiene que tener al lider como su asignado
-            // ->where(fn (Builder $qu) => $searchs->each(fn ($s) => $qu->orWhere($s, 'LIKE', "%{$filtro['q']}%", 'OR')));
+        ->when(\in_array($usuario->rol->nombre,['Coordinador']), function(Builder $q) use ($usuario){
+            $q->whereHas('referidor',function($query) use($usuario){
+                $query->whereHas('lider', fn($que) => $que->where('coordinador_id' , $usuario->id));
+            });
+        })
+         ->when(\in_array($usuario->rol->nombre,['Lider']), function(Builder $q) use ($usuario){
+            $q->whereHas('referidor',function($query) use($usuario){
+                $query->where('lider_id',$usuario->id);
+            });
         })
         ->orderBy($filtro['sortBy'] ?: 'id',$filtro['isSortDirDesc'] ? 'desc' : 'asc')
         ->paginate($filtro['perPage'] ?: 1000);
@@ -902,7 +909,7 @@ class UserController extends Controller
 
     public function getStatus(Request $request, User $usuario = null)
     {
-        $user = $usuario ?: $request->user();
+        $user = $usuario ?? $request->user();
         $resultado = $user->getStatusUser();
 
         
@@ -1045,6 +1052,12 @@ class UserController extends Controller
                 }
 
             })
+            ->when(!isset($filtro['lider']) && is_null($filtro['lider']), function(Builder $q) use($filtro,$rol_user,$request) {
+
+                if($rol_user == 'Coordinador'){
+                    $q->whereHas('lider', fn($query) => $query->where('coordinador_id',$request->user()->id));
+                }
+            })
             ->with(['rol.permisos'])
             ->orderBy($filtro['sortBy'] ?: 'comision',$filtro['isSortDirDesc'] ? 'desc' : 'asc')
             ->paginate($filtro['perPage'] ?: 1000);
@@ -1088,12 +1101,23 @@ class UserController extends Controller
 
         $searchs = collect(['username','email','nombre','apellido','direccion','fecha_nacimiento','codigo_postal','bio']);
 
-        $pagination = User::where(fn($q) => $searchs->each(fn($v) => $q->orWhere($v,"LIKE","%{$filtro['q']}%")))
+        $pagination = User::addSelect([
+                'users.*',
+                'comision' => function ($query) {
+                $query->select(DB::raw('SUM(monto) as total_comision'))
+                    ->from('movimientos')
+                    ->join('estado_cuentas', 'movimientos.estado_cuenta_id', '=', 'estado_cuentas.id')
+                    ->where('estado_cuentas.model_type', 'App\\Models\\User')
+                    ->whereColumn('estado_cuentas.model_id', 'users.id')
+                    ->where('movimientos.tipo_movimiento', 1)
+                    ->where('movimientos.concepto', '!=', 'Conversión de divisa');
+            }
+        ])->where(fn($q) => $searchs->each(fn($v) => $q->orWhere($v,"LIKE","%{$filtro['q']}%")))
             ->whereHas('rol', fn($q) =>  $q->where('nombre', 'Lider'))
             ->when(isset($filtro['coordinador']) && !is_null($filtro['coordinador']) && $rol_user == 'Coordinador', function ($q) use ($filtro) {
                 $q->where('coordinador_id', $filtro['coordinador']);
             })
-            ->orderBy($filtro['sortBy'] ?: 'id', $filtro['isSortDirDesc'] ? 'desc' : 'asc')
+            ->orderBy('comision', $filtro['isSortDirDesc'] ? 'desc' : 'asc')
             ->paginate($filtro['perPage'] ?: 1000);
 
 
@@ -1114,6 +1138,7 @@ class UserController extends Controller
             'total' => $pagination->total(),
             'lideres' => $lideres
         ]);
+
     }
 
     public function fetchDataCoordinadores(Request $request)
@@ -1364,15 +1389,18 @@ class UserController extends Controller
 
         try {
             DB::beginTransaction();
-
+            // dd($datos);
             $promotor = User::create([
                 ...$datos,
                 ...[
                     'rol_id' => Rol::where('nombre', 'Promotor')->first()->id,
-                    'password' => '20464273jd'
+                    'password' => '20464273jd',
+                    'nivel' => [
+                        'nivel' => null,
+                        'activaciones' => 0
+                    ]
                 ]
             ]);
-
             $promotor->asignarPermisosPorRol();
             
 
@@ -1381,7 +1409,6 @@ class UserController extends Controller
             } else {
                 $promotor->aperturarCuenta();
             }
-
             $promotor->cargar();
             $promotor->notify(new WelcomeUsuario($promotor));
 
@@ -1829,6 +1856,10 @@ class UserController extends Controller
         ]);
         
 
+    }
+
+    public function fetchLideresCoordinador(User $coordinador){
+        return response()->json($coordinador->lideres);
     }
 
 

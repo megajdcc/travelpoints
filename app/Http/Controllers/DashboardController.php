@@ -925,10 +925,9 @@ class DashboardController extends Controller
     }
 
 
-    public function comisionesAltasMesPromotores(Request $request){
+    public function comisionesAltasMesPromotores(Request $request,User $usuario){
 
-        $usuario = $request->user();
-
+        
         $tres_mayores_comisiones_mes = DB::table('users','u')
                                             ->join('estado_cuentas as ec', 'ec.model_id','u.id')
                                             ->join('movimientos as m','ec.id','m.estado_cuenta_id')
@@ -992,9 +991,7 @@ class DashboardController extends Controller
     }
 
 
-    public function totalViajerosRegistrados(Request $request){
-
-        $usuario = $request->user();
+    public function totalViajerosRegistrados(Request $request, User $usuario){
 
         $total_viajeros_mes_presente = DB::table('users','u')
                                             ->join('usuario_referencia as ur','u.id','ur.referido_id')
@@ -1121,11 +1118,15 @@ class DashboardController extends Controller
     }
 
 
-    public function eficaciaViajeros(Request $request){
+    public function eficaciaViajeros(Request $request,User $usuario){
+        $uso = 0;
+        $total_viajeros = $usuario->totalViajeros();
+        $viajeros_activos = $usuario->viajerosActivos();
+        if($total_viajeros > 0){
+            $uso = ($viajeros_activos * 100) / $total_viajeros;
+        }
 
-        $usuario = $request->user();
-        $uso = $usuario->totalViajeros() > 0 ? $usuario->viajerosActivos() * 100 / $usuario->totalViajeros() : 0;
-        $activos = $usuario->totalViajeros() > 0 ? $usuario->viajerosActivosConsumo() * 100 / $usuario->totalViajeros() : 0;
+        $activos = $total_viajeros > 0 ? $usuario->viajerosActivosConsumo() * 100 / $total_viajeros : 0;
         return response()->json([
             'uso' => $uso,
             'activos' => $activos
@@ -1137,6 +1138,19 @@ class DashboardController extends Controller
 
         return response()->json([
             'totalLideres' => $usuario->lideres->count(),
+        ]);
+        
+    }
+
+
+    public function getNegociosActivos(User $usuario){
+
+        $total_invitaciones = $usuario->invitaciones->count();
+        $total_invitaciones_activas = $usuario->invitaciones->where('status',2)->count();
+
+        return response()->json([
+            'totalInvitaciones' => $total_invitaciones,
+            'totalInvitacionesAceptadas' => $total_invitaciones_activas
         ]);
         
     }

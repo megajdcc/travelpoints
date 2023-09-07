@@ -19,8 +19,6 @@ export default function usePromotoresList(lider){
       { key: 'actions',label:"Contacto", sortable:true, sortKey:'comision',sortBy:'comision' },
   ])
 
- 
-
 
   const {
       perPageOptions,

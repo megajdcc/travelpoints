@@ -54,13 +54,39 @@ const coordinador = [
       fontAwesome:true,
     },
 
+
     {
-      title: 'Mis Lideres',
-      route: 'lideres.list',
-      action: 'read',
-      resource: 'lideres',
+      title: 'Mis Lideres y promotores',
       icon: 'UsersIcon',
+      children:[
+        {
+          title:'Mis Lideres',
+          route: 'lideres.list',
+          action: 'read',
+          resource: 'lideres',
+          icon: 'fa-users-rectangle',
+          fontAwesome:true
+        },
+        {
+          title:'Mis Promotores',
+          route: 'promotores.list',
+          action: 'read',
+          resource: 'promotores',
+          icon: 'fa-users',
+          fontAwesome:true
+        }
+      ]
     },
+
+    {
+      title: 'Viajeros Registrados',
+      route: 'listar.viajeros',
+      action: 'read',
+      resource: 'Listado de viajeros',
+      icon: 'fa-rectangle-list',
+      fontAwesome:true
+    },
+
 
     {
       title: 'Negocios Invitados',

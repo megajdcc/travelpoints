@@ -442,7 +442,7 @@ export default {
       genero: null,
       rango_fecha: null,
       fecha: null,
-      promotor_id: null
+      usuario_id: computed(() => promotor.value.id)
     })
 
     const porcentajeEfectividad = computed(() => {
@@ -524,7 +524,6 @@ export default {
     })
 
     const cargarDashboard = () => {
-      filtro.value.usuario = promotor.value.id
       store.dispatch('dashboard/cargarPaisesActivos',promotor.value.id)
       store.dispatch('dashboard/cargarViajerosActivos', filtro.value)
       store.dispatch('dashboard/getTotalViajerosRegistradoAnual',promotor.value.id)

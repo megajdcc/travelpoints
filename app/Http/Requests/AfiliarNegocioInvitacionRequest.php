@@ -27,7 +27,7 @@ class AfiliarNegocioInvitacionRequest extends FormRequest
             'usuario.username'   => 'required',
             'usuario.nombre'     => 'required',
             'usuario.apellido'   => 'required',
-            'usuario.email'      => 'required',
+            'usuario.email'      => 'required|unique:users,email',
             'usuario.password'   => 'required',
             'usuario.r_password' => 'required|same:usuario.password',
             'nombre'             => 'required' ,
@@ -62,11 +62,12 @@ class AfiliarNegocioInvitacionRequest extends FormRequest
     public function messages() : array
     {
         return [
-            'usuario.*.username.required' => 'El nombre de usuario es importante, no lo olvides',
-            'usuario.*.nombre.required'   => 'El nombre es importante, no lo olvides',
-            'usuario.*.apellido.required' => 'El apellido es importante, no lo olvides',
-            'usuario.*.password.required' => 'La contraseña es importante, no lo olvides',
-            'usuario.*.r_password.same'   => 'Las contraseñas no coinciden',
+            'usuario.email.unique' => 'El email ya está siendo usado por otra cuenta, intenta con otro',
+            'usuario.username.required' => 'El nombre de usuario es importante, no lo olvides',
+            'usuario.nombre.required'   => 'El nombre es importante, no lo olvides',
+            'usuario.apellido.required' => 'El apellido es importante, no lo olvides',
+            'usuario.password.required' => 'La contraseña es importante, no lo olvides',
+            'usuario.r_password.same'   => 'Las contraseñas no coinciden',
             'nombre.required'             => 'El Nombre del negocio es importante',
             'descripcion.required'        => 'La descripción del negocio es importante',
             'breve.required'              => 'El Breve del Negocio es importante',

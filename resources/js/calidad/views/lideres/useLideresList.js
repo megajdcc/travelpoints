@@ -8,7 +8,7 @@ import {ref,watch} from 'vue'
 export default function useLideresList(coordinador){
 
  const tableColumns = [
-      {key: 'id',sortable:true,label:'#'},
+      {key: 'ranking',sortable:true,label:'Ranking'},
       { key: 'username', sortable: true,label:'Usuario' },
       { key: 'activo',label:'Estado',sortable:true},
       { key: 'email', sortable: true,label:"Email" },

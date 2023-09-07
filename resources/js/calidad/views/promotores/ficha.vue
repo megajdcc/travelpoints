@@ -4,7 +4,11 @@
       <about-profile :aboutData="dataPromotor" showEditActive @toggleActivePromotor="toggleActivePromotor"></about-profile>
     </b-sidebar>
 
-    <b-card no-body>
+    <b-card no-body header-class="py-0 pt-1 mb-0">
+
+      <template #header>
+        <h3>Promotor: {{ `${promotor.nombre} ${promotor.apellido}` }}</h3>
+      </template>
       <b-container fluid class="px-0">
         <b-row>
           <b-col cols="12">

@@ -511,6 +511,64 @@ export default [
                   {text:'Listado',active:true}
                ]
             }
+         },
+          {
+            path:':id?/ficha',
+            props:true,
+            name:'lider.ficha',
+            component:() => import('views/lideres/ficha.vue'),
+            beforeEnter:(to,f,n) => {
+               store.dispatch('usuario/fetchUser',to.params.id).then((data) => {
+                     
+                     if(data){
+                        n()
+                     }else{
+                        n({name:'error-404'})
+                     }
+
+               }).catch(e => {
+                        n({name:'error-404'})
+               })
+
+
+            },
+            meta:{
+               pageTitle:'Ficha de lider',
+               resource:'lideres',
+               action:'read',
+               navActiveLink:'lideres.list',
+               breadcrumb:[
+                  {text:'Listado',active:false, to:{name:'lideres.list'}},
+                  {text:'Ficha',active:true},
+
+               ]
+            }
+         }
+      ]
+   },
+
+
+   /*****************************************/
+   /* Viajeros
+   /*************************************** */
+   {
+      path:'/viajeros',
+      component:() => import('views/viajeros/index.vue'),
+      children:[
+         {
+            path:'',
+            name:'viajeros.list',
+            component:() => import('views/viajeros/list.vue'),
+            meta:{
+               pageTitle:'Viajeros',
+               resources:'Listado de viajeros',
+               action:'read',
+               breadcrumb:[
+                  {
+                     text:'Listado', active:true
+                  }
+               ]
+            }
          }
       ]
    },

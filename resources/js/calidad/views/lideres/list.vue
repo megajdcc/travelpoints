@@ -3,6 +3,22 @@
   <section>
     <listado hideFooter :actions="actions" isTable>
 
+       <template #header-table="{ total }">
+          <b-container fluid >
+            <b-row>
+               <b-col cols="12" md="4">
+                  <statistic-card-horizontal icon="fa-people-group" statisticTitle="Lidere s a cargo"
+                        color="primary" colorIcon="white" colorText="text-white" :statistic="total">
+                        <template #btn-card>
+                          <b-button variant="danger" size="sm" @click="agregarUsuario('lider')" class="mt-1 d-block" v-if="$can('write', 'Gestion de coordinador') && ['Coordinador', 'Desarrollador'].includes(usuario.rol ? usuario.rol.nombre : '')" >
+                           Agregar Lider
+                          </b-button>
+                        </template>
+                  </statistic-card-horizontal>
+               </b-col>
+            </b-row>
+          </b-container>
+        </template>
       <template #btn-action>
 
         <b-button variant="primary" @click="agregarUsuario('lider')" v-if="$can('write', 'Gestion de coordinador') && ['Coordinador','Desarrollador'].includes(usuario.rol ? usuario.rol.nombre : '')"
@@ -19,26 +35,9 @@
             :no-border-collapse="false" borderless outlined :busy="loading" :perPage="perPage" showEmpty small
             stacked="md">
 
-            <template #cell(id)="{ item }">
-                #{{ item.id }}
-                  <!-- <b-button @click="toggleDetails" variant="primary" size="sm" class="text-nowrap" >
-                    
-                      <font-awesome-icon :icon="['fas' , detailsShowing ? 'fa-angle-up' : 'fa-angle-down']"/>
-                  </b-button> -->
+            <template #cell(ranking)="{ index }">
+              {{ index + 1 }}
             </template>
-
-             <!-- <template #row-details="{ item }">
-
-               <el-divider content-position="left">Promotores</el-divider>
-                <b-container fluid>
-                  <b-row>
-                    <b-col>
-                        <promotores :liderId="item.id" />
-                    </b-col>
-                  </b-row>
-                </b-container>
-
-            </template> -->
 
 
             <!-- Column: User -->
@@ -112,6 +111,12 @@
             <template #cell(actions)="{item}">
 
               <b-button-group size="sm">
+                  
+                  <b-button variant="dark" title="Ver Ficha" :to="{name:'lider.ficha',params:{id:item.id}}" v-loading="loading"
+                      size="sm" class="text-nowrap" v-if="$can('read','lideres')">
+                      <font-awesome-icon icon="fas fa-id-card-clip" />
+                      Ver Ficha
+                  </b-button>
 
                   <b-button variant="danger" title="Quitar Coordinador" @click="quitarCoordinador(item.id)" v-loading="loading"
                     size="sm" class="text-nowrap" v-if="item.coordinador_id">
@@ -305,6 +310,7 @@ import { required, email } from '@validations'
 
 import { getStatusLegendLider} from '@core/utils/utils'
 
+import StatisticCardHorizontal from 'components/dashboard/StatisticCardHorizontal.vue'
 
 import {
   BCard,
@@ -367,8 +373,8 @@ export default {
     vSelect,
     BButtonGroup,
     BFormRadioGroup,
-    Promotores:() => import('views/promotores/list.vue')
-
+    Promotores:() => import('views/promotores/list.vue'),
+    StatisticCardHorizontal
 
   },
 
@@ -500,10 +506,8 @@ export default {
       let url_dispatch = 'usuario/guardarLider';
 
 
-      if (usuario.value.rol) {
-        if(!form.value.coordinador_id){
-          form.value.coordinador_id = form.value.rol.nombre == 'Coordinador' ? usuario.value.id : null
-        }
+      if (store.getters['usuario/isRol']('Coordinador')) {
+        form.value.coordinador_id = usuario.value.id
       }
 
       if(form.value.tipo_usuario == 2){

@@ -986,11 +986,12 @@ export default{
          }).catch(e => {
             console.log(e);
          })
+         
       },
 
       cargarViajerosActivos({commit},dato){
          return new Promise((resolve, reject) => {
-            axios.post(`/api/dashboard/get/viajeros/activos/${dato.usuario ? dato.usuario :''}`,dato).then(({data}) => {
+            axios.post(`/api/dashboard/get/viajeros/activos/${dato.usuario_id ? dato.usuario_id :''}`,dato).then(({data}) => {
                commit('setViajerosActivos',data)
                resolve(data)
             }).catch( e => reject(e))
@@ -1299,9 +1300,9 @@ export default{
          })
       },
 
-      tresMayoresComisionesPromotors({commit}){
+      tresMayoresComisionesPromotors({commit},usuario_id){
          return new Promise((resolve, reject) => {
-            axios.get(`/api/dashboard/tres-mayores-comisiones-promotores`).then(({data}) => {
+            axios.get(`/api/dashboard/tres-mayores-comisiones-promotores/usuario/${usuario_id}`).then(({data}) => {
 
                resolve(data)
 
@@ -1321,19 +1322,29 @@ export default{
 
 
 
-      totalViajerosLider({commit}){
+      totalViajerosLider({commit},usuario_id){
 
          return new Promise((resolve, reject) => {
-            axios.get('/api/dashboard/total-viajeros').then(({data}) => resolve(data)).catch(e => reject(e));
+            axios.get(`/api/dashboard/total-viajeros/usuario/${usuario_id}`).then(({data}) => resolve(data)).catch(e => reject(e));
 
          })
       },
 
-      porcentajeEfectividad({commit}){
+      porcentajeEfectividad({commit},usuario_id){
          return new Promise((resolve, reject) => {
-            axios.get(`/api/dashboard/porcentaje-efectividad`).then(({data}) => {
+            axios.get(`/api/dashboard/porcentaje-efectividad/usuario/${usuario_id}`).then(({data}) => {
                resolve(data)
             }).catch(e => reject(e))
+         })
+      },
+
+      getTotalNegocios({commit},usuario_id){
+         return new Promise((resolve, reject) => {
+            
+            axios.get(`/api/dashboard/get-negocios/usuario/${usuario_id}`).then(({data}) => {
+               resolve(data)
+            }).catch(e => reject(e))
+
          })
       }
 

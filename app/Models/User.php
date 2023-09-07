@@ -1014,9 +1014,9 @@ class User extends Authenticatable
 
 
     /**
-     * @return Integer cantidad de viajeros de un promotor o lider a traves de sus promotores que han usado el sistema
+     * @return int cantidad de viajeros de un promotor o lider a traves de sus promotores que han usado el sistema
      */
-    public function viajerosActivos() : int{
+    public function viajerosActivos() : int {
         $viajeros = User::whereHas('rol',fn($q) => $q->where('nombre','Viajero'))
                     ->whereHas('referidor',function(Builder $q){
                         $q->when($this->rol->nombre == 'Promotor',fn($query) => $query->where('id',$this->id))
@@ -1129,7 +1129,10 @@ class User extends Authenticatable
        return $resultado;
     }
 
-    
+    public function invitaciones(){
+        return $this->hasMany(Invitacion::class,'usuario_id','id');
+    }
+
     public function cargar(): User{
         $this->porcentaje_perfil = $this->getFillPercentage();
         $this->tokens;
@@ -1186,6 +1189,8 @@ class User extends Authenticatable
                 'promedio' => $this->nivel['activaciones'] > 0 ? $this->activacionesMes() * 100 / $this->nivel['activaciones'] : 0
             ];
         }
+
+        $this->invitaciones;
 
         return $this;
     }

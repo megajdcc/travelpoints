@@ -16,3 +16,4 @@ public/service-worker.js
 .env.testing
 public/build/*
 cron-log.txt
+public/hot

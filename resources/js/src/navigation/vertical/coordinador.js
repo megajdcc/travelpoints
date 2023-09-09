@@ -17,17 +17,6 @@ const coordinador = [
     ]
   },
 
-
-
-  // {
-  //   title:'Hacer Reserva',
-  //   route:'reservaciones.list',
-  //   action:'read',
-  //   resource:'reservaciones',
-  //   icon:'fa-calendar-check',
-  //   fontAwesome:true,
-  //  },
-
     {
       title:'Movimientos en cartera',
       icon:'DollarSignIcon',
@@ -108,6 +97,13 @@ const coordinador = [
             resource:'reportes',
             action:'read',
           },
+          {
+            title:'Promotores',
+            route:'report.promotores',
+            resource:'reportes',
+            action:'read',
+          },
+
           {
             title:'Estados de Cuenta',
             route:'report.movimientos.full',

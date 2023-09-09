@@ -1786,6 +1786,55 @@ class UserController extends Controller
 
     }
 
+    public function descargarLideresReport(Request $request){
+        $usuario = $request->user();
+        $filtro = $request->all();
+        $searchs = collect(['username', 'nombre', 'apellido', 'email', 'bio', 'direccion']);
+        $pagination = $usuario->allLideres($searchs, $filtro);
+
+        $lideres = collect($pagination->items())->each(function ($lider) {
+            $lider->avatar = $lider->getAvatar();
+            $lider->portada = $lider->getPortada();
+            $fecha_ultima = $lider->promotores->where('activo', true)->sortByDesc('created_at')->pluck('created_at')->first();
+            $lider->ultimaActivacion = $fecha_ultima ? Carbon::now()->diffInDays($fecha_ultima) : 0;
+
+            $lider->comision = $lider->cuenta->divisa->iso . ' ' . number_format((float) $lider->comision, 2, ',', '.') . ' ' . $lider->cuenta->divisa->simbolo;
+            $lider->status = $lider->getStatus();
+        });
+
+        $imagenBase64 = "data:image/png;base64," . base64_encode(Storage::disk('public')->get('logotipo.png'));
+        $logowhite = "data:image/png;base64," . base64_encode(Storage::disk('public')->get('logotipoblancohorizontal.png'));
+        $avatar  = "data:image/png;base64," . base64_encode(Storage::disk('img-perfil')->get($usuario->imagen ?: 'default.jpg'));
+
+        $datos = [
+            'lideres' => $lideres,
+            'usuario' => $usuario,
+            'logotipo' => $imagenBase64,
+            'logotipoblanco' => $logowhite,
+            'avatar' => $avatar
+        ];
+
+
+        $pdf = Pdf::loadView('reports.lideres', $datos);
+
+        $pdf->setOption([
+            'dpi' => 150,
+            'defaultFont' => 'sans-serif',
+            'isHtml5ParserEnabled' => true,
+            'isRemoteEnabled' => true
+        ]);
+
+        $pdf->setPaper('a4', 'landscape');
+
+        $nombre = 'Líderes y sus resultados.pdf';
+        $pdf->save($nombre, 'reportes');
+
+        return response()->json([
+            'url' => Storage::url('public/reportes/' . $nombre),
+            'filename' => $nombre
+        ]);
+    }
+
 
     public function fetchDataPromotoresReport(Request $request){
 
@@ -1832,7 +1881,7 @@ class UserController extends Controller
         $filtro = $request->all();
         $searchs = collect(['username', 'nombre', 'apellido', 'email', 'bio', 'direccion']);
 
-        $pagination = $usuario->allLideres(true,$searchs,$filtro); 
+        $pagination = $usuario->allLideres($searchs,$filtro); 
 
         $lideres = collect($pagination->items())->each(function($lider) {
             $lider->avatar = $lider->getAvatar();

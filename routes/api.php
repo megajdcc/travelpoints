@@ -715,6 +715,8 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
         Route::post('fetch-data-promotores', [UserController::class, 'fetchDataPromotoresReport']);
         Route::post('fetch-data-lideres', [UserController::class, 'fetchDataLideresReport']);
         Route::post('descargar/fetch-data-promotores', [UserController::class, 'descargarPromotoresReport']);
+        Route::post('descargar/fetch-data-lideres', [UserController::class, 'descargarLideresReport']);
+
     });
 
     /**************************/

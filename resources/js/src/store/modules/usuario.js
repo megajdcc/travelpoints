@@ -1194,6 +1194,16 @@ export default {
 		
 		},
 
+		downloadReportLider(_,datos){
+			return new Promise((resolve, reject) => {
+				axios.post(`/api/reporte/descargar/fetch-data-lideres`,datos).then(({data}) => {
+						resolve(data)
+				}).catch(e => {
+					reject(e)
+				})
+			})
+		},
+
 		guardarComisionPromotor({commit,state},datos){
 			return new Promise((resolve, reject) => {
 				

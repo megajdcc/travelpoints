@@ -54,7 +54,6 @@ export default function useLideresList(){
       isSortDirDesc:isSortDirDesc.value,
       perPage:perPage.value,
       q:searchQuery.value,
-      mes:filtermes.value
     }).then(({url,filename}) => {
         
           // Crea un enlace (link) para descargar el archivo

@@ -1121,7 +1121,7 @@ class User extends Authenticatable
        return $resultado;
     }
 
-    public function allLideres(bool $paginado = false, Collection|NullType $searchs = null,array $filtro = []){
+    public function allLideres(Collection|NullType $searchs = null,array $filtro = []){
 
         $primer_dia = null;
         $ultimo_dia = null;
@@ -1129,50 +1129,35 @@ class User extends Authenticatable
             $primer_dia = (new Carbon(new \DateTime($filtro['mes'])))->firstOfMonth();
             $ultimo_dia = (new Carbon(new \DateTime($filtro['mes'])))->lastOfMonth();
         }
-
-        if($paginado) {
-            $resultado = User::where('coordinador_id', $this->id)
-                ->addSelect([
-                    'comision' => EstadoCuenta::join('movimientos as m','estado_cuentas.id','m.estado_cuenta_id')
-                                    ->selectRaw('sum(m.monto) as comision')
-                                    ->where('model_type',"App\\Models\\User")
-                                    ->whereColumn('model_id','users.id')
-                                    ->where('m.concepto','!=', 'Conversión de divisa')
-                                    ->where('tipo_movimiento', Movimiento::TIPO_INGRESO)
-                                  
-                ])
-                ->withCount([
-                    'promotores as total_promotores' => function ($query) use ($primer_dia, $ultimo_dia) {
-                        $query->when(!is_null($primer_dia) && !is_null($ultimo_dia), function ($q) use ($primer_dia, $ultimo_dia) {
-                            $q->whereBetween('created_at', [$primer_dia, $ultimo_dia]);
-                        });
-                    }
-                ])
-                ->with(['promotores' => function ($query) use ($primer_dia, $ultimo_dia) {
-                    $query->where('activo', true)
-                    ->when(!is_null($primer_dia) && !is_null($ultimo_dia), function ($q) use ($primer_dia, $ultimo_dia) {
-                        $q->whereBetween('created_at', [$primer_dia, $ultimo_dia]);
-                    })
-                        ->orderBy('created_at', 'desc')
-                        ->take(1); // Obtener solo el primer resultado (última fecha)
-                }])
-                ->where(fn ($q) => $searchs->each(fn ($s) => $q->orWhere($s, 'LIKE', "%{$filtro['q']}%", 'OR')))
-                ->orderBy($filtro['sortBy'], $filtro['isSortDirDesc'] ? 'desc' : 'asc')
-                ->paginate($filtro['perPage'] ?: 1000);
-        } else {
-            $resultado = User::whereHas('coordinador', fn (Builder $q) => $q->where('id', $this->id))
-                        ->addSelect([
-                            'comision' => EstadoCuenta::join('movimientos as m', 'estado_cuentas.id', 'm.estado_cuenta_id')
+        $resultado = User::where('coordinador_id', $this->id)
+            ->addSelect([
+                'comision' => EstadoCuenta::join('movimientos as m','estado_cuentas.id','m.estado_cuenta_id')
                                 ->selectRaw('sum(m.monto) as comision')
-                                ->where('model_type', "App\\Models\\User")
-                                ->whereColumn('model_id', 'users.id')
-                                ->where('m.concepto', '!=', 'Conversión de divisa')
+                                ->where('model_type',"App\\Models\\User")
+                                ->whereColumn('model_id','users.id')
+                                ->where('m.concepto','!=', 'Conversión de divisa')
                                 ->where('tipo_movimiento', Movimiento::TIPO_INGRESO)
-                        ])
-                ->get();
-
-               
-        }
+                                
+            ])
+            ->withCount([
+                'promotores as total_promotores' => function ($query) use ($primer_dia, $ultimo_dia) {
+                    $query->when(!is_null($primer_dia) && !is_null($ultimo_dia), function ($q) use ($primer_dia, $ultimo_dia) {
+                        $q->whereBetween('created_at', [$primer_dia, $ultimo_dia]);
+                    });
+                }
+            ])
+            ->with(['promotores' => function ($query) use ($primer_dia, $ultimo_dia) {
+                $query->where('activo', true)
+                ->when(!is_null($primer_dia) && !is_null($ultimo_dia), function ($q) use ($primer_dia, $ultimo_dia) {
+                    $q->whereBetween('created_at', [$primer_dia, $ultimo_dia]);
+                })
+                    ->orderBy('created_at', 'desc')
+                    ->take(1); // Obtener solo el primer resultado (última fecha)
+            }])
+            ->where(fn ($q) => $searchs->each(fn ($s) => $q->orWhere($s, 'LIKE', "%{$filtro['q']}%", 'OR')))
+            ->orderBy($filtro['sortBy'], $filtro['isSortDirDesc'] ? 'desc' : 'asc')
+            ->paginate($filtro['perPage'] ?: 1000);
+        
 
         return $resultado;
 

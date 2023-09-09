@@ -7,7 +7,6 @@ use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 use Illuminate\Support\Facades\{DB};
 use App\Jobs\VerificarRedPromotores;
 use App\Jobs\verificarReservas;
-
 class Kernel extends ConsoleKernel
 {
 

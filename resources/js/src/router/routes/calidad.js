@@ -586,7 +586,7 @@ export default [
       component:() => import('views/simulador/index.vue'),
       children:[
          {
-            path:'',
+            path:'lider',
             name:'simulador.lider',
             props:{para:'Lider'},
             component:() => import('views/simulador/simulador.vue'),
@@ -600,9 +600,23 @@ export default [
             }
          },
          {
-            path:'',
+            path:'promotor',
             name:'simulador.promotor',
             props:{para:'Promotor'},
+            component:() => import('views/simulador/simulador.vue'),
+            meta:{
+               resource:'Simulador de ingresos',
+               pageTitle:'Simulador de Ingresos',
+               action:'read',
+               breadcrumb:[
+                  {text:'Simulador', active:true}
+               ]
+            }
+         },
+          {
+            path:'coordinador',
+            name:'simulador.coordinador',
+            props:{para:'Coordinador'},
             component:() => import('views/simulador/simulador.vue'),
             meta:{
                resource:'Simulador de ingresos',

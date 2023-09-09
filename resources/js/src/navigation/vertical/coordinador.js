@@ -114,6 +114,18 @@ const coordinador = [
 
       },
 
+       {
+            title: 'Simulador de Ingresos',
+            icon:'fa-calculator',
+            fontAwesome:true,
+            route:'simulador.coordinador',
+            resource:'Simulador de ingresos',
+            action:'read',
+            class:'active-nav',
+            ExactPath:true
+          },
+
+
 
       {
         title: 'Academia',

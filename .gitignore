@@ -12,3 +12,6 @@ public/images
 queue.log
 public/mix-manifest.json
 public/service-worker.js
+.env.testing
+public/build/*
+cron-log.txt

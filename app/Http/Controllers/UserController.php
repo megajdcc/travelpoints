@@ -1841,7 +1841,7 @@ class UserController extends Controller
             $lider->ultimaActivacion = $fecha_ultima ? Carbon::now()->diffInDays($fecha_ultima) : 0;
 
             $lider->comision = $lider->cuenta->divisa->iso.' '.number_format((float) $lider->comision,2,',','.').' '.$lider->cuenta->divisa->simbolo;
-
+            $lider->status = $lider->getStatus();
            
         });
 

@@ -20,7 +20,7 @@ class SistemaSeed extends Seeder
         
        $sistema =  Sistema::create([
             'nombre' => 'TravelPoints',
-            'divisa_id' => Divisa::where('iso','USD')->first()->id,
+            'divisa_id' => Divisa::where('principal',true)->first()->id
         ]);
 
         $sistema->aperturarCuenta();

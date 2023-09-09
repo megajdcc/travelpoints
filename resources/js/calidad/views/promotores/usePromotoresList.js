@@ -2,21 +2,23 @@
 import useFilterTable from '@core/utils/useFilterTable';
 
 import store from '@/store'
-import {ref} from 'vue'
+import {ref,computed} from 'vue'
 
 
 export default function usePromotoresList(lider){
 
- const tableColumns = [
-      { key: 'username', sortable: true,label:'Usuario' },
-      { key: 'activo',label:'Estado',sortable:true},
-      { key: 'email', sortable: true,label:"Email" },
-      { key: 'rol', sortable: true,label:'rol',sortKey:'rol_id' },
-      { key: 'lider_id', sortable: true,label:'Lider',sortKey:'lider_id' },
-      { key: 'status', sortable: true,label:'Status',sortKey:'username' },
-      { key: 'destino_id', sortable: true,label:'Destino',sortKey:'destino_id' },
-      { key: 'actions',sortable:true, sortKey:'id',sortBy:'id' },
-   ]
+  const tableColumns = ref([
+     { key:'ranking', sortable:'sortable',label:'Ranking'},
+      { key: 'username', sortable: true,label:'Promotor' },
+      { key: 'status',label:'Estatus',sortable:true},
+      { key: 'nivel', sortable: true,label:"Nivel" },
+      { key: 'comision_mes', sortable: true,label:'Comisiones del mes' },
+      { key: 'activaciones', sortable: true,label:'Activaciones',sortKey:'lider_id' },
+      { key: 'lider_id', sortable: true,label:'Lider Asignado',sortKey:'lider_id' },
+      { key: 'destino_id', sortable: true,label:'Destino Asignado',sortKey:'destino_id' },
+      { key: 'actions',label:"Contacto", sortable:true, sortKey:'comision',sortBy:'comision' },
+  ])
+
 
   const {
       perPageOptions,
@@ -31,7 +33,7 @@ export default function usePromotoresList(lider){
       refetchData,
   } = useFilterTable()
 
-
+  sortBy.value = 'comision'
   const fetchData = (ctx,next) => {
 
    store.dispatch('usuario/fetchPromotores',{
@@ -40,7 +42,7 @@ export default function usePromotoresList(lider){
     sortBy:sortBy.value,
     isSortDirDesc:isSortDirDesc.value,
     q:searchQuery.value,
-    lider:lider && lider.value ? lider.value.id : null
+    lider:lider.value.id
    }).then(({total:all,promotores}) => {
 
     total.value = all

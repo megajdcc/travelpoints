@@ -239,7 +239,7 @@
           <b-card>
             <table class="table table-sm table-hover ">
 
-              <tr v-for="(horario, i) in negocio.horarios">
+              <tr v-for="(horario, i) in negocio.horarios" :key="i">
                   <td>
                     {{ horario.dia | dia }}
                   </td>
@@ -406,9 +406,9 @@ export default {
 
 
   setup(props) {
+
     const { url } = toRefs(props)
     const { negocio } = toRefs(store.state.negocio)
-
     const cargarForm = () => {
 
       if(negocio.value.id){

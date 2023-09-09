@@ -22,7 +22,7 @@
       <!-- <destinos :destinos="destinos" /> -->
 
 
-      <b-tabs content-class="mt-3" nav-class="fixed-top" ref="refTabs">
+      <b-tabs content-class="mt-3" nav-class="" ref="refTabs">
          <b-tab active>
 
             <template #title>
@@ -84,7 +84,7 @@
 
 
       <!-- Si el usuario no Ha seleccionado un destino, debe hacerlo  -->
-      <el-dialog :title="$t('Elija un Destino')" :visible.sync="showDestino" width="90%" :show-close="false"
+      <el-dialog :title="$t('Elija un Destino')" :visible.sync="showDestino" width="90% !important" :show-close="false"
          :close-on-click-modal="false" :close-on-press-escape="false" class="dialogo-seleccion-destino">
 
          <template #title>
@@ -149,7 +149,7 @@ export default {
       BBadge,
       BFormRating,
       SwiperComponent: () => import('@/views/extensions/swiper/Swiper.vue'),
-      NabvarPagina: () => import('components/NabvarPagina'),
+      NabvarPagina: () => import('components/NabvarPagina.vue'),
       HasLike: () => import('components/HasLike.vue'),
       FormWizard: () => import('@/views/forms/form-wizard/FormWizard.vue'),
       Search: () => import('components/Search.vue'),
@@ -333,7 +333,6 @@ export default {
          destinoSeleccionado,
          irAtraccion: (atrac) => router.push({ name: 'edit.atraccion', params: { id: atrac.id } }),
          loading: computed(() => store.state.loading),
-         // imageBanner: require('@images/banner/banner-travel.jpg'),
          imageBanner: computed(() => `/storage/${sistema.value.banner_principal}`),
          getDestinoName: computed(() => {
             if (destino_id.value) {

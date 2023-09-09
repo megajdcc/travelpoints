@@ -20,14 +20,25 @@
             <span v-html="statisticTitle" :class="[colorText]" />
           </slot>
 
-        </div>
-        <b-avatar :variant="`light-${colorIcon}`" class="avatar-icon" @click="ir">
+          <slot name="legend">
+          
+          </slot>
+          <slot name="btn-card">
 
-          <slot name="icon">
-            <font-awesome-icon :icon="['fa-solid', icon]" size="3x" @click="ir" />
           </slot>
 
-        </b-avatar>
+
+        </div>
+        <section class="d-flex">
+          <b-avatar :variant="`light-${colorIcon}`" class="avatar-icon" @click="ir">
+            <slot name="icon">
+              <font-awesome-icon :icon="['fa-solid', icon]" size="3x" @click="ir" />
+            </slot>
+          </b-avatar>
+
+         
+        </section>
+        
       </section>
 
       <div class="filtro-statistic w-100">
@@ -103,15 +114,16 @@ export default {
 .avatar-icon {
   cursor: pointer;
   transition: 60ms ease;
-  width: 60px;
-  height: 60px;
-  position: absolute;
-  left: auto;
-  right: 1rem;
-
-  &:hover {
-    height: 70px !important;
-    width: 70px !important;
+  min-height: 60px;
+  min-width:60px;
+  max-height: 120px;
+  padding: 5px;
+  flex-grow:1;
+  flex-shrink: 0;
+  &:hover  {
+    transform:scale(1.2);
+    transition:30ms ease all;
+   
   }
 }
 

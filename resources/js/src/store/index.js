@@ -170,7 +170,16 @@ import tarjeta from './modules/tarjeta.js'
 // vonage
 import vonage from './modules/vonage.js'
 
+// reunions
+
+import reunion from './modules/reunion.js'
+
+// Invitacions
+import invitacion from './modules/invitacion.js'
+
+
 Vue.use(Vuex)
+
 
 export default new Vuex.Store({
 
@@ -275,6 +284,7 @@ export default new Vuex.Store({
 
 	},
 
+  
   modules: {
     app,
     appConfig,
@@ -324,8 +334,10 @@ export default new Vuex.Store({
     pagina,
     lote,
     tarjeta,
-    vonage
+    vonage,
+    reunion,
+    invitacion
   },
-  strict: process.env.DEV,
+  strict:false,
 
 })

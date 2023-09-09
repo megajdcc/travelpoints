@@ -1,5 +1,6 @@
 <template>
    <div>
+      <!-- <invitados /> -->
       <perfil-info :usuario="usuario" />
       <invitados class="mt-1" />
    </div>
@@ -48,8 +49,8 @@ export default {
       BMediaBody,
       BLink,
       BContainer,
-      'perfil-info':() => import('components/PerfilInfo'),
-      'invitados' : () => import('./invitados')
+      'perfil-info':() => import('components/PerfilInfo.vue'),
+      'invitados' : () => import('./invitados/index.vue')
    },
  
 

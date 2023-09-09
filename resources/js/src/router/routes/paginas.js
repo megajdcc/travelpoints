@@ -15,108 +15,6 @@ export default [
       
    },
 
-   //  {
-   //    path: '/que-es-travel-points',
-   //    name: 'about',
-   //    component: () => import('views/paginas/about'),
-   //    meta: {
-   //      layout:'travel',
-   //       resource: 'Auth',
-   //       pageTitle:'Acerca de Travel Points (about)',
-   //       breadcrumb:[
-   //          {
-   //             text:'Home',
-   //             to:{name:'inicio'},
-   //             active:false,
-   //          },
-
-   //          {
-   //             text:'About',
-   //             to:{name:'about'},
-   //             active:true,
-   //          }
-
-   //       ]
-   //    },
-      
-   // },
-
-   // {
-   //    path: '/porque-afiliar-mi-negocio',
-   //    name: 'negocio.about',
-   //    component: () => import('views/paginas/aboutNegocio'),
-   //    meta: {
-   //       layout: 'travel',
-   //       resource: 'Auth',
-   //       pageTitle: 'Porque afiliar mi negocio',
-   //       breadcrumb: [
-   //          {
-   //             text: 'Home',
-   //             to: { name: 'inicio' },
-   //             active: false,
-   //          },
-
-   //          {
-   //             text: 'Porque afiliar mi negocio',
-   //             active: true,
-   //          }
-
-   //       ]
-   //    },
-
-   // },
-
-   //  {
-   //    path: '/politicas-privacidad',
-   //    name: 'politicas.privacidad',
-   //    component: () => import('views/paginas/politicas'),
-   //    meta: {
-   //       layout: 'travel',
-   //       resource: 'Auth',
-   //       pageTitle: 'Políticas de privacidad',
-   //       breadcrumb: [
-   //          {
-   //             text: 'Home',
-   //             to: { name: 'inicio' },
-   //             active: false,
-   //          },
-
-   //          {
-   //             text: 'Políticas',
-   //             active: true,
-   //          }
-
-   //       ]
-   //    },
-
-   // },
-
-   // {
-   //    path: '/terminos-y-condiciones',
-   //    name: 'terminos-condiciones',
-   //    component: () => import('views/paginas/terminosCondiciones'),
-   //    meta: {
-   //       layout: 'travel',
-   //       resource: 'Auth',
-   //       pageTitle: 'Términos y Condiciones',
-   //       breadcrumb: [
-   //          {
-   //             text: 'Home',
-   //             to: { name: 'inicio' },
-   //             active: false,
-   //          },
-
-   //          {
-   //             text: 'para usuarios Turistas',
-   //             active: true,
-   //          }
-
-   //       ]
-   //    },
-
-   // },
-
-
    {
       path:'/search',
       component:() => import('views/paginas/Search.vue'),
@@ -191,24 +89,6 @@ export default [
    },
 
 
-   // Contacto
-
-   // {
-   //    path:'/contacto',
-   //    component:() => import('views/paginas/contacto.vue'),
-   //    name:'contacto',
-   //    meta:{
-   //       resource:'Auth',
-   //       action:'read',
-   //       layout:'travel',
-   //       // pageTitle:'Contáctanos',
-   //       // breadcrumb:[
-   //       //    {text:'Contacto',active:true}
-   //       // ]
-   //    }
-   // },
-
-
    // Tienda de Regalos
 
    {
@@ -226,7 +106,7 @@ export default [
 
    },
    {
-      path:'/tienda-travel/producto/:id/show',
+      path:'/tienda-travel/producto/:id?/show',
       component:() => import('views/paginas/PerfilProducto.vue'),
       props:true,
       name:'tienda.travel.show.producto',
@@ -241,5 +121,35 @@ export default [
          ]
       }
    },
+
+
+   // Afiliación de negocio
+
+   {
+      path:'/negocios/asociarme/invitacion/:invitacion_id',
+      name:'negocio.invitacion.afiliar',
+      component: () => import('views/negocios-invitados/afiliarme.vue'),
+      props:true,
+      beforeEnter: (to, from, next) => {
+         
+         store.dispatch('invitacion/fetch',to.params.invitacion_id).then((data) => {
+             if(data){
+               next()
+            }else{
+               toast.info('La invitación ya no está disponible')
+               next(`/inicio`)
+            }  
+         }).catch(e => {
+                next(`/inicio`)
+         })
+
+        
+      },
+      meta:{
+         resource:'Auth',
+         layout:'full',
+      }
+      
+   }
 
 ]

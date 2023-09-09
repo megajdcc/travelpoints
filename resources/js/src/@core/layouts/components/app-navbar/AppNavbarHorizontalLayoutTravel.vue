@@ -34,7 +34,7 @@
 
          <notification-dropdown v-if="is_loggin" />
          <academia v-if="is_loggin && usuario.rol && usuario.rol.academia && (usuario.rol.academia.length > 0)" />
-         <billetera v-if="is_loggin"  />
+         <billetera v-if="is_loggin && $can('read','socio perfil movimientos')"  />
          <user-dropdown />
       </b-navbar-nav>
    </div>

@@ -435,7 +435,7 @@ export default {
       BTabs,
       BTab,
       BFormCheckbox,
-      PerfilInfo: () => import('components/PerfilInfo')
+      PerfilInfo: () => import('components/PerfilInfo.vue')
 
    },
 
@@ -577,5 +577,5 @@ export default {
 }
 </script>
 
-<style lang="scss">@import '~@core/scss/vue/libs/vue-select.scss';
-@import '~@core/scss/vue/libs/vue-flatpicker.scss';</style>
+<style lang="scss">@import '@core/scss/vue/libs/vue-select.scss';
+@import '@core/scss/vue/libs/vue-flatpicker.scss';</style>

@@ -130,7 +130,10 @@
                   <b-form-group label="Monto ">
                   
                     <validation-provider name="formulario.monto" rules="required" #default="{ valid, errors }">
-                      <currency-input v-model="formulario.monto" :options="optionsCurrency"  InputClass="form-control" />
+                      <currency-input v-model="formulario.monto" :options="{
+                        ...optionsCurrency,
+                        ...{currency:divisa ? divisa.iso.toUpperCase() : 'MXN'}
+                      }"  InputClass="form-control" />
 
                       <b-form-invalid-feedback :state="valid">
                         {{ errors[0] }}
@@ -341,6 +344,7 @@ export default {
     
     return {
       actions,
+      divisa:computed(() => actions.divisa.value),
       refTable: actions.refTable,
       loading:computed(() => store.state.loading),
       showRecarga,

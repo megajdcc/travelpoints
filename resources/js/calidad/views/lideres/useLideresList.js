@@ -2,13 +2,13 @@
 import useFilterTable from '@core/utils/useFilterTable';
 
 import store from '@/store'
-import {ref} from 'vue'
+import {ref,watch} from 'vue'
 
 
 export default function useLideresList(coordinador){
 
  const tableColumns = [
-      {key: 'id',sortable:true,label:'#'},
+      {key: 'ranking',sortable:true,label:'Ranking'},
       { key: 'username', sortable: true,label:'Usuario' },
       { key: 'activo',label:'Estado',sortable:true},
       { key: 'email', sortable: true,label:"Email" },
@@ -31,22 +31,25 @@ export default function useLideresList(coordinador){
       refetchData,
   } = useFilterTable()
 
+  watch([coordinador], () => refetchData())
   const fetchData = (ctx,next) => {
 
-   store.dispatch('usuario/fetchLideres',{
-    page:currentPage.value,
-    perPage:perPage.value,
-    sortBy:sortBy.value,
-    isSortDirDesc:isSortDirDesc.value,
-    q:searchQuery.value,
-    coordinador:coordinador.value ? coordinador.value.id : null
-   }).then(({total:all,lideres}) => {
+    store.dispatch('usuario/fetchLideres',{
+      page:ctx.currentPage,
+      perPage:ctx.perPage,
+      sortBy:ctx.sortBy,
+      isSortDirDesc:ctx.sortDesc,
+      q:searchQuery.value,
+      coordinador:coordinador.value ? coordinador.value.id : null
+    }).then(({total:all,lideres}) => {
 
-    total.value = all
-    next(lideres)
-   }).catch(e => {
-    toast.info('Error trayendo Data...')
-   })
+      total.value = all
+      next(lideres)
+    }).catch(e => {
+      toast.info('Error trayendo Data...')
+    })
+
+   return null
   }
 
 
@@ -78,6 +81,7 @@ export default function useLideresList(coordinador){
   } 
 
 
+  
 
   return {
      perPageOptions,

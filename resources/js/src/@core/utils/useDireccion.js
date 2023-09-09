@@ -81,9 +81,6 @@ export default function useDireccion(){
 
          var myControl = document.getElementById(elementId);
          myControl.index = 1;
-         
-     
-
          map.controls[google.maps.ControlPosition.TOP_LEFT].push(myControl);
       });
    }

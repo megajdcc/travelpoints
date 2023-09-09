@@ -171,14 +171,11 @@ export default{
 
 		},
 
-		guardarPermiso({state,commit},data){
+		guardarPermiso({state,commit},datos){
 
 			return new Promise((resolve, reject) => {
-				
-				commit('toggleLoading',null,{root:true})
-
-				if (state.permiso.id) {
-					axios.put('/api/permisos/' + state.permiso.id, data).then(({data}) => {
+				if (datos.id) {
+					axios.put(`/api/permisos/${datos.id}`, datos).then(({data}) => {
 
 						if(data.result){
 							commit('pushPermiso',data.permiso)
@@ -186,13 +183,10 @@ export default{
 						resolve(data)
 
 					}).catch(e => reject(e))
-					.then(() => {
-						commit('toggleLoading', null, { root: true })
-					});
 
 				} else {
 					
-					axios.post('/api/permisos', data).then(({data}) => {
+					axios.post('/api/permisos', datos).then(({data}) => {
 
 						if(data.result){
 							commit('pushPermiso',data.permiso)
@@ -200,9 +194,7 @@ export default{
 						resolve(data)
 
 					}).catch(e => reject(e))
-					.then(() => {
-						commit('toggleLoading',null,{root:true})
-					})
+				
 
 				}
 			})

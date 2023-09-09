@@ -12,6 +12,8 @@
             <b-row>
               <b-col cols="12" md="3" v-for="(item, i) in items" :key="i">
                 <div class="card-simple" :style="`background-image:url(/storage/negocios/cupones/${item.imagen})`">
+                <agendar :modelId="item.id" :modelType="'App\\Models\\Negocio\\Cupon'" :modelName="`el cupón (${item.nombre})`" />
+                  
                   <div class="card-simple-background">
                     <div class="card-simple-content">
                       <h2>
@@ -155,7 +157,8 @@ export default {
     BBadge,
     Listado: () => import('components/Listado.vue'),
     BModal,
-    BImg
+    BImg,
+    agendar:() => import('components/agendar.vue')
 
   },
 

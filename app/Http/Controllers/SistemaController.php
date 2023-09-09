@@ -11,6 +11,7 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\{DB,File, Http, Storage};
 use ParagonIE\Sodium\Compat;
 use App\Jobs\regenerate_token_cjdropshipping;
+use App\Models\Divisa;
 use Carbon\Carbon;
 
 use function PHPUnit\Framework\isNull;
@@ -56,24 +57,27 @@ class SistemaController extends Controller
         try {
             DB::beginTransaction();
 
+
+                if($sistema->divisa_id != $datos['divisa_id']){
+                    $sistema->changeDivisa(Divisa::find($datos['divisa_id']));
+                }
               
                 $sistema->update($datos->except(['redes'])->toArray());
                 
                 if(isset($datos['redes'])){
                     foreach($datos['redes'] as $red){
-                    $sistema->agregarRed($red);
+                        $sistema->agregarRed($red);
                     }
                 }
-
+                $sistema->refresh();
                 $sistema->cargar();
+
             DB::commit();
             $result = true;
 
         } catch (\Throwable $th) {
             DB::rollBack();
             $result = false;
-
-            dd($th->getMessage());
         }
 
         return response()->json(['result' => $result,'sistema' => $sistema]);
@@ -84,6 +88,7 @@ class SistemaController extends Controller
 
         try {
             DB::beginTransaction();
+
             if(isNull($sistema->cuenta)){
                 $cuentaNueva = $sistema->aperturarCuenta();
             }

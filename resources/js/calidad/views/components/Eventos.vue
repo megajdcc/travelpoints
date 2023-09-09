@@ -11,6 +11,8 @@
             <b-row>
               <b-col cols="12" md="3" v-for="(item, i) in items" :key="i">
                 <div class="card-simple" :style="`background-image:url(${portada(item.imagenes)})`">
+                <agendar :modelId="item.id" :modelType="'App\\Models\\Evento'" :modelName="`el evento (${item.titulo})`" />
+
                   <div class="card-simple-background">
                     <div class="card-simple-content">
                       <h2>
@@ -91,7 +93,8 @@ export default {
     BLink,
     BBadge,
     Listado: () => import('components/Listado.vue'),
-    ActionsNegocio: () => import('components/ActionsNegocio.vue')
+    ActionsNegocio: () => import('components/ActionsNegocio.vue'),
+    agendar:() => import('components/agendar.vue')
   },
 
   props: {

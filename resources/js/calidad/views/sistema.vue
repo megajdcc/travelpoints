@@ -688,7 +688,7 @@ export default {
       optionsEditor,
       crearCuentaSistema,
       sistema,
-      divisas,
+      divisas:computed(() => divisas.value.filter(val => !['Tp','TP'].includes(val.iso))),
       refBanner,
       banner_principal,
       updateBanner,

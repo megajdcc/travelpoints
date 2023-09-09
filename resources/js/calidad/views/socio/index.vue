@@ -1,259 +1,264 @@
 <template>
-   <b-container fluid class="px-0">
-      <b-row>
+  <b-container fluid class="px-0">
+    <b-row>
 
-         <b-col cols="12" md="3">
-            <b-card>
-               <b-nav vertical card-header class="menu-socio">
-                  <b-nav-item :to="{ name: 'miperfil' }" active-class="active">
+      <b-col cols="12" md="3">
+        <b-card>
+          <b-nav vertical card-header class="menu-socio">
+            <b-nav-item :to="{ name: 'miperfil' }" active-class="active" v-if="$can('read', 'perfil')">
 
-                     <b-container fluid>
-                        <b-row class="px-0">
-                           
-                           <b-col cols="2" class="px-0">
-                              <b-avatar :src="usuario.avatar" />
-                           </b-col>
+              <b-container fluid>
+                <b-row class="px-0">
 
-                           <b-col cols="10" class="px-0">
-                              {{ ` ${usuario.nombre ? usuario.nombre +' ' +usuario.apellido : usuario.username}` }}
-                           </b-col>
-                        </b-row>
-                     </b-container>
+                  <b-col cols="2" class="px-0">
+                    <b-avatar :src="usuario.avatar" />
+                  </b-col>
 
-                  </b-nav-item>
+                  <b-col cols="10" class="px-0">
+                    {{ ` ${usuario.nombre ? usuario.nombre + ' ' + usuario.apellido : usuario.username}` }} <br>
+                    <b>@{{ usuario.username }}</b>
 
-                  <b-nav-item :to="{ name: 'socio.negocio.list' }" active-class="active">
-                     <span class="fas fa-briefcase"></span>
-                     Negocio
-                  </b-nav-item>
+                  </b-col>
+                </b-row>
+              </b-container>
 
-                  <b-nav-item :to="{ name: 'socio.reservaciones' }" active-class="active">
-                     <span class="fas fa-credit-card"></span>
-                     Reservaciones
-                  </b-nav-item>
+            </b-nav-item>
 
-                  <!-- <b-nav-item :to="{ name: 'socio.cupones' }" active-class="active">
+            <b-nav-item :to="{ name: 'socio.negocio.list' }" active-class="active" v-if="$can('read', 'socio negocios')">
+              <span class="fas fa-briefcase"></span>
+              Negocio
+            </b-nav-item>
+
+            <b-nav-item :to="{ name: 'socio.reservaciones' }" active-class="active"
+              v-if="$can('read', 'socio reservaciones')">
+              <span class="fas fa-credit-card"></span>
+              Reservaciones
+            </b-nav-item>
+
+            <!-- <b-nav-item :to="{ name: 'socio.cupones' }" active-class="active">
                      <span class="fas fa-ticke"></span>
                      Cupones
                   </b-nav-item> -->
 
-                  <b-nav-item :to="{ name: 'socio.compras' }" active-class="active">
-                     <span class="fas fa-weight-hanging"></span>
-                     Compras
-                  </b-nav-item>
+            <b-nav-item :to="{ name: 'socio.compras' }" active-class="active" v-if="$can('read', 'socio compras')">
+              <span class="fas fa-weight-hanging"></span>
+              Compras
+            </b-nav-item>
 
-                  <b-nav-item :to="{ name: 'socio.consumos' }" active-class="active">
-                     <font-awesome-icon icon="fas fa-concierge-bell" />
-                     Consumos
-                  </b-nav-item>
+            <b-nav-item :to="{ name: 'socio.consumos' }" active-class="active" v-if="$can('read', 'socio consumos')">
+              <font-awesome-icon icon="fas fa-concierge-bell" />
+              Consumos
+            </b-nav-item>
 
-                  <b-nav-item :to="{ name: 'socio.cupones' }" active-class="active">
-                     <font-awesome-icon icon="fas fa-tags" />
-                     Mis Cupones
-                  </b-nav-item>
-
-
-
-               </b-nav>
-            </b-card>
-
-            <b-card v-if="route.meta.name == 'negocio'">
-               <b-nav vertical card-header class="menu-socio">
-
-                  <b-nav-item :to="{ name: 'socio.negocio.list' }" exact active-class="active">
-                     <span class="fas fa-concierge-bell"></span>
-                     Mis Negocios
-                  </b-nav-item>
-
-                  <b-nav-item :to="{ name: 'socio.negocio.afiliar' }" active-class="active">
-                     <span class="fas fa-plus-circle"></span>
-                     Afiliar mi negocio
-                  </b-nav-item>
-
-                  <b-nav-item :to="{ name: 'socio.negocio.siguiendo' }" exact active-class="active">
-                     <span class="fas fa-bookmark"></span>
-                     Siguiendo
-                  </b-nav-item>
+            <b-nav-item :to="{ name: 'socio.cupones' }" active-class="active" v-if="$can('read', 'socio cupones')">
+              <font-awesome-icon icon="fas fa-tags" />
+              Mis Cupones
+            </b-nav-item>
 
 
-                  <b-nav-item :to="{ name: 'socio.negocio.recomendados' }" exact active-class="active">
-                     <span class="fas fa-heart"></span>
-                     Recomendados
-                  </b-nav-item>
 
-                  <b-nav-item :to="{ name: 'socio.negocio.solicitudes' }"  active-class="active">
-                     <span class="fas fa-file"></span>
-                     Solicitudes enviadas
+          </b-nav>
+        </b-card>
 
-                     <b-badge variant="danger" pill>{{ solicitudesSinAceptar  }}</b-badge>
-                  </b-nav-item>
-               </b-nav>
-            </b-card>
+        <b-card v-if="route.meta.name == 'negocio'">
+          <b-nav vertical card-header class="menu-socio">
 
-            <b-card v-if="route.meta.name == 'perfil'">
+            <b-nav-item :to="{ name: 'socio.negocio.list' }" exact active-class="active">
+              <span class="fas fa-concierge-bell"></span>
+              Mis Negocios
+            </b-nav-item>
 
-               <b-nav vertical card-header class="menu-socio">
-                  <b-nav-item :to="{ name: 'miperfil' }" exact active-class="active">
-                     <span class="fas fa-user"></span>
-                     Perfil de socio
-                  </b-nav-item>
+            <b-nav-item :to="{ name: 'socio.negocio.afiliar' }" active-class="active">
+              <span class="fas fa-plus-circle"></span>
+              Afiliar mi negocio
+            </b-nav-item>
 
-                  <b-nav-item :to="{ name: 'micuenta' }" exact active-class="active">
-                     <span class="fas fa-money-check"></span>
-                     Cuenta y Movimientos
-                  </b-nav-item>
+            <b-nav-item :to="{ name: 'socio.negocio.siguiendo' }" exact active-class="active">
+              <span class="fas fa-bookmark"></span>
+              Siguiendo
+            </b-nav-item>
 
 
-                  <b-nav-item :to="{ name: 'mi.tarjetas' }" exact active-class="active">
-                     <span class="fas fa-credit-card"></span>
-                     Tarjetas asociadas
-                  </b-nav-item>
+            <b-nav-item :to="{ name: 'socio.negocio.recomendados' }" exact active-class="active">
+              <span class="fas fa-heart"></span>
+              Recomendados
+            </b-nav-item>
 
-                  <b-nav-item :to="{ name: 'misreferidos' }" exact active-class="active">
-                     <span class="fas fa-user-plus"></span>
-                     Mis amigos
-                  </b-nav-item>
+            <b-nav-item :to="{ name: 'socio.negocio.solicitudes' }" active-class="active">
+              <span class="fas fa-file"></span>
+              Solicitudes enviadas
 
-                  <b-nav-item :to="{ name: 'perfil.editar' }" exact active-class="active">
-                     <span class="fas fa-user-edit"></span>
-                     Editar Información
-                  </b-nav-item>
+              <b-badge variant="danger" pill>{{ solicitudesSinAceptar }}</b-badge>
+            </b-nav-item>
+          </b-nav>
+        </b-card>
 
-                  <b-nav-item :to="{ name: 'perfil.datos_pago' }" exact active-class="active" v-if="$can('write','Datos de pago')">
-                     <font-awesome-icon icon="fas fa-money-check-dollar"/>
-                     Datos de información de pago
-                  </b-nav-item>
+        <b-card v-if="route.meta.name == 'perfil'">
 
-                  <b-nav-item :to="{ name: 'perfil.password' }" exact active-class="active">
-                     <span class="fas fa-key"></span>
-                     Cambiar Contraseña
-                  </b-nav-item>
+          <b-nav vertical card-header class="menu-socio">
+            <b-nav-item :to="{ name: 'miperfil' }" exact active-class="active" v-if="$can('read', 'perfil')">
+              <span class="fas fa-user"></span>
+              Perfil de socio
+            </b-nav-item>
 
-                  <b-nav-item :to="{ name: 'perfil.desactivar' }" exact active-class="active">
-                     <span class="fas fa-window-close"></span>
-                     Desactivar Cuenta
-                  </b-nav-item>
-               </b-nav>
-            </b-card>
+            <b-nav-item :to="{ name: 'micuenta' }" exact active-class="active"
+              v-if="$can('read', 'socio perfil movimientos')">
+              <span class="fas fa-money-check"></span>
+              Cuenta y Movimientos
+            </b-nav-item>
 
 
-            <b-card v-if="route.meta.name == 'consumos'">
+            <b-nav-item :to="{ name: 'mi.tarjetas' }" exact active-class="active"
+              v-if="$can('read', 'socio perfil tarjetas')">
+              <span class="fas fa-credit-card"></span>
+              Tarjetas asociadas
+            </b-nav-item>
 
-               <b-nav vertical card-header class="menu-socio">
+            <b-nav-item :to="{ name: 'misreferidos' }" exact active-class="active"
+              v-if="$can('read', 'socio perfil amigos')">
+              <span class="fas fa-user-plus"></span>
+              Mis amigos
+            </b-nav-item>
 
-                  <b-nav-item :to="{ name: 'socio.consumos' }"  exact active-class="active">
-                     <font-awesome-icon icon="fas fa-concierge-bell" />
-                     Mis consumos
-                  </b-nav-item>
+            <b-nav-item :to="{ name: 'perfil.editar' }" exact active-class="active" v-if="$can('read', 'perfil')">
+              <span class="fas fa-user-edit"></span>
+              Editar Información
+            </b-nav-item>
 
-               </b-nav>
-            </b-card>
+            <b-nav-item :to="{ name: 'perfil.datos_pago' }" exact active-class="active"
+              v-if="$can('write', 'Datos de pago')">
+              <font-awesome-icon icon="fas fa-money-check-dollar" />
+              Datos de pago
+            </b-nav-item>
+
+            <b-nav-item :to="{ name: 'perfil.password' }" exact active-class="active" v-if="$can('write', 'perfil')">
+              <span class="fas fa-key"></span>
+              Cambiar Contraseña
+            </b-nav-item>
+
+            <b-nav-item :to="{ name: 'perfil.desactivar' }" exact active-class="active" v-if="$can('write', 'perfil')">
+              <span class="fas fa-window-close"></span>
+              Desactivar Cuenta
+            </b-nav-item>
+          </b-nav>
+        </b-card>
 
 
-         </b-col>
+        <b-card v-if="route.meta.name == 'consumos'">
 
-         <b-col cols="12" md="9">
-            <router-view></router-view>
-         </b-col>
+          <b-nav vertical card-header class="menu-socio">
 
-      </b-row>
-   </b-container>
+            <b-nav-item :to="{ name: 'socio.consumos' }" exact active-class="active">
+              <font-awesome-icon icon="fas fa-concierge-bell" />
+              Mis consumos
+            </b-nav-item>
+
+          </b-nav>
+        </b-card>
+
+
+      </b-col>
+
+      <b-col cols="12" md="9">
+        <router-view></router-view>
+      </b-col>
+
+    </b-row>
+  </b-container>
 </template>
 
 <script>
 import {
-   BContainer,
-   BRow,
-   BCol,
-   BCard,
-   BCardBody,
-   BButton,
-   BNav,
-   BNavItem,
-   BAvatar,
-   BBadge
+  BContainer,
+  BRow,
+  BCol,
+  BCard,
+  BCardBody,
+  BButton,
+  BNav,
+  BNavItem,
+  BAvatar,
+  BBadge
 
 } from 'bootstrap-vue'
 import store from '@/store'
-import { computed, toRefs,watch,onMounted } from 'vue'
+import { computed, toRefs, watch, onMounted } from 'vue'
 
 import { useRoute, } from 'vue2-helpers/vue-router'
 
 export default {
-   components: {
-      BContainer,
-      BRow,
-      BCol,
-      BCard,
-      BCardBody,
-      BButton,
-      BNav,
-      BNavItem,
-      BAvatar,
-      BBadge
+  components: {
+    BContainer,
+    BRow,
+    BCol,
+    BCard,
+    BCardBody,
+    BButton,
+    BNav,
+    BNavItem,
+    BAvatar,
+    BBadge
 
-   },
+  },
 
-   setup() {
-      const route = useRoute();
-      const {solicitudes} = toRefs(store.state.solicitud)
-      const { usuario } = toRefs(store.state.usuario)
+  setup() {
+    const route = useRoute();
+    const { solicitudes } = toRefs(store.state.solicitud)
+    const { usuario } = toRefs(store.state.usuario)
 
-      onMounted(() => {
+    onMounted(() => {
 
-         if(!solicitudes.value.length){
-               store.dispatch('solicitud/getMisSolicitudes');
-         }
-      })
-
-
-      return {
-         usuario,
-         route,
-         solicitudesSinAceptar:computed(() => `${solicitudes.value.filter(val => val.situacion != 3 ).length}` )
+      if (!solicitudes.value.length) {
+        store.dispatch('solicitud/getMisSolicitudes');
       }
-   },
+    })
+
+
+    return {
+      usuario,
+      route,
+      solicitudesSinAceptar: computed(() => `${solicitudes.value.filter(val => val.situacion != 3).length}`)
+    }
+  },
 }
 </script>
 
 <style lang="scss" scoped>
-
 @import '../../../src/assets/scss/variables/variables';
 
-   .menu-socio{
-      .nav-item{
-         a{
-            color: #909399 ;
-         }
-         
-         
-         .router-link-exact-active,.active{
-            background: $primary !important;
-            color:white;
-         }
+.menu-socio {
+  .nav-item {
+    a {
+      color: #909399;
+    }
 
-      }
-     
-   }
 
-.dark-layout{
-   .menu-socio {
-         .nav-item {
-            a {
-               color: white !important;
-            }
-   
-   
-            .router-link-exact-active,
-            .active {
-               background: $primary  !important;
-               color: black !important;
-            }
-   
-         }
-   
-      }
+    .router-link-exact-active,
+    .active {
+      background: $primary !important;
+      color: white;
+    }
+
+  }
+
 }
 
+.dark-layout {
+  .menu-socio {
+    .nav-item {
+      a {
+        color: white !important;
+      }
 
+
+      .router-link-exact-active,
+      .active {
+        background: $primary !important;
+        color: black !important;
+      }
+
+    }
+
+  }
+}
 </style>

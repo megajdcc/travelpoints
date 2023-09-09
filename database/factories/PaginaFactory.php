@@ -26,14 +26,19 @@ class PaginaFactory extends Factory
      * @return array<string, mixed>
      */
     public function definition()
-    {
+    {   
         return [
-            'categoria_id' => Arr::random(Categoria::get()->pluck('id')->all()),
-            'titulo' => $this->faker->jobTitle(),
-            'contenido' => $this->faker->paragraphs(100,true),
-            'ruta' => $this->faker->slug(3),
-            'permiso_id' => Arr::random(Permiso::get()->pluck('id')->all()),
-            'usuario_id' =>  User::get()->first()->id,
+            'nombre' > fake()->text(),
+            'contenido' => fake()->realText(),
+            'is_termino' => false,
+            'is_politica' => false,
+            'ruta' => fake()->slug(),
+            'usuario_id' => User::factory()->create(),
+            'activo' => true,
+            'is_contacto' => false,
+            'showHeader' => false,
         ];
+
+      
     }
 }

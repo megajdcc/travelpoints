@@ -1,5 +1,6 @@
-import {MapElementFactory} from 'vue2-google-maps'
- 
+import {helpers} from 'gmap-vue'
+const MapElementFactory = helpers.MapElementFactory
+
 export default MapElementFactory({
   name: 'directionsRenderer',
   ctr: () => google.maps.DirectionsRenderer,

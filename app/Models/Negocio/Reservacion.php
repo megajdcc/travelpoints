@@ -16,7 +16,7 @@ use Illuminate\Support\Carbon;
 class Reservacion extends Model
 {
     use HasFactory;
-
+    public readonly string $model_type;
     protected $fillable = [
         'fecha',
         'hora',
@@ -33,6 +33,10 @@ class Reservacion extends Model
     protected $casts = [
         'fecha' => 'date:Y-m-d'
     ];
+
+    public function __construct(){
+     $this->model_type = 'App\Models\Negocio\Reservacion';
+    }
 
     // public function fecha() : Attribute{
     //     return Attribute::make(

@@ -370,7 +370,8 @@ class SolicitudController extends Controller
     }
 
     public function solicitudesSinAceptar()
-    {
-        return response()->json(23);
+    {   
+
+        return response()->json(Solicitud::where('situacion',1)->count());
     }
 }

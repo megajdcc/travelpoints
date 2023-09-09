@@ -254,8 +254,8 @@ export default {
 }
    
 @import "@core/scss/base/pages/app-chat-list.scss";
-@import "~@core/scss/base/pages/app-chat.scss";
-// @import "~@core/scss/base/pages/app-chat-list.scss";
+@import "@core/scss/base/pages/app-chat.scss";
+// @import "@core/scss/base/pages/app-chat-list.scss";
 
 </style>
 

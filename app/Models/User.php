@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Console\Commands\establecerNivel;
 use App\Models\Negocio\Solicitud;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -17,15 +18,21 @@ use Illuminate\Broadcasting\Channel;
 
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Support\Facades\{DB, Hash};
-use App\Trais\{hasCuenta, Has_roles, hasTelefonos,hasCarrito};
+use App\Trais\{agendar, hasCuenta, Has_roles, hasTelefonos,hasCarrito};
 
 use App\Models\Divisa;
 use App\Models\Negocio\Cupon;
 use App\Models\Negocio\Negocio;
 use App\Models\Negocio\Reservacion;
 use App\Models\Usuario\Permiso;
+use App\Models\Usuario\Rol;
 use Carbon\Carbon;
+use Database\Factories\UserFactory;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\{Collection,Str};
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use SebastianBergmann\Type\NullType;
+use Illuminate\Database\Eloquent\Factories\Factory;
 
 class User extends Authenticatable
 {
@@ -33,23 +40,9 @@ class User extends Authenticatable
     use HasApiTokens,HasFactory, Notifiable;
     use Has_roles;
     use hasCuenta,hasTelefonos,hasCarrito;
-    
-    public readonly string $model_type;
-    public readonly int $divisa_id; 
-    public $porcentajePerfil = 0;
-
-    public function __construct(
-        string $model_type = 'App\Models\User')
-    {
-        $this->model_type = $model_type;
-
-        $roles = collect(['Promotor','Lider','Coordinador']);
-
-        $this->divisa_id = Divisa::where('principal', true)->first()->id;
-
-       $this->porcentajePerfil = $this->getFillPercentage();
-
-    }
+    use agendar;
+    public string $model_type = 'App\models\User';
+    public readonly int|null $divisa_id; 
 
     /**
      * The attributes that are mass assignable.
@@ -83,7 +76,18 @@ class User extends Authenticatable
         'lider_id',
         'coordinador_id',
         'tarjeta_id',
-        'destino_id'
+        'destino_id',
+        'portada',
+        'porcentaje_perfil',
+        'lider_business',
+        'comision_promotores',
+
+         /**
+          * Para el caso de los promotores el nivel 
+          * [1 => Visitante (1 acti), 2 => Recomendador (100 activ), 3 => Promotor(500 acti) , 4 => Consul (1000 act) , 5 => Embajador (3000 activ)]
+          * Es un Json [nivel => 0, activaciones  => 0]
+          **/
+        'nivel',
     ];
 
     /**
@@ -106,23 +110,10 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'is_password'       => 'boolean',
         'activo'            => 'boolean',
-        'tps'               => 'float'
+        'tps'               => 'float',
+        'nivel'             => 'array',
+        'lider_business' => 'boolean'
     ];
-
-
-    // protected $attributes = [
-    //     'activo' => true,
-    // ];
-
-
-    // public function genero():Attribute{
-
-    //     return Attribute::make(
-    //         get:fn($val) => $val,
-    //         set:fn($val) => $val == 'Masculino' ? 1 : 2,
-    //     );
-
-    // }
 
     public function password(): Attribute
     {
@@ -159,6 +150,19 @@ class User extends Authenticatable
 
     }
 
+
+    public function getPortada()
+    {
+
+        if (empty($this->portada)) {
+            $this->portada = 'banner-travel.jpg';
+
+            return asset('storage/img-portada/' . $this->portada);
+        } else {
+            return asset('storage/img-portada/' . $this->portada);
+        }
+    }
+
     public function getNombreCompleto(){
 
         if($this->nombre){
@@ -171,7 +175,7 @@ class User extends Authenticatable
     }
 
     public function rol(){
-        return $this->belongsTo('App\Models\Usuario\Rol','rol_id','id');
+        return $this->belongsTo(Rol::class,'rol_id','id');
     }
 
     public function permisos(){
@@ -200,6 +204,10 @@ class User extends Authenticatable
      */
     public function ciudad(){
         return $this->belongsTo(Ciudad::class,'ciudad_id','id');
+    }
+
+    public function consumos(){
+        return $this->hasMany(Venta::class,'cliente_id','id');
     }
 
     /** 
@@ -294,58 +302,112 @@ class User extends Authenticatable
         
     }
 
+
+    public function getStatus(){
+
+        $statuses = ['Activo','En peligro','Inactivo'];
+
+        $status  = $this->getStatusUser();
+
+        if($this->rol->nombre == 'Promotor'){
+
+            if($status['referidos']['ultimo_mes'] > 0){
+                return $statuses[0];
+            }else if($status['referidos']['ultimo_trimestre'] > 0 ){
+                return $statuses[1];
+            }else{
+                return $statuses[2];
+            }
+
+        }else if($this->rol->nombre == 'Lider'){
+
+            if ($status['promotores_activos']['ultimo_mes'] > 0) {
+                return $statuses[0];
+            } else if ($status['promotores_activos']['ultimo_trimestre'] > 0) {
+                return $statuses[1];
+            } else {
+                return $statuses[2];
+            }
+
+        }else if($this->rol->coordinador == 'Coordinador') {
+
+            if ($status['lideres_activos']['ultimo_mes'] >= 10) {
+                return $statuses[0];
+            } else if ($status['lideres_activos']['ultimo_mes'] > 0) {
+                return $statuses[1];
+            } else {
+                return $statuses[2];
+            }
+
+        }else{
+            return $statuses[2];
+        }
+    }
+
+
     public function getStatusUser(): array
     {
+
+        // Esto es para el promotor
         $referidos = [
             'ultimo_mes' => 0,
             'ultimo_trimestre' => 0,
             'data' => 0
         ];
 
+        // Esto es para el lider
         $promotores_activos = [
             'ultimo_mes' => 0,
             'ultimo_trimestre' => 0,
             'data' => 0
         ];
 
-
+        // Esto es para el coordinador
         $lideres_activos = [
             'ultimo_mes' => 0,
             'ultimo_trimestre' => 0,
             'data' => 0
         ];
 
-        if ($this->rol->nombre == 'Promotor') {
-            $referidos_ultimo_mes =  DB::table('users', 'u')
-                ->join('usuario_referencia as ur', 'u.id', 'ur.usuario_id')
-                ->whereRaw('u.id = :usuario && ur.created_at >= DATE_SUB(CURDATE(), INTERVAL 30 DAY)', [':usuario' => $this->id])
-                ->selectRaw('count(ur.referido_id) as referidos')
-                ->first('referidos');
+        if ($this->rol->nombre    == 'Promotor') {
+            $referidos_ultimo_mes = User::whereHas('referidor' ,function(Builder $q) {
+                    $q->where('id',$this->id);
+            })
+            ->whereBetween('created_at',[now()->subMonth(), now()])
+            ->count();
 
-            $referidos_ultimo_trimestre =  DB::table('users', 'u')
-                ->join('usuario_referencia as ur', 'u.id', 'ur.usuario_id')
-                ->whereRaw('u.id = :usuario && ur.created_at >= DATE_SUB(CURDATE(), INTERVAL 89 DAY)', [':usuario' => $this->id])
-                ->selectRaw('count(ur.referido_id) as referidos')
-                ->first('referidos');
+            $referidos_ultimo_trimestre = User::whereHas('referidor',function(Builder $q){
+                $q->where('id',$this->id);
+            })
+            ->whereBetween('created_at',[now()->subDays(89), now()])
+            ->count();
 
-            $referidos['ultimo_mes'] = $referidos_ultimo_mes->referidos;
-            $referidos['ultimo_trimestre'] = $referidos_ultimo_trimestre->referidos;
+            $referidos['ultimo_mes']       = $referidos_ultimo_mes;
+            $referidos['ultimo_trimestre'] = $referidos_ultimo_trimestre;
+            
         } else if ($this->rol->nombre == 'Lider') {
 
-            $activos_ultimo_mes =  DB::table('users', 'u')
-                ->join('usuario_referencia as ur', 'u.id', 'ur.usuario_id')
-                ->whereRaw('u.lider_id = :usuario && ur.created_at >= DATE_SUB(CURDATE(), INTERVAL 30 DAY)', [':usuario' => $this->id])
-                ->selectRaw('count(distinct(ur.usuario_id)) as promotores')
-                ->first('referidos');
+        
 
-            $activos_ultimo_trimestre =  DB::table('users', 'u')
-                ->join('usuario_referencia as ur', 'u.id', 'ur.usuario_id')
-                ->whereRaw('u.lider_id = :usuario && ur.created_at >= DATE_SUB(CURDATE(), INTERVAL 89 DAY)', [':usuario' => $this->id])
-                ->selectRaw('count(distinct(ur.usuario_id)) as promotores')
-                ->first('referidos');
+            $activos_ultimo_mes = DB::table('users','u')
+                ->join('usuario_referencia as ur', 'u.id', 'ur.referido_id')
+                ->join('users as promotor','ur.usuario_id','promotor.id')
+                ->where('promotor.lider_id',$this->id)
+                ->whereBetween('u.created_at',[now()->subMonth(),now()])
+                ->count();
 
-            $promotores_activos['ultimo_mes'] = $activos_ultimo_mes->promotores;
-            $promotores_activos['ultimo_trimestre'] = $activos_ultimo_trimestre->promotores;
+    
+
+
+            $activos_ultimo_trimestre = DB::table('users', 'u')
+            ->join('usuario_referencia as ur', 'u.id', 'ur.referido_id')
+            ->join('users as promotor', 'ur.usuario_id', 'promotor.id')
+            ->where('promotor.lider_id', $this->id)
+            ->whereBetween('u.created_at', [now()->subMonths(3), now()])
+            ->count();
+
+            $promotores_activos['ultimo_mes'] = $activos_ultimo_mes;
+            $promotores_activos['ultimo_trimestre'] = $activos_ultimo_trimestre;
 
         } else if ($this->rol->nombre == 'Coordinador') {
 
@@ -354,23 +416,30 @@ class User extends Authenticatable
 
             foreach ($this->lideres as $key => $lider) {
                 
-                $activos_ultimo_mes_val =  DB::table('users', 'u')
-                    ->join('usuario_referencia as ur', 'u.id', 'ur.usuario_id')
-                    ->whereRaw('u.lider_id = :usuario && ur.created_at >= DATE_SUB(CURDATE(), INTERVAL 30 DAY)', [':usuario' => $lider->id])
-                    ->selectRaw('count(distinct(ur.usuario_id)) as promotores')
-                    ->first('referidos');
 
-                    if($activos_ultimo_mes_val->promotores > 0){
+                $activos_ultimo_mes = User::whereHas('rol',fn($q) => $q->where('nombre','Promotor'))
+                        ->whereHas('referidos',function($query){
+                                $query->whereBetween('usuario_referencia.created_at', [now()->subMonth(), now()])
+                                    ->where('activo', true);
+                                })
+                        ->where('lider_id',$lider->id)
+                        ->distinct()
+                        ->count();
+                    if($activos_ultimo_mes > 0){
                         $activos_ultimo_mes++;
                     }
 
-                $activos_ultimo_trimestre_val =  DB::table('users', 'u')
-                    ->join('usuario_referencia as ur', 'u.id', 'ur.usuario_id')
-                    ->whereRaw('u.lider_id = :usuario && ur.created_at >= DATE_SUB(CURDATE(), INTERVAL 89 DAY)', [':usuario' => $lider->id])
-                    ->selectRaw('count(distinct(ur.usuario_id)) as promotores')
-                    ->first('referidos');
+                $activos_ultimo_trimestre= User::whereHas('rol', fn ($q) => $q->where('nombre', 'Promotor'))
+                ->whereHas('referidos', function ($query) {
+                    $query->whereBetween('usuario_referencia.created_at', [now()->subMonths(3), now()])
+                        ->where('activo', true);
+                })
+                    ->where('lider_id', $lider->id)
+                    ->distinct()
+                    ->count();
+             
 
-                if ($activos_ultimo_trimestre_val->promotores > 0) {
+                if($activos_ultimo_trimestre > 0){
                     $activos_ultimo_trimestre++;
                 }
             }
@@ -383,6 +452,10 @@ class User extends Authenticatable
         return ['referidos' => $referidos, 'promotores_activos' => $promotores_activos,'lideres_activos' => $lideres_activos];
     }
 
+    public function getImagen(){
+        return $this->imagen;
+    }
+    
     function totalPromotores(){
         
         $promotores_activos = DB::table('users','u')
@@ -578,8 +651,8 @@ class User extends Authenticatable
         return $this->belongsTo(User::class,'coordinador_id','id');
     }
 
-    /*
-    Un Usuario con el rol de Coordinador, puede tener muchos o ningunos lideres en red 
+    /**
+     * Un Usuario con el rol de Coordinador, puede tener muchos o ningunos lideres en red 
     */
     public function lideres(){
         return $this->hasMany(User::class,'coordinador_id','id');
@@ -785,40 +858,325 @@ class User extends Authenticatable
             $this->codigo_referidor = Str::slug($this->username);
             $this->save();
         }
+
+        return $this;
     }
 
+    public function asignarToken(){
+        $this->token = ($this->createToken($this->nombre . '-' . $this->id))?->plainTextToken;
+        $this->save();
+        return $this;
+    }
 
+    public function postCreate(){
+        $this->generateLink()
+        ->asignarToken()
+        ->asignarPermisosPorRol()
+        ->aperturarCuenta(0,'Tp');
+        return $this;
+    }
     public function tarjeta(){
         return $this->belongsTo(Tarjeta::class,'tarjeta_id','id');
     }
 
     public function getFillPercentage()
-    {
-        $fillableProperties = $this->getFillable();
-        $totalProperties = count($fillableProperties);
+    {   
+        $arrays_except = [
+            'password',
+            'is_password',
+            'token',
+            'lenguaje',
+            'activo',
+            'ultimo_login',
+            'lider_id',
+            'coordinador_id',
+            'tarjeta_id', 
+            'porcentaje_perfil',
+            'destino_id',
+            'portada'
+        ];
+        $fillableProperties = (collect($this->getFillable()))->filter(fn($val) => !\array_search($val,$arrays_except));
+        $fillableProperties->push('telefonos');
+
+        $totalProperties = $fillableProperties->count();
         $filledProperties = 0;
 
         foreach ($fillableProperties as $property) {
-            if (!empty($this->$property)) {
+
+            if($property == 'telefonos'){
+                if($this->telefonos->count() > 0){
+                    $filledProperties++;
+                }
+            }else if(!empty($this[$property])){
                 $filledProperties++;
             }
+            
         }
 
         $percentageFilled = ($filledProperties / $totalProperties) * 100;
         
+        $this->porcentaje_perfil = $percentageFilled;
+        $this->refresh();
+        $this->update(['porcentaje_perfil' => $percentageFilled]);
+      
         return $percentageFilled;
     }
 
     public function destino(){
         return $this->belongsTo(Destino::class,'destino_id','id');
+    }   
+
+    public function reunions(){
+        return $this->hasMany(Reunion::class,'usuario_id','id');
     }
-    
+
+    public function establecerNivel() : bool{
+        
+        $result = false;
+
+        if($this->rol->nombre == 'Promotor'){
+            $referidos = $this->referidos->where('activo', true);
+            
+            $result =  $this->update(['nivel' => [
+                'activaciones' => $referidos->count(),
+                'nivel' => $this->getNivel($referidos->count())
+            ]]);
+
+        }
+
+        return $result;
+
+       
+    }
+
+    public function getNivel(int $activaciones) : int|null {
+        $niveles = collect([1,100,500,1000,3000]);
+        $nivel = null;
+
+        if($activaciones < 1){
+            return $nivel;
+        }
+        foreach ($niveles as $key => $n) {
+          
+            if($activaciones >= $n){
+                $nivel = $key;
+            }
+        }
+        return $nivel;
+    }
+
+    public function activacionesRestante(){
+        $niveles = collect([1, 100, 500, 1000, 3000]);
+        
+        if(!is_null($this->nivel['nivel'])){
+            return $niveles[$this->nivel['nivel'] + 1] - $this->nivel['activaciones'];
+        }
+
+        return 1;
+    }
+
+    public function getEfectividad(){
+
+        $activos = DB::table('usuario_referencia as ur')
+        ->join('users as u', 'ur.referido_id', '=', 'u.id')
+        ->join('users as promotor', 'ur.usuario_id','promotor.id')
+        ->join('ventas as v', 'u.id', '=', 'v.cliente_id')
+        ->when($this->rol->nombre == 'Promotor',fn($q) => $q->where('promotor.id',$this->id))
+        ->when($this->rol->nombre == 'Lider', fn ($q) => $q->where('promotor.lider_id', $this->id))
+        ->select(DB::raw('COUNT(DISTINCT u.id) as activos'))
+        ->first();
+
+        // Accede al resultado
+        $cantidadActivos = $activos->activos;
+
+        return $cantidadActivos;
+
+    }
+
+    public function ultimaActivacion(){
+        $fecha_ultima = $this->referidos->where('activo',true)->sortByDesc('created_at')->pluck('created_at')->first();
+        return $fecha_ultima ? Carbon::now()->diffInDays($fecha_ultima) : 0;
+    }
+
+
+    public function ultimoRegistro(){
+        $fecha_uiltimo_registro = $this->referidos->sortByDesc('created_at')->pluck('created_at')->first();
+        return $fecha_uiltimo_registro ? Carbon::now()->diffInDays($fecha_uiltimo_registro) : 0;
+    }
+
+
+    /**
+     * @return int cantidad de viajeros de un promotor o lider a traves de sus promotores que han usado el sistema
+     */
+    public function viajerosActivos() : int {
+        $viajeros = User::whereHas('rol',fn($q) => $q->where('nombre','Viajero'))
+                    ->whereHas('referidor',function(Builder $q){
+                        $q->when($this->rol->nombre == 'Promotor',fn($query) => $query->where('id',$this->id))
+                        ->when($this->rol->nombre == 'Lider',fn($query) => $query->where('lider_id',$this->id));
+                    })
+                    ->where('activo',true)
+                    ->whereBetween('ultimo_login',[now()->subMonth(),now()])
+                    ->count();
+
+        return $viajeros;
+    }
+
+    public function viajerosActivosConsumo() :int{
+
+        $viajeros =
+        User::whereHas('rol', fn ($q) => $q->where('nombre', 'Viajero'))
+        ->whereHas('consumos', fn (Builder $q) =>  $q->whereBetween('ultimo_login', [now()->subMonth(), now()]))
+        ->whereHas('referidor', function (Builder $q) {
+            $q->when($this->rol->nombre == 'Promotor', fn ($query) => $query->where('id', $this->id))
+                ->when($this->rol->nombre == 'Lider', fn ($query) => $query->where('lider_id', $this->id));
+        })
+        
+            ->where('activo', true)
+            ->count();
+
+        return $viajeros;
+    }
+
+    public function totalViajeros() : int{
+
+        $viajeros = User::whereHas('rol', fn ($q) => $q->where('nombre', 'Viajero'))
+                        ->whereHas('referidor', function (Builder $q) {
+                            $q->when($this->rol->nombre == 'Promotor', fn ($query) => $query->where('id', $this->id))
+                                ->when($this->rol->nombre == 'Lider', fn ($query) => $query->where('lider_id', $this->id));
+                        })
+                        ->where('activo', true)
+                        ->count();
+        return $viajeros;
+    }
+
+    public function activacionesMes(){
+        $referidos = User::whereHas('referidor',fn($q) => $q->where('id',$this->id))->where('activo',true)
+        ->whereBetween('created_at',[now()->subMonth(),now()])
+        ->count();
+        return $referidos;
+
+    }   
+
+    public function allPromotores(bool $paginado = false, Collection|NullType $searchs = null,array $filtro = [])
+    {   
+        $primer_dia = null;
+        $ultimo_dia = null;
+
+        if(isset($filtro['mes']) && !empty($filtro['mes'])){
+            $primer_dia = (new Carbon(new \DateTime($filtro['mes'])))->firstOfMonth();
+            $ultimo_dia = (new Carbon(new \DateTime($filtro['mes'])))->lastOfMonth();
+        }
+
+        if($paginado){
+            $resultado = User::where('lider_id', $this->id)
+                ->withCount(['referidos as total_viajeros_registrados' => function ($query) use ($primer_dia, $ultimo_dia) {
+                        $query->when(!is_null($primer_dia) && !is_null($ultimo_dia), function ($q) use ($primer_dia, $ultimo_dia) {
+                            $q->whereBetween('usuario_referencia.created_at', [$primer_dia, $ultimo_dia]);
+                        });
+                    },
+                    'referidos as total_viajeros_activos' => function ($query) use ($primer_dia, $ultimo_dia) {
+                        $query->where('activo', true)
+                            ->when(!is_null($primer_dia) && !is_null($ultimo_dia), function ($q) use ($primer_dia, $ultimo_dia) {
+                                $q->whereBetween('usuario_referencia.created_at', [$primer_dia, $ultimo_dia]);
+                            });
+                    },
+                    'referidos as total_viajeros_activos_mes' => function ($query) use ($primer_dia, $ultimo_dia) {
+                        $query->where('activo', true)
+                            ->when(is_null($primer_dia) && is_null($ultimo_dia), function ($q) {
+                                $q->whereBetween('usuario_referencia.created_at', [now()->firstOfMonth(), now()->lastOfMonth()]);
+                            })
+                            ->when(!is_null($primer_dia) && !is_null($ultimo_dia), function ($q) use ($primer_dia, $ultimo_dia) {
+                                $q->whereBetween('usuario_referencia.created_at', [$primer_dia, $ultimo_dia]);
+                            });
+                    }
+                ])
+                ->with(['referidos' => function ($query) use ($primer_dia, $ultimo_dia) {
+                    $query->where('activo', true)
+                        ->when(!is_null($primer_dia) && !is_null($ultimo_dia), function ($q) use ($primer_dia, $ultimo_dia) {
+                            $q->whereBetween('usuario_referencia.created_at', [$primer_dia, $ultimo_dia]);
+                        })
+                        ->orderBy('usuario_referencia.created_at', 'desc')
+                        ->take(1); // Obtener solo el primer resultado (última fecha)
+                }])
+                ->where(fn ($q) => $searchs->each(fn ($s) => $q->orWhere($s, 'LIKE', "%{$filtro['q']}%", 'OR')))
+                ->orderBy($filtro['sortBy'], $filtro['isSortDirDesc'] ? 'desc' : 'asc')
+                ->paginate($filtro['perPage'] ?: 1000);
+
+        }else{
+            $resultado = User::whereHas('lider',fn(Builder $q) => $q->where('id', $this->id))
+            ->addSelect([
+                'activacions' => function($query) {
+                        $query->selectRaw('count(distinct(u.id)) as activacions')
+                        ->from('users as u')
+                        ->join('usuario_referencia as ur','u.id','ur.referido_id')
+                        ->where('u.activo',true)
+                        ->whereColumn('ur.usuario_id','users.id');
+                }
+            ])
+            ->orderBy('activacions','desc')
+            ->get();
+        }
+
+
+       return $resultado;
+    }
+
+    public function allLideres(Collection|NullType $searchs = null,array $filtro = []){
+
+        $primer_dia = null;
+        $ultimo_dia = null;
+        if (isset($filtro['mes']) && !empty($filtro['mes'])) {
+            $primer_dia = (new Carbon(new \DateTime($filtro['mes'])))->firstOfMonth();
+            $ultimo_dia = (new Carbon(new \DateTime($filtro['mes'])))->lastOfMonth();
+        }
+        $resultado = User::where('coordinador_id', $this->id)
+            ->addSelect([
+                'comision' => EstadoCuenta::join('movimientos as m','estado_cuentas.id','m.estado_cuenta_id')
+                                ->selectRaw('sum(m.monto) as comision')
+                                ->where('model_type',"App\\Models\\User")
+                                ->whereColumn('model_id','users.id')
+                                ->where('m.concepto','!=', 'Conversión de divisa')
+                                ->where('tipo_movimiento', Movimiento::TIPO_INGRESO)
+                                
+            ])
+            ->withCount([
+                'promotores as total_promotores' => function ($query) use ($primer_dia, $ultimo_dia) {
+                    $query->when(!is_null($primer_dia) && !is_null($ultimo_dia), function ($q) use ($primer_dia, $ultimo_dia) {
+                        $q->whereBetween('created_at', [$primer_dia, $ultimo_dia]);
+                    });
+                }
+            ])
+            ->with(['promotores' => function ($query) use ($primer_dia, $ultimo_dia) {
+                $query->where('activo', true)
+                ->when(!is_null($primer_dia) && !is_null($ultimo_dia), function ($q) use ($primer_dia, $ultimo_dia) {
+                    $q->whereBetween('created_at', [$primer_dia, $ultimo_dia]);
+                })
+                    ->orderBy('created_at', 'desc')
+                    ->take(1); // Obtener solo el primer resultado (última fecha)
+            }])
+            ->where(fn ($q) => $searchs->each(fn ($s) => $q->orWhere($s, 'LIKE', "%{$filtro['q']}%", 'OR')))
+            ->orderBy($filtro['sortBy'], $filtro['isSortDirDesc'] ? 'desc' : 'asc')
+            ->paginate($filtro['perPage'] ?: 1000);
+        
+
+        return $resultado;
+
+
+    }
+
+
+    public function invitaciones(){
+        return $this->hasMany(Invitacion::class,'usuario_id','id');
+    }
+
     public function cargar(): User{
+        $this->porcentaje_perfil = $this->getFillPercentage();
         $this->tokens;
         $this->rol?->permisos;
         $this->rol?->academia->load('videos');
         $this->habilidades = $this->getHabilidades();
         $this->avatar = $this->getAvatar();
+        $this->portada = $this->getPortada();
         $this->ciudad?->estado?->pais;
         $this->cuenta;
         $this->cuenta?->divisa;
@@ -827,11 +1185,15 @@ class User extends Authenticatable
         foreach ($this->negocios as $key => $negocio) {
             $negocio->descripcion = '';
         }
-        
+       
         $this->solicitudes;
         $this->destino;
         // $this->faqs;
-        $this->referidor;
+
+        if($this->referidor){
+            $this->referidor->first()?->cargar();
+        }
+
         $this->referidos;
         $this->permisos;
         $this->reservaciones;
@@ -844,11 +1206,28 @@ class User extends Authenticatable
         $this->retiros;
         $this->lider?->cargar();
         $this->promotores;
-        $this->coordinador;
+        $this->coordinador?->cargar();
+
         $this->lideres;
-        $this->porcentajePerfil = $this->getFillPercentage();
+       
         $this->tarjeta?->lote;
-        // dd($this->porcentajePerfil);
+        $this->reunions;
+        $this->consumos;
+
+        if($this->rol->nombre == 'Promotor'){
+            $this->ultimaActivacion = $this->ultimaActivacion();
+            $this->totalActivaciones = $this->nivel['activaciones'];
+            $this->totalRegistros = $this->referidos->count();
+            $this->ultimoRegistro = $this->ultimoRegistro();
+            $this->activaciones = [
+                'acumulada' => $this->nivel['activaciones'],
+                'mes' => $this->activacionesMes(),
+                'promedio' => $this->nivel['activaciones'] > 0 ? $this->activacionesMes() * 100 / $this->nivel['activaciones'] : 0
+            ];
+        }
+
+        $this->invitaciones;
+
         return $this;
     }
 

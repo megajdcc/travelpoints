@@ -14,12 +14,12 @@ export default {
     const {tiendas} = toRefs(store.state.tienda)
 
     const cargarForm = () => {
-      
-      if(!tiendas.value.length){
-        store.dispatch('tienda/fetch',id.value)
-      }else{
-        store.commit('tienda/capturar',id.value)
-      }
+      store.dispatch('tienda/fetch', id.value)
+      // if(!tiendas.value.length){
+        
+      // }else{
+      //   store.commit('tienda/capturar',id.value)
+      // }
 
     }
 

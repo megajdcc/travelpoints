@@ -37,6 +37,7 @@ class RetiroController extends Controller
 
     public function fetchData(Request $request){
 
+
         $datos = $request->all();
 
         $paginate = Retiro::where([
@@ -54,6 +55,10 @@ class RetiroController extends Controller
                 ['email', 'LIKE', "%{$datos['q']}%", 'OR'],
             ]);
 
+        })
+
+        ->when(\in_array($request->user()->rol->nombre,['Promotor','Lider','Coordinador']), function($q) use($request){
+            $q->where('usuario_id',$request->user()->id);   
         })
 
         ->orderBy($datos['sortBy'] ?: 'id',$datos['isSortDirDesc'] ? 'desc' : 'asc')
@@ -98,6 +103,7 @@ class RetiroController extends Controller
             'status'      => 'required',
             'comprobante' => 'nullable',
             'nota' => 'nullable',
+            'divisa_id' => 'nullable'
         ]));
 
 
@@ -126,7 +132,8 @@ class RetiroController extends Controller
             $retiro  = Retiro::create([
                 ...$datos->toArray(),
                 ...[
-                    'comprobante' => isset($comprobante_name) ? $comprobante_name : null
+                    'comprobante' => isset($comprobante_name) ? $comprobante_name : null,
+                    'divisa_id' => !isset($datos['divisa_id']) ? $request->user()->cuenta->divisa_id : null
                 ]
             ]);
 

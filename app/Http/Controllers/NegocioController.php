@@ -53,7 +53,10 @@ class NegocioController extends Controller
             $q->whereHas('iata',function(Builder $query) use($datos){
                     $destino = Destino::find($datos['destinoId']);
                     $query->where('id',$destino->iata->id);
-            });
+            })->where('publicado', true);
+        })
+        ->when(isset($datos['isReserva']) && $datos['isReserva'],function($q){
+                $q->where('publicado',true);
         })
         ->with(['cuenta.divisa'])
         ->orderBy($datos['sortBy'] ?: 'id',$datos['isSortDirDesc'] ? 'desc' : 'desc')
@@ -65,7 +68,6 @@ class NegocioController extends Controller
         foreach ($negocios as $key => $negocio) {
             $negocio->cargar();
         }   
-
 
         return response()->json([
             'total' => $paginator->total(),
@@ -618,7 +620,7 @@ class NegocioController extends Controller
 
         $url = $request->get('url');
 
-        $negocio = Negocio::where('url',$url)->first();
+        $negocio = Negocio::where('url',$url)->where('publicado',true)->first();
 
         if($negocio){
             $negocio->cargar();
@@ -667,7 +669,8 @@ class NegocioController extends Controller
                     });
                 });
             })
-          
+            
+            ->where('publicado',true)
             ->orderBy('tipo_comision', 'desc')
             ->orderBy('comision','desc')
             ->paginate($datos['perPage']?:1000, pageName:'currentPage');
@@ -823,5 +826,36 @@ class NegocioController extends Controller
 
         return response()->json(['result' => $result]);
     }
+
+    public function togglePublicado(Negocio $negocio){
+
+        try {
+            DB::beginTransaction();
+                $negocio->publicado = !$negocio->publicado;
+                $negocio->save();
+            DB::commit();
+           
+            $negocio->cargar();
+           
+            $result = true;
+
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            $result = false;
+        }
+
+        return response()->json([
+            'result' => $result,
+            'negocio' => $negocio
+        ]);
+
+    }
+
+
+    public function invitar(Request $request, User $usuario){
+
+        return response()->json();
+    }
+
 
 }

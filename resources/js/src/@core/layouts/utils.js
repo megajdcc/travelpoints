@@ -76,7 +76,6 @@ export const isNavGroupActive = children => {
 // prettier-ignore
 export const navLinkProps = item => computed(() => {
   const props = {}
-
   // If route is string => it assumes => Create route object from route name
   // If route is not string => It assumes it's route object => returns route object
   if (item.route) props.to = typeof item.route === 'string' ? { name: item.route } : item.route
@@ -96,6 +95,11 @@ export const navLinkProps = item => computed(() => {
    if(item.ExactPath){
      props.ExactPath = item.ExactPath
    }
+
+   if(item.class){
+    props.class = item.class 
+   }
+
   
   return props
 })

@@ -183,6 +183,9 @@ class ReservacionController extends Controller
             // Notificar al usuario de su Reservación
             $reservacion->usuario->notify(new nuevaReservacion($reservacion,2));
 
+            // Guardarlo como un recordatorio
+            $reservacion->usuario->agregarRecordatorio($reservacion);
+
         } catch (\Throwable $th) {
            DB::rollBack();
          

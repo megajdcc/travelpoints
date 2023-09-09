@@ -6,10 +6,16 @@ h1,h2,h3,h4,h5,h6{
    font-weight: bolder;
 }
 
+html{
+   box-sizing: border-box;
+   font-size: 10pt;
+}
+
 body{
    font-family: 'Myriad Regular' !important;
-   font-size: 12pt;
    line-height: 13.3pt;
+   overflow-wrap: normal !important;
+   font-size: 1;
 }
 
 strong{
@@ -173,12 +179,7 @@ strong{
    left: calc(0%) !important;
 }
 
-body {
-   // -moz-transform: scale(0.9, 0.9);
-   // zoom: 0.9;
-   // zoom: 90%;
-   overflow-wrap: normal !important;
-}
+
 
 .el-table {
    overflow-wrap: normal !important;
@@ -211,7 +212,7 @@ body {
 }
 
 .layout-travel {
-   background-image: url('/images/patron_fondo_blanco.svg');
+   background-image: url('../images/illustration/patron_fondo_blanco.svg');
    background-attachment: fixed;
    background-repeat: repeat;
    background-position: top;
@@ -222,7 +223,7 @@ body {
 
 .dark-layout .layout-travel {
 
-   background-image: url('/images/patron_fondo_gris.svg') !important;
+   background-image: url('../images/illustration/patron_fondo_gris.svg') !important;
    background-attachment: fixed;
    background-repeat: repeat;
    background-position: top;
@@ -262,4 +263,9 @@ body {
 .dropdown-menu {
    max-height: 450px;
    overflow-y: scroll;
+}
+
+
+.blueimp-gallery {
+    position: fixed;
 }

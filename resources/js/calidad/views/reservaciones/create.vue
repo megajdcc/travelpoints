@@ -9,12 +9,8 @@ export default {
   
   setup(props){
 
-
     store.commit('reservacion/clear')
-
     return () => h(form,{ 
-
-
       on:{
         save:(data,formValidate) => {
           store.dispatch('reservacion/guardar',data).then(({result,reservacion}) => {

@@ -24,7 +24,7 @@ export default {
   props:{
     title:{
       type:String,
-      default:'Titulo de la grafica'
+      default:''
     },
     subtitulo:String,
     series:{
@@ -60,36 +60,57 @@ export default {
       }]
 
     },
-  },
 
-  setup(props){
-
-    const {series,title,subtitulo} = toRefs(props)
-
-    
-
-    return {
-      chartOptions:computed(() => ({
-        title:{
-          text:title.value
+    chartOption:{
+      type:Object,
+      default:() => ({
+        title: {
+          text:''
         },
-        subtitle:{
-          text:subtitulo.value
+        subtitle: {
+          text:''
         },
 
-        chart:{
-          map:worldMap,
+        chart: {
+          map: worldMap,
         },
         colorAxis: {
-           stops: [
+          stops: [
             [0, '#55aaff'],
             [1, '#2d5b88']
           ]
         },
-        
-        series: series.value
-      }))
+
+        series: []
+      })
     }
+  },
+
+  setup(props){
+
+    const {series,title,subtitulo,chartOption} = toRefs(props)
+
+    return{
+      chartOptions:computed(() => {
+          return {
+            ...chartOption.value,
+            ...{
+              
+              title:{
+                text:title.value
+              },
+
+              subtitle:{
+                text:subtitulo.value
+              },
+
+              series:series.value
+
+            }
+          }
+      })
+    }
+
   }
 
 

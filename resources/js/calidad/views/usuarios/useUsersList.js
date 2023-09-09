@@ -5,19 +5,29 @@ import { title } from '@core/utils/filter'
 import ToastificationContent from '@core/components/toastification/ToastificationContent.vue'
 
 import useFilterTable from '@core/utils/useFilterTable';
-
+import {toRefs} from 'vue'
 export default function useUsersList() {
 
    const refUserListTable = ref(null)
+   const {usuario} = toRefs(store.state.usuario)
 
    // Table Handlers
-   const tableColumns = [
-      { key: 'username', sortable: true,label:'Usuario' },
-      { key: 'activo',label:'Estado',sortable:true},
+   let tableColumns = [
+      { key: 'username', sortable: true,label:'Viajero' },
       { key: 'email', sortable: true,label:"Email" },
       { key: 'rol', sortable: true,label:'rol',sortKey:'rol_id' },
-      { key: 'actions',sortable:true, sortKey:'id',sortBy:'id' },
    ]
+
+   if(['Desarrollador','Administrador'].includes(usuario.value.rol ? usuario.value.rol.nombre : '')){
+        tableColumns = [
+            { key: 'username', sortable: true,label:'Usuario' },
+            { key: 'activo',label:'Estado',sortable:true},
+            { key: 'email', sortable: true,label:"Email" },
+            { key: 'rol', sortable: true,label:'rol',sortKey:'rol_id' },
+            { key: 'actions',sortable:true, sortKey:'id',sortBy:'id' } ,
+         ]
+   }
+ 
    const totalUsers = ref(0)
    
    const {
@@ -45,6 +55,7 @@ export default function useUsersList() {
    })
 
    const refetchData = () => {
+      
       refUserListTable.value.refresh()
    }
 
@@ -53,7 +64,9 @@ export default function useUsersList() {
    })
    
  
-
+   watch(refUserListTable,() => {
+      refetchData()
+   })
 
    const fetchUsers = (ctx, callback) => {
       store
@@ -65,13 +78,11 @@ export default function useUsersList() {
             sortDesc: isSortDirDesc.value,
             role: roleFilter.value,
          })
-         .then(response => {
-            const { users, total } = response.data
+         .then(({total:all,users}) => {
+            totalUsers.value = all
             callback(users)
-            totalUsers.value = total
-
          })
-         .catch(() => {
+         .catch((e) => {
             toast({
                component: ToastificationContent,
                props: {

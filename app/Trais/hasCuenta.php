@@ -78,10 +78,11 @@ trait hasCuenta
             monto: $new_saldo,
             tipo_movimiento: Movimiento::TIPO_INGRESO,
             concepto: 'Conversión de divisa',
+            conversion:true
          );
 
-         $this->cuenta->saldo = $new_saldo;
-         $this->cuenta->save();
+         // $this->cuenta->saldo = $new_saldo;
+         // $this->cuenta->save();
 
          return $movimiento;
       }
@@ -101,6 +102,31 @@ trait hasCuenta
          $sistema = Sistema::first();
          $sistema->generarMovimiento($saldo, $concepto, Movimiento::TIPO_INGRESO);
 
+      }
+
+   }
+
+   public function getDivisa() : Divisa{
+        
+        if($this->isCuenta()){
+            return  $this->cuenta->divisa;
+        }
+        
+        return Divisa::where('iso','USD')->first();
+    }
+
+
+
+   public function isCuenta() : bool{
+      return $this->cuenta ? true : false;
+   }  
+
+
+
+   public function crearCuentaSiNoExiste(){
+
+      if(!$this->isCuenta()){
+            $this->aperturarCuenta(0,$this->getDivisa()->iso);
       }
 
    }

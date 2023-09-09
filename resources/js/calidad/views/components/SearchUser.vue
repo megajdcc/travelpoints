@@ -27,7 +27,7 @@
             <feather-icon icon="SearchIcon" />
           </b-input-group-prepend>
       
-          <b-form-input v-model="search" @input="remoteMethod" :placeholder="textSearch" ref="refInput">
+          <b-form-input  :value="search" @input="remoteMethod"  :placeholder="textSearch" ref="refInput">
       
           </b-form-input>
       
@@ -160,22 +160,28 @@ export default {
 
     const inputSearch = ref(false)
     const listenToggle = ref(false)
-  
-    const remoteMethod = (query) => {
+    
+    const remoteMethod = _.debounce(query => {
+       store.dispatch('usuario/searchUser', query).then((data) => resultados.value = data).catch(e => console.log(e)).finally(() => {
+        search.value = query
+       })
+    }, 600)
+      
+    // const remoteMethod = (query) => {
 
-      if (query !== '') {
-        setTimeout(() => {
+    //   if (query !== '') {
+    //     setTimeout(() => {
 
-          store.dispatch('usuario/searchUser', query).then((data) => {
+    //       store.dispatch('usuario/searchUser', query).then((data) => {
             
-            resultados.value = data
+    //         resultados.value = data
 
-          }).catch(e => console.log(e))
+    //       }).catch(e => console.log(e))
 
-        }, 1000);
-      }
+    //     }, 1000);
+    //   }
 
-    }
+    // }
 
     const userSelected = (usuario) => {
         

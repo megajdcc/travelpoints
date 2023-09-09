@@ -8,7 +8,7 @@
         <!-- Brand logo-->
         <b-link class="brand-logo">
 
-          <img src="/storage/logotipo.png" alt="Logo" />
+          <img :src="logotipo" alt="Logo" />
           
         </b-link>
         <!-- /Brand logo-->
@@ -38,16 +38,6 @@
             <el-button type="primary" :loading="loading" native-type="submit" icon="el-icon-position" class="w-100">
               Enviar enlace de restablecimiento
             </el-button>
-
-
-
-            <!-- <b-button
-              variant="primary"
-              block
-              type="submit"
-            >
-              Enviar enlace de restablecimiento
-            </b-button> -->
           </b-form>
         </validation-observer>
 
@@ -58,7 +48,6 @@
         </b-card-text>
 
       </b-card>
-      <!-- /Forgot Password v1 -->
     </div>
   </div>
 </template>
@@ -70,10 +59,12 @@ import { BCard, BLink, BCardText, BCardTitle, BFormGroup, BFormInput, BForm, BBu
 import { required, email } from '@validations'
 
 
-import { ref, toRefs } from 'vue';
+import { ref, toRefs,computed } from 'vue';
 import { Notification } from 'element-ui';
 import store from 'store';
 
+import logotipo from 'storage/logotipo.png'
+import logotipoblanco from 'storage/logotipoblanco.png'
 
 export default {
   components: {
@@ -90,8 +81,11 @@ export default {
     ValidationObserver,
   },
 
+
   setup(props) {
 
+    const { layout } = toRefs(store.state.appConfig)
+    const skin = computed(() => layout.value.skin)
     axios.get('/sanctum/csrf-cookie').then(response => {
       // console.log(response)
     });
@@ -157,7 +151,8 @@ export default {
       required,
       email,
       validationForm,
-      loading
+      loading,
+      logotipo: computed(() => skin.value === 'dark' ? logotipoblanco : logotipo)
     }
 
   }
@@ -165,5 +160,5 @@ export default {
 </script>
 
 <style lang="scss">
-@import '~@core/scss/vue/pages/page-auth.scss';
+@import '@core/scss/vue/pages/page-auth.scss';
 </style>

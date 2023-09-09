@@ -30,20 +30,24 @@ class Kernel extends ConsoleKernel
     {
         
         // $schedule->command('inspire')->hourly();
-        
+    
         // $schedule->command('queue:work --max-time=290 --max-jobs 100 --tries 5')->cron('*/5 * * * *')->withoutOverlapping(10);
 
-        // La verificación la hacemos cada día
+        // Verificar la red de promotores
+        $schedule->command('usuario:verificar-red-promotores')->daily();
 
-        $schedule->call(function(){
-            VerificarRedPromotores::dispatch();
-        })->daily();
+        // Verificar y establecer los niveles de los usuarios con roles (Promotor)
+        $schedule->command('usuario:establecer-nivel')->daily();
 
+        // Se encarga de aperturar cuenta a usuarios que no tengan 
+        $schedule->command('usuario:aperturar-cuenta')->daily();
+
+        // Verificar las reservas 
+        $schedule->job(new verificarReservas)->daily();
+        
         // Limpiar los trabajos que esten fallidos... 
         $schedule->command('queue:flush')->daily();
-
-
-        $schedule->job(new verificarReservas)->daily();
+      
 
     }
 

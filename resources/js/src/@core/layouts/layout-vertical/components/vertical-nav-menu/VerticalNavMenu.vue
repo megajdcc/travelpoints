@@ -167,7 +167,7 @@ export default {
 </script>
 
 <style lang="scss">
-@import "~@core/scss/base/core/menu/menu-types/vertical-menu.scss";
+@import "@core/scss/base/core/menu/menu-types/vertical-menu.scss";
 
 .brand-logo img{
   max-width: 130px !important;

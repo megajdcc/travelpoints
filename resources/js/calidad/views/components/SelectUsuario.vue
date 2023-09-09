@@ -39,7 +39,10 @@ export default {
 
   props:{
     usuarioId:Number,
-    filterRol:Array
+    filterRol:{
+      type:Array,
+      default:() => ([])
+    }
   },
 
   model:{

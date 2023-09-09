@@ -134,5 +134,6 @@ class Solicitud extends Model
         $this->estado->pais;
         $this->divisa;
         $this->iata;
+
     }
 }

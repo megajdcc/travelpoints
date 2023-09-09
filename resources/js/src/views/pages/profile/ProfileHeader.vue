@@ -105,16 +105,19 @@
 
             <!-- edit buttons -->
             <template #tabs-end>
-              <b-button
-                variant="primary"
-                class="ml-auto"
-              >
-                <feather-icon
-                  icon="EditIcon"
-                  class="d-block d-md-none"
-                />
-                <span class="font-weight-bold d-none d-md-block">Edit</span>
-              </b-button>
+
+               <b-dropdown id="dropdown-right" right  variant="primary" class="ml-auto">
+                <template #button-content>
+                    <feather-icon
+                    icon="EditIcon"
+                    class="d-block d-md-none"
+                  />
+                  <span class="font-weight-bold d-none d-md-block">Editar</span>
+                </template>
+                  <b-dropdown-item href="#">Información de perfil</b-dropdown-item>
+                  <b-dropdown-item href="#">Cambiar Imagen de perfil</b-dropdown-item>
+                  <b-dropdown-item href="#">Cambiar imagen de portada</b-dropdown-item>
+                </b-dropdown>
             </template>
             <!-- edit buttons -->
           </b-tabs>
@@ -129,7 +132,7 @@
 
 <script>
 import {
-  BCard, BImg, BNavbar, BNavbarToggle, BCollapse, BTabs, BNavItem, BButton,
+  BCard, BImg, BNavbar, BNavbarToggle, BCollapse, BTabs, BNavItem, BButton,BDropdown
 } from 'bootstrap-vue'
 import Ripple from 'vue-ripple-directive'
 
@@ -142,6 +145,7 @@ export default {
     BNavbar,
     BNavbarToggle,
     BCollapse,
+    BDropdown,
     BImg,
   },
   directives: {

@@ -28,6 +28,9 @@ let colorRand = () => {
    return colores[i];
 
 }
+
+import { $themeColors } from '@themeConfig';
+
 export default{
    namespaced:true,
 
@@ -186,14 +189,10 @@ export default{
 
                states: {
                   hover: {
-                     color: '#BADA55'
+                     color: $themeColors.danger
                   }
                },
-               dataLabels: {
-                  enabled: true,
-                  format: '{point.name}'
-               },
-               allAreas: false,
+
                data: [
                   ['km', 69],
                   ['mn', 145],
@@ -676,6 +675,7 @@ export default{
             },
             
             misPromotores:[],
+            viajerosPorPais:[],// [{pais:'Venezuela',porcentaje:10%},...]
 
             porcentajeEficacia:{
                series: [],
@@ -966,6 +966,11 @@ export default{
       setPorcentajeUsoViajeros(state,{porcentaje,total_viajeros}){
          state.porcentajeUsoViajeros.series = [porcentaje];
          state.porcentajeUsoViajeros.chartOptions.labels = [`Sobre ${total_viajeros} (Total Viajeros)`]
+      },
+
+      setViajerosPorPais(state,data){
+
+         state.viajerosPorPais = data
       }
 
 
@@ -976,20 +981,17 @@ export default{
 
       cargarDataDashboard({state,commit}){
          
-         commit('toggleLoading', null, { root: true })
          axios.get('/api/get/data/dashboard').then(({data}) => {
             commit('setViajerosActivos',data.viajerosActivos)
          }).catch(e => {
             console.log(e);
-
-         }).then(() => {
-            commit('toggleLoading',null,{root:true})
          })
+         
       },
 
       cargarViajerosActivos({commit},dato){
          return new Promise((resolve, reject) => {
-            axios.post(`/api/dashboard/get/viajeros/activos`,dato).then(({data}) => {
+            axios.post(`/api/dashboard/get/viajeros/activos/${dato.usuario_id ? dato.usuario_id :''}`,dato).then(({data}) => {
                commit('setViajerosActivos',data)
                resolve(data)
             }).catch( e => reject(e))
@@ -1019,9 +1021,9 @@ export default{
          })
       },
 
-      cargarPaisesActivos({commit}){
+      cargarPaisesActivos({commit},usuario_id = ''){
          return new Promise((resolve, reject) => {
-               axios.get(`/api/dashboard/get/paises/activos`).then(({data}) => {
+            axios.get(`/api/dashboard/get/paises/activos/${usuario_id}`).then(({data}) => {
                   commit('setPaisesActivos',data)
                   resolve(data)
                }).catch(e => reject(e))
@@ -1131,10 +1133,10 @@ export default{
          })
       },
 
-      getTotalViajerosRegistradoAnual({commit}){
+      getTotalViajerosRegistradoAnual({commit},usuario_id = ''){
 
          return new Promise((resolve, reject) => {
-            axios.get(`/api/dashboard/total/viajeros/anual`).then(({data}) => {
+            axios.get(`/api/dashboard/total/viajeros/anual/${usuario_id}`).then(({data}) => {
                
                commit('setViejerosTotalesAnuales',data)
                commit('setTotalViajerosRegistrados',data.total_usuarios_registrados)
@@ -1285,6 +1287,65 @@ export default{
 
          })
 
+      },
+
+      getOrigenViajerosPorPais({state,commit},usuario_id){
+
+         return new Promise((resolve, reject) => {
+            axios.get(`/api/dashboard/porcentaje-viajeros/por-pais/${usuario_id}`).then(({data}) => {
+               commit('setViajerosPorPais',data)
+               resolve(data)
+
+            }).catch(e => reject(e))
+         })
+      },
+
+      tresMayoresComisionesPromotors({commit},usuario_id){
+         return new Promise((resolve, reject) => {
+            axios.get(`/api/dashboard/tres-mayores-comisiones-promotores/usuario/${usuario_id}`).then(({data}) => {
+
+               resolve(data)
+
+            }).catch(e => reject(e))
+         })
+      },
+
+      tresMayoresComisionesLiders({commit}){
+          return new Promise((resolve, reject) => {
+            axios.get(`/api/dashboard/tres-mayores-comisiones-liders`).then(({data}) => {
+
+               resolve(data)
+
+            }).catch(e => reject(e))
+         })
+      },
+
+
+
+      totalViajerosLider({commit},usuario_id){
+
+         return new Promise((resolve, reject) => {
+            axios.get(`/api/dashboard/total-viajeros/usuario/${usuario_id}`).then(({data}) => resolve(data)).catch(e => reject(e));
+
+         })
+      },
+
+      porcentajeEfectividad({commit},usuario_id){
+         return new Promise((resolve, reject) => {
+            axios.get(`/api/dashboard/porcentaje-efectividad/usuario/${usuario_id}`).then(({data}) => {
+               resolve(data)
+            }).catch(e => reject(e))
+         })
+      },
+
+      getTotalNegocios({commit},usuario_id){
+         return new Promise((resolve, reject) => {
+            
+            axios.get(`/api/dashboard/get-negocios/usuario/${usuario_id}`).then(({data}) => {
+               resolve(data)
+            }).catch(e => reject(e))
+
+         })
       }
 
    }

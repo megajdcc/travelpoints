@@ -48,6 +48,20 @@ export default {
     },
     saldo:(state) => {
       return state.sistema.cuenta ? state.sistema.cuenta.saldo : 0
+    },
+
+    isoSistema(state){
+
+      if(state.sistema.cuenta){
+        if(state.sistema.cuenta.divisa){
+          return state.sistema.cuenta.divisa.iso
+        }else{
+          return 'USD'
+        }
+      }else{
+        return "USD"
+      }
+     
     }
   },
 

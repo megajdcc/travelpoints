@@ -4,6 +4,9 @@
       <slot name="titulo" :total="total">
          
       </slot>
+
+      <slot name="header-table" :total="total"></slot>
+      
       <!-- Table Container Card -->
       <b-card no-body class="mb-0" v-if="!hideHeader">
 
@@ -17,8 +20,11 @@
 
                <b-col md="8">
                   <b-input-group size="sm">
-                     <b-form-input v-model="searchQuery" type="search" :placeholder="searchPlaceholder" />
+                     <b-form-input :value="searchQuery" @input="updateQ" type="search" :placeholder="searchPlaceholder" />
                      <b-input-group-append >
+                        <b-button size="sm" @click="refetchData()" :title="$t('Recargar')">
+                           <font-awesome-icon  icon="fas fa-rotate-right"/>
+                        </b-button>
                         <slot name="btn-action"></slot>
                      </b-input-group-append>
                   </b-input-group>
@@ -36,9 +42,13 @@
       </section> -->
 
       <section v-loading="loading" class="w-100 mt-1" style="min-height:100px">
+
+         <slot name="header-contenido">
+
+         </slot>
          <slot name="contenido" :items="items" :eliminar="eliminar" :fetchData="fetchData" :tableColumns="tableColumns"
             :sortBy="sortBy" :isSortDirDesc="isSortDirDesc" :perPage="perPage" :refTable="refTable">
-            </slot>
+         </slot>
       </section>
 
       <slot name="prePaginate" :items="items">
@@ -162,6 +172,14 @@ export default {
 
       onActivated(() => refetchData())
 
+      const updateQ = _.debounce(value => {
+            searchQuery.value = value
+      },600)
+
+      const updateValue =  _.debounce(function (value) {
+         searchQuery.value = value
+      }, 600)
+
       return {
          items,
          isSortDirDesc,
@@ -179,7 +197,8 @@ export default {
          eliminar,
          tableColumns,
          refTable,
-         irEditar: (negocio) => router.push({ name: 'negocio.edit', params: { id: negocio.id } })
+         updateQ,
+         irEditar: (negocio) => router.push({ name: 'negocio.edit', params: { id: negocio ? negocio.id : null } })
       }
 
    }

@@ -197,11 +197,7 @@ export default {
       // validations
       ValidationProvider,
       ValidationObserver,
-      Logo:() => import('components/Logo'),
-      BModal,
-      faqs:() => import('views/paginas/faqs.vue'),
-      BFormInvalidFeedback
-
+      Logo:() => import('components/Logo.vue')
    },
 
    props:{
@@ -321,5 +317,5 @@ export default {
 </script>
 
 <style lang="scss">
-@import '~@core/scss/vue/pages/page-auth.scss';
+@import '@core/scss/vue/pages/page-auth.scss';
 </style>

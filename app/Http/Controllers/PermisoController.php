@@ -65,10 +65,10 @@ class PermisoController extends Controller
      */
     public function store(Request $request)
     {
-
+        $datos  = $this->validar($request);
         try {
             DB::beginTransaction();
-            $permiso  = Permiso::create($this->validar($request));
+            $permiso  = Permiso::create($datos);
 
             DB::commit();
             $result = true;

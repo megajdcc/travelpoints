@@ -11,11 +11,10 @@
 									Nombre del permiso | <span class="text-danger">*</span>
 								</template>
 
-								<validation-provider name="nombre" rules="required" #default="{ errors }">
-									<b-form-input v-model="formulario.nombre" :state="errors.length ? false : null" />
-									<b-form-invalid-feedback>
+								<validation-provider name="nombre" rules="required" #default="{ errors,valid }">
+									<b-form-input v-model="formulario.nombre" :state="valid" />
+									<b-form-invalid-feedback :state="valid">
 										{{ errors[0] }}
-
 									</b-form-invalid-feedback>
 								</validation-provider>
 							</b-form-group>
@@ -43,9 +42,13 @@
 						<b-col cols="12">
 							<b-button-group size="sm">
 
-								<b-button variant="primary" type="submit" v-loading="loading">
+								<b-button variant="primary" type="submit" v-loading="loading" v-if="$can('write', 'permisos')">
 									<feather-icon icon="SaveIcon" />
-									guardar
+									Guardar
+								</b-button>
+								<b-button variant="danger" :to="{name:'create.permiso'}" v-loading="loading" v-if="formulario.id && $can('write','permisos')">
+										<feather-icon icon="PlusIcon" />
+										Nuevo
 								</b-button>
 
 								<b-button @click="regresar" variant="secondary">
@@ -153,7 +156,8 @@ export default {
 			formulario,
 			loading: computed(() => store.state.loading),
 			PickerOptions,
-			panels
+			panels,
+			formValidate
 		}
 	}
 

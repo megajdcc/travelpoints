@@ -8,6 +8,7 @@ use App\Models\Negocio\Empleado;
 use App\Models\Sistema;
 use App\Models\Venta;
 use App\Notifications\consumoInvitado;
+use App\Notifications\nuevoConsumoNegocio;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -142,8 +143,8 @@ class VentaController extends Controller
             DB::beginTransaction();
             
             $venta = Venta::create([...$datos]);
-       
-
+            
+            // Si fué un empleado del negocio, quien registró la venta, entonces asociamos al empleado a la venta
             if($venta->empleado_id = Empleado::where('negocio_id',$venta->model_id)->where('usuario_id', $request->user()->id)->first()?->id){
                 $venta->save();
             }
@@ -167,6 +168,7 @@ class VentaController extends Controller
                 if (!$venta->cliente->cuenta) {
                     $venta->cliente->aperturarCuenta(0, 'Tp');
                 }
+                
                 $movimiento = $venta->cliente->generarMovimiento($comision_cliente, "Consumo en {$venta->model->nombre} por un monto de:{$monto}.");
 
                 $venta->tps_bonificados = $comision_cliente;
@@ -178,7 +180,6 @@ class VentaController extends Controller
                     
                     $porcentaje_referidor  = Sistema::first()->porcentaje_referido;
                     $referidor = $venta->cliente->referidor->first();
-                   
                     if($porcentaje_referidor > 0){
                        
                        $comision_referidor = round($comision_cliente * $porcentaje_referidor / 100,2);
@@ -196,6 +197,7 @@ class VentaController extends Controller
                         
                         $monto_descontar = $comision_referidor * $sistema->cuenta->divisa->tasa;
 
+                        
                         $sistema->generarMovimiento($monto_descontar,"Comisión adjudicada al viajero {$referidor->getNombreCompleto()}, por consumo de su invitado ({$venta->cliente->getNombreCompleto()}) en el negocio ({$venta->model->nombre}), por un monto de:{$monto}",Movimiento::TIPO_EGRESO);
 
                         // Se le notifica al invitador de la nueva comisión.
@@ -208,24 +210,23 @@ class VentaController extends Controller
             // descontamos al negocio El monto correspondiente por haber realizado la venta
             $comision_travel = $venta->getComisionTravel();
             $monto_descuento = Divisa::cambiar($venta->divisa,$venta->model->divisa,$comision_travel);
-            
             $venta->model->generarMovimiento($monto_descuento, "Consumo de cliente {$venta->cliente->nombre} {$venta->cliente->apellido} por un monto de:{$monto}.",Movimiento::TIPO_EGRESO);
-
            
             // generar movimiento para el sistema... 
             $sistema = Sistema::first();
             $sistema->adjudicarComisiones($comision_travel,$venta);
-            // dd($venta);
+            
             $sistema->refresh();
-
-           
 
             if($reservacion = $venta->reservacion){
                 $reservacion->status = 2;
                 $reservacion->save();
             }
 
+           
             // Falta Notificar Venta al usuario y a los operadores si los Hubiera...
+
+            // $venta->cliente->notify(new nuevoConsumoNegocio($venta));
             DB::commit();
             $venta->cargar();
             $result = true;
@@ -233,8 +234,6 @@ class VentaController extends Controller
 
             DB::rollBack();
             $result = false;
-
-            dd($th->getMessage());
 
         }
 

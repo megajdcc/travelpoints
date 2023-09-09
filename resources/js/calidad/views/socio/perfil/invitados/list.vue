@@ -62,8 +62,8 @@ export default {
       BCol,
       BMedia,
       BAvatar,
-      PerPage:() => import('components/PerPage'),
-      PaginateTable:() => import('components/PaginateTable')
+      PerPage:() => import('components/PerPage.vue'),
+      PaginateTable:() => import('components/PaginateTable.vue')
    },
 
    setup() {

@@ -20,10 +20,7 @@
 
           <!-- Logo & Text -->
           <li class="nav-item">
-            <b-link
-              class="navbar-brand mr-0"
-              to="/"
-            >
+            <b-link class="navbar-brand mr-0" :to="irNegocio">
               <span class="brand-logo">
                 <b-img
                   :src="logo"
@@ -163,6 +160,9 @@ export default {
       // App Name
       appName,
       appLogoImage,
+      irNegocio:computed(() => {
+        return negocio.value.url ? { name: 'perfil.negocio', params: { url: negocio.value.url } } : '/'
+      }),
       logo:computed(() => {
         // return skin.value == 'dark' || skin.value == 'semi-dark' ? applogoImageWhite : appLogoImage;
         return `/storage/negocios/logos/${negocio.value.logo}`
@@ -174,7 +174,7 @@ export default {
 </script>
 
 <style lang="scss">
-@import "~@core/scss/base/core/menu/menu-types/vertical-menu.scss";
+@import "@core/scss/base/core/menu/menu-types/vertical-menu.scss";
 
 .brand-logo img{
   max-width: 130px !important;

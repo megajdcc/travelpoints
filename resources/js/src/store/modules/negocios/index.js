@@ -51,6 +51,7 @@ export default{
          recomendaciones:[],
          seguidores:[],
          tps_referido:0,
+         publicado:false
 
 
 
@@ -158,6 +159,8 @@ export default{
             recomendaciones: [],
             seguidores: [],
             tps_referido:0,
+            publicado:false
+            
 
 
          }
@@ -952,6 +955,20 @@ export default{
 
             resolve(data)
 
+         }).catch(e => reject(e))
+      })
+     },
+
+     togglePublicado({commit},negocio_id){
+
+      return new Promise((resolve, reject) => {
+         axios.get(`/api/negocios/${negocio_id}/toggle-publicado`).then(({data}) => {
+            const {negocio,result} = data;
+
+            if(result){
+               commit('update',negocio)
+            }
+            resolve(data)
          }).catch(e => reject(e))
       })
      }

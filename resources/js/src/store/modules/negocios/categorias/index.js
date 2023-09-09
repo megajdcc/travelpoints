@@ -180,23 +180,15 @@ export default{
          })
       },
 
-      async getCategorias({commit}){
+      getCategorias({commit}){
 
-         return await new Promise((resolve, reject) => {
-            commit('toggleLoading',null,{root:true})
-
+         return new Promise((resolve, reject) => {
             axios.get(`/api/negocio/categorias/get/all`).then(({data}) => {
 
                commit('setCategorias',data)
                resolve(data)
 
-            }).catch(e => {
-
-               console.log(e)
-
-            }).then(() => {
-               commit('toggleLoading', null, { root: true })
-            })
+            }).catch(e =>  reject(e))
 
          })
       }

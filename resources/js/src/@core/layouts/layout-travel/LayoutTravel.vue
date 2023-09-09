@@ -108,7 +108,7 @@ export default {
       BNavbar,
      // Content Renderer
       LayoutContentRendererDefault,
-      AppTravelFooter:() => import('components/AppTravelFooter'),
+      AppTravelFooter:() => import('components/AppTravelFooter.vue'),
       HorizontalNavMenu,
 
       // Vertical Menu
@@ -234,5 +234,5 @@ export default {
 </script>
 
 <style lang="scss">
-@import "~@core/scss/base/themes/bordered-layout.scss";
+@import "@core/scss/base/themes/bordered-layout.scss";
 </style>

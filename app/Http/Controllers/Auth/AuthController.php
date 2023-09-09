@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\{Auth, Hash};
+use Illuminate\Support\Facades\{Auth, Hash, Storage};
 use App\Models\User;
 use Validator;
 use App\Http\Controllers\Controller;
@@ -20,6 +20,7 @@ use App\Events\UsuarioDesconectado;
 use Laravel\Socialite\Facades\Socialite;
 
 use Google\Client;
+use GuzzleHttp\Client as ClientGuzzle;
 
 
 class AuthController extends Controller
@@ -38,9 +39,11 @@ class AuthController extends Controller
       if($payload){
 
          $usuario = User::where('email',$payload['email'])->first();
-
          if(!$usuario) {
 
+           
+
+            $url = isset($payload['picture']) ? $payload['picture'] : null; // URL de la imagen a descargar
             $usuario = User::create([
                'email'       => $payload['email'],
                'username'    => $payload['email'],
@@ -52,8 +55,36 @@ class AuthController extends Controller
                'rol_id' => Rol::where('nombre', 'Viajero')->first()->id
             ]);
 
+            if($url){
+               $cliente = new ClientGuzzle();
+               $response = $cliente->get($url);
+
+               $nombreArchivo = basename($url); // Obtiene el nombre del archivo de la URL
+
+               $result = Storage::disk('img-perfil')->put($nombreArchivo, $response->getBody()->getContents());
+               $usuario->imagen = $nombreArchivo;
+               $usuario->save();
+            }
+
+
             $usuario->asignarPermisosPorRol();
+         }else{
+            $url = isset($payload['picture']) ? $payload['picture'] : null;
+
+            if($url){
+               $cliente = new ClientGuzzle();
+               $response = $cliente->get($url);
+
+               $nombreArchivo = basename($url); // Obtiene el nombre del archivo de la URL
+
+               $result = Storage::disk('img-perfil')->put($nombreArchivo, $response->getBody()->getContents());
+               $usuario->imagen = $nombreArchivo;
+               $usuario->save();
+            }
+            
+
          }
+
          $usuario->generateLink();
          
          $usuario->ultimo_login = now();
@@ -145,7 +176,7 @@ class AuthController extends Controller
             'apellido' => $request->apellido,
             'email' => $request->email,
             'password' => $request->password,
-            'rol_id' => Rol::where('nombre','Invitado')->first()->id
+            'rol_id' => Rol::where('nombre', 'Viajero')->first()->id
         ]);
         $user->generateLink();
         if($user->save()){
@@ -208,7 +239,7 @@ class AuthController extends Controller
          }
 
          $user = $request->user();
-         $user->ultimo_login = now();
+         $user->ultimo_login = now(); // Ultima vez que el usuario Inició Sesión
        
          $user->save();
 
@@ -237,7 +268,6 @@ class AuthController extends Controller
          $result = false;
       }
       
-      $user->porcentajePerfil = $user->getFillPercentage();
       return response()->json([
          'result' => $result,
          'accessToken' => $token,

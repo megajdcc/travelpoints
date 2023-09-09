@@ -1,7 +1,6 @@
 <template>
-   <b-container fluid class="px-0 mx-0">
+  <b-container fluid class="px-0 mx-0">
     
-    <!-- Titulo -->
     <b-row>
       <b-col cols="12">
           <slot name="titulo" :total="total">
@@ -10,14 +9,11 @@
       </b-col>
     </b-row>
 
-    <!-- Contenido -->
     <b-row>
       
-      <!-- Filtro Producto -->
 
       <b-col cols="12" md="3">
         <b-card>
-            <!-- Price Slider -->
             <div class="price-slider" v-if="!hideSliderPrices">
               
               <h6 class="filter-title">
@@ -26,14 +22,13 @@
 
               <vue-slider v-model.lazy="precios" :lazy="true" :min="0" :max="precio_maximo"
                  :tooltipFormatter="(val) => `$ ${val}`" :interval=".2" >
-                 
-                </vue-slider>
+              </vue-slider>
 
             </div>
 
-            <!-- Categorias -->
             
-           <b-form-group :label="$t('Categorías')" >
+           <b-form-group :label="$t('Categorías')">
+            
             <b-form-checkbox-group  v-if="!cjDropShipping" v-model="categoria_id" :options="categorias" :text-field="cjDropShipping ? 'categoryFirstName' : 'nombre'" :value-field="cjDropShipping ? 'categoryFirstId' : 'id'" stacked >
             
             </b-form-checkbox-group>
@@ -49,7 +44,6 @@
 
            </b-form-group>
 
-           <!-- Tiendas -->
 
            <b-form-group :label="$t('Tiendas')" v-if="!cjDropShipping">
                <b-form-checkbox-group  v-model="tienda_id" :options="tiendas" text-field="nombre" value-field="id" stacked >
@@ -78,11 +72,9 @@
               
                   <div class="view-options d-flex flex-wrap">
               
-                    <!-- ordenar por -->
                     <v-select v-model="sortBy" :options="sortByOptions" label="text" :reduce="option => option.value" style="min-width: 150px;" v-if="!cjDropShipping">
                     </v-select>
               
-                    <!-- Tipos de vistas a listar  -->
                     <b-form-radio-group v-model="itemView" class="ml-1 ml-md-1 list item-view-radio-group" buttons size="sm"
                       button-variant="outline-primary">
                       <b-form-radio v-for="option in itemViewOptions" :key="option.value" :value="option.value">
@@ -116,6 +108,12 @@
 
             </b-col>
 
+            <b-col cols="12" class="mt-1 px-0" v-if="iskm0">
+              <p>
+                <strong class="text-danger">IMPORTANTE:</strong>Los productos en la categoría “Km. 0” son productos locales de cada destino que solo pueden entregarse en las tiendas de cada destino. No hay envío a domicilio ni devolución en estas compras.
+              </p>
+            </b-col>
+
              <b-col cols="12" class="px-0">
               <section  class="w-100 mt-1" style="min-height:100px">
                 <slot name="contenido" :items="items" :eliminar="eliminar" :fetchData="fetchData" 
@@ -134,7 +132,7 @@
 
     </b-row>
 
-   </b-container>
+   </b-container> 
 </template>
 
 <script>
@@ -165,13 +163,12 @@ import {
 } from 'bootstrap-vue'
 
 import store from '@/store'
-import router from '@/router'
-import Ripple from 'vue-ripple-directive'
 
 import { ref, toRefs, computed, onActivated,onMounted,watch } from 'vue'
-import VueSlider from 'vue-slider-component'
+// import VueSlider from 'vue-slider-component'
+
 import vSelect from 'vue-select'
-import { regresar } from '@core/utils/utils.js'
+
 
 export default {
 
@@ -189,10 +186,9 @@ export default {
     BCarouselSlide,
     BInputGroupAppend,
     BImg,
-    perPage: () => import('components/PerPage.vue'),
     paginateTable: () => import('components/PaginateTable.vue'),
     BSpinner,
-    VueSlider,
+    VueSlider: () => import('vue-slider-component').then((module) => { return module?.default }),
     BFormCheckboxGroup,
     BFormGroup,
     BDropdown,
@@ -205,7 +201,6 @@ export default {
 
   directives: {
     'b-popover': VBPopover,
-    Ripple,
   },
 
 
@@ -226,6 +221,7 @@ export default {
   setup(props,{emit}) {
 
     const { actions, cjDropShipping } = toRefs(props)
+
     let range_precio = ref([0, 20000]);
 
     const itemView = ref('grid-view')
@@ -237,12 +233,7 @@ export default {
 
     itemView.value = localStorage.getItem('disposicion_producto') || 'grid-view';
 
-    watch(itemView , (v) => {
-        localStorage.setItem('disposicion_producto',v)
-        refetchData()
-    })
-
-    const {
+     const {
       perPageOptions,
       currentPage,
       perPage,
@@ -264,15 +255,20 @@ export default {
       sortByOptions
     } = actions.value;
 
-    onActivated(() => refetchData())
+    watch(itemView , (v) => {
+        localStorage.setItem('disposicion_producto',v)
+        refetchData()
+    })
 
+    onActivated(() => refetchData())
 
     const cargar_rango_precio = () => {
 
       if(!cjDropShipping.value){
-         axios.get('/api/productos/rango/precios').then(({ data }) => {
-          range_precio.value = data
-          precios.value = data
+        
+        store.dispatch('producto/rangoPrecios').then((data) => {
+            range_precio.value = data
+            precios.value = data
         })
       }
      
@@ -292,49 +288,51 @@ export default {
     const  convertDataFormat = (data) => {
       var convertedData = [];
 
-      data.forEach(function (item) {
-        var convertedItem = {
-          label: item.categoryFirstName,
-          children: []
-        };
-
-        item.categoryFirstList.forEach(function (categoryFirst) {
-          var categoryFirstItem = {
-            label: categoryFirst.categorySecondName,
+      if(data && cjDropShipping.value){
+        data.forEach(function(item) {
+          var convertedItem = {
+            label: item.categoryFirstName,
             children: []
           };
 
-          categoryFirst.categorySecondList.forEach(function (categorySecond) {
-            var categorySecondItem = {
-              label: categorySecond.categoryName,
-              children: [],
-              categoryId: categorySecond.categoryId
+          item.categoryFirstList.forEach(function (categoryFirst) {
+            var categoryFirstItem = {
+              label: categoryFirst.categorySecondName,
+              children: []
             };
 
-            categoryFirstItem.children.push(categorySecondItem);
+            categoryFirst.categorySecondList.forEach(function (categorySecond) {
+              var categorySecondItem = {
+                label: categorySecond.categoryName,
+                children: [],
+                categoryId: categorySecond.categoryId
+              };
+
+              categoryFirstItem.children.push(categorySecondItem);
+            });
+
+            convertedItem.children.push(categoryFirstItem);
           });
 
-          convertedItem.children.push(categoryFirstItem);
+          convertedData.push(convertedItem);
         });
-
-        convertedData.push(convertedItem);
-      });
+      }
+      
 
       return convertedData;
     }
 
     const categories = computed(() => {
-      return convertDataFormat(categorias.value)
+      if(cjDropShipping.value){
+         return convertDataFormat(categorias.value)
+      }
+
+      return [];
+     
     })
-
-    const limpiar = () => {
-
-    }
-
 
     return {
       loading:computed(() => store.state.loading),
-
       perPageOptions,
       currentPage,
       perPage,
@@ -351,7 +349,6 @@ export default {
       categorias,
       categoria_id,
       precios,
-
       range_precio,
       itemView,
       itemViewOptions,
@@ -367,20 +364,26 @@ export default {
         categoria_id.value = null
         searchQuery.value = ''
 
-        actions.refetchData();
+        refetchData();
 
       },
-      limpiar,
+      
       nodoSelected:(nod,opt) => {
-        console.log(opt)
-        console.log(nod)
-
+      
         if('categoryId' in nod){
           categoria_id.value = nod.categoryId
         }else{
           categoria_id.value = null
         }
-      }
+      },
+
+      iskm0:computed(() => {
+          let km0 = categorias.value.find(val => ['km0','Km 0'].includes(val.nombre))
+
+          return categoria_id.value.includes(km0 ? km0.id : 0);
+
+      })
+      
 
     }
 
@@ -399,13 +402,13 @@ export default {
 </style>
 
 <style lang="scss">
-@import '~@core/scss/vue/libs/vue-slider.scss';
+@import '@core/scss/vue/libs/vue-slider.scss';
 </style>
 
 
 
 <style lang="scss">
-   @import "~@core/scss/base/pages/app-ecommerce.scss";
+   @import "@core/scss/base/pages/app-ecommerce.scss";
 </style>
 
 <style lang="scss" scoped>

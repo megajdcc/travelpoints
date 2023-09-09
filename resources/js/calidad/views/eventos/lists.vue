@@ -146,6 +146,7 @@ import {
 } from 'bootstrap-vue'
 
 
+import '@fullcalendar/core/vdom';
 import FullCalendar from '@fullcalendar/vue'
 
 
@@ -159,7 +160,7 @@ import CardEvent from 'components/CardEvent.vue';
 
 export default {
 
-   components: {
+components: {
 
       BContainer,
       BCard,

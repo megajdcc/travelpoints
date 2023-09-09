@@ -6,8 +6,7 @@
 
          <!-- Brand logo-->
          <b-link class="brand-logo">
-         
-            <img src="/storage/logotipo.png" alt="Logo" />
+            <img :src="logotipo" alt="Logo" />
          </b-link>
          <!-- /Brand logo-->
         <b-card-title class="mb-1">
@@ -136,6 +135,10 @@ import {
 } from 'bootstrap-vue'
 import { required } from '@validations'
 import ToastificationContent from '@core/components/toastification/ToastificationContent.vue'
+import logotipo from 'storage/logotipo.png'
+import logotipoblanco from 'storage/logotipoblanco.png'
+import { toRefs, computed } from 'vue'
+import store from '@/store'
 
 export default {
   components: {
@@ -214,9 +217,20 @@ export default {
       })
     },
   },
+  
+  setup(props){
+
+    const {layout} = toRefs(store.state.appConfig)
+    const skin = computed(() => layout.value.skin)
+
+    return{
+      logotipo: computed(() => skin.value === 'dark' ? logotipoblanco : logotipo)
+    }
+  }
+
 }
 </script>
 
 <style lang="scss">
-@import '~@core/scss/vue/pages/page-auth.scss';
+@import '@core/scss/vue/pages/page-auth.scss';
 </style>

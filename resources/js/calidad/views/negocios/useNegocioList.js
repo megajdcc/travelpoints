@@ -11,6 +11,7 @@ export default function useNegociolist() {
       {key:'comision',sortable:true,label:'Comisión'},
       {key:'saldo',sortable:false,label:'Saldo',sortKey:'id'},
       {key:'origen',sortable:false,label:'Origen',sortKey:'id'},
+      {key:'publicado',sortable:false,label:'¿Negocio Publicado?',sortKey:'publicado'},
       {key:'created_at',sortable:true,label:'Registrado',sortKey:'id'},
       {key:'actions',sortable:false,label:'Actions',sortKey:'id'},
 

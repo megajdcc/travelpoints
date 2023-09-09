@@ -16,12 +16,19 @@ class AcademiaVideoController extends Controller
     public function fetchData(Request $request){
         
         $filtro = $request->all();
+        $usuario = $request->user();
+        $rolName = $usuario->rol->nombre;
+
 
         $pagination = AcademiaVideo::where([
             ['titulo','LIKE',"%{$filtro['q']}%",'OR'],
             ['descripcion', 'LIKE', "%{$filtro['q']}%", 'OR'],
         ])
-
+        ->when(\in_array($rolName,['Promotor','Lider','Coordinador']), function($q) use($rolName){
+            $q->whereHas('roles',function(Builder $qu) use($rolName) {
+                $qu->where('nombre',$rolName);
+            });
+        })
         ->with(['videos','roles'])
         ->orderBy($filtro['sortBy']?:'id',$filtro['isSortDirDesc'] ? 'desc' : 'asc')
         ->paginate($filtro['perPage'] ?: 10000);

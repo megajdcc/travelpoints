@@ -177,7 +177,6 @@ export default{
                axios.put(`/api/reservacions/${datos.id}`,datos).then(({data}) => {
                   if(data.result){
                      commit('update',data.reservacion)
-
                   }
                   resolve(data)
                }).catch(e => reject(e))
@@ -186,7 +185,7 @@ export default{
 
                axios.post(`/api/reservacions`,datos).then(({data}) => {
                   if(data.result){
-                     commit('push',data.reservacion)
+                    //  commit('push',data.reservacion)
                   }
 
                   resolve(data)

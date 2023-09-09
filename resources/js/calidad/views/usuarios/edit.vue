@@ -1,6 +1,6 @@
 <script>
 
-import form from './form';
+import form from './form.vue';
 
 import { h, onMounted,watch,computed,toRefs } from 'vue'
 import store from '@/store'
@@ -13,14 +13,11 @@ export default {
 
       const {id} = toRefs(props)
 
-      const {usuarios} = toRefs(store.state.usuario)
+      const {user:usuario} = toRefs(store.state.usuario)
 
       const cargarForm = () => {
-         
-         if(!usuarios.value.length){
-            store.dispatch('usuario/getUsuario',id.value)
-         }else{
-            store.commit('usuario/capturarUsuario', Number(id.value))
+         if(!usuario.value.id){
+            store.dispatch('usuario/getUsuario', id.value)
          }
       }
 

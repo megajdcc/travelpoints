@@ -38,7 +38,7 @@ export default function useUsuariosListado() {
 
    const dataMeta = computed(() => {
 
-      const localItemsCount = items.length;
+      const localItemsCount = items.value.length;
       
       return {
          from: perPage.value * (currentPage.value - 1) + (localItemsCount ? 1 : 0),
@@ -49,7 +49,7 @@ export default function useUsuariosListado() {
    })
 
    const refetchData = () => {
-      fetchData((users) => items.value = users)
+      fetchData((usuarios) => items.value = usuarios)
    }
 
    watch([currentPage, perPage, searchQuery], () => {
@@ -58,16 +58,15 @@ export default function useUsuariosListado() {
    
 
    const fetchData = (next) => {
-
       store.dispatch('usuario/fetchUsers', {
          perPage: perPage.value,
          currentPage: currentPage.value,
          sortBy: sortBy.value,
          q: searchQuery.value,
          sortDesc: isSortDirDesc.value
-      }).then(({data}) => {
-         total.value = data.total
-         next(data.users)
+      }).then(({total:all,users }) => {
+         total.value = all
+         next(users)
 
       }).catch(e => {
          toast.info('Error trayendo Data', { position: 'bottom-right' })

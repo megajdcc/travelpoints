@@ -172,7 +172,7 @@ export default {
       BRow,
       BCol,
       BCard,
-      CurrencyInput: () => import('components/CurrencyInput')
+      CurrencyInput: () => import('components/CurrencyInput.vue')
 
 
    },

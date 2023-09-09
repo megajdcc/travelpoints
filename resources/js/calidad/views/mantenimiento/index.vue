@@ -4,7 +4,7 @@
    <!-- Brand logo-->
       <b-link class="brand-logo" :to="{name:'home'}">
         
-         <img src="/storage/logotipo.png" alt="Logo" />
+         <img :src="logotipo" alt="Logo" />
      
       </b-link>
       <!-- /Brand logo-->
@@ -35,6 +35,11 @@
 import { BLink, BFormInput, BButton, BForm, BImg } from 'bootstrap-vue'
 import VuexyLogo from '@core/layouts/components/Logo.vue'
 import store from '@/store/index'
+import downImg from '@/assets/images/pages/under-maintenance.svg'
+import {computed,toRefs} from 'vue';
+import downImgDark from '@/assets/images/pages/under-maintenance-dark.svg';
+import logotipo from 'storage/logotipo.png'
+import logotipoblanco from 'storage/logotipoblanco.png'
 
 export default {
   components: {
@@ -45,24 +50,26 @@ export default {
     BImg,
     VuexyLogo,
   },
-  data() {
+  setup() {
+    const {layout} = toRefs(store.state.appConfig)
+    const skin = computed(() => layout.value.skin)
+
     return {
-      downImg: require('@/assets/images/pages/under-maintenance.svg'),
+      downImg,
+      logotipo: computed(() => skin.value === 'dark' ? logotipoblanco : logotipo),
+      imgUrl:computed(() => {
+        return  layout.value.skin === 'dark' ? downImgDark : downImg
+      })
     }
   },
   computed: {
     imgUrl() {
-      if (store.state.appConfig.layout.skin === 'dark') {
-        // eslint-disable-next-line vue/no-side-effects-in-computed-properties
-        this.downImg = require('@/assets/images/pages/under-maintenance-dark.svg')
-        return this.downImg
-      }
-      return this.downImg
+     
     },
   },
 }
 </script>
 
 <style lang="scss">
-@import '~@core/scss/vue/pages/page-misc.scss';
+@import '@core/scss/vue/pages/page-misc.scss';
 </style>

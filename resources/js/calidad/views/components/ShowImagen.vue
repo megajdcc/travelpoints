@@ -58,6 +58,9 @@ import {
    BButton
 } from 'bootstrap-vue'
 
+import xls from '@/assets/images/icons/xls.png';
+import otros  from '@/assets/images/icons/unknown.png';
+
 export default {
 
    components:{
@@ -99,18 +102,10 @@ export default {
 
    setup(props) {
 
-      const xls = require('@/assets/images/icons/xls.png');
-      const otros = require('@/assets/images/icons/unknown.png');
-
-
-
       return {
          xls,
          otros
       }
-
-
-      
-   },
+s   },
 }
 </script>

@@ -12,6 +12,7 @@ trait Has_roles
    public function asignarPermisosPorRol(){
 
       $this->permisos()->detach();
+
       foreach ($this->rol->permisos as $key => $permiso) {
 
          // $this->permisos()->updateExistingPivot($permiso->id,['action' => $permiso->pivot->actions]);

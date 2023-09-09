@@ -4,7 +4,8 @@ import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
 import lang from 'element-ui/lib/locale/lang/es';
 import locale from 'element-ui/lib/locale';
-
+import '../../scss/app.scss';
+// import '../../scss/loader.css';
 Vue.prototype.$eventHub = new Vue();
 
 locale.use(lang);
@@ -13,10 +14,11 @@ import TheMask from 'vue-the-mask';
 
 Vue.use(TheMask);
 
-import * as VueGoogleMaps from 'vue2-google-maps';
-// import VueGoogleAutocomlete from 'vue-google-autocomplete';
+// import * as VueGoogleMaps from 'vue2-google-maps';
+import GmapVue from 'gmap-vue';
+import VueGoogleAutocomlete from 'vue-google-autocomplete';
 
-Vue.use(VueGoogleMaps, {
+Vue.use(GmapVue, {
   load: {
     key: 'AIzaSyCnsLa_yFH7kb5s5GdIaE_P9aGKLkeVIUQ', //'AIzaSyCNWsVH2kmknm6knGSRKDuzGeMWM1PT6gA',
     libraries: 'places',
@@ -46,9 +48,9 @@ import '@/libs/vue-select'
 // import '@/libs/markdown-editor'
 
 import VueCurrencyFilter from 'vue-currency-filter'
-import moment from 'moment';
 
-window.moment = require('moment');
+import moment from 'moment'
+window.moment = moment
 moment.locale('es')
 
 // Swiper
@@ -69,9 +71,7 @@ Vue.filter('fecha',(val,format = 'LL', time= false) => {
 
 Vue.filter('dia',(val) => {
   const dias = ['Lunes','Martes','Miercoles','Jueves','Viernes','Sabado','Domingo'];
-
   return dias[val - 1]
-
 })
 
 Vue.use(VueCurrencyFilter, {
@@ -90,22 +90,17 @@ Vue.use(ModalPlugin)
 Vue.use(ElementUI);
 
 
-
-
 // Feather font icon - For form-wizard
 // * Shall remove it if not using font-icons of feather-icons - For form-wizard
-require('@core/assets/fonts/feather/iconfont.css') // For form-wizard
+import '@core/assets/fonts/feather/iconfont.css' // For form-wizard
 
 // import core styles
-require('@core/scss/core.scss')
+import '@core/scss/core.scss'
 
 // import assets styles
-require('@/assets/scss/style.scss')
+import '@/assets/scss/style.scss'
 
 Vue.config.productionTip = false
-
-
-
 
 window.clone = function (obj) {
   return JSON.parse(JSON.stringify(obj));
@@ -134,7 +129,7 @@ window.colorRand = () => {
   let colores = [
     '#397DAD',
     '#4D616C',
-    // '#D02412',
+    '#D02412',
     '#CD960E',
     '#348022',
     '#17B6AA',
@@ -143,9 +138,9 @@ window.colorRand = () => {
     '#6574cd',
     '#9561e2',
     '#f66d9b',
-    // '#e3342f',
-    // '#f6993f',
-    // '#ffed4a',
+    '#e3342f',
+    '#f6993f',
+    '#ffed4a',
     '#38c172',
     '#4dc0b5',
     '#6cb2eb',
@@ -161,7 +156,8 @@ window.colorRand = () => {
 
 }
 
-window.$ = window.jQuery = require('jquery');
+import jQuery from 'jquery';
+window.$ = window.jQuery = jQuery
 
 
 import VueMask from 'v-mask'
@@ -175,49 +171,61 @@ import Maps from "highcharts/modules/map";
 
 Maps(Highcharts);
 
+import highchartsMore from "highcharts/highcharts-more.js"
+
+highchartsMore(Highcharts);
+
 // Opcionalmente, también puedes importar módulos adicionales de Highcharts, como exporting o accessibility
 import exportingInit from 'highcharts/modules/exporting';
 exportingInit(Highcharts);
+
+import SolidGaugeInit from 'highcharts/modules/solid-gauge'
+SolidGaugeInit(Highcharts);
 
 import accessibilityInit from 'highcharts/modules/accessibility';
 accessibilityInit(Highcharts);
 
 // Registra Highcharts Vue Wrapper como componente global
 Highcharts.setOptions({
+   colors:  [
+    '#397DAD',
+    '#4D616C',
+    '#CD960E',
+    '#348022',
+    '#17B6AA',
+    '#5F2626',
+    '#00AEFF',
+    '#6574cd',
+    '#9561e2',
+    '#f66d9b',
+    '#38c172',
+    '#4dc0b5',
+    '#6cb2eb',
+    '#444444',
+    '#00c0ef',
+  ],
+
 	chart:{
-		backgroundColor:{
-			linearGradient:[0,0,0,0],
-			stops:[
-				[0,'rgb(255,255,255)'],
-				[1,'rgb(255,255,255)']
-			]
-		},
+    backgroundColor: {
+          linearGradient: [0, 0, 500, 500],
+          stops: [
+              [0, 'rgba(255, 255, 255, 0)'],
+              [1, 'rgba(240, 240, 255, 0)']
+          ]
+      },
+
 		// borderWidth:2,
-		borderRadius:10,
-		// options3d:{
-		// 	alfa:10,
-		// 	axisLabelPosition:'auto',
-		// 	beta:0,
-		// 	depth:100,
-		// 	enabled:true,
-		// 	fitToPlot:true,
-		// },
-		borderColor:{
-			linearGradient:[0,0,0,0],
-			stops:[
-				[0,'rgb(46,169,214)'],
-				[0.5,'rgb(228,53,149)'],
-				[1,'rgb(96,167,49)']
-			]
-		},
-		plotBackgroundColor:'rgba(255,255,255,.9)',
-		plotShadow:true,
-		plotBorderWidth:1,
+    borderColor:{
+      pattern:{
+        backgroundColor:'rgb(255,255,255)',
+        opacity:0,
+      }
+    },
 		style:{
 			"fontFamily":'Myriad Regular',
 
 		},
-		spacingTop:10,
+		spacingTop:0,
 
 	},
 	credits:{
@@ -230,36 +238,6 @@ Highcharts.setOptions({
 Vue.use(HighchartsVue,{
   Highcharts:Highcharts
 });
-
-// Laravel Echo
-
-// import Echo from 'laravel-echo';
-
-// window.Pusher = require('pusher-js');
-
-
-// window.Echo = new Echo({
-//   broadcaster: 'pusher',
-//   key: process.env.MIX_PUSHER_APP_KEY,
-//   cluster: process.env.MIX_PUSHER_APP_CLUSTER,
-//   encrypted:true,
-//   wsPort: 6001,
-//   wssPort:6001,
-//   wsHost:'ws.bodayplaya.com',
-//   disableStats: true,
-//   forceTLS: true,
-//   enabledTransports: ['ws','wss']
-// });
-
-// import VueEcho from 'vue-echo-laravel';
-
-// Vue.use(VueEcho, lecho);
-
-// Conekta
-
-// window.conekta = require('conekta');
-// conekta.api_key = 'key_OsW8LuyVL6ESxfQWduVKzEw';
-// conekta.locale = 'es';
 
 /* import the fontawesome core */
 import { library } from '@fortawesome/fontawesome-svg-core'
@@ -279,42 +257,9 @@ library.add(fas,fab,far)
 Vue.component('font-awesome-icon', FontAwesomeIcon)
 Vue.config.productionTip = false
 
-window._ = require('lodash');
+import _ from 'lodash';
 
-Vue.directive('number-format', {
-  bind: function(el) {
-    // el.addEventListener('input', function() {
-    //   // Remover caracteres no numéricos
-    //   el.value = el.value.replace(/\D/g, '');
-
-    //   // Agregar ceros a la izquierda si es necesario
-    //   while (el.value.length < 5) {
-    //     el.value = '0' + el.value;
-    //   }
-
-    //   // Asegurarse de que no se exceda la longitud máxima
-    //   if (el.value.length > 5) {
-    //     el.value = el.value.slice(0, 5);
-    //   }
-    // });
-
-    el.addEventListener('blur', function() {
-      // Remover caracteres no numéricos
-      el.value = el.value.replace(/\D/g, '');
-
-      // Agregar ceros a la izquierda si es necesario
-      while (el.value.length < 5) {
-        el.value = '0' + el.value;
-      }
-
-      // Asegurarse de que no se exceda la longitud máxima
-      if (el.value.length > 5) {
-        el.value = el.value.slice(0, 5);
-      }
-    });
-  },
-});
-
+window._ = _;
 
 let app = new Vue({
   router,

@@ -7,7 +7,7 @@
                <feather-icon icon="SearchIcon" />
             </b-input-group-prepend>
            
-            <b-form-input v-model="search" @input="remoteMethod" placeholder="¿ A Donde ?" ref="refInput">
+            <b-form-input v-model="search" @input="remoteMethod" :placeholder="$t('¿Qué te apetece hacer hoy? (lugares, experiencias, comidas, etc.)')" ref="refInput">
             </b-form-input>
          </b-input-group>
       
@@ -18,7 +18,7 @@
 
                <section class="w-25">
                   <feather-icon icon="SendIcon" />
-                  Cerca de mí
+                  {{ $t('Cerca de mí') }}
                </section>
 
                <section class="w-75">
@@ -194,6 +194,7 @@ export default {
 
       onMounted(() => cargarForm())
 
+
       return {
          remoteMethod,
          loading:computed(() => store.state.loading),
@@ -205,7 +206,7 @@ export default {
          inputSearch,
          listenToggle,
          kms,
-         km
+         km,
       }
 
    }

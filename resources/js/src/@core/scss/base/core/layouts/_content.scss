@@ -319,12 +319,15 @@ html {
 
     // horizontal layout
     &.horizontal-layout {
-      .header-navbar {
+
+      .header-navbar{
         width: 100% !important;
       }
+
       .app-content {
-        padding: calc(#{$content-padding} + #{$navbar-height} + #{$floating-nav-margin}) #{$content-padding} 0 #{$content-padding} !important; // ? need to check all navbar types case
+        padding: calc(#{$content-padding-top} + #{$navbar-height} + #{$floating-nav-margin}) #{$content-padding} 0 #{$content-padding} !important; // ? need to check all navbar types case
       }
+      
       &.footer-fixed {
         .app-content {
           padding: calc(#{$content-padding} + #{$navbar-height} + #{$floating-nav-margin}) #{$content-padding} #{$footer-height}

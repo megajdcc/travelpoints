@@ -1,5 +1,5 @@
 <script>
-import form from './form'
+import form from './form.vue'
 
 import { h, ref,toRefs,onMounted} from 'vue'
 

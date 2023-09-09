@@ -134,9 +134,9 @@ export default {
       BCard,
       BFormInput,
       BBadge,
-      PaginateTable:() => import('components/PaginateTable'),
-      PerPage:() => import('components/PerPage'),
-      edit: () => import('views/socio/negocio/solicitudes/edit'),
+      PaginateTable:() => import('components/PaginateTable.vue'),
+      PerPage:() => import('components/PerPage.vue'),
+      edit: () => import('views/socio/negocio/solicitudes/edit.vue'),
    },
 
    setup() {

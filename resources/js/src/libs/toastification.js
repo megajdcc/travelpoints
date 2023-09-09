@@ -28,3 +28,4 @@ Vue.use(Toast, {
   transition: 'Vue-Toastification__fade',
   position:'bottom-right'
 })
+  

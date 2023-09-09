@@ -13,6 +13,9 @@
          
                      <b-card class="cursor-pointer" header-class="p-0 header-card" body-class="mt-1 px-1 contenido-card"
                       @click="$router.push(atraccion.ruta)" style="height:370px !important; max-width:350px"> 
+
+                        <agendar :modelId="atraccion.id" :modelType="'App\\Models\\Atraccion'" :modelName="`El lugar turístico (${atraccion.nombre})`" />
+ 
          
                         <template #header>
          
@@ -126,10 +129,8 @@ export default {
       BFormRating,
       hasLike:() => import('components/HasLike.vue'),
       BCard,
-      BBadge
-
-
-
+      BBadge,
+      agendar:() => import('components/agendar.vue')
    },
 
 

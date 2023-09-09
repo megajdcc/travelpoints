@@ -1,6 +1,8 @@
 <template>
    <b-container fluid class="px-0 mx-0">
       <b-row>
+     
+
          <b-col >
             <h3 class="font-weight-bolder titulo">
                {{ atraccion.nombre }}
@@ -80,12 +82,12 @@
 
                </ul>
             </section>
+           
          </b-col>
       </b-row>
 
       <!-- Imagenes del Banner -->
       <b-row>
-
          <b-col cols="12" md="4">
             <b-card variant="light">
                
@@ -114,6 +116,8 @@
 
          <b-col cols="12" md="8">
            <swiper-gallery :imagenes="atraccion.imagenes" path="/storage/atracciones/imagenes/" />
+           <agendar :modelId="atraccion.id" :modelType="'App\\Models\\Atraccion'" :modelName="atraccion.nombre"/>
+
          </b-col>
 
       </b-row>
@@ -159,6 +163,7 @@
       <horario :horarios="atraccion.horarios" :showHorario.sync="showHorario" />
       
       <show-directions v-model="showDirections" :showDirections.sync="showDirections" :origin="origin" :destination="destination" :destinoName="atraccion.nombre"  @originChange="cambiarOrigin"></show-directions>
+      
    </b-container>
 </template>
 
@@ -216,7 +221,8 @@ export default {
       Atracciones:() => import('components/Atracciones.vue'),
       Negocios:() => import('components/Negocios.vue'),
       SwiperGallery:() => import('components/SwiperGallery.vue'),
-      ShowDirections:() => import('components/ShowDirections.vue')
+      ShowDirections:() => import('components/ShowDirections.vue'),
+      agendar:() => import('components/agendar.vue')
    }, 
 
    setup(props){
@@ -247,8 +253,6 @@ export default {
 
       onMounted(() => {
          cargarAtraccionesCercanas()
-         console.log(coords.value.latitude,coords.value.longitude)
-     
       })
       
       const opinionGuardada = (opinion) => {

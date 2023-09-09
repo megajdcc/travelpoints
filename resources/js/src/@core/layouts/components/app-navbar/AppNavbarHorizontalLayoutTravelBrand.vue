@@ -12,11 +12,8 @@
       <li class="nav-item">
         <b-link class="navbar-brand" to="/">
           <span class="brand-logo">
-            <b-img :src="logo" alt="logo" />
+            <b-img :src="logo" alt="logo" width="180" height="50" />
           </span>
-          <!-- <h2 class="brand-text mb-0">
-            {{ appName }}
-          </h2> -->
         </b-link>
       </li>
     </ul>

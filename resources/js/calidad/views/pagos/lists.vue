@@ -218,7 +218,7 @@ import usePagosList from './usePagosList';
 
 import {mapState } from 'vuex';
 import vSelect from 'vue-select'
-import CurrencyInput from 'components/CurrencyInput';
+import CurrencyInput from 'components/CurrencyInput.vue';
 
 import { Notification } from 'element-ui';
 import ShowImagen from 'components/ShowImagen';
@@ -251,8 +251,8 @@ export default {
       BFormFile,
       ShowImagen,
       CurrencyInput,
-      PaginateTable:() => import('components/PaginateTable'),
-      PerPage:() => import('components/PerPage'),
+      PaginateTable:() => import('components/PaginateTable.vue'),
+      PerPage:() => import('components/PerPage.vue'),
       FormPago:() => import('components/FormPago')
       },
 

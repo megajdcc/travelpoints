@@ -3,9 +3,7 @@
   <div class="misc-wrapper">
        <!-- Brand logo-->
       <b-link class="brand-logo">
-        
-         <img src="/storage/logotipo.png" alt="Logo" />
-       
+         <img :src="logotipo" alt="Logo" />
       </b-link>
 
     <div class="misc-inner p-2 p-sm-3">
@@ -17,15 +15,10 @@
           ¡UPS! 😖 La URL solicitada no se encontró en este servidor.
         </p>
 
-        <b-button
-          variant="primary"
-          class="mb-2 btn-sm-block"
-          :to="{path:'/'}"
-        >
+        <b-button variant="primary" class="mb-2 btn-sm-block" :to="{path:'/'}">
           Regresar a home
         </b-button>
 
-        <!-- image -->
         <b-img
           fluid
           :src="imgUrl"
@@ -34,14 +27,17 @@
       </div>
     </div>
   </div>
-<!-- / Error page-->
 </template>
 
 <script>
-/* eslint-disable global-require */
 import { BLink, BButton, BImg } from 'bootstrap-vue'
 import VuexyLogo from '@core/layouts/components/Logo.vue'
 import store from '@/store/index'
+import errorSvg from '@/assets/images/pages/error.svg'
+import errorDarkSvg  from '@/assets/images/pages/error-dark.svg';
+import logotipo from 'storage/logotipo.png'
+import logotipoblanco from 'storage/logotipoblanco.png'
+import {toRefs,computed} from 'vue'
 
 export default {
   components: {
@@ -52,22 +48,34 @@ export default {
   },
   data() {
     return {
-      downImg: require('@/assets/images/pages/error.svg'),
+      downImg: errorSvg,
+      
+      // Logotipo:import('/storage/logotipo.png')
     }
   },
   computed: {
     imgUrl() {
       if (store.state.appConfig.layout.skin === 'dark') {
-        // eslint-disable-next-line vue/no-side-effects-in-computed-properties
-        this.downImg = require('@/assets/images/pages/error-dark.svg')
+        this.downImg = errorDarkSvg
         return this.downImg
       }
       return this.downImg
     },
   },
+
+
+  setup(props){
+
+    const {layout} = toRefs(store.state.appConfig)
+    const skin = computed(() => layout.value.skin)
+
+    return{
+      logotipo: computed(() => skin.value === 'dark' ? logotipoblanco : logotipo)
+    }
+  }
 }
 </script>
 
 <style lang="scss">
-@import '~@core/scss/vue/pages/page-misc.scss';
+@import '@core/scss/vue/pages/page-misc.scss';
 </style>

@@ -45,7 +45,7 @@
 
             <!-- sitting lady image -->
             <template #tabs-end>
-               <b-img fluid :src="require('@/assets/images/illustration/faq-illustrations.svg')"
+               <b-img fluid :src="faqsBannerImg"
                   class="d-none d-md-block mt-auto" />
             </template>
             <!--/ sitting lady image -->
@@ -110,7 +110,7 @@ import {
 import FaqQuestionAnswer from './FaqQuestionAnswer.vue'
 import store from '@/store'
 import { ref, onMounted, watch, toRefs, computed, onActivated } from 'vue'
-
+import faqsBannerImg from '@/assets/images/illustration/faq-illustrations.svg';
 
 import useAppConfig from '@core/app-config/useAppConfig';
 
@@ -172,7 +172,8 @@ export default {
          imgBanner: computed(() => `/storage/${sistema.value.banner_principal}`),
          datos,
          faqSearchQuery,
-         loading: computed(() => store.state.loading)
+         loading: computed(() => store.state.loading),
+         faqsBannerImg
       }
 
    }
@@ -180,7 +181,7 @@ export default {
 </script>
 
 <style lang="scss">
-@import '~@core/scss/vue/pages/page-faq.scss';
+@import '@core/scss/vue/pages/page-faq.scss';
 
 .faq-search {
    // background-attachment: fixed;

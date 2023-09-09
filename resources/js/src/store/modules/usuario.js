@@ -48,7 +48,12 @@ export default {
 				tarjeta_id:null,
 				tarjeta:null,
 				destino_id:null,
-				destino:null
+				destino:null,
+				portada:null,
+				porcentaje_perfil:0,
+				nivel:{nivel:null,activaciones:0},
+				lider_business:false,
+				comision_promotores:null
 			},
 
 			user: {
@@ -88,257 +93,17 @@ export default {
 				tarjeta_id:null,
 				tarjeta:null,
 				destino_id:null,
-				destino:null
+				destino:null,
+				portada:null,
+				porcentaje_perfil:0,
+				nivel:{nivel:null,activaciones:0},
+				status:3,
 			},
 
 			usuarios: [],
 
 		}),
 
-	mutations:{
-
-		cargarUser(state,data){
-			localStorage.setItem('userData',JSON.stringify(data))			
-			state.usuario = data;
-		},
-
-		setTelefono(state,numero){
-			state.usuario.telefono = numero
-		},
-
-		setUsuarios(state,usuarios){
-			state.usuarios = usuarios;
-		},
-
-		setUsuario(state,usuario){
-			if(usuario != undefined || usuario != null){
-				state.user = usuario
-			}
-			
-		},
-
-		pushUsuario(state,usuario){
-			state.usuarios.push(usuario);
-		},
-
-		capturarUsuario(state,id_usuario){
-			state.user = state.usuarios.find((user) => user.id == id_usuario)
-		},
-
-		clearUsuario(state){
-			state.user = {
-				username: null,
-				id: null,
-				nombre: null,
-				apellido: null,
-				telefonos:[],
-				bio: '',
-				website: '',
-				fecha_nacimiento: '',
-				genero: 1,
-				codigo_postal: null,
-				activo: true,
-				imagen: '',
-				direccion: '',
-				email: '',
-				password: '',
-				lenguaje: 1,
-				rol: {},
-				rol_id: null,
-				avatar: '',
-				lenguaje: 'es',
-				is_whatsapp: false,
-				twitter: '',
-				facebook: '',
-				instagram: '',
-				avatar: null,
-				ultimo_login: null,
-				ciudad_id: null,
-				ciudad: null,
-				codigo_referidor: null,
-				referidos: [],
-				referidor: [],
-				negocios: [],
-				cupones: [],
-				tarjeta_id:null,
-				tarjeta:null,
-				destino_id:null,
-				destino:null
-			}
-		},
-
-		updateUsuario(state,data){
-			var i = state.usuarios.findIndex((user) => user.id == data.id);
-
-			if(i != -1){
-				state.usuarios[i] = data;
-				state.user = data;
-			}
-
-		},
-
-		update(state,data){
-
-			var i = state.usuarios.findIndex((user) => user.id == data.id);
-
-			if(i != -1){
-				state.usuarios[i] = data;
-				// state.usuario = data;
-			}
-		},
-
-		updateAvatar(state,avatar){
-			const user = JSON.parse(localStorage.getItem('userData'))
-			user.avatar = avatar;
-			localStorage.setItem('userData',JSON.stringify(user))
-			state.usuario.avatar = avatar;
-		},
-
-		actualizarAvatarDeUsuario(state,avatar){
-			let user = state.usuarios.find(val => val.id == state.user.id)
-
-			if(user != undefined){
-				user.avatar = avatar
-			}
-
-		},
-
-		updatePerfil(state,data){
-			localStorage.setItem('userData',JSON.stringify(data))
-			state.usuario = data
-		},
-
-		desactivarCuenta(state, result) {
-			const user = JSON.parse(localStorage.getItem('userData'))
-			user.activo = !result;
-			localStorage.setItem('userData', JSON.stringify(user))
-
-			state.usuario.activo = !result;
-
-		},
-
-
-		limpiarUsuario(state){
-
-			state.usuario = {
-				id: null,
-				username: null,
-				nombre: null,
-				apellido: null,
-				telefonos:[],
-				bio: '',
-				website: '',
-				fecha_nacimiento: '',
-				genero: 1,
-				codigo_postal: null,
-				activo: true,
-				imagen: '',
-				direccion: '',
-				email: '',
-				password: '',
-				lenguaje: 1,
-				rol: {},
-				rol_id: null,
-				avatar: '',
-				lenguaje: 'es',
-				is_whatsapp: false,
-				twitter: '',
-				facebook: '',
-				instagram: '',
-				avatar: null,
-				ultimo_login: null,
-				ciudad_id: null,
-				ciudad: null,
-				codigo_referidor: null,
-				referidos: [],
-				referidor: [],
-				likes:[],
-				status:3,
-				lider:null,
-				promotores:[],
-				tarjeta_id:null,
-				tarjeta:null
-			}
-		},
-
-		agregarTelefono(state,user = 'user'){
-			
-			if(user == 'user'){
-				state.user.telefonos.push({
-					telefono: '',
-					is_whatsapp: false,
-					principal: false
-				})
-			}else{
-				state.usuario.telefonos.push({
-					telefono: '',
-					is_whatsapp: false,
-					principal: false
-				})
-			}
-		},
-
-		quitarTelefono(state,i){
-				state.user.telefonos.splice(
-					i,
-					1
-				) 
-		},
-
-		updateTelefono(state, telefono) {
-
-			const i = state.user.telefonos.findIndex(val => val.telefono === telefono.telefono)
-			if (i != -1) {
-				state.user.telefonos[i] = telefono
-			}
-
-		},
-
-		actualizarTelefono(state,telefono){
-			const i = state.usuario.telefonos.findIndex(val => val.telefono === telefono.telefono)
-			if (i != -1) {
-				state.usuario.telefonos[i] = telefono
-			}
-		},
-
-		removerTelefono(state,i = 0 ){
-
-				state.usuario.telefonos.splice(
-					i,
-					1
-				) 
-		},
-
-		setLikesUser(state,likes){
-			state.usuario.likes = likes
-		},
-
-		setStatusLider(state,{promotores_activos}){
-			const {ultimo_mes,ultimo_trimestre } = promotores_activos
-
-			if(ultimo_mes > 0){
-				state.usuario.status = 1;
-			}else if(ultimo_trimestre > 0){
-				state.usuario.status = 2;
-			}else{
-				state.usuario.status = 3
-			}
-		},
-
-
-		setStatusCoordinador(state,{lideres_activos}){
-				const {ultimo_mes,ultimo_trimestre } = lideres_activos
-
-				if(ultimo_mes > 0){
-					state.usuario.status = 1;
-				}else if(ultimo_trimestre > 0){
-					state.usuario.status = 2;
-				}else{
-					state.usuario.status = 3
-				}
-		}
-
-	},
 
 	getters:{
 
@@ -417,7 +182,6 @@ export default {
 					
 				});
 
-				console.log(users);
 
 				return users;
 
@@ -427,10 +191,10 @@ export default {
 
 		isRol(state){
 			return (rol) => {
-
-				let role = state.usuario.roles.find((val) => val.name == rol);
-				return (role != undefined);
-			
+				if(state.usuario.rol){
+					return rol  == state.usuario.rol.nombre
+				}
+				return false;
 			}
 		},
 
@@ -442,9 +206,7 @@ export default {
 		getCoordinadoresHotel:(state) => {
 
 			return (rol) => {
-				
 				return state.usuarios.filter(val => val.rol.nombre == rol)
-
 			}
 
 		},
@@ -465,8 +227,355 @@ export default {
 
 		miSaldo(state){
 			return state.usuario.cuenta ? state.usuario.cuenta.saldo : 0
-		}
+		},
+
+		miDivisa:(state) => {
+			return state.usuario.cuenta ? state.usuario.cuenta.divisa.iso : 'USD'
+		},
+
+		rolUser(state){
+			return state.usuario.rol ? state.usuario.rol.nombre : ''
+		},
+
+		activaciones(state){
+			
+			if(state.usuario.nivel){
+				return state.usuario.nivel
+			}
+			return {nivel:null,activaciones:0}
+
+		},
+
+		getStatus(state) {
+			let statuses = ['Activo','En Peligro','Inactivo']
+			return state.usuario.status != undefined ? statuses[state.usuario.status - 1] : statuses[2];
+		},
+
+		getNivel(state){
+			let niveles = ['Visitante','Recomendador','Promotor','Consul','Embajador']
+			return state.usuario.nivel ? niveles[state.usuario.nivel.nivel] : niveles[0]
+
+		},
+
+		rolName(state){
+			return state.usuario.rol ? state.usuario.rol.nombre : '';
+		},
+
+		totalPromotores(state){
+			return state.usuario.promotores ? state.usuario.promotores.length : 0
+		},
+
+	
+
+		
 	},
+
+	mutations:{
+
+		cargarUser(state,data){
+			localStorage.setItem('userData',JSON.stringify(data))			
+			state.usuario = {...state.usuario,...data};
+		},
+
+		setTelefono(state,numero){
+			state.usuario.telefono = numero
+		},
+
+		setUsuarios(state,usuarios){
+			if(usuarios.length){
+				state.usuarios = usuarios;
+			}
+		},
+
+		setUsuario(state,usuario){
+			if(usuario != undefined || usuario != null){
+				state.user = usuario
+			}
+			
+		},
+
+		pushUsuario(state,usuario){
+			state.usuarios.push(usuario);
+		},
+
+		capturarUsuario(state,id_usuario){
+			state.user = state.usuarios.find((user) => user.id == id_usuario)
+		},
+
+		clearUsuario(state){
+			state.user = {
+				username: null,
+				id: null,
+				nombre: null,
+				apellido: null,
+				telefonos:[],
+				bio: '',
+				website: '',
+				fecha_nacimiento: '',
+				genero: 1,
+				codigo_postal: null,
+				activo: true,
+				imagen: '',
+				direccion: '',
+				email: '',
+				password: '',
+				lenguaje: 1,
+				rol: {},
+				rol_id: null,
+				avatar: '',
+				lenguaje: 'es',
+				is_whatsapp: false,
+				twitter: '',
+				facebook: '',
+				instagram: '',
+				avatar: null,
+				ultimo_login: null,
+				ciudad_id: null,
+				ciudad: null,
+				codigo_referidor: null,
+				referidos: [],
+				referidor: [],
+				negocios: [],
+				cupones: [],
+				tarjeta_id:null,
+				tarjeta:null,
+				destino_id:null,
+				destino:null,
+				portada:null,
+				porcentaje_perfil:0,
+				nivel:{nivel:null,activaciones:0},
+				status:3,
+				lider_business:false,
+				comision_promotores:null
+
+
+
+			}
+		},
+
+		updateUsuario(state,data){
+			var i = state.usuarios.findIndex((user) => user.id == data.id);
+
+			if(i != -1){
+				state.usuarios[i] = data;
+				state.user = data;
+			}
+
+		},
+
+		update(state,data){
+
+			var i = state.usuarios.findIndex((user) => user.id == data.id);
+
+			if(i != -1){
+				state.usuarios[i] = data;
+				// state.usuario = data;
+			}
+		},
+
+		updateAvatar(state,avatar){
+			const user = JSON.parse(localStorage.getItem('userData'))
+			user.avatar = avatar;
+			localStorage.setItem('userData',JSON.stringify(user))
+			state.usuario.avatar = avatar;
+		},
+
+		updatePortada(state,portada){
+			const user = JSON.parse(localStorage.getItem('userData'))
+			user.portada = portada;
+			localStorage.setItem('userData',JSON.stringify(user))
+			state.usuario.portada = portada;
+		},
+
+		actualizarAvatarDeUsuario(state,avatar){
+			let user = state.usuarios.find(val => val.id == state.user.id)
+
+			if(user != undefined){
+				user.avatar = avatar
+			}
+
+		},
+
+		updatePerfil(state,data){
+			localStorage.setItem('userData',JSON.stringify(data))
+			state.usuario = {...state.usuario,...data}
+		},
+
+		desactivarCuenta(state, result) {
+			const user = JSON.parse(localStorage.getItem('userData'))
+			user.activo = !result;
+			localStorage.setItem('userData', JSON.stringify(user))
+
+			state.usuario.activo = !result;
+
+		},
+
+
+		limpiarUsuario(state){
+
+			state.usuario = {
+				id: null,
+				username: null,
+				nombre: null,
+				apellido: null,
+				telefonos:[],
+				bio: '',
+				website: '',
+				fecha_nacimiento: '',
+				genero: 1,
+				codigo_postal: null,
+				activo: true,
+				imagen: '',
+				direccion: '',
+				email: '',
+				password: '',
+				lenguaje: 1,
+				rol: {},
+				rol_id: null,
+				avatar: '',
+				lenguaje: 'es',
+				is_whatsapp: false,
+				twitter: '',
+				facebook: '',
+				instagram: '',
+				avatar: null,
+				ultimo_login: null,
+				ciudad_id: null,
+				ciudad: null,
+				codigo_referidor: null,
+				referidos: [],
+				referidor: [],
+				likes:[],
+				status:3,
+				lider:null,
+				promotores:[],
+				tarjeta_id:null,
+				tarjeta:null,
+				portada:null,
+				porcentaje_perfil:0,
+				nivel:{nivel:null,activaciones:0},
+				status:3,
+				lider_business:false,
+				comision_promotores:null
+			}
+		},
+
+		agregarTelefono(state,user = 'user'){
+			
+			if(user == 'user'){
+				state.user.telefonos.push({
+					telefono: '',
+					is_whatsapp: false,
+					principal: false
+				})
+			}else{
+				state.usuario.telefonos.push({
+					telefono: '',
+					is_whatsapp: false,
+					principal: false
+				})
+			}
+		},
+
+		quitarTelefono(state,i){
+				state.user.telefonos.splice(
+					i,
+					1
+				) 
+		},
+
+		updateTelefono(state, telefono) {
+
+			const i = state.user.telefonos.findIndex(val => val.telefono === telefono.telefono)
+			if (i != -1) {
+				state.user.telefonos[i] = telefono
+			}
+
+		},
+
+		actualizarTelefono(state,telefono){
+			const i = state.usuario.telefonos.findIndex(val => val.telefono === telefono.telefono)
+			if (i != -1) {
+				state.usuario.telefonos[i] = telefono
+			}
+		},
+
+		removerTelefono(state,i = 0 ){
+
+				state.usuario.telefonos.splice(
+					i,
+					1
+				) 
+		},
+
+		setLikesUser(state,likes){
+			state.usuario.likes = likes
+		},
+
+		setStatusPromotor(state,{referidos}){
+			
+			const {ultimo_mes,ultimo_trimestre } = referidos
+			
+			if(ultimo_mes > 0){
+				state.usuario.status = 1;
+			}else if(ultimo_trimestre > 0){
+				state.usuario.status = 2;
+			}else{
+				state.usuario.status = 3
+			}
+			
+		},
+
+
+		setStatusLider(state,{promotores_activos}){
+			const {ultimo_mes,ultimo_trimestre } = promotores_activos
+
+			if(ultimo_mes > 0){
+				state.usuario.status = 1;
+			}else if(ultimo_trimestre > 0){
+				state.usuario.status = 2;
+			}else{
+				state.usuario.status = 3
+			}
+		},
+
+
+		setStatusCoordinador(state,{lideres_activos}){
+				const {ultimo_mes,ultimo_trimestre } = lideres_activos
+
+				if(ultimo_mes >= 10){
+					state.usuario.status = 1;
+				}else if(ultimo_trimestre > 0){
+					state.usuario.status = 2;
+				}else{
+					state.usuario.status = 3
+				}
+		},
+
+
+		updateComisionPromotors(state,{id,comision_promotores}){
+
+
+			if(state.usuario.id == id){
+				state.usuario.comision_promotores = comision_promotores
+				localStorage.setItem('userData',JSON.stringify(state.usuario))
+			}else{
+				let i = state.usuarios.findIndex(val => val.id === id)
+
+				if(i != -1){
+					state.usuarios[i].comision_promotores = comision_promotores
+				}
+
+			}
+		},
+
+		setInvitador(state,invitador) {
+			state.user = invitador
+		}
+
+	},
+
+	
 
 	actions:{
 
@@ -597,13 +706,37 @@ export default {
 			})
 		},
 
+		updatePortada({state,commit},datos){
+
+			let formData = new FormData();
+
+			formData.append('portada',datos.portada)
+
+			return new Promise((resolve, reject) => {
+				axios.post(`/api/usuarios/${state.usuario.id}/toggle-portada`,formData,{
+					headers:{
+						ContentType:"multipart/form-data"
+					}
+				}).then(({data}) => {
+
+					if(data.result){
+						commit('updatePortada',data.portada)
+					}
+					resolve(data)
+				}).catch( e => reject(e))
+
+			})
+
+		},
+
+		
+
 		fetchUsers({state,commit},searchQuery){
 				return new Promise((resolve, reject) => {
 					axios.post('/api/fetch/usuarios', searchQuery)
-						.then((response) => {
-							const {data} = response;
+						.then(({data}) => {
 							commit('setUsuarios',data.users)
-							resolve(response)
+							resolve(data)
 						})
 						.catch(error => reject(error))
 				});
@@ -778,22 +911,22 @@ export default {
 		},
 
 
-		getStatusPromotor({commit}){
+		getStatusPromotor({commit},usuario_id){
 
 			return new Promise((resolve, reject) => {
-				axios.get(`/api/dashboard/tablero/promotor/get-status`).then(({data}) => {
-					commit('setStatusPromotor',data)
+				axios.get(`/api/dashboard/tablero/promotor/get-status/${usuario_id}`).then(({data}) => {
+					commit('setStatusPromotor',data.status)
 					resolve(data)
 				}).catch(e => reject(e))
 
 			})
 		},
 
-		getStatusLider({commit}){
+		getStatusLider({commit},usuario_id){
 
 			return new Promise((resolve, reject) => {
-				axios.get(`/api/dashboard/tablero/lider/get-status`).then(({data}) => {
-					commit('setStatusLider',data)
+				axios.get(`/api/dashboard/tablero/lider/${usuario_id}/get-status`).then(({data}) => {
+					commit('setStatusLider',data.status)
 					resolve(data)
 				}).catch(e => reject(e))
 
@@ -804,7 +937,8 @@ export default {
 
 			return new Promise((resolve, reject) => {
 				axios.get(`/api/dashboard/tablero/coordinador/get-status`).then(({data}) => {
-					commit('setStatusCoordinador',data)
+
+					commit('setStatusCoordinador',data.status)
 					resolve(data)
 				}).catch(e => reject(e))
 
@@ -838,7 +972,7 @@ export default {
 			return new Promise((resolve, reject) => {
 				
 				axios.post(`/api/usuarios/promotores/fetch/data`,filtro).then(({data}) => {
-					commit('setUsuarios',data.promotores)
+					// commit('setUsuarios',data.promotores)
 					resolve(data)
 				}).catch(e => reject(e))
 			})
@@ -849,6 +983,17 @@ export default {
 				
 				axios.post(`/api/usuarios/lideres/fetch/data`,filtro).then(({data}) => {
 					commit('setUsuarios',data.lideres)
+					resolve(data)
+				}).catch(e => reject(e))
+			})
+		},
+
+
+		fetchCoordinadores({commit},filtro){
+			return new Promise((resolve, reject) => {
+				
+				axios.post(`/api/usuarios/coordinadores/fetch/data`,filtro).then(({data}) => {
+					commit('setUsuarios',data.coordinadores)
 					resolve(data)
 				}).catch(e => reject(e))
 			})
@@ -908,7 +1053,6 @@ export default {
 					resolve(data)
 
 				}).catch(e => reject(e))
-
 			})
 		},
 
@@ -949,7 +1093,159 @@ export default {
 				}).catch(e => reject(e))
 				
 			})
+		},
+
+		getMovimientosPorMes({state,commit},datos){
+			return new Promise((resolve, reject) => {
+				axios.put(`/api/usuarios/${datos.usuario}/get-movimiento-por-mes`,datos).then(({data}) => {
+					resolve(data)
+				}).catch(e => reject(e))
+			})
+		},
+
+		getAcumuladoPorAno({state,commit},usuario_id){
+			return new Promise((resolve,reject) => {
+				if(state.usuario.id){
+						axios.get(`/api/usuarios/${usuario_id}/get-acumulado-por-ano`).then(({data}) => {
+							resolve(data)
+						}).catch(e => reject(e))
+				}else{
+					reject()
+				}
+			
+
+			})
+		},
+
+		getEfectividad({state},usuario_id){
+
+			return new Promise((resolve, reject) => {
+				if(usuario_id){
+					axios.get(`/api/usuarios/${usuario_id}/get-efectividad`).then(({data})  => resolve(data)).catch(e => reject(e))
+				}else{
+					reject();
+				}
+				
+			})
+		},
+		
+		cargarStatus({state,commit}){
+
+			return new Promise((resolve, reject) => {
+				axios.get(`/api/usuarios/${state.usuario.id}/get-status`).then(({data}) => resolve(data)).catch(e => reject(e))
+			})
+		},
+
+		misInvitados({state,commit},datos){
+			return new Promise((resolve, reject) => {
+				if(state.usuario.id){
+					axios.post(`/api/usuarios/${state.usuario.id}/mis-invitados`,datos).then(({data}) => resolve(data)).catch(e => reject(e))
+				}else{
+					reject()
+				}
+					
+			})
+		},
+
+		fetchUser({state,commit},id_user){
+			return new Promise((resolve, reject) => {
+				axios.get(`/api/usuarios/${id_user}/fetch-data-user`).then(({data}) => {
+					commit('setUsuario',data)
+					resolve(data)
+				}).catch(e => reject(e))
+			})
+		},
+
+		fetchViajeros({commit},datos){
+
+			return new Promise((resolve, reject) => {
+				axios.post(`/api/usuarios-viajeros/fetch-data`,datos).then(({data}) => resolve(data)).catch(e => reject(e))
+				
+			})
+		},
+
+		fetchDataReportPromotores({commit},datos){
+			
+			return new Promise((resolve, reject) => {
+				axios.post(`/api/reporte/fetch-data-promotores`,datos).then(({data}) => resolve(data)).catch(e => reject(e))
+				
+			})
+
+		},
+
+		fetchDataReportLideres({commit},datos){
+			
+			return new Promise((resolve, reject) => {
+				axios.post(`/api/reporte/fetch-data-lideres`,datos).then(({data}) => resolve(data)).catch(e => reject(e))
+			})
+
+		},
+
+
+		downloadReportPromotores(_,datos){
+
+			return new Promise((resolve, reject) => {
+				axios.post(`/api/reporte/descargar/fetch-data-promotores`,datos).then(({data}) => {
+						resolve(data)
+				}).catch(e => {
+					reject(e)
+				})
+			})
+		
+		},
+
+		downloadReportLider(_,datos){
+			return new Promise((resolve, reject) => {
+				axios.post(`/api/reporte/descargar/fetch-data-lideres`,datos).then(({data}) => {
+						resolve(data)
+				}).catch(e => {
+					reject(e)
+				})
+			})
+		},
+
+		guardarComisionPromotor({commit,state},datos){
+			return new Promise((resolve, reject) => {
+				
+				axios.put(`/api/usuarios/${datos.id}/update-comision-promotors`,datos).then(({data}) => {
+					if(data.result){
+						commit('updateComisionPromotors',datos)
+					}
+					resolve(data)
+
+				}).catch(e => reject(e))
+
+			})
+		},
+
+		cargarDashboardCoordinador({commit,state},usuario_id){
+			return new Promise((resolve, reject) => {
+				axios.get(`/api/dashboard/coordinador/${usuario_id}/fetch-data`).then(({data}) => {
+					resolve(data)
+				}).catch(e => reject(e))
+			})
+
+		},
+
+
+		fetchLideresCoordinador({commit},coordinador_id){
+
+			return new Promise((resolve,reject) => {
+				axios.get(`/api/coordinador/${coordinador_id}/fetch-lideres`).then(({data}) => resolve(data)).catch(e => reject(e))
+			})
+			
+		},
+
+		fetchViajeros({commit},filtro){
+			return new Promise((resolve, reject) => {
+				axios.post(`/api/usuarios-viajeros/fetch-data`,filtro).then(({data}) => {
+					resolve(data)
+				}).catch(e => reject(e))
+			})
 		}
+
+
+		
 
 
 	}

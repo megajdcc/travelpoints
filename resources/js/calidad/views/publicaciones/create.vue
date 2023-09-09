@@ -1,6 +1,6 @@
 <script>
 
-import form from './form'
+import form from './form.vue'
 import store from '@/store'
 import {h,onMounted,toRefs} from 'vue'
 import router from '@/router'

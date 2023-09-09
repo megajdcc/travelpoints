@@ -10,18 +10,15 @@
   <link rel="manifest" href="/manifest.json">
 
   <title>TravelPoints</title>
-
-  <!-- Splash Screen/Loader Styles -->
-  <link rel="stylesheet" type="text/css" href="{{ mix('css/loader.css') }}" />
-
-  <!-- Styles -->
-  <link rel="stylesheet" href="{{ mix('css/app.css') }}">
-
+ 
   <!-- Favicon -->
   <link rel="shortcut icon" href="{{ asset('favicons/favicon-57x57.png') }}">
   <script src="https://accounts.google.com/gsi/client" async defer ></script>
  
-
+   <!-- Styles -->
+  @vite(['resources/js/app.js'])
+  <link rel="stylesheet" href="/css/loader.css">
+  
 </head>
 
 <body>
@@ -44,7 +41,7 @@
     <script>
       window.addEventListener('load',() => {
           if('serviceWorker' in navigator){
-            navigator.serviceWorker.register('/service-worker.js').then(() => {
+            navigator.serviceWorker.register('/build/sw.js',{ scope: '/build/' }).then(() => {
               console.log('Service Worker registrado!')
             }).catch(e => {
               console.log('Service Worker no pudo ser registrado')
@@ -56,9 +53,9 @@
 
   @endif
 
-    <script src="{{ mix('js/manifest.js')}}"></script>
+    {{-- <script src="{{ mix('js/manifest.js')}}"></script>
     <script src="{{ mix('js/vendor.js')}}"></script>
-    <script src="{{ mix('js/app.js')}}"></script>
+    <script src="{{ mix('js/app.js')}}"></script> --}}
   
   </body>
 

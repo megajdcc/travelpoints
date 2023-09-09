@@ -3,10 +3,8 @@
     <b-link class="brand-logo">
       <b-link class="brand-logo">
         
-         <img src="/storage/logotipo.png" alt="Logo" />
-        <!-- <h2 class="brand-text text-primary ml-1">
-          Boda y Playa
-        </h2> -->
+         <img :src="logotipo" alt="Logo" />
+       
       </b-link>
     </b-link>
 
@@ -40,7 +38,11 @@ import VuexyLogo from '@core/layouts/components/Logo.vue'
 import store from '@/store/index'
 import { getHomeRouteForLoggedInUser } from '@/auth/utils'
 import { mapState } from 'vuex';
-
+import downImg from '@/assets/images/pages/not-authorized.svg'
+import downImgDark from '@/assets/images/pages/not-authorized-dark.svg'
+import {computed,toRefs} from 'vue';
+import logotipo from 'storage/logotipo.png'
+import logotipoblanco from 'storage/logotipoblanco.png'
 export default {
   components: {
     BLink,
@@ -48,36 +50,36 @@ export default {
     BButton,
     VuexyLogo,
   },
-  data() {
+
+
+  setup(){
+    const {layout} = toRefs(store.state.appConfig)
+    const {usuario}  = toRefs(store.state.usuario)
+    const skin = computed(() => layout.value.skin)
+    const  loginRoute = () => {
+
+      if(usuario.value.id){
+        router.push('/home')
+      }else{
+        router.push({ name: 'login' })
+      }
+    }
+
     return {
-      downImg: require('@/assets/images/pages/not-authorized.svg'),
+      downImg,
+       logotipo: computed(() => skin.value === 'dark' ? logotipoblanco : logotipo),
+      imgUrl:computed(() => {
+        return layout.value.skin === 'dark' ? downImgDark : downImg
+      }),
+      usuario,
+      loginRoute
+      
     }
   },
-  computed: {
-    ...mapState('usuario',['usuario']),
-    imgUrl() {
-      if (store.state.appConfig.layout.skin === 'dark') {
-        // eslint-disable-next-line vue/no-side-effects-in-computed-properties
-        this.downImg = require('@/assets/images/pages/not-authorized-dark.svg')
-        return this.downImg
-      }
-      return this.downImg
-    },
-  },
-  methods: {
-    loginRoute() {
 
-      if(this.usuario.id){
-         this.$router.push('/home')
-      }else{
-         this.$router.push({name:'login'})
-      }
-     
-    },
-  },
 }
 </script>
 
 <style lang="scss">
-@import '~@core/scss/vue/pages/page-misc.scss';
+@import '@core/scss/vue/pages/page-misc.scss';
 </style>

@@ -314,7 +314,7 @@ export default {
 
 
 <style lang="scss" >
-@import '~@core/scss/vue/libs/vue-flatpicker.scss';
+@import '@core/scss/vue/libs/vue-flatpicker.scss';
 
 .btn-horas{
 

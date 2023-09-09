@@ -340,7 +340,7 @@ export default {
 </script>
 
 <style lang="scss" >
-@import '~@core/scss/vue/libs/vue-flatpicker.scss';
+@import '@core/scss/vue/libs/vue-flatpicker.scss';
 
 .imagen_content{
    height: 300px;

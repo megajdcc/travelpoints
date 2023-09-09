@@ -28,37 +28,38 @@
                 </b-button>
               </template>
             </b-input-group>
-
           </b-col>
         </b-row>
-
       </div>
-
-      <b-table ref="refUserListTable" class="position-relative" :items="fetchUsers" responsive :fields="tableColumns"
-        primary-key="id" :sort-by.sync="sortBy" show-empty empty-text="No matching records found"
-        :sort-desc.sync="isSortDirDesc">
+      <b-table ref="refUserListTable" responsive class="position-relative" :items="fetchUsers" :fields="tableColumns"
+        primary-key="id" :sort-by.sync="sortBy" show-empty empty-text="Usuarios no cargados"
+        :sort-desc.sync="isSortDirDesc" stacked="md" :busy="loading">
 
         <!-- Column: User -->
         <template #cell(username)="{ item }">
-          <b-media vertical-align="center">
+          <b-media vertical-align="center" class="cursor-pointer" @click="mostrarAboutUsuario(item)">
             <template #aside>
               <b-avatar size="32" :src="item.avatar" :text="avatarText(`${item.nombre} ${item.apellido}`)"
                 :variant="`light-${resolveUserRoleVariant(item.rol.nombre)}`"
-                :to="{ name: 'mostrar.usuario', params: { id: item.id } }" disabled />
+                @click="mostrarAboutUsuario(item)"  />
             </template>
-            <b-link :to="{ name: 'mostrar.usuario', params: { id: item.id } }" disabled
-              class="font-weight-bold d-block text-nowrap">
+            <b-button @click="mostrarAboutUsuario(item)" variant="outline-text" size="sm"
+              class="font-weight-bold d-block text-nowrap p-0">
               {{ item.nombre ? `${item.nombre} ${item.apellido}` : 'Sin definir nombre'  }}
-            </b-link>
+            </b-button>
             <small class="text-muted" v-if="item.username">{{ item.username }}</small>
           </b-media>
         </template>
 
 
         <template #cell(activo)="{ item }">
-          <b-form-checkbox v-model="item.activo" switch @change="cambiarEstado(item.id)">
-            {{ item.activo ? 'Activo (¿Desactivar?)' : 'Desactivo (¿Activar?)' }}
+          <b-form-checkbox v-model="item.activo" switch @change="cambiarEstado(item.id)" v-if="['Desarrollador','Administrador'].includes(usuario.rol.nombre)">
+             {{ item.activo ? 'Activo (¿Desactivar?)' : 'Desactivo (¿Activar?)' }}
           </b-form-checkbox>
+
+          <span v-else>
+              {{ item.activo ? 'Activo (¿Desactivar?)' : 'Desactivo (¿Activar?)' }}
+          </span>
         </template>
 
         <!-- Column: Rol -->
@@ -91,7 +92,7 @@
               <span class="align-middle ml-50">Eliminar</span>
             </b-dropdown-item>
 
-            <b-dropdown-item :to="{ name: 'movimientos.user', params: { id: data.item.id } }">
+            <b-dropdown-item :to="{ name: 'movimientos.user', params: { id: data.item.id } }" v-if="['Desarrollador','Administrador'].includes(usuario.rol.nombre)">
               <font-awesome-icon icon="fas fa-money-check" />
               <span class="align-middle ml-50">Movimientos de cuenta</span>
             </b-dropdown-item>
@@ -104,10 +105,7 @@
         </template>
 
       </b-table>
-
       <paginate-table :dataMeta="dataMeta" :currentPage.sync="currentPage" :perPage="perPage" :total="totalUsers" />
-
-
     </b-card>
   </div>
 </template>
@@ -143,7 +141,7 @@ import useUsersList from './useUsersList'
 
 import { mapGetters, mapMutations, mapActions } from 'vuex';
 
-import { toRefs } from 'vue'
+import { toRefs,inject } from 'vue'
 
 export default {
   components: {
@@ -164,9 +162,9 @@ export default {
     BDropdownItem,
     BDropdownItemButton,
     BPagination,
-    PaginateTable: () => import('components/PaginateTable'),
+    PaginateTable: () => import('components/PaginateTable.vue'),
     vSelect,
-    PerPage: () => import('components/PerPage'),
+    PerPage: () => import('components/PerPage.vue'),
     BInputGroup,
     BFormCheckbox
   },
@@ -186,23 +184,10 @@ export default {
   setup() {
     const { usuario } = toRefs(store.state.usuario)
 
-    const cambiarEstado = (user_id) => {
+    const userAbout = inject('userAbout')
+    const showAboutProfile = inject('showAboutProfile')
 
-      store.dispatch('usuario/cambiarEstado', user_id).then(({ result }) => {
-
-        if (result) {
-          toast.success('Se ha cambiado con éxito el estado del usuario')
-          refetchData()
-        } else {
-          toast.info('No se pudo cambiar el Estado del usuario')
-          refetchData();
-        }
-      }).catch(e => console.log(e))
-
-    }
-
-
-    const {
+     const {
       fetchUsers,
       tableColumns,
       perPage,
@@ -227,8 +212,40 @@ export default {
 
 
 
-    return {
 
+    const mostrarAboutUsuario = (user) => {
+      userAbout.value = user
+      showAboutProfile.value = true
+    }
+
+
+    const cambiarEstado = (user_id) => {
+
+      store.dispatch('usuario/cambiarEstado', user_id).then(({ result }) => {
+
+        if (result) {
+          toast.success('Se ha cambiado con éxito el estado del usuario')
+          refetchData()
+        } else {
+          toast.info('No se pudo cambiar el Estado del usuario')
+          refetchData();
+        }
+      }).catch(e => console.log(e))
+
+    }
+    
+    onMounted(() => {
+      setTimeout(() => {
+        console.log('cargando')
+        refetchData();
+
+      },300)
+    })
+
+   
+
+    return {
+      loading:computed(() => store.state.loading),
       cambiarEstado,
       fetchUsers,
       tableColumns,
@@ -242,7 +259,7 @@ export default {
       isSortDirDesc,
       refUserListTable,
       refetchData,
-
+      mostrarAboutUsuario,
       // Filter
       avatarText,
 
@@ -291,11 +308,7 @@ export default {
     }
 
 
-  },
-
-
-
-
+  }
 
 }
 </script>
@@ -307,5 +320,5 @@ export default {
 </style>
 
 <style lang="scss">
-@import '~@core/scss/vue/libs/vue-select.scss';
+@import '@core/scss/vue/libs/vue-select.scss';
 </style>

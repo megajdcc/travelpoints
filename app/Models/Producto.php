@@ -79,13 +79,14 @@ class Producto extends Model
     }
 
     public function cargar(){
-
         $this->carritos;
         $this->divisa;
-        $this->tiendas;
+        $this->tiendas->load(['telefonos','horarios']);
         $this->consumos;
         $this->categoria;
-    }
+        $this->imagenes;
+        $this->opinions;
+    }   
 
 
 }

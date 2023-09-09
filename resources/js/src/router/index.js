@@ -11,21 +11,7 @@ import negocio from './routes/negocio';
 
 Vue.use(VueRouter)
 import store from '@/store'
-
-const router = new VueRouter({
-  
-  mode: 'history',
-  base: process.env.BASE_URL,
-  // base:'/',
-  scrollBehavior() {
-    return { x: 0, y: 0 }
-  },
-
-  routes: [
-    // {
-    //   path: '/',
-    //   redirect: { name: 'home' }
-    // },
+const rutas = [
     ...paginas,
     ...dashboard,
     ...pages,
@@ -54,8 +40,30 @@ const router = new VueRouter({
     {
       path: '*',
       redirect: 'error-404',
-    },
-  ],
+    }]
+const router = new VueRouter({
+  
+  mode: 'history',
+  // base: import.meta.env.BASE_URL,
+  base:'/',
+  scrollBehavior : (to,from,savePosition)  => {
+   
+
+    if(savePosition){
+      return savePosition
+    }else{
+      if(to.hash){
+        return {
+          selector:to.hash
+        }
+      }
+
+      return { x: 0, y: 0 }
+    }
+    
+  },
+
+  routes:rutas,
 })
 
 router.beforeEach((to, from, next) => {

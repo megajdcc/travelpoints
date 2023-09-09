@@ -2,9 +2,10 @@ node_modules
 vendor
 queue.log
 .env
-.idea/
-.vscode/
+.idea/*
+.vscode/*
 public/storage
+public/build
 storage
 public/js/
 public/css/

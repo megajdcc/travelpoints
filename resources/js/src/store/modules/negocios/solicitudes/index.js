@@ -18,8 +18,8 @@ export default {
             codigo_postal:'',
             ciudad_id:null,
             estado_id:null,
-            lat:null,
-            lng:null,
+             lat:20.68,
+            lng:-105.21,
             logo:null,
             foto:null,
             situacion:1,// 1 => solicitud enviada, 2 => solicitud regresada para mejorar 3 => solicitd aceptada 4 => solicitud rechazada
@@ -29,7 +29,14 @@ export default {
             solicitud:null,
             ciudad:null,
             estado:null,
-            usuario:null,
+            usuario:{
+               nombre:'',
+               apellido:'',
+               email:'',
+               username:'',
+               password:'',
+               r_password:''
+            },
 
             divisa_id:null,
             divisa:null,
@@ -78,8 +85,8 @@ export default {
             codigo_postal: '',
             ciudad_id: null,
             estado_id: null,
-            lat: null,
-            lng: null,
+            lat:20.68,
+            lng:-105.21,
             logo: null,
             foto: null,
             situacion: 1,// 1 => solicitud enviada, 2 => solicitud regresada para mejorar 3 => solicitd aceptada 4 => solicitud rechazada
@@ -89,9 +96,14 @@ export default {
             solicitud: null,
             ciudad: null,
             estado: null,
-            usuario: null,
-
-
+             usuario:{
+                nombre:'',
+               apellido:'',
+               email:'',
+               username:'',
+               password:'',
+               r_password:''
+            },
             divisa_id: null,
             divisa: null,
 

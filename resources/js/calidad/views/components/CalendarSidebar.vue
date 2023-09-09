@@ -24,7 +24,7 @@
       </template>
      
     </div>
-    <!-- <b-img :src="require('@/assets/images/pages/calendar-illustration.png')" /> -->
+  
   </div>
 </template>
 

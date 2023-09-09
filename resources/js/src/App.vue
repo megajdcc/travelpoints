@@ -1,11 +1,19 @@
 <template>
   <div id="app" :class="{ 'h-100': route.meta.layout != 'travel', ...skinClasses }" style="min-height:100%">
 
-    <component :is="layout">
-      <router-view />
-    </component>
+      <component :is="layout">
+        <router-view />
+      </component>
+  
 
     <scroll-to-top v-if="enableScrollToTop" />
+    <mi-agenda v-model="showMiAgenda" v-if="is_loggin"/>
+    <sidebar-about-profile v-model="showAboutProfile" v-if="is_loggin" :userAbout="userAbout" :showEditActive="showEditActive"/>
+    <form-agenda v-model="showAgenda" :tipo="tipoAgenda" v-if="is_loggin" :sobre="sobre"/>
+    <agenda-fixed  />
+    <sidebar-retiro v-if="is_loggin" v-model="showSidebarRetiro" />
+    <form-user v-if="is_loggin" v-model="showFormUser"   @cerrar="() => showFormUser = false" :tipo="tipoFormUser" :liderId="liderId" />
+  
 
   </div>
 </template>
@@ -15,7 +23,7 @@
 import ScrollToTop from '@core/components/scroll-to-top/ScrollToTop.vue'
 
 import { $themeColors, $themeBreakpoints, $themeConfig } from '@themeConfig'
-import { watch, onMounted, toRefs, onActivated, computed } from 'vue'
+import { watch, onMounted, toRefs, onActivated, computed,provide,ref } from 'vue'
 
 import useAppConfig from '@core/app-config/useAppConfig'
 
@@ -26,7 +34,7 @@ import store from '@/store'
 import { Notification } from 'element-ui'
 
 import { useRoute } from 'vue2-helpers/vue-router';
-
+import useAuth from '@core/utils/useAuth'
 
 export default {
 
@@ -37,6 +45,12 @@ export default {
     LayoutTravel: () => import('@/layouts/travel/LayoutTravel.vue'),
     LayoutNegocio: () => import('@/layouts/negocio/LayoutNegocio.vue'),
     ScrollToTop,
+    AgendaFixed:() => import('components/AgendaFixed.vue'),
+    MiAgenda:() => import('components/MiAgenda.vue'),
+    FormAgenda:() => import('components/FormAgenda.vue'),
+    SidebarAboutProfile:() => import('components/SidebarAboutProfile.vue'),
+    SidebarRetiro:() => import('components/SidebarRetiro.vue'),
+    FormUser:() => import('components/FormUser.vue')
   },
 
   beforeCreate() {
@@ -69,6 +83,29 @@ export default {
     const route = useRoute();
     const contentLayoutType = computed(() => store.state.appConfig.layout.type)
     const usuario = computed(() => store.state.usuario.usuario);
+    const showMiAgenda = ref(false)
+    const showAgenda  =ref(false)
+    const showAboutProfile  = ref(false)
+    const showSidebarRetiro= ref(false)
+    const showFormUser = ref(false)
+    const showEditActive = ref(false)
+    const tipoAgenda = ref(1)
+    const sobre = ref('')
+    const userAbout = ref({})
+    const tipoFormUser = ref(1) // 1 Lider 2 Promotor
+    const liderId = ref(null)
+    
+    provide('showMiAgenda', showMiAgenda)
+    provide('showAgenda', showAgenda)
+    provide('tipoAgenda', tipoAgenda)
+    provide('sobre', sobre)
+    provide('showAboutProfile', showAboutProfile)
+    provide('userAbout', userAbout)
+    provide('showSidebarRetiro', showSidebarRetiro)
+    provide('showFormUser',showFormUser);
+    provide('tipoFormUser', tipoFormUser);
+    provide('liderId',liderId);
+    provide('showEditActive', showEditActive)
 
     const layout = computed(() => {
 
@@ -79,6 +116,11 @@ export default {
       return `layout-${contentLayoutType.value}`
 
     })
+
+
+    const {
+      is_loggin
+    } = useAuth();
 
     const { skin, skinClasses } = useAppConfig()
     const { enableScrollToTop } = $themeConfig.layout
@@ -128,7 +170,19 @@ export default {
       enableScrollToTop,
       layout,
       contentLayoutType,
-      route
+      route,
+      is_loggin,
+      showMiAgenda,
+      tipoAgenda,
+      showAgenda,
+      sobre,
+      showAboutProfile,
+      userAbout,
+      showSidebarRetiro,
+      showFormUser,
+      tipoFormUser,
+      liderId,
+      showEditActive
     }
   },
 

@@ -80,7 +80,7 @@ import {
   BCol
 } from 'bootstrap-vue';
 import DirectionsRenderer from './DirectionsRenderer.js';
-import { gmapApi } from 'vue2-google-maps';
+import { helpers, getGoogleMapsAPI } from 'gmap-vue';
 import {computed,ref,toRefs,watch,onMounted} from 'vue';
 import useMap from '@core/utils/useMap';
 import store from "@/store"
@@ -124,7 +124,7 @@ export default {
     const {showDirections,destination,origin} = toRefs(props);
     const { usuario } = toRefs(store.state.usuario)
     const show = ref(false)
-    const goog = computed(() => gmapApi());
+    const goog = computed(() => getGoogleMapsAPI());
     const origen = ref({
       lat:0,
       lng:0
@@ -209,7 +209,7 @@ export default {
     const getDirections = () => {
       
       setTimeout(() => {
-           if (goog.value) {
+          if (goog.value) {
           const directionsService = new goog.value.maps.DirectionsService();
           const placeOrigin = new goog.value.maps.LatLng(origen.value.lat, origen.value.lng);
           const placeDestination = new goog.value.maps.LatLng(destination.value.lat, destination.value.lng);
@@ -384,7 +384,7 @@ export default {
     overflow-y: auto;
   }
 
-  .show-directions >>> .tab-content{
+   .show-directions :deep(.tab-content){
     margin-top:.1rem !important;
   }
 

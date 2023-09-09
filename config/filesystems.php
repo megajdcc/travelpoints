@@ -49,6 +49,14 @@ return [
             'visibility' => 'public',
         ],
 
+        'img-portada' => [
+            'driver' => 'local',
+            'root' => storage_path('app/public/img-portada'),
+            'url' => env('APP_URL') . '/storage/img-portada',
+            'visibility' => 'public',
+        ],
+
+
         'negocio-categoria' => [
             'driver' => 'local',
             'root' => storage_path('app/public/negocios/categorias'),
@@ -146,6 +154,21 @@ return [
             'url' => env('APP_URL') . '/storage/comprobantes/retiros',
             'visibility' => 'public',
         ],
+
+        'archivos_reunion' => [
+            'driver' => 'local',
+            'root' => storage_path('app/public/reunions/archivos'),
+            'url' => env('APP_URL') . '/storage/reunions/archivos',
+            'visibility' => 'public',
+        ],
+
+        'reportes' => [
+            'driver' => 'local',
+            'root' => storage_path('app/public/reportes'),
+            'url' => env('APP_URL') . '/storage/reportes',
+            'visibility' => 'public',
+        ],
+
 
 
 

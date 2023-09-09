@@ -6,24 +6,26 @@
 
             <b-row class="w-100">
                <b-col>
-                  <b-tabs v-if="form" pills>
+                  <!-- <b-tabs v-if="form" pills>
 
-                     <!-- Tab: Cuenta -->
                      <b-tab active>
 
                         <template #title>
                            <feather-icon icon="UserIcon" size="16" class="mr-0 mr-sm-50" />
-                           <span class="d-none d-sm-inline">{{ $t('Cuenta') }}</span>
-                        </template>
-
+                           
+                        </template> -->
+                        <el-divider content-position="left">
+                              <span class="d-none d-sm-inline">{{ $t('Cuenta') }}</span>
+                        </el-divider>
+                     
                         <!-- Avatar -->
                         <!-- media -->
                         <b-media no-body v-if="form.id">
+
                            <b-media-aside>
                               <b-link>
                                  <b-img ref="previewEl" rounded :src="form.avatar" height="80" />
                               </b-link>
-                              <!--/ avatar -->
                            </b-media-aside>
 
                            <b-media-body class="mt-75 ml-75">
@@ -34,7 +36,6 @@
                                  </b-col>
                               </b-row>
                               <b-row>
-                                 <!-- upload button -->
                                  <b-button v-ripple.400="'rgba(255, 255, 255, 0.15)'" variant="primary" size="sm"
                                     class="mb-75 mr-75" @click="$refs.refInputEl.$el.click()">
                                     {{ $t('Actualizar') }}
@@ -42,8 +43,6 @@
 
                                  <b-form-file ref="refInputEl" v-model="profileFile" accept=".jpg, .png, .gif, .jpeg"
                                     :hidden="true" plain @input="cargarImagen" />
-                                 <!--/ upload button -->
-                                 <!--/ reset -->
                                  <b-card-text>{{ $t('Solo se permiten imagen del tipo JPG, GIF o PNG. Max tamaño de 800kB') }}
                                  </b-card-text>
                               </b-row>
@@ -59,7 +58,11 @@
                               <!-- username -->
                                <b-col cols="12" md="4">
                                 
-                                    <b-form-group label="Username" label-for="username">
+                                    <b-form-group label-for="username">
+                                        <template #label>
+                                          Username: <span class="text-danger">*</span>
+                                        </template>
+
                                        <validation-provider #default="{errors,valid}" name="username" rules="required">
                                           <b-form-input id="username" v-model="form.username" autofocus
                                              :state="errors.length ? false : null" trim placeholder="" />
@@ -77,7 +80,11 @@
                               <!-- Field: nombre -->
                               <b-col cols="12" md="4">
                                 
-                                 <b-form-group label="Nombre" label-for="nombre">
+                                 <b-form-group label-for="nombre">
+                                    <template #label>
+                                       Nombre: <span class="text-danger">*</span>
+                                    </template>
+
                                     <validation-provider #default="{errors,valid}" name="nombre" rules="required">
                                        <b-form-input id="nombre" v-model="form.nombre" autofocus
                                        trim placeholder=""  :state="valid" />
@@ -95,7 +102,11 @@
                               <b-col cols="12" md="4">
                                  <!-- Apellido -->
                                 
-                                    <b-form-group label="Apellido" label-for="apellido">
+                                    <b-form-group  label-for="apellido">
+                                        <template #label>
+                                          Apellido: <span class="text-danger">*</span>
+                                        </template>
+
                                        <validation-provider #default="{ errors, valid }" name="apellido" rules="required">
                                           <b-form-input id="apellido" v-model="form.apellido" autofocus trim placeholder="Crespo" :state="valid" />
                                           <b-form-invalid-feedback :state="valid">
@@ -112,6 +123,10 @@
                                  <!-- Email -->
                                 
                                     <b-form-group label="Email" label-for="email">
+                                        <template #label>
+                                          Email: <span class="text-danger">*</span>
+                                        </template>
+
                                         <validation-provider #default="{ errors,valid }" name="email" rules="required|email">
                                           <b-form-input id="email" v-model="form.email"
                                              :state="valid" trim />
@@ -131,35 +146,65 @@
                                  <!-- User Role -->
                                
                                     
-                                    <b-form-group label="Rol de usuario" label-for="user-role">
+                              <b-form-group label-for="user-role" v-if="!isPromotor">
 
-                                         <validation-provider #default="{ errors,valid }" name="rol_id" rules="required">
-                                       
-                                          <v-select v-model="form.rol_id"
-                                             :dir="$store.state.appConfig.isRTL ? 'rtl' : 'ltr'" :options="getRols"
-                                             :reduce="val => val.value" :clearable="false" input-id="user-role" :selectable="verificarRol"  />
+                                    <template #label>
+                                       Rol de usuario: <span class="text-danger">*</span>
+                                    </template>
 
-                                             <b-form-invalid-feedback :state="valid">
-                                                {{ errors[0] }}
-                                             </b-form-invalid-feedback>
-                                          </validation-provider>
 
-                                       </b-form-group>
+                                    <validation-provider #default="{ errors,valid }" name="rol_id" rules="required">
+                                 
+                                    <v-select v-model="form.rol_id" :options="getRols.filter(val => !['Lider','Coordinador','Promotor'].includes(val.label))"
+                                       :reduce="val => val.value" :clearable="false" input-id="user-role" :selectable="verificarRol" 
+                                       :class="{'border-danger': !valid }"   />
+
+                                       <b-form-invalid-feedback :state="valid">
+                                          {{ errors[0] }}
+                                       </b-form-invalid-feedback>
+                                    </validation-provider>
+
+                              </b-form-group>
                                 
+                              </b-col>
+ 
+                              <b-col md="4">
+                                 <b-form-group  label-for="user-gender">
+                                       <template #label>
+                                          Género: <span class="text-danger">*</span>
+                                       </template>
+
+                                       <validation-provider #default="{ errors, valid }" name="genero" rules="required">
+                                 
+                                          <b-form-radio-group v-model="form.genero" :options="optionsGenders" :state="valid" >
+                                          </b-form-radio-group>
+
+                                          <b-form-invalid-feedback :state="valid">
+                                             {{ errors[0] }}
+                                          </b-form-invalid-feedback>
+                                       </validation-provider>
+
+                                    </b-form-group>
+
                               </b-col>
 
                            </b-row>
                         </b-form>
 
-                     </b-tab>
+                     <!-- </b-tab> -->
 
                      <!-- Tab: Información -->
-                     <b-tab>
-                        <template #title>
+                     <!-- <b-tab> -->
+                        <!-- <template #title>
                            <feather-icon icon="InfoIcon" size="16" class="mr-0 mr-sm-50" />
                            <span class="d-none d-sm-inline">Información</span>
-                        </template>
+                        </template> -->
 
+                        <el-divider content-position="left">
+                               <span class="d-none d-sm-inline">Información</span>
+                        </el-divider>
+
+                       
 
                         <!-- Header: Personal Info -->
                         <div class="d-flex">
@@ -174,17 +219,34 @@
 
                            <!-- Field: Fecha Nacimiento -->
                            <b-col cols="12" md="6" lg="4">
-                              <b-form-group label="Fecha Nacimiento" label-for="birth-date">
-                                 <flat-pickr v-model="form.fecha_nacimiento" class="form-control"
-                                    :config="{ dateFormat: 'Y-m-d'}" placeholder="YYYY-MM-DD" />
+                              <b-form-group  label-for="birth-date">
+                                 <template #label>
+                                    Fecha Nacimiento: <span class="text-danger">*</span>
+                                 </template>
+
+                                 <validation-provider name="fecha_nacimiento" rules="required" #default="{errors,valid}">
+                                     <flat-pickr v-model="form.fecha_nacimiento" class="form-control"
+                                       :config="{ dateFormat: 'Y-m-d' }" placeholder="YYYY-MM-DD" :class="{'is-valid' : valid, 'is-invalid' : !valid}" />
+                                       <b-form-invalid-feedback :state="valid">
+                                          {{ errors[0] }}
+                                       </b-form-invalid-feedback>
+
+                                 </validation-provider>
+                                
                               </b-form-group>
                            </b-col>
 
 
                            <!-- Field: Website -->
                            <b-col cols="12" md="6" lg="4">
-                              <b-form-group label="Sitio web" label-for="website">
-                                 <b-form-input id="website" v-model="form.website" />
+                              <b-form-group label="Código Postal" label-for="codigo_postal">
+                                 <validation-provider name="codigo_postal" #default="{errors,valid}">
+                                    <b-form-input id="codigo_postal" v-model="form.codigo_postal" :state="valid" />
+                                    <b-form-invalid-feedback :state="valid">
+                                       {{ errors[0] }}
+                                    </b-form-invalid-feedback>
+                                    
+                                 </validation-provider>
                               </b-form-group>
                            </b-col>
                         
@@ -200,14 +262,84 @@
                            </h4>
                         </div>
 
+                        <b-row class="mt-1">
+                           <b-col md="4">
+                              <b-form-group >
+                                 <template #label>
+                                    Pais: <span class="text-danger">*</span>
+                                 </template>
+                                 <validation-provider name="pais_id" rules="required" #default="{errors,valid}">
+                                    <v-select v-model="pais_id" 
+                                    :options="paises" 
+                                    :reduce="option => option.id" 
+                                    label="pais"
+                                    @change="cargarEstados"
+                                    :class="{ 'border-danger': !valid }" />
+                                    <b-form-invalid-feedback :state="valid">
+                                          {{ errors[0] }}
+                                    </b-form-invalid-feedback>
+
+                                 </validation-provider>
+                              </b-form-group>
+                           </b-col>
+                           <b-col md="4">
+                              <b-form-group >
+                                 <template #label>
+                                    Estado: <span class="text-danger">*</span>
+                                 </template>
+                                 <validation-provider name="estado_id" rules="required" #default="{ errors, valid }">
+                                    <v-select v-model="estado_id" 
+                                    :options="estados" 
+                                    :reduce="option => option.id" 
+                                    label="estado"
+                                    @change="cargarCiudades"
+                                     :class="{ 'border-danger': !valid }"/>
+                                    <b-form-invalid-feedback :state="valid">
+                                          {{ errors[0] }}
+                                    </b-form-invalid-feedback>
+
+                                 </validation-provider>
+                              </b-form-group>
+                           </b-col>
+                           <b-col md="4">
+                              <b-form-group >
+                                    <template #label>
+                                       Ciudad: <span class="text-danger">*</span>
+                                    </template>
+                                    <validation-provider name="ciudad_id" rules="required" #default="{ errors, valid }">
+                                       <v-select v-model="form.ciudad_id" 
+                                       :options="ciudades" 
+                                       :reduce="option => option.id" 
+                                       label="ciudad"
+                                        :class="{ 'border-danger': !valid }"/>
+                                       <b-form-invalid-feedback :state="valid">
+                                             {{ errors[0] }}
+                                       </b-form-invalid-feedback>
+
+                                    </validation-provider>
+                                 </b-form-group>
+                           </b-col>
+                        </b-row>
                         <!-- Form: Personal Info Form -->
                         <b-row class="mt-1">
 
                            <!-- Field: Address Line 1 -->
                            <b-col cols="12">
                               <b-form-group label="Dirección" label-for="direccion">
-                                 <b-form-textarea id="direccion" v-model="form.direccion"
-                                    placeholder="Ingrese la dirección" rows="2" max-rows="6"></b-form-textarea>
+
+                                 <template #label>
+                                    Dirección: <span class="text-danger">*</span>
+                                 </template>
+                                 <validation-provider name="direccion" rules="required" #default="{valid,errors}">
+
+                                    <b-form-textarea id="direccion" v-model="form.direccion"
+                                    placeholder="Ingrese la dirección" rows="2" max-rows="6" :state="valid" />
+
+                                    <b-form-invalid-feedback :state="valid">
+                                       {{ errors[0] }}
+                                    </b-form-invalid-feedback>
+                                 </validation-provider>
+                                 
 
                               </b-form-group>
                            </b-col>
@@ -240,16 +372,20 @@
                            </b-row>
                         </template>
                        
-                     </b-tab>
+                     <!-- </b-tab> -->
 
-                     <b-tab>
-                        <template #title>
+                     <!-- <b-tab> -->
+                        <!-- <template #title>
                            <feather-icon icon="PhoneIcon" size="16" class="mr-0 mr-sm-50" />
                            <span class="d-none d-sm-inline">Teléfonos</span>
-                        </template>
+                        </template> -->
 
+                        <el-divider content-position="left">
+                           <span class="d-none d-sm-inline">Teléfonos</span>
+                        </el-divider>
+                        
                         <b-row>
-                           <b-col md="8">
+                           <b-col >
                         
                               <section class="d-flex justify-content-between">
                                  <b-button-group size="sm">
@@ -260,7 +396,7 @@
                                  </b-button-group>
                               </section>
 
-                              <table class="table table-sm table-hover table-bordeless mt-1">
+                              <table class="table table-sm table-hover table-bordeless mt-1 w-100">
                                  <thead>
                                     <th>
                                        Número de Télefono: 
@@ -279,7 +415,7 @@
                                     <tr  v-for="(telefono,i) in form.telefonos" :key="i">
                                        <td>
                                           <validation-provider name="telefono" rules="required" #default="{valid,errors}">
-                                                <b-form-input v-mask="'+#############'" v-model="telefono.telefono" :state="valid" />
+                                                <b-form-input v-mask="'+#############'" v-model="telefono.telefono" :state="valid" placeholder="Incluya el prefijo de pais" />
 
                                                 <b-form-invalid-feedback :state="valid">
                                                    {{ errors[0] }}
@@ -321,13 +457,18 @@
                            <b-col> <span>Para agregar o actualizar un número de teléfono, dar clics en el boton Verde ...</span></b-col>
                         </b-row>
 
-                     </b-tab>
+                     <!-- </b-tab> -->
                      <!-- Tab: Redes -->
-                     <b-tab>
-                        <template #title>
+                     <!-- <b-tab> -->
+                        <!-- <template #title>
                            <feather-icon icon="Share2Icon" size="16" class="mr-0 mr-sm-50" />
                            <span class="d-none d-sm-inline">Redes Sociales</span>
-                        </template>
+                        </template> -->
+
+                        <el-divider content-position="left">
+                            <span class="d-none d-sm-inline">Redes Sociales</span>
+                        </el-divider>
+
                         <b-row>
                            <b-col cols="12" md="6" lg="4">
                               <b-form-group label="Twitter" label-for="twitter">
@@ -365,30 +506,34 @@
                            </b-col>
 
                         </b-row>
-                     </b-tab>
+                     <!-- </b-tab> -->
 
-                     <b-tab :title="$t('Destino')" v-if="isPromotor" @click="cargarDestinos">
+                     <!-- <b-tab :title="$t('Destino')" v-if="isPromotor" @click="cargarDestinos">
                         <template #title>
                               <font-awesome-icon icon="fas fa-map"/>
                               <span class="d-none d-sm-inline">{{ $t('Destino') }}</span>
+                        </template> -->
+                        <template v-if="isRolPromotor">
+                             <span class="d-none d-sm-inline">{{ $t('Destino') }}</span>
+
+                           <b-row>
+                              <b-col cols="12" md="6">
+                                 <b-form-group label="Destino" description="Seleccione un destino">
+                                    <validation-provider name="destino_id" rules="required" #default="{ valid, errors }">
+                                       <v-select v-model="form.destino_id" :options="destinos" label="nombre" :reduce="option => option.id"></v-select>
+
+                                       <b-form-invalid-feedback :state="valid">
+                                          {{ errors[0] }}
+                                       </b-form-invalid-feedback>
+                                    </validation-provider>
+                                 </b-form-group>
+                              </b-col>
+                           </b-row>
                         </template>
+                      
+                     <!-- </b-tab> -->
 
-                        <b-row>
-                           <b-col cols="12" md="6">
-                              <b-form-group label="Destino" description="Seleccione un destino">
-                                 <validation-provider name="destino_id" rules="required" #default="{valid,errors}">
-                                    <v-select v-model="form.destino_id" :options="destinos" label="nombre" :reduce="option => option.id"></v-select>
-
-                                    <b-form-invalid-feedback :state="valid">
-                                       {{  errors[0]  }}
-                                    </b-form-invalid-feedback>
-                                 </validation-provider>
-                              </b-form-group>
-                           </b-col>
-                        </b-row>
-                     </b-tab>
-
-                  </b-tabs>
+                  <!-- </b-tabs> -->
                </b-col>
             </b-row>
 
@@ -475,6 +620,7 @@ import { useInputImageRenderer } from '@core/comp-functions/forms/form-utils'
 import useUsersList from './useUsersList'
 
 import {regresar} from '@core/utils/utils'
+import useDireccion from '@core/utils/useDireccion';
 
 export default {
    
@@ -522,40 +668,74 @@ export default {
 
    setup(props, { emit }) {
       
-      const {usuario} = toRefs(store.state.usuario)
+      const {usuario,user:form} = toRefs(store.state.usuario)
       const {divisas} = toRefs(store.state.divisa)
-      const { destinos } = toRefs(store.state.destino)
-
+      const {destinos} = toRefs(store.state.destino)
+      const resetuserData = () => store.commit('usuario/clearUsuario')
       const { resolveUserRoleVariant } = useUsersList()
       const getRols = computed(() => store.getters['rol/getRols'])
       const { refFormObserver, getValidationState, resetForm } = formValidation(resetuserData)
       const profileFile = ref(null)
-      const form = computed(() => store.state.usuario.user)
+      // const form = computed(() => store.state.usuario.user)
+
+      const  isPromotor =  computed(() => {
+         if (usuario.value.rol) {
+            return usuario.value.rol.nombre == 'Promotor' ? true : false;
+         }
+         return false;
+      })
+
+      const { 
+         paises,
+         ciudades,
+         estados,
+         cargarPaises,
+         cargarEstados,
+         cargarCiudades,
+         pais_id,
+         estado_id,
+      } = useDireccion();
 
       const cargarform = () => {
 
-         if(!getRols.value.length){
-            store.dispatch('rol/cargarRoles')
-         }
+         store.dispatch('rol/cargarRoles').then((roles) => {
+            if (isPromotor.value) {
+               let rol_viajero = roles.find(val => val.nombre == 'Viajero');
+               if (rol_viajero != undefined) {
+                  form.value.rol_id = rol_viajero.id
+               }
+            }
+         })
 
          if(!divisas.value.length){
             store.dispatch('divisa/getDivisas')
+         }  
+
+         if(!destinos.value.length){
+            store.dispatch('destino/getDestinos')
          }
 
-      }
+         cargarPaises();
 
-      onMounted(() => {
-         cargarform()
-      })
+
+         if(form.value.ciudad_id){
+            pais_id.value = form.value.ciudad.estado.pais_id
+            estado_id.value = form.value.ciudad.estado_id
+         }
+
+      }  
+
+      cargarform()
 
 
       watch([form], () => {
          cargarform();
       })
 
-      const resetuserData = () => store.commit('usuario/clearUsuario')
+     
 
       const guardar =  () => {
+        
          emit('save',form.value,refFormObserver.value)
       }
 
@@ -644,6 +824,10 @@ export default {
          }
 
       }
+      const optionsGenders = ref([
+         {text:'Hombre',value:1},
+         { text: 'Mujer', value: 2 },
+      ])
 
       return {
          refFormObserver,
@@ -664,6 +848,7 @@ export default {
          alphaNum,
          destinos,
          email,
+         usuario,
          profileFile,
          loading:computed(() => store.state.loading),
          getRols,
@@ -676,15 +861,31 @@ export default {
          divisas,
          changeDivisa,
          cargarDestinos,
+         paises,
+         ciudades,
+         estados,
+         cargarEstados,
+         cargarCiudades,
+         pais_id,
+         estado_id,
+         optionsGenders,
 
-         isPromotor:computed(() => {
+         isPromotor,
+
+         isRolPromotor:computed(() => {
             
             if(form.value.rol_id){
-                return getRols.value.find(val => val.id == form.value.rol_id).label == 'Promotor'
+
+               let rol = getRols.value.find(val => val.id == form.value.rol_id)
+               if(rol != undefined ){
+                  return rol.label == 'Promotor'
+               }
+               return false
             }else{
                return false
             }
          }),
+
          form,
          getNombre:computed(() => {
             if(form.value.nombre){
@@ -694,7 +895,6 @@ export default {
             }
          }),
          verificarRol:(option) => {
-
             if(option.label == 'Viajero' && usuario.value.rol.nombre == 'Promotor'){
                return true;
             }else if(usuario.value.rol.nombre != 'Promotor'){
@@ -711,7 +911,5 @@ export default {
 </script>
 
 <style lang="scss" >
-@import '~@core/scss/vue/libs/vue-flatpicker.scss';
+@import '@core/scss/vue/libs/vue-flatpicker.scss';
 </style>
-
-

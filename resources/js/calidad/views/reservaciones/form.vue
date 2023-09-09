@@ -27,7 +27,7 @@
                     <negocio-select v-model="formulario.negocio_id" :negocioId="formulario.negocio_id" :destinoId="destino_id" @negocioSeleccionado="negocioSeleccionado" />
                   </tab-content>
 
-                  <tab-content :title="$t('Usuario')" icon="fas fa-user-check" >
+                  <tab-content :title="$t('Usuario')" icon="fas fa-user-check"  lazy>
                       <user-select v-model="formulario.usuario_id" :usuarioId="formulario.usuario_id" @usuarioSeleccionado="wizarRef.nextTab()" />
                   </tab-content>
 
@@ -45,8 +45,7 @@
 
                               <validation-provider name="fecha" rules="required" #default="{ valid, errors }">
                                 <flat-pickr v-model="formulario.fecha" class="form-control" 
-                                :config="{ dateFormat: 'Y-m-d', minDate: 'today', defaultDate: 'today', 
-                                onChange: (_, dateStr) => consultarHoras(dateStr) }"
+                                :config="optionCalendar"
                                       placeholder="Today "  />
 
                                 <b-form-invalid-feedback :state="valid">
@@ -174,7 +173,7 @@ import {
 import flatPickr from 'vue-flatpickr-component'
 
 import {required,min} from '@validations'
-
+import { Spanish } from 'flatpickr/dist/l10n/es.js';
 import {
   BForm,
   BFormGroup,
@@ -363,6 +362,13 @@ export default {
       wizarRef.value.nextTab()
     }
 
+    const optionCalendar = {
+      dateFormat: 'Y-m-d', 
+      minDate: 'today', 
+      defaultDate: 'today',
+      locale: Spanish,
+      onChange: (_, dateStr) => consultarHoras(dateStr)
+    }
     return {
         destinoSeleccionado,
         loading:computed(() => store.state.loading),
@@ -378,6 +384,7 @@ export default {
         consultarHoras,
         horas,
         lugares,
+        optionCalendar,
         negocioSeleccionado,
         getDestinoName: computed(() => {
 
@@ -424,7 +431,7 @@ export default {
 </script>
 
 <style lang="scss">
-@import '~@core/scss/vue/libs/vue-flatpicker.scss';
+@import '@core/scss/vue/libs/vue-flatpicker.scss';
 
 .dark-layout .stepTitle{
    color: #b5adad !important;

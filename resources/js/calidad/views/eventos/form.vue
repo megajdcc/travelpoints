@@ -386,9 +386,11 @@ export default {
 
 
       const cambiarDias = (tipo) => {
+         
          if(tipo == 0){
             formulario.value.recurrencia.dia_semana = [0,1,2,3,4,5,6];
          }
+
          
       } 
 
@@ -413,7 +415,7 @@ export default {
 </script>
 
 <style lang="scss" >
-@import '~@core/scss/vue/libs/vue-flatpicker.scss';
+@import '@core/scss/vue/libs/vue-flatpicker.scss';
 
 .dark-layout .stepTitle{
    color: #b5adad !important;

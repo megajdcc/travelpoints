@@ -22,8 +22,10 @@ use Illuminate\Support\Str;
 use App\Models\Telefono;
 
 use App\Models\Like;
+use App\Models\Movimiento;
 use App\Models\Negocio\Cargo;
 use App\Models\Pais;
+use App\Models\Panel;
 use App\Models\Producto;
 use App\Models\Tarjeta;
 use App\Models\Usuario\Permiso;
@@ -33,9 +35,41 @@ use App\Notifications\nuevoAmigo;
 use App\Notifications\validarVentaTarjeta;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 use Illuminate\Support\Collection;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class UserController extends Controller
 {
+    
+
+    public function fetchDataViajeros(Request $request){
+
+        $filtro = $request->all();
+        $usuario = $request->user();
+
+        $searchs = collect(['username','nombre','apellido','email','bio','direccion','fecha_nacimiento']);
+
+        $pagination = User::where(fn(Builder $q) => $searchs->each(fn($s) => $q->orWhere($s,'LIKE',"%{$filtro['q']}%",'OR')))
+        ->when(\in_array($usuario->rol->nombre,['Coordinador']), function(Builder $q) use ($usuario){
+            $q->whereHas('referidor',function($query) use($usuario){
+                $query->whereHas('lider', fn($que) => $que->where('coordinador_id' , $usuario->id));
+            });
+        })
+         ->when(\in_array($usuario->rol->nombre,['Lider']), function(Builder $q) use ($usuario){
+            $q->whereHas('referidor',function($query) use($usuario){
+                $query->where('lider_id',$usuario->id);
+            });
+        })
+        ->orderBy($filtro['sortBy'] ?: 'id',$filtro['isSortDirDesc'] ? 'desc' : 'asc')
+        ->paginate($filtro['perPage'] ?: 1000);
+
+        $viajeros = collect($pagination->items())->each(fn($viajero) => $viajero->cargar()); // cargamos toda la data del viajero
+
+
+        return response()->json([
+            'total' => $pagination->total(),
+            'viajeros' => $viajeros
+        ]);
+    }
 
     public function getUsuario(User $usuario)
     {
@@ -62,8 +96,9 @@ class UserController extends Controller
             'codigo_postal'    => 'nullable',
             'ciudad_id'        => 'nullable',
             'codigo_referidor' => 'nullable',
-            'bio' => 'nullable',
-            'destino_id' => 'nullable'
+            'bio'              => 'nullable',
+            'destino_id'       => 'nullable',
+            'lider_business'   => 'nullable'
         ], [
             'username.unique' => 'El nombre de usuario ya está siendo usado, inténta con otro',
             'email.unique'    => 'El email ya está siendo usado, el mismo debe ser único',
@@ -71,7 +106,6 @@ class UserController extends Controller
             'email.required'  => 'Este campo es obligatorio',
             'email.email'     => 'El email no es valido por favor verifique',
             'email.unique'    => 'El email debe ser único ya otro usuario lo esta usando.',
-
         ]);
     }
 
@@ -93,10 +127,13 @@ class UserController extends Controller
             $usuario = $this->crearUsuario($datos);
 
             if ($user_register->rol->nombre == 'Promotor') {
+                
                 $user_register->referidos()->attach($usuario->id, [
                     'codigo' => $user_register->codigo_referidor ?: 'no_aplica',
                     'created_at' => now(),
                 ]);
+
+                $user_register->establecerNivel();
             }
 
             $usuario->notify(new WelcomeUsuario($usuario));
@@ -109,6 +146,8 @@ class UserController extends Controller
 
             DB::rollBack();
             $result = false;
+
+            dd($e->getMessage());
         }
 
         return response()->json(['result' => $result, 'usuario' => ($result) ? $usuario : null]);
@@ -164,6 +203,7 @@ class UserController extends Controller
 
                 // Notificar al usuario referidor del nuevo amigo
                 $usuario_referidor->notify(new nuevoAmigo($usuario));
+                $usuario_referidor->establecerNivel();
             }
 
             $usuario->cargar();
@@ -380,8 +420,9 @@ class UserController extends Controller
         $user = User::find($usuario->id);
 
         $user->tokens;
-        $user->habilidades = $user->getHabilidades();
         $user->cargar();
+        $user->habilidades = $user->getHabilidades();
+      
         return response()->json(['result' => $result, 'usuario' => $user]);
     }
 
@@ -407,6 +448,35 @@ class UserController extends Controller
         }
 
         return response()->json(\url($usuario->getAvatar()));
+    }
+
+
+    public function togglePortada(Request $request, User $usuario)
+    {
+
+        $portada = $request->file('portada');
+
+        if ($usuario->portada) {
+            Storage::disk('img-portada')->delete($usuario->portada);
+        }
+
+        try {
+            DB::beginTransaction();
+
+
+            $portadaName = sha1($portada->getClientOriginalName()) . '.' . $portada->getClientOriginalExtension();
+            $result = Storage::disk('img-portada')->put($portadaName, File::get($portada));
+            $usuario->portada = $portadaName;
+            $usuario->save();
+
+            DB::commit();
+            $result = true;
+        } catch (\Exception $e) {
+            DB::rollBack();
+            $result = false;
+        }
+
+        return response()->json(['result' => $result,'portada' => \url($usuario->getPortada())]);
     }
 
     public function actualizarAvatarUsuario(Request $request, User $usuario)
@@ -512,10 +582,6 @@ class UserController extends Controller
             ['email', 'LIKE', "%{$datos['q']}%", 'OR'],
             ['nombre', 'LIKE', "%{$datos['q']}%", 'OR'],
             ['apellido', 'LIKE', "%{$datos['q']}%", 'OR'],
-            ['direccion', 'LIKE', "%{$datos['q']}%", 'OR'],
-            ['fecha_nacimiento', 'LIKE', "%{$datos['q']}%", 'OR'],
-            ['codigo_postal', 'LIKE', "%{$datos['q']}%", 'OR'],
-            ['bio', 'LIKE', "%{$datos['q']}%", 'OR'],
         ])
             ->when(isset($datos['role']), function ($query) use ($datos) {
                 $query->where('rol_id', $datos['role'] ? $datos['role'] : '>', 0);
@@ -523,16 +589,51 @@ class UserController extends Controller
             ->when(!in_array($request->user()->rol->nombre, ['Desarrollador', 'Administrador']), function ($query) {
                 $query->whereHas('rol', fn (Builder $q) => $q->whereNotIn('nombre', ['Desarrollador', 'Administrador']));
             })
-            // ->when(in_array($request->user()->rol->nombre, ['Promotor']), function ($query) use ($usuario) {
-            //     $query->whereHas('referidor', function (Builder $q) use ($usuario) {
-            //         $q->where('usuario_id', $usuario->id);
-            //     });
-            // })
+            ->when(in_array($request->user()->rol->nombre, ['Promotor']), function ($query) use ($usuario) {
+                $query->whereHas('referidor', function (Builder $q) use ($usuario) {
+                    $q->where('usuario_id', $usuario->id);
+                });
+            })
 
             ->orderBy($datos['sortBy'], $datos['sortDesc'] ? 'desc' : 'asc')
-            ->paginate($datos['perPage'] == 0 ? 10000 : $datos['perPage']);
+            ->paginate($datos['perPage'] == 0 ? 10000 : $datos['perPage'],pageName: 'currentPage');
 
-        $usuarios = collect($paginator->items())->each(fn ($user) => $user->cargar());
+        $usuarios = collect($paginator->items())->each(function($user){
+            $user->porcentajePerfil = $user->getFillPercentage();
+            $user->portada = $user->getPortada();
+            // $user->tokens;
+            $user->rol?->permisos;
+            // $user->rol?->academia->load('videos');
+            $user->habilidades = $user->getHabilidades();
+            $user->avatar = $user->getAvatar();
+            $user->ciudad?->estado?->pais;
+            $user->cuenta;
+            $user->cuenta?->divisa;
+            $user->telefonos;
+            $user->likes;
+
+            // $user->solicitudes;
+            // $user->destino;
+            $user->referidor;
+            $user->referidos;
+            $user->permisos;
+            // $user->reservaciones;
+            // $user->reservacionesOperadas;
+            // $user->recomendaciones;
+            // $user->seguidos;
+            // $user->cupones->each(fn ($cupon) => $cupon->cargar());
+            // $user->carritoCompra;
+            $user->datosPago?->cargar();
+            $user->retiros;
+            $user->lider?->cargar();
+            $user->promotores;
+            $user->coordinador;
+            $user->lideres;
+          
+            $user->tarjeta?->lote;
+            
+        });
+
 
         return response()->json([
             'users' => $usuarios,
@@ -793,6 +894,7 @@ class UserController extends Controller
             'result' => $result,
             'carrito' => $request->user()->carritoCompra
         ]);
+        
     }
 
     public function fetchDataCarrito(Request $request)
@@ -805,14 +907,39 @@ class UserController extends Controller
         return response()->json($response);
     }
 
-    public function getStatus(Request $request)
+    public function getStatus(Request $request, User $usuario = null)
     {
-
-        $user = $request->user();
-
+        $user = $usuario ?? $request->user();
         $resultado = $user->getStatusUser();
 
-        return response()->json($resultado);
+        
+        $total_usuarios =  User::when($user->rol->nombre == 'Promotor',function($q) use($user) {
+                $q->whereHas('referidor',fn($query) => $query->where('id',$user->id));
+        })
+        ->when($user->rol->nombre == 'Lider',function($q) use($user){
+            $q->whereHas('referidor', fn($query) => $query->where('lider_id', $user->id)); 
+        })
+        ->where('activo',true)
+        ->get()
+        ->count();
+
+        $total_usuarios_activos = DB::table('users','u')
+                                        ->join('usuario_referencia as ur','u.id','ur.referido_id')
+                                        ->join('ventas as v', 'u.id', 'v.cliente_id')
+                                        ->join('users as promotor', 'ur.usuario_id', 'promotor.id')
+                                        ->when($user->rol->nombre == 'Promotor',fn($q) => $q->where('promotor.id',$user->id))
+                                        ->when($user->rol->nombre == 'Lider',fn($q) => $q->where('promotor.lider_id',$user->id))
+                                        ->where('u.activo',true)
+                                        ->whereBetween('v.created_at',[now()->subDays(89),now()])
+                                        ->selectRaw("count(distinct(u.id)) as usuarios")
+                                        ->pluck('usuarios')
+                                        ->first();
+        return response()->json([
+            'status' => $resultado,
+            'totalViajeros' => $total_usuarios,
+            'totalViajerosActivos' => $total_usuarios_activos
+        ]);
+        
     }
 
 
@@ -838,9 +965,8 @@ class UserController extends Controller
         
     }
 
-    public function cambiarStatus(User $usuario)
+    public function cambiarStatus(Request $request,User $usuario)
     {
-
         try {
             DB::beginTransaction();
             $usuario->activo = !$usuario->activo;
@@ -849,11 +975,14 @@ class UserController extends Controller
             DB::commit();
             $result = true;
 
-            // Quitar saldo y ponerselo al sistema Travel, solo si el usuario es Promotor, Lider o Coordinador;
-            if (in_array($usuario->rol->nombre, ['Promotor', 'Lider', 'Coordinador']) && !$usuario->activo) {
-
-                $usuario->removerSaldo("Consignación de saldo por cuenta desactivada a {$usuario->rol->nombre} - {$usuario->getNombreCompleto()}");
+            if(\in_array($request->user()->rol->nombre,['Desarrollador','Administrador'])){
+                // Quitar saldo y ponerselo al sistema Travel, solo si el usuario es Promotor, Lider o Coordinador;
+                if (in_array($usuario->rol->nombre, ['Promotor', 'Lider', 'Coordinador']) && !$usuario->activo) {
+                    $usuario->removerSaldo("Consignación de saldo por cuenta desactivada a {$usuario->rol->nombre} - {$usuario->getNombreCompleto()}");
+                }
             }
+
+           
         } catch (\Throwable $th) {
             DB::rollBack();
             $result = false;
@@ -868,38 +997,82 @@ class UserController extends Controller
 
     public function fetchDataPromotores(Request $request)
     {
-
         $filtro = $request->all();
         $rol_user = $request->user()->rol->nombre;
 
-        $pagination = User::where([
-            ['username', 'LIKE', "%{$filtro['q']}%", 'OR'],
-            ['email', 'LIKE', "%{$filtro['q']}%", 'OR'],
-            ['nombre', 'LIKE', "%{$filtro['q']}%", 'OR'],
-            ['apellido', 'LIKE', "%{$filtro['q']}%", 'OR'],
-            ['direccion', 'LIKE', "%{$filtro['q']}%", 'OR'],
-            ['fecha_nacimiento', 'LIKE', "%{$filtro['q']}%", 'OR'],
-            ['codigo_postal', 'LIKE', "%{$filtro['q']}%", 'OR'],
-            ['bio', 'LIKE', "%{$filtro['q']}%", 'OR'],
-        ])
-            ->whereHas('rol', function (Builder $q) {
-                $q->where('nombre', 'Promotor');
-            })
+        $filas = collect(['username', 'email', 'nombre', 'apellido','direccion', 'fecha_nacimiento', 'codigo_postal', 'bio']);
 
-            ->when((isset($filtro['lider']) && !is_null($filtro['lider']) && in_array($rol_user, ['Lider', 'Coordinador'])), function ($q) use ($filtro, $rol_user, $request) {
-                $q->where('lider_id', $filtro['lider']);
+        $pagination = User::select([
+            'id',
+            'username',
+            'imagen',
+            DB::raw('CONCAT(nombre, " ", apellido) AS nombre'),
+            DB::raw('COALESCE(JSON_UNQUOTE(JSON_EXTRACT(nivel, "$.nivel")), 0) AS nivel'),
+            DB::raw('COALESCE(JSON_UNQUOTE(JSON_EXTRACT(nivel, "$.activaciones")), 0) AS activaciones'),
+            'email'
+        ])
+        ->addSelect([
+                'users.*',
+                'comision' => function ($query) {
+                $query->select(DB::raw('SUM(monto) as total_comision'))
+                    ->from('movimientos')
+                    ->join('estado_cuentas', 'movimientos.estado_cuenta_id', '=', 'estado_cuentas.id')
+                    ->where('estado_cuentas.model_type', 'App\\Models\\User')
+                    ->whereColumn('estado_cuentas.model_id', 'users.id')
+                    ->where('movimientos.tipo_movimiento', 1)
+                    ->where('movimientos.concepto', '!=', 'Conversión de divisa');
+            }
+        ])
+        ->addSelect([
+            'comision_mes' => function ($query) {
+                $query->select(DB::raw('SUM(monto) as total_comision'))
+                    ->from('movimientos as m')
+                    ->join('estado_cuentas as ec', 'm.estado_cuenta_id', '=', 'ec.id')
+                    ->where('ec.model_type', 'App\\Models\\User')
+                    ->whereColumn('ec.model_id', 'users.id')
+                    ->where('m.tipo_movimiento', 1)
+                    ->where('m.concepto', '!=', 'Conversión de divisa')
+                    ->whereBetween('m.created_at',[now()->subMonth(), now()]);
+            }
+        ])
+
+        ->where(fn($q) => $filas->each(fn($fila) => $q->orWhere($fila,'LIKE',"%{$filtro['q']}%")))
+        ->whereHas('rol',fn($q) => $q->where('nombre','Promotor'))
+
+         ->when((isset($filtro['lider']) && !is_null($filtro['lider']) && in_array($rol_user, ['Lider', 'Coordinador'])), function ($q) use ($filtro, $rol_user, $request) {
+                $q->where('users.lider_id', $filtro['lider']);
+         })
+        ->when((isset($filtro['lider']) && !is_null($filtro['lider']) && in_array($rol_user, ['Desarrollador', 'Administrador'])), function ($q) use ($filtro, $rol_user, $request) {
+                $usuario = User::find($filtro['lider']);
+
+                if($usuario->rol->nombre == 'Lider'){
+                    $q->where('users.lider_id',$filtro['lider']);
+                }else if($usuario->rol->nombre == 'Coordinador'){
+                    $q->whereHas('lider', fn($query) => $query->where('users.coordinador_id',$filtro['lider']));
+                }
+
             })
-            ->orderBy($filtro['sortBy'] ?: 'id', $filtro['isSortDirDesc'] ? 'desc' : 'asc')
+            ->when(!isset($filtro['lider']) && is_null($filtro['lider']), function(Builder $q) use($filtro,$rol_user,$request) {
+
+                if($rol_user == 'Coordinador'){
+                    $q->whereHas('lider', fn($query) => $query->where('coordinador_id',$request->user()->id));
+                }
+            })
+            ->with(['rol.permisos'])
+            ->orderBy($filtro['sortBy'] ?: 'comision',$filtro['isSortDirDesc'] ? 'desc' : 'asc')
             ->paginate($filtro['perPage'] ?: 1000);
 
-
-        $promotores = collect($pagination->items())->each(fn ($val) => $val->cargar());
+        $promotores = collect($pagination->items());
 
         foreach ($promotores as $promotor) {
-
-            // dd($promotor);
+            
+            $promotor->cuenta?->divisa;
             $status_user = $promotor->getStatusUser();
-
+            $promotor->portada = $promotor->getPortada();
+            $promotor->avatar = $promotor->getAvatar();
+            $promotor->destino;
+            $promotor->lider?->cargar();
+    
             if ($status_user['referidos']['ultimo_mes'] > 0) {
                 $promotor->status = 1;
             } else if ($status_user['referidos']['ultimo_trimestre'] > 0) {
@@ -921,36 +1094,37 @@ class UserController extends Controller
         $filtro = $request->all();
         $rol_user = $request->user()->rol->nombre;
 
-        $pagination = User::where([
-            ['username', 'LIKE', "%{$filtro['q']}%", 'OR'],
-            ['email', 'LIKE', "%{$filtro['q']}%", 'OR'],
-            ['nombre', 'LIKE', "%{$filtro['q']}%", 'OR'],
-            ['apellido', 'LIKE', "%{$filtro['q']}%", 'OR'],
-            ['direccion', 'LIKE', "%{$filtro['q']}%", 'OR'],
-            ['fecha_nacimiento', 'LIKE', "%{$filtro['q']}%", 'OR'],
-            ['codigo_postal', 'LIKE', "%{$filtro['q']}%", 'OR'],
-            ['bio', 'LIKE', "%{$filtro['q']}%", 'OR'],
-        ])
-            ->whereHas('rol', function (Builder $q) {
-                $q->where('nombre', 'Lider');
-            })
+        if($request->has('coordinador') && !empty($request->get('coordinador'))){
+            $user = User::find($request->get('coordinador'));
+            $rol_user = $user->rol->nombre;
+        }
 
+        $searchs = collect(['username','email','nombre','apellido','direccion','fecha_nacimiento','codigo_postal','bio']);
+
+        $pagination = User::addSelect([
+                'users.*',
+                'comision' => function ($query) {
+                $query->select(DB::raw('SUM(monto) as total_comision'))
+                    ->from('movimientos')
+                    ->join('estado_cuentas', 'movimientos.estado_cuenta_id', '=', 'estado_cuentas.id')
+                    ->where('estado_cuentas.model_type', 'App\\Models\\User')
+                    ->whereColumn('estado_cuentas.model_id', 'users.id')
+                    ->where('movimientos.tipo_movimiento', 1)
+                    ->where('movimientos.concepto', '!=', 'Conversión de divisa');
+            }
+        ])->where(fn($q) => $searchs->each(fn($v) => $q->orWhere($v,"LIKE","%{$filtro['q']}%")))
+            ->whereHas('rol', fn($q) =>  $q->where('nombre', 'Lider'))
             ->when(isset($filtro['coordinador']) && !is_null($filtro['coordinador']) && $rol_user == 'Coordinador', function ($q) use ($filtro) {
                 $q->where('coordinador_id', $filtro['coordinador']);
             })
-            ->orderBy($filtro['sortBy'] ?: 'id', $filtro['isSortDirDesc'] ? 'desc' : 'asc')
+            ->orderBy('comision', $filtro['isSortDirDesc'] ? 'desc' : 'asc')
             ->paginate($filtro['perPage'] ?: 1000);
 
 
         $lideres = collect($pagination->items())->each(fn ($val) => $val->cargar());
 
         foreach ($lideres as $lider) {
-
-            $lider->coordinador?->cargar();
-
-            // dd($promotor);
             $status_user = $lider->getStatusUser();
-
             if ($status_user['promotores_activos']['ultimo_mes'] > 0) {
                 $lider->status = 1;
             } else if ($status_user['promotores_activos']['ultimo_trimestre'] > 0) {
@@ -963,6 +1137,39 @@ class UserController extends Controller
         return response()->json([
             'total' => $pagination->total(),
             'lideres' => $lideres
+        ]);
+
+    }
+
+    public function fetchDataCoordinadores(Request $request)
+    {
+
+        $filtro = $request->all();
+        $rol_user = $request->user()->rol->nombre;
+
+        $pagination = User::where([
+            ['username', 'LIKE', "%{$filtro['q']}%", 'OR'],
+            ['email', 'LIKE', "%{$filtro['q']}%", 'OR'],
+            ['nombre', 'LIKE', "%{$filtro['q']}%", 'OR'],
+            ['apellido', 'LIKE', "%{$filtro['q']}%", 'OR'],
+            ['direccion', 'LIKE', "%{$filtro['q']}%", 'OR'],
+            ['fecha_nacimiento', 'LIKE', "%{$filtro['q']}%", 'OR'],
+            ['codigo_postal', 'LIKE', "%{$filtro['q']}%", 'OR'],
+            ['bio', 'LIKE', "%{$filtro['q']}%", 'OR'],
+        ])
+            ->whereHas('rol', function (Builder $q) {
+                $q->where('nombre', 'Coordinador');
+            })
+
+            ->orderBy($filtro['sortBy'] ?: 'id', $filtro['isSortDirDesc'] ? 'desc' : 'asc')
+            ->paginate($filtro['perPage'] ?: 1000);
+
+
+        $coordinadores = collect($pagination->items())->each(fn ($val) => $val->cargar());
+
+        return response()->json([
+            'total' => $pagination->total(),
+            'coordinadores' => $coordinadores
         ]);
     }
 
@@ -1026,7 +1233,7 @@ class UserController extends Controller
                 $lider->coordinador
             ]);
 
-            Notification::sendNow($users_notification, new NuevaAsignacionCoordinador($lider));
+            // Notification::sendNow($users_notification, new NuevaAsignacionCoordinador($lider));
 
             DB::commit();
             $result = true;
@@ -1085,39 +1292,71 @@ class UserController extends Controller
 
     public function guardarLider(Request $request)
     {
+        $lider = null;
 
-        $datos  = $request->validate([
-            'username'       => 'required|unique:users,username',
+        if($request->get('id') && !empty($request->get('id'))){
+            $lider = User::find($request->get('id'));
+        }
+
+        $datos  = collect($request->validate([
+            'username'       => ['required', $lider ? Rule::unique('users','username')->ignore($lider) : 'unique:users,username' ] ,
             'nombre'         => 'required',
             'apellido'       => 'required',
-            'email'          => 'required|email|unique:users,email',
+            'email'          => ['required', $lider ? Rule::unique('users', 'email')->ignore($lider) : 'unique:users,email'],
             'lider_id'       => 'nullable',
             'coordinador_id' => 'nullable',
-            'tipo_usuario'   => 'nullable'
+            'tipo_usuario'   => 'nullable',
+            'lider_business' => 'nullable',
+            'divisa_id' => 'required'
         ], [
             'username.unique' => 'El nombre de usuario ya está siendo usado, intente con otro',
             'email.unique' => 'El email ya está siendo usado, intente con otro',
-        ]);
+        ]));
 
         try {
             DB::beginTransaction();
 
-            $lider = User::create(
-                [
-                    ...$datos,
-                    ...[
-                        'password' => '20464273jd',
-                        'rol_id' => Rol::where('nombre', 'Lider')->first()->id,
+            if($request->has('id') && !empty($request->get('id'))){
+                $lider->update([
+                        ...$datos->except(['divisa_id'])->toArray()
+                    ]);
+
+            }else{
+
+                $lider = User::create(
+                    [
+                        ...$datos->except(['divisa_id'])->toArray(),
+                        ...[
+                            'password' => fake()->password(),
+                            'rol_id' => Rol::where('nombre', 'Lider')->first()->id,
+                        ]
                     ]
-                ]
-            );
+                );
 
-            $lider->asignarPermisosPorRol();
+                $lider->asignarPermisosPorRol();
 
-            if (in_array($lider->rol->nombre, ['Promotor', 'Lider', 'Coordinador'])) {
-                $lider->aperturarCuenta(0, 'USD');
-            } else {
-                $lider->aperturarCuenta();
+                $lider->aperturarCuenta(0, Divisa::find($datos['divisa_id'])->iso);
+            }
+
+
+            if($lider->lider_business){
+               
+                if($permiso = Permiso::where('nombre', 'Gestionar comisión promotores')->first()){
+                    $lider->addPermiso($permiso);
+                }else{
+                    
+                    $permiso = Permiso::create([
+                        'nombre' => 'Gestionar comisión promotores',
+                        'panel_id' => Panel::where('nombre','Travel')->first()->id
+                    ]);
+
+                    $lider->addPermiso($permiso);
+
+                }
+            }else{
+                if($permiso = Permiso::where('nombre', 'Gestionar comisión promotores')->first()) {
+                    $lider->quitarPermisos(collect([$permiso]));
+                }
             }
 
             $lider->cargar();
@@ -1141,7 +1380,8 @@ class UserController extends Controller
             'nombre'   => 'required',
             'apellido' => 'required',
             'email'    => 'required|email|unique:users,email',
-            'lider_id' => 'nullable'
+            'lider_id' => 'nullable',
+            'divisa_id' => 'required'
         ], [
             'username.unique' => 'El nombre de usuario ya está siendo usado, intente con otro',
             'email.unique' => 'El email ya está siendo usado, intente con otro',
@@ -1149,23 +1389,26 @@ class UserController extends Controller
 
         try {
             DB::beginTransaction();
-
+            // dd($datos);
             $promotor = User::create([
                 ...$datos,
                 ...[
                     'rol_id' => Rol::where('nombre', 'Promotor')->first()->id,
-                    'password' => '20464273jd'
+                    'password' => '20464273jd',
+                    'nivel' => [
+                        'nivel' => null,
+                        'activaciones' => 0
+                    ]
                 ]
             ]);
-
             $promotor->asignarPermisosPorRol();
+            
 
             if (in_array($promotor->rol->nombre, ['Promotor', 'Lider', 'Coordinador'])) {
-                $promotor->aperturarCuenta(0, 'USD');
+                $promotor->aperturarCuenta(0, (Divisa::find($datos['divisa_id']))->iso);
             } else {
                 $promotor->aperturarCuenta();
             }
-
             $promotor->cargar();
             $promotor->notify(new WelcomeUsuario($promotor));
 
@@ -1174,6 +1417,8 @@ class UserController extends Controller
         } catch (\Throwable $th) {
             DB::rollBack();
             $result = false;
+
+            dd($th->getMessage());
         }
 
 
@@ -1351,6 +1596,344 @@ class UserController extends Controller
         
         return response()->json(['result' => $result,'usuario' => $usuario]);
 
+    }
+
+    public function getEstado(User $usuario)
+    {
+        return response()->json([
+            'ultimaActivacion' =>  $usuario->ultimaActivacion()
+        ]);
+    }
+
+
+    public function fetchDataInvitados(Request $request,User $usuario){
+
+        $filtro = $request->all();
+        $paginator = User::where([
+            ['username', 'LIKE', "%{$filtro['q']}%", 'OR'],
+            ['email', 'LIKE', "%{$filtro['q']}%", 'OR'],
+            ['nombre', 'LIKE', "%{$filtro['q']}%", 'OR'],
+            ['apellido', 'LIKE', "%{$filtro['q']}%", 'OR'],
+            ['direccion', 'LIKE', "%{$filtro['q']}%", 'OR'],
+            ['fecha_nacimiento', 'LIKE', "%{$filtro['q']}%", 'OR'],
+            ['codigo_postal', 'LIKE', "%{$filtro['q']}%", 'OR'],
+            ['bio', 'LIKE', "%{$filtro['q']}%", 'OR'],
+        ])->whereHas('referidor',function(Builder $q) use($filtro,$usuario){
+            $q->where('id',$usuario->id);
+        })
+        ->orderBy($filtro['sortBy'],$filtro['sortDesc'] ? 'desc' : 'asc')
+        ->paginate($filtro['perPage'] ?: 1000);
+
+        // select count(distinct(u.id)) as cant, month(u.created_at) as mes from usuario_referencia as ur 
+        // join users as u on ur.referido_id = u.id 
+        // where year(u.created_at) = year(now()) && u.activo = 1 && ur.usuario_id = 22
+        // group by mes 
+        // order by mes asc 
+        $activaciones_por_mes = DB::table('usuario_referencia','ur')
+            ->join('users as u','ur.referido_id','u.id')
+            ->whereRaw("year(u.created_at) = year(now()) && u.activo = 1")
+            ->where('ur.usuario_id',$usuario->id)
+            ->selectRaw('count(distinct(u.id)) as cant, month(u.created_at) as mes')
+            ->groupBy('mes')
+            ->orderBy('mes')
+            ->get();
+        $activaciones_por_mes_ano_anterior = DB::table('usuario_referencia', 'ur')
+        ->join('users as u', 'ur.referido_id', 'u.id')
+        ->whereRaw("year(u.created_at) = (year(now()) - 1) && u.activo = 1")
+        ->where('ur.usuario_id', $usuario->id)
+            ->selectRaw('count(distinct(u.id)) as cant, month(u.created_at) as mes')
+            ->groupBy('mes')
+            ->orderBy('mes')
+            ->get();
+        
+        $activaciones = collect([
+            [
+                'name' => now()->format('Y'),
+                'data'=> collect([])
+            ],
+            [
+                'name' => now()->subYear()->format('Y'),
+                'data' => collect([])
+            ]
+        ]);
+
+        for ($i=0; $i <= 11; $i++) {
+            
+            
+            if($activacion = $activaciones_por_mes->where('mes',($i + 1))->first()){
+                $activaciones[0]['data']->push($activacion->cant);  
+            }else{
+                $activaciones[0]['data']->push(0);
+            }
+
+            if ($activacion = $activaciones_por_mes_ano_anterior->where('mes', ($i + 1))->first()) {
+                $activaciones[1]['data']->push($activacion->cant);
+            } else {
+                $activaciones[1]['data']->push(0);
+            }
+        }
+
+        $invitados = collect($paginator->items())->each(fn($invitado) => $invitado->cargar());
+
+        return response()->json([
+            'invitados' => $invitados,
+            'total' => $paginator->total(), 
+            'activaciones' => $activaciones
+        ]);
+
+    }
+
+
+    public function descargarActivaciones(Request $request){
+
+        $usuario = $request->user();
+
+        $invitados = User::join('usuario_referencia as ur', 'users.id', 'ur.referido_id')
+        ->where('ur.usuario_id', $usuario->id)
+        ->where('users.activo', true)
+        ->orderBy('users.created_at', 'desc')
+        ->get();
+        $invitados->each(fn ($invitado) => $invitado->cargar());
+
+        $imagenBase64 = "data:image/png;base64," . base64_encode(Storage::disk('public')->get('logotipo.png'));
+        $logowhite = "data:image/png;base64," . base64_encode(Storage::disk('public')->get('logotipoblancohorizontal.png'));
+        $avatar  = "data:image/png;base64," . base64_encode(Storage::disk('img-perfil')->get($usuario->imagen ?: 'default.jpg'));
+
+        $datos = [
+            'invitados' => $invitados,
+            'usuario' => $usuario,
+            'logotipo' => $imagenBase64,
+            'logotipoblanco' => $logowhite,
+            'avatar' => $avatar
+        ];
+
+
+        $pdf = Pdf::loadView('reports.activaciones',$datos);
+
+        $pdf->setOption([
+            'dpi' => 150,
+            'defaultFont' => 'sans-serif',
+            'isHtml5ParserEnabled' => true,
+            'isRemoteEnabled' => true
+        ]);
+
+        $pdf->setPaper('a4', 'landscape');
+        return $pdf->download('Mis activaciones.pdf');
+
+    }
+
+    public function descargarPromotoresReport(Request $request){
+        $usuario = $request->user();
+        $filtro = $request->all();
+        $searchs = collect(['username', 'nombre', 'apellido', 'email', 'bio', 'direccion']);
+        $pagination = $usuario->allPromotores(true, $searchs, $filtro);
+
+        $promotores = collect($pagination->items())->each(function ($promotor) {
+
+            $promotor->avatar = $promotor->getAvatar();
+            $promotor->portada = $promotor->getPortada();
+
+            $fecha_ultima = $promotor->referidos->where('activo', true)->sortByDesc('created_at')->pluck('created_at')->first();
+            $promotor->ultimaActivacion = $fecha_ultima ? Carbon::now()->diffInDays($fecha_ultima) : 0;
+            $promotor->totalActivaciones = $promotor->nivel['activaciones'];
+            $promotor->totalRegistros = $promotor->referidos->count();
+            $promotor->ultimoRegistro = $promotor->ultimoRegistro();
+            $promotor->activaciones = [
+                'acumulada' => $promotor->total_viajeros_registrados,
+                'mes' => $promotor->total_viajeros_activos_mes,
+                'promedio' =>  $promotor->total_viajeros_registrados > 0 ? $promotor->total_viajeros_activos_mes * 100 / $promotor->total_viajeros_registrados : 0
+            ];
+        });
+
+
+    
+
+        $imagenBase64 = "data:image/png;base64," . base64_encode(Storage::disk('public')->get('logotipo.png'));
+        $logowhite = "data:image/png;base64," . base64_encode(Storage::disk('public')->get('logotipoblancohorizontal.png'));
+        $avatar  = "data:image/png;base64," . base64_encode(Storage::disk('img-perfil')->get($usuario->imagen ?: 'default.jpg'));
+
+        $datos = [
+            'promotores' => $promotores,
+            'usuario' => $usuario,
+            'logotipo' => $imagenBase64,
+            'logotipoblanco' => $logowhite,
+            'avatar' => $avatar
+        ];
+
+
+        $pdf = Pdf::loadView('reports.promotores', $datos);
+
+        $pdf->setOption([
+            'dpi' => 150,
+            'defaultFont' => 'sans-serif',
+            'isHtml5ParserEnabled' => true,
+            'isRemoteEnabled' => true
+        ]);
+
+        $pdf->setPaper('a4', 'landscape');
+
+        $nombre = 'Promotores y sus resultados.pdf';
+        $pdf->save($nombre, 'reportes');
+
+        // return $pdf->save($nombre,'reportes')->download($nombre);
+        // return response()->download();
+        
+
+        return response()->json([
+            'url' => Storage::url('public/reportes/'.$nombre),
+            'filename' => $nombre
+        ]);
+
+    }
+
+    public function descargarLideresReport(Request $request){
+        $usuario = $request->user();
+        $filtro = $request->all();
+        $searchs = collect(['username', 'nombre', 'apellido', 'email', 'bio', 'direccion']);
+        $pagination = $usuario->allLideres($searchs, $filtro);
+
+        $lideres = collect($pagination->items())->each(function ($lider) {
+            $lider->avatar = $lider->getAvatar();
+            $lider->portada = $lider->getPortada();
+            $fecha_ultima = $lider->promotores->where('activo', true)->sortByDesc('created_at')->pluck('created_at')->first();
+            $lider->ultimaActivacion = $fecha_ultima ? Carbon::now()->diffInDays($fecha_ultima) : 0;
+
+            $lider->comision = $lider->cuenta->divisa->iso . ' ' . number_format((float) $lider->comision, 2, ',', '.') . ' ' . $lider->cuenta->divisa->simbolo;
+            $lider->status = $lider->getStatus();
+        });
+
+        $imagenBase64 = "data:image/png;base64," . base64_encode(Storage::disk('public')->get('logotipo.png'));
+        $logowhite = "data:image/png;base64," . base64_encode(Storage::disk('public')->get('logotipoblancohorizontal.png'));
+        $avatar  = "data:image/png;base64," . base64_encode(Storage::disk('img-perfil')->get($usuario->imagen ?: 'default.jpg'));
+
+        $datos = [
+            'lideres' => $lideres,
+            'usuario' => $usuario,
+            'logotipo' => $imagenBase64,
+            'logotipoblanco' => $logowhite,
+            'avatar' => $avatar
+        ];
+
+
+        $pdf = Pdf::loadView('reports.lideres', $datos);
+
+        $pdf->setOption([
+            'dpi' => 150,
+            'defaultFont' => 'sans-serif',
+            'isHtml5ParserEnabled' => true,
+            'isRemoteEnabled' => true
+        ]);
+
+        $pdf->setPaper('a4', 'landscape');
+
+        $nombre = 'Líderes y sus resultados.pdf';
+        $pdf->save($nombre, 'reportes');
+
+        return response()->json([
+            'url' => Storage::url('public/reportes/' . $nombre),
+            'filename' => $nombre
+        ]);
+    }
+
+
+    public function fetchDataPromotoresReport(Request $request){
+
+        $filtro = $request->all();
+        $searchs = collect(['username','nombre','apellido','email','bio','direccion']);
+        $usuario = $request->user();
+
+
+        $pagination = $usuario->allPromotores(true,$searchs,$filtro);
+            
+        $promotores = collect($pagination->items())->each(function($promotor){
+          
+            $promotor->avatar = $promotor->getAvatar();
+            $promotor->portada = $promotor->getPortada();
+                $fecha_ultima = $promotor->referidos->where('activo', true)->sortByDesc('created_at')->pluck('created_at')->first();
+                $promotor->ultimaActivacion = $fecha_ultima ? Carbon::now()->diffInDays($fecha_ultima) : 0;
+                // $promotor->ultimaActivacion = $promotor->ultimaActivacion();
+                $promotor->totalActivaciones = $promotor->nivel['activaciones'];
+                $promotor->totalRegistros = $promotor->referidos->count();
+                $promotor->ultimoRegistro = $promotor->ultimoRegistro();
+                // $promotor->activaciones = [
+                //     'acumulada' => $promotor->nivel['activaciones'],
+                //     'mes' => $promotor->activacionesMes(),
+                //     'promedio' => $promotor->nivel['activaciones'] > 0 ? $promotor->activacionesMes() * 100 / $promotor->nivel['activaciones'] : 0
+                // ];
+
+                 $promotor->activaciones = [
+                    'acumulada' => $promotor->total_viajeros_registrados,
+                    'mes' => $promotor->total_viajeros_activos_mes,
+                    'promedio' =>  $promotor->total_viajeros_registrados > 0 ? $promotor->total_viajeros_activos_mes * 100 / $promotor->total_viajeros_registrados : 0
+                ];
+        });
+
+        return response()->json([
+            'total' => $pagination->total(),
+            'promotores' => $promotores
+        ]);
+    }
+
+
+    public function fetchDataLideresReport(Request $request){
+
+        $usuario = $request->user();
+        $filtro = $request->all();
+        $searchs = collect(['username', 'nombre', 'apellido', 'email', 'bio', 'direccion']);
+
+        $pagination = $usuario->allLideres($searchs,$filtro); 
+
+        $lideres = collect($pagination->items())->each(function($lider) {
+            $lider->avatar = $lider->getAvatar();
+            $lider->portada = $lider->getPortada();
+            $fecha_ultima = $lider->promotores->where('activo', true)->sortByDesc('created_at')->pluck('created_at')->first();
+            $lider->ultimaActivacion = $fecha_ultima ? Carbon::now()->diffInDays($fecha_ultima) : 0;
+
+            $lider->comision = $lider->cuenta->divisa->iso.' '.number_format((float) $lider->comision,2,',','.').' '.$lider->cuenta->divisa->simbolo;
+            $lider->status = $lider->getStatus();
+           
+        });
+
+        return response()->json([
+            'total' => $pagination->total(),
+            'lideres' => $lideres
+        ]);
+
+    }
+
+
+    public function updateComisionPromotor(Request $request, User $usuario){
+
+        $datos = $request->validate([
+            'comision_promotores' => 'required'
+        ],[
+            'comision_promotores.required' => 'La comisión es importante, no lo olvides'
+        ]);
+
+        try {
+            DB::beginTransaction();
+
+            $usuario->update($datos);
+
+            $usuario->cargar();
+
+            DB::commit();
+            $result = true;
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            $result =false;
+        }
+
+        return response()->json([
+            'result' => $result,
+            'usuario' => $usuario
+        ]);
+        
+
+    }
+
+    public function fetchLideresCoordinador(User $coordinador){
+        return response()->json($coordinador->lideres);
     }
 
 

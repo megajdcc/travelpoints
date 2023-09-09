@@ -18,7 +18,9 @@ export default{
       estado:null,
       iata:null,
       divisa:null,
-      productos:[]
+      productos:[],
+      horarios:[],
+      telefonos:[]
     },
 
     tiendas:[]
@@ -65,7 +67,9 @@ export default{
         estado: null,
         iata: null,
         divisa: null,
-        productos: []
+        productos: [],
+        horarios:[],
+        telefonos:[]
 
       }
     },
@@ -109,7 +113,34 @@ export default{
 
     setTiendas(state, tiendas) {
       state.tiendas = tiendas
-    }
+    },
+    agregarTelefono(state){
+
+				state.tienda.telefonos.push({
+					telefono: '',
+					is_whatsapp: false,
+					principal: false
+				})
+
+		},
+
+		quitarTelefono(state,i){
+				state.tienda.telefonos.splice(
+					i,
+					1
+				) 
+		},
+
+    actualizarTelefono(state,telefono){
+			const i = state.tienda.telefonos.findIndex(val => val.telefono === telefono.telefono)
+			if (i != -1){
+				state.tienda.telefonos[i] = telefono
+			}
+		},
+
+    quitarHorario(state){
+        state.tienda.horarios = []
+    },
 
   },
 
@@ -188,7 +219,93 @@ export default{
 
       })
 
-    }
+    },
+
+    quitarTelefono({commit},telefono){
+			return new Promise((resolve, reject) => {
+				axios.delete(`/api/telefonos/${telefono.id}`).then(({data}) => {
+					resolve(data)
+				}).catch(e => reject(e))
+
+			})
+		},
+
+    guardarTelefono({state,commit},{telefono,tienda}){
+			
+			return new Promise((resolve, reject) => {
+
+				axios.put(`/api/tiendas/${tienda}/add/telefono`,telefono).then(({data}) => {
+					
+					if(data.result){
+
+						if(state.tienda.id === tienda){
+							commit('actualizarTelefono',data.telefono)
+						}
+					}
+
+					resolve(data)
+
+				}).catch(e => {
+					reject(e)
+				})
+
+			})
+		},
+
+     aperturarHorario({commit},tienda_id){
+
+         return new Promise((resolve, reject) => {
+            
+            axios.get(`/api/tiendas/${tienda_id}/aperturar/horario`).then(({data}) => {
+
+               if(data.result){
+                  commit('update',data.tienda)
+               }
+
+               resolve(data)
+            }).catch(e => reject(e))
+
+
+
+         })
+      },
+
+      guardarHorario({commit},horario){
+
+         return new Promise((resolve, reject) => {
+            
+            axios.put(`/api/horarios/${horario.id}`,horario).then(({data}) => {
+
+               resolve(data)
+
+            }).catch(e => reject())
+
+
+         })
+      },
+
+
+      quitarHorario({commit},tienda_id){
+
+        
+
+         return new Promise((resolve, reject) => {
+            axios.get(`/api/tiendas/${tienda_id}/quitar/horario`).then(({data}) => {
+
+               if(data.result){
+                  commit('quitarHorario');
+               }
+
+               resolve(data)
+            
+            }).catch(e => reject(e))
+
+
+         })
+      },
+
+
+
     
   }
 }

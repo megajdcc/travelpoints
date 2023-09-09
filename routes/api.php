@@ -5,13 +5,13 @@ use App\Http\Controllers\Auth\{AuthController};
 use App\Http\Controllers\{AcademiaVideoController, AmenidadController, ApplicationController, CargoController, CategoriaFaqController, CategoriaProductoController, ComisionController, ConsumoController, CuponController, DashboardController, DatosPagosController, DestinoController, DivisaController, EmpleadoController, EventoController, FaqController, FormaPagoController, HomeController, HorarioController, HorarioReservacionController, IataController, MovimientoController, NegocioCategoriaController, NegocioController, UserController, NotificacionController, RolController, PermisoController, SolicitudController, TelefonoController, OpinionController, PanelController, ProductoController, PublicacionController, ReservacionController, RetiroController, SistemaController, SucursalController, TiendaController, VentaController};
 use App\Http\Middleware\convertirNull;
 use Laravel\Socialite\Facades\Socialite;
-use App\Models\{CategoriaFaq, CategoriaProducto, Pais, Estado, Ciudad,};
+use App\Models\{CategoriaFaq, CategoriaProducto, Pais, Estado, Ciudad, Invitacion, };
 use App\Http\Controllers\AtraccionController;
 use App\Models\Divisa;
 use App\Http\Controllers\ImagenController;
 use App\Models\Negocio\HorarioReservacion;
 
-use App\Http\Controllers\{PaisController, CiudadController, EstadoController, LoteController, MensajesVonageController, PaginaController, TarjetaController};
+use App\Http\Controllers\{PaisController, CiudadController, EstadoController, InvitacionController, LoteController, MensajesVonageController, PaginaController, ReunionController, TarjetaController};
 
 /*
 |--------------------------------------------------------------------------
@@ -64,6 +64,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::post('upload/avatar', [UserController::class, 'uploadAvatar'])->name('upload_avatar');
     Route::put('perfil/update/usuario/{usuario}', [UserController::class, 'updatePerfil']);
     Route::put('cambiar/contrasena/usuario/{usuario}', [UserController::class, 'changePassword']);
+    Route::post('usuarios/{usuario}/toggle-portada',[UserController::class,'togglePortada']);
 
     /*****************************/
     /* NOTIFICACIONES
@@ -133,6 +134,8 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
 
     Route::post('usuarios/promotores/fetch/data', [UserController::class, 'fetchDataPromotores']);
     Route::post('usuarios/lideres/fetch/data', [UserController::class, 'fetchDataLideres']);
+    Route::post('usuarios/coordinadores/fetch/data', [UserController::class, 'fetchDataCoordinadores']);
+
     Route::post('usuarios/promotor/asignar/lider', [UserController::class, 'asignarLiderPromotor']);
     Route::post('usuarios/lider/asignar/coordinador', [UserController::class, 'asignarCoordinadorLider']);
 
@@ -145,7 +148,18 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::put('usuarios/{usuario}/asociar/tarjeta',[UserController::class,'asociarTarjeta']);
     Route::delete('usuarios/{usuario}/cancelar/tarjeta/{tarjeta}',[UserController::class,'cancelarTarjeta']);
 
+    Route::put('usuarios/{usuario}/get-movimiento-por-mes',[HomeController::class, 'getMovimientosPorMes']);
+    Route::get('usuarios/{usuario}/get-acumulado-por-ano',[HomeController::class,'getAcumuladoPorAno']);
+    Route::get('usuarios/{usuario}/get-efectividad',[HomeController::class,'getEfectividad']);
+    Route::get('usuarios/{usuario}/get-status',[UserController::class, 'getEstado']);
 
+    Route::post('usuarios/{usuario}/mis-invitados',[UserController::class,'fetchDataInvitados']);
+    Route::get('usuarios/{usuario}/fetch-data-user',[UserController::class, 'getUsuario']);
+
+    Route::post('usuarios-viajeros/fetch-data',[UserController::class,'fetchDataViajeros']);
+
+    Route::put('usuarios/{usuario}/update-comision-promotors',[UserController::class,'updateComisionPromotor']);
+    Route::get('coordinador/{coordinador}/fetch-lideres',[UserController::class,'fetchLideresCoordinador']);
     /*****************************/
     /* TELEFONOS
     /*****************************/
@@ -193,7 +207,6 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::get('negocio/categorias/{categoria}/get', [NegocioCategoriaController::class, 'getCategoria']);
     Route::resource('negocio/categorias', NegocioCategoriaController::class);
     Route::post('negocio/categorias/fetch/data', [NegocioCategoriaController::class, 'fetchData']);
-    Route::get('negocio/categorias/get/all', [NegocioCategoriaController::class, 'getAll']);
 
 
     /*****************************/
@@ -222,6 +235,8 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::get('negocio/solicituds/get/all', [SolicitudController::class, 'getAll']);
     Route::get('negocio/solicituds/{solicitud}/get', [SolicitudController::class, 'getSolicitud']);
     Route::get('negocio/mis-solicitudes',[SolicitudController::class,'misSolicitudes']);
+
+    Route::get('negocios/get-cantidad/solicitudes',[SolicitudController::class, 'solicitudesSinAceptar']);
     /*****************************/
     /* Negocios
     /*****************************/
@@ -260,7 +275,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::put('negocios/{negocio}/gestion/saldo', [NegocioController::class, 'gestionSaldo']);
 
     Route::get('negocios/get/all', [NegocioController::class, 'getNegocios']);
-
+    Route::get('negocios/{negocio}/toggle-publicado',[NegocioController::class,'togglePublicado']);
 
 
     /*****************************/
@@ -271,7 +286,6 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::post('divisas/fetch/data', [DivisaController::class, 'fetchData']);
     Route::resource('divisas', DivisaController::class);
     Route::get('divisas/get/principal', [DivisaController::class, 'getPrincipal']);
-    Route::get('divisas/get/all', fn () => response()->json(Divisa::all()));
 
 
     /*****************************/
@@ -279,6 +293,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     /*****************************/
 
     Route::post('/movimientos/fetch/data', [MovimientoController::class, 'fetchData']);
+    Route::post('/movimientos/fetch/data/descargar',[MovimientoController::class,'descargarReport']);
 
     /*****************************/
     /* Iata
@@ -287,7 +302,6 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::get('iatas/{iata}/fetch/data', [IataController::class, 'fetch']);
     Route::post('iatas/fetch/data', [IataController::class, 'fetchData']);
     Route::resource('iatas', IataController::class);
-    Route::get('iatas/get/all', [IataController::class, 'getIatas']);
 
     /*****************************/
     /* Imagenes
@@ -468,6 +482,10 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::post('tiendas/fetch/data', [TiendaController::class, 'fetchData']);
     Route::get('tiendas/{tienda}/fetch/data', [TiendaController::class, 'fetch']);
     Route::resource('tiendas', TiendaController::class);
+    Route::put('tiendas/{tienda}/add/telefono',[TiendaController::class,'agregarTelefono']);
+
+    Route::get('tiendas/{tienda}/aperturar/horario', [TiendaController::class, 'aperturarHorario']);
+    Route::get('tiendas/{tienda}/quitar/horario', [TiendaController::class, 'quitarHorario']);
 
 
     /*****************************/
@@ -531,10 +549,10 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     /*****************************/
 
     Route::post('dashboard/total/viajeros', [DashboardController::class, 'totalViajeros']);
-    Route::post('dashboard/get/viajeros/activos', [DashboardController::class, 'viajerosActivos']);
+    Route::post('dashboard/get/viajeros/activos/{usuario?}', [DashboardController::class, 'viajerosActivos']);
     Route::post('dashboard/get/destinos/activos', [DashboardController::class, 'destinosActivos']);
     Route::get('dashboard/total/destinos/activos', [DashboardController::class, 'destinosActivosChart']);
-    Route::get('dashboard/get/paises/activos', [DashboardController::class, 'getPaisesActivos']);
+    Route::get('dashboard/get/paises/activos/{usuario?}', [DashboardController::class, 'getPaisesActivos']);
     Route::get('dashboard/total/negocios/afiliados', [DashboardController::class, 'totalNegociosAfiliados']);
     Route::get('dashboard/porcentaje/negocios', [DashboardController::class, 'porcentajeNegocio']);
     Route::post('dashboard/gastos/turisticos', [DashboardController::class, 'fetchGastosTuristicos']);
@@ -543,11 +561,11 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::get('dashboard/total/coordinadores', [DashboardController::class, 'fetchTotalCoordinadores']);
     Route::get('dashboard/total/comisiones/generadas', [DashboardController::class, 'fetchComisionesGeneradas']);
     Route::get('dashboard/total/operaciones/travel', [DashboardController::class, 'getTotalOperacionesTravel']);
-    Route::get('dashboard/tablero/promotor/get-status', [UserController::class, 'getStatus']);
-    Route::get('dashboard/tablero/lider/get-status', [UserController::class, 'getStatus']);
+    Route::get('dashboard/tablero/promotor/get-status/{usuario?}', [UserController::class, 'getStatus']);
+    Route::get('dashboard/tablero/lider/{usuario}/get-status', [UserController::class, 'getStatus']);
     Route::get('dashboard/tablero/coordinador/get-status', [UserController::class, 'getStatus']);
 
-    Route::get('dashboard/total/viajeros/anual', [DashboardController::class, 'getTotalReferidosRegistradoAnual']);
+    Route::get('dashboard/total/viajeros/anual/{usuario?}', [DashboardController::class, 'getTotalReferidosRegistradoAnual']);
     Route::post('dashboard/total/comisiones/promotor', [DashboardController::class, 'comisiones']);
     Route::get('dashboard/promotores/status', [DashboardController::class, 'getStatusPromotores']);
     Route::get('dashboard/coordinadores/status', [DashboardController::class, 'getStatusCoordinadores']);
@@ -564,7 +582,15 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::get('usuarios/get/all/promotores', [UserController::class, 'getPromotores']);
     Route::post('dashboard/total/viajeros/por-coordinador', [UserController::class, 'totalViajerosCoordinador']);
     Route::get('dashboard/porcentaje-uso/viajeros', [UserController::class, 'getPorcentajeUsoViajeros']);
+    Route::get('dashboard/porcentaje-viajeros/por-pais/{usuario?}',[DashboardController::class,'getPorcentajeViajerosPorPais']);
+    Route::get('dashboard/tres-mayores-comisiones-promotores/usuario/{usuario}',[DashboardController::class,'comisionesAltasMesPromotores']);
+    Route::get('dashboard/tres-mayores-comisiones-liders', [DashboardController::class, 'comisionesAltasMesLideres']);
 
+
+    Route::get('dashboard/total-viajeros/usuario/{usuario}',[DashboardController::class, 'totalViajerosRegistrados']);
+    Route::get('dashboard/porcentaje-efectividad/usuario/{usuario}',[DashboardController::class, 'eficaciaViajeros']);
+    Route::get('dashboard/coordinador/{usuario}/fetch-data',[DashboardController::class,'fetchDataCoordinador']);
+    Route::get('dashboard/get-negocios/usuario/{usuario}',[DashboardController::class,'getNegociosActivos']);
     /*****************************/
     /* Datos de pagos
     /*****************************/
@@ -670,6 +696,39 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::post('vonages/sms/fetchData',[MensajesVonageController::class,'fetchDataSms']);
     Route::delete('vonages/sms/{mensaje}/eliminar',[MensajesVonageController::class,'eliminarSMS']);
 
+    /**************************/
+    /* Reunion
+    /**************************/
+    Route::get('reunions/usuario/{usuario}/get/all',[ReunionController::class,'getAll']);
+    Route::post('reunions/fetch/data',[ReunionController::class,'fetchData']);
+    Route::get('reunions/{reunion}/fetch/data',[ReunionController::class,'fetch']);
+    Route::resource('reunions',ReunionController::class);
+
+    Route::post('reunions/{reunion}/guardar/archivo',[ReunionController::class,'guardarArchivo']);
+    Route::post('reunions/fetch/reunions',[ReunionController::class,'fetchReunions']);
+
+
+    /**************************/
+    /* Reportes
+    /**************************/
+    Route::prefix('reporte')->group(function(){
+        Route::post('fetch-data-promotores', [UserController::class, 'fetchDataPromotoresReport']);
+        Route::post('fetch-data-lideres', [UserController::class, 'fetchDataLideresReport']);
+        Route::post('descargar/fetch-data-promotores', [UserController::class, 'descargarPromotoresReport']);
+        Route::post('descargar/fetch-data-lideres', [UserController::class, 'descargarLideresReport']);
+
+    });
+
+    /**************************/
+    /* Invitacions
+    /**************************/
+    Route::post("invitacions/fetch-data", [InvitacionController::class, 'fetchData']);
+    Route::get('invitacions/{invitacion}/recordar',[InvitacionController::class,'recordar']);
+    Route::resource('invitacions',InvitacionController::class);
+
+
+   
+
 });
 
 Route::put('usuario/{usuario}/establecer/contrasena', [UserController::class, 'EstablecerContrasena'])->name('establecercontrasena');
@@ -730,6 +789,7 @@ Route::post('eventos/fetch/eventos', [EventoController::class, 'fetchEventos']);
 // Negocios
 
 Route::post('negocios/fetch/data/public', [NegocioController::class, 'fetchDataPublic']);
+Route::get('negocio/categorias/get/all', [NegocioCategoriaController::class, 'getAll']);
 
 // Rango de precios Productos
 
@@ -765,3 +825,15 @@ Route::get('travels/map/destino/{destino}', [HomeController::class, 'getTravels'
 // Cupones
 
 Route::post('cupons/fetch-data/public',[CuponController::class,'fetchDataPublic']);
+
+// invitador
+Route::get("invitacions/{invitacion}/fetch-data",[InvitacionController::class,'fetch']);
+Route::post('solicituds/afiliar-invitacion',[InvitacionController::class,'AfiliarNegocio']);
+Route::put('invitacion/assets/solicitud/{solicitud}',[InvitacionController::class, 'assetsPostNegocioSolicitud']);
+
+// Divisas
+Route::get('divisas/get/all', fn () => response()->json(Divisa::all()));
+
+// Iatas
+Route::get('iatas/get/all', [IataController::class, 'getIatas']);
+

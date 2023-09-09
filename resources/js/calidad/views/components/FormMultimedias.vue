@@ -99,8 +99,8 @@
 
     </b-container>
 
-    <vue-gallery-slideshow v-if="imagenes" :images="imagenes.map(val => `${pathArchivos}${val.imagen}`)" :index="index"
-      @close="index = null"></vue-gallery-slideshow>
+    <vue-gallery v-if="imagenes" :images="imagenes.map(val => `${pathArchivos}${val.imagen}`)" :index="index"
+      @close="index = null"></vue-gallery>
   </b-card>
 </template>
 
@@ -109,7 +109,7 @@
 import { computed, toRefs, ref, onMounted, inject} from 'vue'
 
 import store from '@/store'
-import VueGallerySlideshow from 'vue-gallery-slideshow';
+import VueGallery from 'vue-gallery';
 import { ValidationProvider, ValidationObserver } from 'vee-validate'
 import VuePerfectScrollbar from 'vue-perfect-scrollbar'
 import { regresar } from '@core/utils/utils'
@@ -175,7 +175,7 @@ export default {
     BCol,
     BFormFile,
     BFormGroup,
-    VueGallerySlideshow,
+    VueGallery,
     ValidationProvider,
     ValidationObserver,
     BFormInvalidFeedback,

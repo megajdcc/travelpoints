@@ -1,6 +1,6 @@
 import router from '@/router'
 // eslint-disable-next-line object-curly-newline
-import { reactive, getCurrentInstance, watch, toRefs,ref } from 'vue'
+import { reactive, getCurrentInstance, watch, toRefs,ref,computed } from 'vue'
 import Swal from 'sweetalert2'
 export const isObject = obj => typeof obj === 'object' && obj !== null
 import 'animate.css';
@@ -15,6 +15,11 @@ import { Pagination, Navigation } from "swiper";
 
 const modules = [Pagination,Navigation] ;
 
+
+import xlsImg from '@/assets/images/icons/xls.png';
+import pdfImg from '@/assets/images/icons/pdf.png'
+import docImg from '@/assets/images/icons/doc.png'
+import unknownImg from '@/assets/images/icons/unknown.png'
 export const isToday = date => {
   const today = new Date()
   return (
@@ -54,7 +59,6 @@ export const useRouter = () => {
   return { ...toRefs(state), router: vm.$router }
 }
 
-
 export const eliminarDuplicados = (array) => {
    const uniqueArray = [];
   const seenValues = new Set();
@@ -74,6 +78,57 @@ export const eliminarDuplicados = (array) => {
 
 export const marcasFontAwesome = ref([...new Set(Object.keys(fab).map(val => fab[val].iconName))]);
 export const iconosFontAwesome = ref(eliminarDuplicados([...new Set(Object.keys(fas).map(val => ({label:fas[val].iconName,value:fas[val].iconName})))]));
+
+
+export const ultimosTresAnos = computed(() => {
+  let anos = [];
+  let anohoy = new Date().getFullYear();
+
+  for (let index = 0; anos.length < 3; index++) {
+      anos.push(anohoy - index);
+  }
+
+  return anos;
+})
+ 
+
+export const siguienteNivel = (nivelActual = null, activaciones = 0 ) => {
+  
+  const niveles = [
+    { nombre: 'Visitante', activacionesRequeridas: 1 },
+    { nombre: 'Recomendador', activacionesRequeridas: 100 },
+    { nombre: 'Promotor', activacionesRequeridas: 500 },
+    { nombre: 'Consul', activacionesRequeridas: 1000 },
+    { nombre: 'Embajador', activacionesRequeridas: 3000 },
+  ];
+
+  if(nivelActual === null){
+    return { nivel: niveles[0].nombre, teFaltan: 1,porcentaje:0 }
+  } 
+
+  if (nivelActual < 0 || nivelActual >= niveles.length) {
+    // Si el nivel actual no corresponde a ningún índice válido, devuelve null
+    return null;
+  }
+
+  const nivelActualObj = niveles[nivelActual];
+
+  // Obtener el siguiente nivel
+  const siguienteNivelIndex = nivelActual + 1;
+  const siguienteNivel = niveles[siguienteNivelIndex];
+
+  if (!siguienteNivel) {
+    // Si no hay siguiente nivel, significa que ya está en el nivel máximo
+    return { nivel: 'Embajador', teFaltan: 0,porcentaje:100 };
+  }
+
+  // Calcular cuántas activaciones faltan para el siguiente nivel
+  const activacionesRequeridas = siguienteNivel.activacionesRequeridas;
+  const activacionesFaltantes = activacionesRequeridas - activaciones;
+  const porcentaje = activaciones * 100 / siguienteNivel.activacionesRequeridas
+  return { nivel: siguienteNivel.nombre, teFaltan: activacionesFaltantes,porcentaje:porcentaje };
+  
+}
 
 export const optionsSwiper = ref({
          slidesPerView: 1,
@@ -229,8 +284,14 @@ export const regresar = () => {
 
 }
 
-export const getFecha = (fecha = Date(), format = 'LLL') => {
-  return moment(fecha).format(format);
+export const getFecha = (val = Date(), format = 'LLL',time= false) => {
+  if(val && !time) {
+    return moment(new Date(val)).format(format);
+  }else if(val && time){
+    return moment(`2020-01-01 ${val}`).format(format);
+  }
+  return 'error en la fecha';
+
 } 
 
 export const getDay = (dia) => {
@@ -241,6 +302,7 @@ export const getDay = (dia) => {
   return dias[dia -1];
 
 } 
+
 
 export const diasSemana = [
   {text:'Lunes',value:1},
@@ -277,23 +339,23 @@ export const getImage = (archivo) => {
       break;
 
     case 'xls':
-      return require('@/assets/images/icons/xls.png')
+      return xlsImg
     break;
 
     case 'xlsx':
-      return require('@/assets/images/icons/xls.png')
+      return xlsImg
     break;
 
     case 'pdf':
-      return require('@/assets/images/icons/pdf.png')
+      return pdfImg
     break;
 
     case 'doc':
-      return require('@/assets/images/icons/doc.png')
+      return docImg
     break;
   
     default:
-      return require('@/assets/images/icons/unknown.png')
+      return unknownImg
     break;
   }
 
@@ -335,7 +397,7 @@ export const getStatusLegendPromotor = (status ) => {
 }
 
 export const getStatusLegendLider = getStatusLegendPromotor
-
+export const getStatusLegendCoordinador = getStatusLegendLider
 
 export const getExt = (archivo,separator = '.') => {
   

@@ -298,12 +298,12 @@ export default {
 </script>
 
 <style lang="scss">
-@import '~@core/scss/vue/libs/vue-select.scss';
+@import '@core/scss/vue/libs/vue-select.scss';
 </style>
 
 <style lang="scss" scoped>
-@import '~@core/scss/base/bootstrap-extended/include';
-@import '~@core/scss/base/components/variables-dark';
+@import '@core/scss/base/bootstrap-extended/include';
+@import '@core/scss/base/components/variables-dark';
 
 .customizer-section {
   padding: 1.5rem;

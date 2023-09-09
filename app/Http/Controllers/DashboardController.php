@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Consumo;
 use App\Models\Destino;
+use App\Models\Movimiento;
 use App\Models\Pais;
 use App\Models\Producto;
 use App\Models\Sistema;
@@ -111,10 +112,10 @@ class DashboardController extends Controller
     }
 
 
-    public function viajerosActivos(Request $request){
+    public function viajerosActivos(Request $request, User $usuario = null){
 
-
-        $rol_user = $request->user()->rol->nombre;
+        $user = $usuario ?: $request->user();
+        $rol_user = $user->rol->nombre;
         $data = $request->all();
         $rango_fecha = false;
         $rango_fecha = preg_replace('/ +/', ' ', $data['rango_fecha']);
@@ -123,22 +124,46 @@ class DashboardController extends Controller
             $rango_fecha = \explode('to', $rango_fecha);
         }
 
-        // select  COUNT(DISTINCT v.cliente_id) / (select count(*) from users) * 100 AS porcentaje
-        // from ventas as v 
-        // where v.created_at >= DATE_SUB(NOW(), INTERVAL 1 YEAR)
+        if(in_array($rol_user, ['Promotor', 'Coordinador', 'Lider'])){
 
-        $viajeros = DB::table('ventas','v')
-                        ->selectRaw('ROUND(COUNT(DISTINCT v.cliente_id) / (select count(*) from users) * 100) AS porcentaje')
-                        ->whereRaw('v.created_at >= DATE_SUB(NOW(), INTERVAL 1 YEAR)')
-                        ->when(is_iterable($rango_fecha) && count($rango_fecha) > 1 , function($q) use($rango_fecha) {
-                            $q->whereBetween('v.created_at',$rango_fecha);
-                        })
-                        ->when(in_array($rol_user,['Promotor','Coordinador','Lider']), function($q) use($data,$request){
-                                $q->join('users as u','v.cliente_id','u.id')
-                                ->join('usuario_referencia as ur','u.id','ur.referido_id')
-                                ->where('ur.usuario_id', $request->user()->id);
-                        })
-                        ->first('porcentaje');
+            $referidos = 0;
+
+            if($rol_user == 'Promotor'){
+                $referidos = $user->referidos->where('activo', true)->count();
+            }
+
+            if($rol_user == 'Lider'){
+                $referidos += $user->referidos->where('activo', true)->count();
+
+                foreach($user->promotores as $promotor){
+                    $referidos += $promotor->referidos->where('activo',true)->count();
+                }
+            }
+
+            $viajeros = DB::table('ventas', 'v')
+                ->selectRaw("IFNULL(ROUND(COUNT(DISTINCT v.cliente_id) * 100 / {$referidos}),0) AS porcentaje")
+                ->join('users as u', 'v.cliente_id', 'u.id')
+                ->join('usuario_referencia as ur', 'u.id', 'ur.referido_id')
+                ->join('users as promotor', 'ur.usuario_id', 'promotor.id')
+                ->whereRaw('v.created_at >= DATE_SUB(NOW(), INTERVAL 1 YEAR)')
+                ->when(is_iterable($rango_fecha) && count($rango_fecha) > 1, function ($q) use ($rango_fecha) {
+                    $q->whereBetween('v.created_at', $rango_fecha);
+                })
+                ->when($rol_user == 'Promotor',fn($q) => $q->where('promotor.id', $user->id))
+                ->when($rol_user == 'Lider', fn($q) => $q->where('promotor.lider_id', $user->id))
+                ->first('porcentaje') ;
+
+        }else{
+            $viajeros = DB::table('ventas', 'v')
+                ->selectRaw('ROUND(COUNT(DISTINCT v.cliente_id) * 100 / (select count(*) from users)) AS porcentaje')
+                ->whereRaw('v.created_at >= DATE_SUB(NOW(), INTERVAL 1 YEAR)')
+                ->when(is_iterable($rango_fecha) && count($rango_fecha) > 1, function ($q) use ($rango_fecha) {
+                    $q->whereBetween('v.created_at', $rango_fecha);
+                })
+
+                ->first('porcentaje');
+        }
+       
 
         return response()->json($viajeros->porcentaje);
     }
@@ -174,73 +199,103 @@ class DashboardController extends Controller
 
     }
 
-    public function getPaisesActivos(){
+    public function getPaisesActivos(Request $request, User $usuario = null){
 
-        $paises = DB::table('pais', 'p' )
-                        ->selectRaw('distinct(p.codigo) as codigo, count(d.id) as destinos')
-                        ->join('estados as es','p.id','es.pais_id')
-    
-                        ->join('iatas as i','es.id','i.estado_id')
-                        ->join('destinos as d','i.id','d.iata_id')
-                        ->groupBy('codigo')
-                        ->get();
+        $user = $usuario?: $request->user();
+        $rolName = $user->rol->nombre;
 
-        $negocios = DB::table('pais', 'p')
-            ->selectRaw('distinct(p.codigo) as codigo, count(n.id) as negocios')
-            ->join('estados as es', 'p.id', 'es.pais_id')
-            ->join('iatas as i', 'es.id', 'i.estado_id')
-            ->join('negocios as n', 'i.id', 'n.iata_id')
-            ->where('n.status',1)
-            ->groupBy('codigo')
-            ->get();
-         
-        $paises =  [
-                    'name' => 'Destinos activos',
-                    'states' => [
-                        'hover' => [
-                            'color' => '#0097CE',
-                        ],
-                       
-                    ],
 
-                    'color' => '#60a730',
-                    'dataLabels' => [
-                        'enabled' => true,
-                        'format' => '{point.name}'
-                    ],
-                    'allAreas' => false,
-                    'enableMouseTracking' => true,
-                    'showInLegend' => true,
-                    'data' => [
-                        ...$paises->map(fn ($val) => [\strtolower($val->codigo), $val->destinos])
-                    ]
-                ];
+        if(\in_array($rolName, ['Promotor', 'Lider', 'Coordinador'])){
 
-        $negocios = [
-            'name' => 'Negocios activos',
-            'states' => [
-                'hover' => [
-                    'color' => '#0097CE',
+
+            $paises = Pais::selectRaw("distinct(pais.codigo) as codigo, count(pais.id) as cant")
+                            ->join('estados as e','pais.id','e.pais_id')
+                            ->join('ciudads as c','e.id','c.estado_id')
+                            ->join('users as u','c.id', 'u.ciudad_id')
+                            ->join('usuario_referencia as ur','u.id','ur.referido_id')
+                            ->join('users as prom', 'ur.usuario_id','prom.id')
+                            ->when($rolName == 'Promotor',fn($q) => $q->where('prom.id',$user->id))
+                            ->when($rolName == 'Lider',fn($q) => $q->where('prom.lider_id',$user->id))
+                            ->when($rolName == 'Coordinador',function($q) use($user){
+                                $q->join('users as lider','prom.lider_id','lider.id')
+                                ->where('lider.coordinador_id',$user->id);
+                            })
+                            ->groupBy('codigo')->get();
+
+            $paises =  [
+                'name' => 'Origen de viajeros',
+                'data' => [
+                    ...$paises->map(fn ($val) => [\strtolower($val->codigo), $val->cant])
                 ]
-            ],
-            'color' => '#0097CE',
-            'dataLabels' => [
-                'enabled' => true,
-                'format' => '{point.name}'
-            ],
-            'allAreas' => false,
-            'enableMouseTracking' => true,
-            'showInLegend' => true,
-            'data' => [
-                ...$negocios->map(fn ($val) => [\strtolower($val->codigo), $val->negocios])
-            ],
-            
-        ];
+            ];
+
+            return response()->json([$paises]);
 
 
-        return response()->json([$paises,$negocios]);
+        }else{
+            $paises = DB::table('pais', 'p')
+                ->selectRaw('distinct(p.codigo) as codigo, count(d.id) as destinos')
+                ->join('estados as es', 'p.id', 'es.pais_id')
 
+                ->join('iatas as i', 'es.id', 'i.estado_id')
+                ->join('destinos as d', 'i.id', 'd.iata_id')
+                ->groupBy('codigo')
+                ->get();
 
+            $negocios = DB::table('pais', 'p')
+                ->selectRaw('distinct(p.codigo) as codigo, count(n.id) as negocios')
+                ->join('estados as es', 'p.id', 'es.pais_id')
+                ->join('iatas as i', 'es.id', 'i.estado_id')
+                ->join('negocios as n', 'i.id', 'n.iata_id')
+                ->where('n.status', 1)
+                ->groupBy('codigo')
+                ->get();
+
+            $paises =  [
+                'name' => 'Destinos activos',
+                'states' => [
+                    'hover' => [
+                        'color' => '#0097CE',
+                    ],
+
+                ],
+
+                'color' => '#60a730',
+                'dataLabels' => [
+                    'enabled' => true,
+                    'format' => '{point.name}'
+                ],
+                'allAreas' => false,
+                'enableMouseTracking' => true,
+                'showInLegend' => true,
+                'data' => [
+                    ...$paises->map(fn ($val) => [\strtolower($val->codigo), $val->destinos])
+                ]
+            ];
+
+            $negocios = [
+                'name' => 'Negocios activos',
+                'states' => [
+                    'hover' => [
+                        'color' => '#0097CE',
+                    ]
+                ],
+                'color' => '#0097CE',
+                'dataLabels' => [
+                    'enabled' => true,
+                    'format' => '{point.name}'
+                ],
+                'allAreas' => false,
+                'enableMouseTracking' => true,
+                'showInLegend' => true,
+                'data' => [
+                    ...$negocios->map(fn ($val) => [\strtolower($val->codigo), $val->negocios])
+                ],
+
+            ];
+             return response()->json([$paises,$negocios]);
+
+        }
     }
 
     public function totalNegociosAfiliados(){
@@ -526,26 +581,66 @@ class DashboardController extends Controller
 
     }
 
-    public function getTotalReferidosRegistradoAnual(Request $request){
+    public function getTotalReferidosRegistradoAnual(Request $request,User $usuario = null){
 
-        $usuarios_registrados = DB::table("users" ,'u')
-        ->selectRaw('count(u.id) as usuarios,month(u.created_at) as mes')
-        ->join('usuario_referencia as ur','u.id','ur.referido_id')
-        ->whereRaw("ur.usuario_id = :usuario && year(u.created_at) = year(now())",[':usuario' => $request->user()->id])
-        ->groupBy('mes')
-        ->orderBy('mes','asc')
-        ->get();
+        $user = $usuario ?: $request->user();
+        
+        $usuarios_registrados = User::selectRaw('count(id) as usuarios,month(created_at) as mes')
+                                    ->whereHas('referidor',function(Builder $q) use($user){
+                                        $q->when($user->rol->nombre == 'Promotor',fn($qu) => $qu->where('id',$user->id))
+                                        ->when($user->rol->nombre == 'Lider', fn ($qu) => $q->where('lider_id', $user->id))
+                                        ->when($user->rol->nombre == 'Coordinador', function($qu) use($user){
+                                            $qu->whereHas('lider', function($query) use($user){
+                                                $query->where('coordinador_id',$user->id);
+                                            });
+                                        });
+                                    })
+                                    ->whereRaw("year(users.created_at) = year(now())")
+                                    ->groupBY('mes')
+                                    ->orderBy('mes', 'asc')
+                                    ->get();
 
 
-        $usuarios_con_consumos =
-        DB::table("users", 'u')
-        ->selectRaw('count(distinct(u.id)) as usuarios,month(u.created_at) as mes')
-        ->join('usuario_referencia as ur', 'u.id', 'ur.referido_id')
-        ->join('ventas as v', 'u.id','v.cliente_id')
-        ->whereRaw("ur.usuario_id = :usuario && year(v.created_at) = year(now())", [':usuario' => $request->user()->id])
-        ->groupBy('mes')
-        ->orderBy('mes', 'asc')
-        ->get();
+        // $usuarios_registrados = DB::table("users" ,'u')
+        // ->selectRaw('count(u.id) as usuarios,month(u.created_at) as mes')
+        // ->join('usuario_referencia as ur','u.id','ur.referido_id')
+        // ->join('users as promotor','ur.usuario_id','promotor.id')
+        // ->whereRaw("year(u.created_at) = year(now())")
+        // ->when($user->rol->nombre == 'Promotor',fn($q) => $q->where('promotor.id',$user->id))
+        // ->when($user->rol->nombre == 'Lider', fn ($q) => $q->where('promotor.lider_id', $user->id))
+        // ->groupBy('mes')
+        // ->orderBy('mes','asc')
+        // ->get();
+        // dd($usuarios_registrados);
+        $usuarios_con_consumos = User::selectRaw('count(distinct(users.id)) as usuarios,month(users.created_at) as mes')
+        ->has('consumos')
+        ->whereHas('referidor', function (Builder $q) use ($user) {
+            $q->when($user->rol->nombre == 'Promotor', fn ($qu) => $qu->where('id', $user->id))
+                ->when($user->rol->nombre == 'Lider', fn ($qu) => $q->where('lider_id', $user->id))
+                ->when($user->rol->nombre == 'Coordinador', function ($qu) use ($user) {
+                    $qu->whereHas('lider', function ($query) use ($user) {
+                        $query->where('coordinador_id', $user->id);
+                    });
+                });
+        })
+            ->whereRaw("year(users.created_at) = year(now())")
+            ->groupBY('mes')
+            ->orderBy('mes', 'asc')
+            ->get();
+        // $usuarios_con_consumos =
+        // DB::table("users", 'u')
+        // ->selectRaw('count(distinct(u.id)) as usuarios,month(u.created_at) as mes')
+        // ->join('usuario_referencia as ur', 'u.id', 'ur.referido_id')
+        // ->join('users as promotor', 'ur.usuario_id', 'promotor.id')
+        // ->join('ventas as v', 'u.id','v.cliente_id')
+        // ->whereRaw("year(v.created_at) = year(now())")
+        // ->when($user->rol->nombre == 'Promotor', fn ($q) => $q->where('promotor.id', $user->id))
+        // ->when($user->rol->nombre == 'Lider', fn ($q) => $q->where('promotor.lider_id', $user->id))
+        // ->groupBy('mes')
+        // ->orderBy('mes', 'asc')
+        // ->get();
+
+        // dd($usuarios_con_consumos);
 
         $categorias = collect([
             'Enero',
@@ -728,6 +823,336 @@ class DashboardController extends Controller
 
         return response()->json($porcentajes);
 
+    }
+
+    public function getPorcentajeViajerosPorPais(Request $request,User $usuario =  null){
+
+        $user = $usuario ?: $request->user();
+
+        $rolName = $user->rol->nombre;
+
+        if(\in_array($rolName, ['Promotor', 'Lider', 'Coordinador'])){
+
+            $paises = Pais::selectRaw("distinct(pais.pais) as pais, count(pais.id) as cant")
+                        ->join('estados as e','pais.id','e.pais_id')
+                        ->join('ciudads as c','e.id','c.estado_id')
+                        ->join('users as u','c.id', 'u.ciudad_id')
+                        ->join('usuario_referencia as ur','u.id','ur.referido_id')
+                        ->join('users as prom', 'ur.usuario_id','prom.id')
+                        ->when($rolName == 'Promotor',fn($q) => $q->where('prom.id',$user->id))
+                        ->when($rolName == 'Lider',fn($q) => $q->where('prom.lider_id',$user->id))
+                        ->when($rolName == 'Coordinador',function($q) use($user){
+                            $q->join('users as lider','prom.lider_id','lider.id')
+                            ->where('lider.coordinador_id',$user->id);
+                        })
+                        ->groupBy('pais')->get();
+
+                $data = collect([]);
+                foreach($paises as $pais){
+                    $data->push([
+                        'pais' => $pais->pais,
+                        'porcentaje' => round($pais->cant * 100 / $paises->reduce(fn(int $car, $p) => $p->cant + $car , 0),2)
+                    ]);
+                }
+            return response()->json($data);
+
+
+        }else{
+            $paises = DB::table('pais', 'p')
+                ->selectRaw('distinct(p.codigo) as codigo, count(d.id) as destinos')
+                ->join('estados as es', 'p.id', 'es.pais_id')
+
+                ->join('iatas as i', 'es.id', 'i.estado_id')
+                ->join('destinos as d', 'i.id', 'd.iata_id')
+                ->groupBy('codigo')
+                ->get();
+
+            $negocios = DB::table('pais', 'p')
+                ->selectRaw('distinct(p.codigo) as codigo, count(n.id) as negocios')
+                ->join('estados as es', 'p.id', 'es.pais_id')
+                ->join('iatas as i', 'es.id', 'i.estado_id')
+                ->join('negocios as n', 'i.id', 'n.iata_id')
+                ->where('n.status', 1)
+                ->groupBy('codigo')
+                ->get();
+
+            $paises =  [
+                'name' => 'Destinos activos',
+                'states' => [
+                    'hover' => [
+                        'color' => '#0097CE',
+                    ],
+
+                ],
+
+                'color' => '#60a730',
+                'dataLabels' => [
+                    'enabled' => true,
+                    'format' => '{point.name}'
+                ],
+                'allAreas' => false,
+                'enableMouseTracking' => true,
+                'showInLegend' => true,
+                'data' => [
+                    ...$paises->map(fn ($val) => [\strtolower($val->codigo), $val->destinos])
+                ]
+            ];
+
+            $negocios = [
+                'name' => 'Negocios activos',
+                'states' => [
+                    'hover' => [
+                        'color' => '#0097CE',
+                    ]
+                ],
+                'color' => '#0097CE',
+                'dataLabels' => [
+                    'enabled' => true,
+                    'format' => '{point.name}'
+                ],
+                'allAreas' => false,
+                'enableMouseTracking' => true,
+                'showInLegend' => true,
+                'data' => [
+                    ...$negocios->map(fn ($val) => [\strtolower($val->codigo), $val->negocios])
+                ],
+
+            ];
+             return response()->json([$paises,$negocios]);
+
+        }
+    
+    }
+
+
+    public function comisionesAltasMesPromotores(Request $request,User $usuario){
+
+        
+        $tres_mayores_comisiones_mes = DB::table('users','u')
+                                            ->join('estado_cuentas as ec', 'ec.model_id','u.id')
+                                            ->join('movimientos as m','ec.id','m.estado_cuenta_id')
+                                            ->join('divisas as d','ec.divisa_id','d.id')
+                                            ->where('ec.model_type',$usuario->model_type)
+                                            ->where('u.lider_id',$usuario->id)
+                                            ->where('m.tipo_movimiento',Movimiento::TIPO_INGRESO)
+                                            ->whereBetween('m.created_at',[now()->subMonths(1),now()]) // Mayores comisiones del ultimo mes
+                                            ->select(DB::raw("sum(m.monto) as monto, u.username,d.iso,d.simbolo"))
+                                            ->groupBy('u.username','simbolo','iso')
+                                            ->orderBy('monto','desc')
+                                            ->limit(3)
+                                            ->get();
+        
+        return response()->json([
+            'series' => $tres_mayores_comisiones_mes->map(function($val){
+                return [
+                    'y' => (Int) $val->monto,
+                    'dataLabels' => [
+                        'format' => $val->iso.' '.number_format((float) $val->monto,2,',','.').$val->simbolo
+                    ]
+                ];
+            }),
+            'categories' => $tres_mayores_comisiones_mes->pluck('username'),
+            'divisa' => ['iso' => $tres_mayores_comisiones_mes->first()?->iso ?: 'USD', 'simbolo' => $tres_mayores_comisiones_mes->first()?->simbolo ?: '$']
+        ]);
+    }
+
+
+    public function comisionesAltasMesLideres(Request $request){
+
+        $usuario = $request->user();
+
+        $tres_mayores_comisiones_mes = DB::table('users', 'u')
+            ->join('estado_cuentas as ec', 'ec.model_id', 'u.id')
+            ->join('movimientos as m', 'ec.id', 'm.estado_cuenta_id')
+            ->join('divisas as d', 'ec.divisa_id', 'd.id')
+            ->where('ec.model_type', $usuario->model_type)
+            ->where('u.coordinador_id', $usuario->id)
+            ->where('m.tipo_movimiento', Movimiento::TIPO_INGRESO)
+            ->whereBetween('m.created_at', [now()->subMonths(1), now()]) // Mayores comisiones del ultimo mes
+            ->select(DB::raw("sum(m.monto) as monto, u.username,d.iso,d.simbolo"))
+            ->groupBy('u.username', 'simbolo', 'iso')
+            ->orderBy('monto', 'desc')
+            ->limit(3)
+            ->get();
+
+        return response()->json([
+            'series' => $tres_mayores_comisiones_mes->map(function ($val) {
+                return [
+                    'y' => (int) $val->monto,
+                    'dataLabels' => [
+                        'format' => $val->iso . ' ' . number_format((float) $val->monto, 2, ',', '.') . $val->simbolo
+                    ]
+                ];
+            }),
+            'categories' => $tres_mayores_comisiones_mes->pluck('username'),
+            'divisa' => ['iso' => $tres_mayores_comisiones_mes->first()?->iso ?: 'USD', 'simbolo' => $tres_mayores_comisiones_mes->first()?->simbolo ?: '$']
+        ]);
+
+    }
+
+
+    public function totalViajerosRegistrados(Request $request, User $usuario){
+
+        $total_viajeros_mes_presente = DB::table('users','u')
+                                            ->join('usuario_referencia as ur','u.id','ur.referido_id')
+                                            ->join('users as promotor','ur.usuario_id','promotor.id')
+                                            ->when($usuario->rol->nombre === 'Promotor',fn($q) => $q->where('promotor.id',$usuario->id))
+                                            ->when($usuario->rol->nombre === 'Lider',fn($q) => $q->where('promotor.lider_id',$usuario->id))
+                                            ->where('u.activo',true)
+                                            ->whereBetween('u.created_at',[now()->firstOfMonth(),now()]) // se verifica desde el primer dia hasta el dia actual (mes presente)
+                                            ->selectRaw("count(distinct(u.id)) as viajeros")
+                                            ->first();
+
+        $total_viajeros_ultimo_mes = DB::table('users', 'u')
+        ->join('usuario_referencia as ur', 'u.id', 'ur.referido_id')
+        ->join('users as promotor', 'ur.usuario_id', 'promotor.id')
+        ->when($usuario->rol->nombre === 'Promotor', fn ($q) => $q->where('promotor.id', $usuario->id))
+        ->when($usuario->rol->nombre === 'Lider', fn ($q) => $q->where('promotor.lider_id', $usuario->id))
+        ->where('u.activo', true)
+        ->whereBetween('u.created_at', [now()->subMonth()->firstOfMonth(), now()->subMonth()->lastOfMonth()]) // primer dia a ultimo dia, mes anterior 
+        ->selectRaw("count(distinct(u.id)) as viajeros")
+        ->first();
+
+
+        $total_viajeros_penultimo_mes = DB::table('users', 'u')
+        ->join('usuario_referencia as ur', 'u.id', 'ur.referido_id')
+        ->join('users as promotor', 'ur.usuario_id', 'promotor.id')
+        ->when($usuario->rol->nombre === 'Promotor', fn ($q) => $q->where('promotor.id', $usuario->id))
+        ->when($usuario->rol->nombre === 'Lider', fn ($q) => $q->where('promotor.lider_id', $usuario->id))
+        ->where('u.activo', true)
+        ->whereBetween('u.created_at', [now()->subMonths(2)->firstOfMonth(), now()->subMonths(2)->lastOfMonth()]) // primer dia a ultimo dia, mes penultimo 
+        ->selectRaw("count(distinct(u.id)) as viajeros")
+        ->first();
+
+
+        $viajeros_activos_mes_presente = DB::table('users', 'u')
+        ->join('usuario_referencia as ur', 'u.id', 'ur.referido_id')
+        ->join('users as p', 'ur.usuario_id', 'p.id')
+        ->join('ventas as v','u.id','v.cliente_id')
+        ->when($usuario->rol->nombre === 'Promotor', fn ($q) => $q->where('p.id', $usuario->id))
+        ->when($usuario->rol->nombre === 'Lider', fn ($q) => $q->where('p.lider_id', $usuario->id))
+        ->where('u.activo', true)
+        ->whereBetween('u.created_at', [now()->firstOfMonth(), now()]) // se verifica desde el primer dia hasta el dia actual (mes presente)
+        ->selectRaw("count(distinct(u.id)) as viajeros")
+        ->first();
+
+        $viajeros_activos_ultimo_mes = DB::table('users', 'u')
+        ->join('usuario_referencia as ur', 'u.id', 'ur.referido_id')
+        ->join('users as p', 'ur.usuario_id', 'p.id')
+        ->join('ventas as v', 'u.id', 'v.cliente_id')
+        ->when($usuario->rol->nombre === 'Promotor', fn ($q) => $q->where('p.id', $usuario->id))
+        ->when($usuario->rol->nombre === 'Lider', fn ($q) => $q->where('p.lider_id', $usuario->id))
+        ->where('u.activo', true)
+        ->whereBetween('u.created_at', [now()->subMonth()->firstOfMonth(), now()->subMonth()->lastOfMonth()]) // se verifica desde el primer dia hasta el dia actual (mes presente)
+        ->selectRaw("count(distinct(u.id)) as viajeros")
+        ->first();
+
+        $viajeros_activos_penultimo_mes = DB::table('users', 'u')
+        ->join('usuario_referencia as ur', 'u.id', 'ur.referido_id')
+        ->join('users as p', 'ur.usuario_id', 'p.id')
+        ->join('ventas as v', 'u.id', 'v.cliente_id')
+        ->when($usuario->rol->nombre === 'Promotor', fn ($q) => $q->where('p.id', $usuario->id))
+        ->when($usuario->rol->nombre === 'Lider', fn ($q) => $q->where('p.lider_id', $usuario->id))
+        ->where('u.activo', true)
+        ->whereBetween('u.created_at', [now()->subMonths(2)->firstOfMonth(), now()->subMonths(2)->lastOfMonth()]) // se verifica desde el primer dia hasta el dia actual (mes presente)
+        ->selectRaw("count(distinct(u.id)) as viajeros")
+        ->first();
+        
+        $categories = collect([
+            now()->subMonths(2)->format('m-Y'), // Penultimo
+            now()->subMonths(1)->format('m-Y'),  // Ultimo
+            now()->format('m-Y') // Actual
+        ]);
+
+
+        return response()->json([
+            'categories' => $categories,
+            'viajerosRegistrados' => [
+                'name' => 'Registrados',
+                // 'colorByPoint' => true,
+                'data' => [   
+                    [
+                        'name' => 'Mes Actual',
+                        'y' => $total_viajeros_mes_presente->viajeros,
+                        'drilldown' => 'Mes Actual'
+                    ],
+                    [
+                        'name' => 'Último Mes',
+                        'y' => $total_viajeros_ultimo_mes->viajeros,
+                        'drilldown' => 'Último Mes'
+
+                    ],
+                    [
+                        'name' => 'Penúltimo Mes',
+                        'y' => $total_viajeros_penultimo_mes->viajeros,
+                        'drilldown' => 'Penúltimo Mes'
+
+                    ]
+                ]    
+                    ],
+            'viajerosRegistradosActivos' => [
+                'name' => 'Activos',
+                // 'colorByPoint' => true,
+                'data' => [
+                    [
+                        'name' => 'Mes Actual',
+                        'y' => $viajeros_activos_mes_presente->viajeros,
+                        'drilldown' => 'Mes Actual'
+                    ],
+                    [
+                        'name' => 'Último Mes',
+                        'y' => $viajeros_activos_ultimo_mes->viajeros,
+                        'drilldown' => 'Ultimo Mes'
+
+                    ],
+                    [
+                        'name' => 'Penúltimo Mes',
+                        'y' => $viajeros_activos_penultimo_mes->viajeros,
+                        'drilldown' => 'Penúltimo Mes'
+
+                    ]
+                ]
+            ]
+        ]);
+
+    }
+
+
+    public function eficaciaViajeros(Request $request,User $usuario){
+        $uso = 0;
+        $total_viajeros = $usuario->totalViajeros();
+        $viajeros_activos = $usuario->viajerosActivos();
+        if($total_viajeros > 0){
+            $uso = ($viajeros_activos * 100) / $total_viajeros;
+        }
+
+        $activos = $total_viajeros > 0 ? $usuario->viajerosActivosConsumo() * 100 / $total_viajeros : 0;
+        return response()->json([
+            'uso' => $uso,
+            'activos' => $activos
+        ]);
+    }
+
+
+    public function fetchDataCoordinador(Request $request,User $usuario){
+
+        return response()->json([
+            'totalLideres' => $usuario->lideres->count(),
+        ]);
+        
+    }
+
+
+    public function getNegociosActivos(User $usuario){
+
+        $total_invitaciones = $usuario->invitaciones->count();
+        $total_invitaciones_activas = $usuario->invitaciones->where('status',2)->count();
+
+        return response()->json([
+            'totalInvitaciones' => $total_invitaciones,
+            'totalInvitacionesAceptadas' => $total_invitaciones_activas
+        ]);
+        
     }
 
 }

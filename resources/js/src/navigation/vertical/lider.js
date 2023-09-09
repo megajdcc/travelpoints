@@ -79,7 +79,7 @@ const lider = [
     },
 
      {
-      title:'Estatus & Nivel',
+      title:'Estatus',
       icon:'fa-heart-pulse',
       route:'estatus',
       resource:'estatus',

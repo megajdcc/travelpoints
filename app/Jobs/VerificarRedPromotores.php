@@ -40,6 +40,8 @@ class VerificarRedPromotores implements ShouldQueue
 
         // Captura a todos los lideres
         $lideres = User::whereHas('rol', fn($q) => $q->where('nombre', 'Lider'))->get();
+
+        // captura a todos los coordinadores
         $coordinadores = User::whereHas('rol', fn ($q) => $q->where('nombre', 'Coordinador'))->get();
 
         foreach ($promotores as $key => $promotor) {

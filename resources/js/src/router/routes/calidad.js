@@ -548,30 +548,6 @@ export default [
    },
 
 
-   /*****************************************/
-   /* Viajeros
-   /*************************************** */
-   {
-      path:'/viajeros',
-      component:() => import('views/viajeros/index.vue'),
-      children:[
-         {
-            path:'',
-            name:'viajeros.list',
-            component:() => import('views/viajeros/list.vue'),
-            meta:{
-               pageTitle:'Viajeros',
-               resources:'Listado de viajeros',
-               action:'read',
-               breadcrumb:[
-                  {
-                     text:'Listado', active:true
-                  }
-               ]
-            }
-         }
-      ]
-   },
 
    /*****************************************/
    /* Comisiones
@@ -3645,6 +3621,21 @@ export default [
          ]
       }
    },
+
+   {
+      path:'/reports/lideres',
+      component:() => import('views/reports/lideres.vue'),
+      name:'report.lideres',
+      meta:{
+         resouorce:'reportes',
+         action:'read',
+         pageTitle:'Líderes y sus resultados',
+         breadcrumb:[
+            {text:'Listado',active:true}
+         ]
+      }
+   },
+
 
    /*****************************************/
    /* Academia

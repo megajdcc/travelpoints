@@ -186,7 +186,7 @@ export default {
       }
 
       if (store.getters['usuario/isRol']('Lider')) {
-        store.dispatch('usuario/getStatusLider')
+        store.dispatch('usuario/getStatusLider',usuario.value.id)
       }
 
       if (store.getters['usuario/isRol']('Coordinador')) {
@@ -195,9 +195,9 @@ export default {
 
     }
 
-    // onMounted(() => cargarStatus());
-
-    cargarStatus();
+    onMounted(() => {
+      cargarStatus();
+    })
 
     const getMessageStatus = (status) => {
       let mensajes =  [

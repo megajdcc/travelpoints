@@ -46,7 +46,7 @@ const coordinador = [
     },
 
     {
-      title:'Estatus & Nivel',
+      title:'Estatus',
       icon:'fa-heart-pulse',
       route:'estatus',
       resource:'estatus',
@@ -102,18 +102,22 @@ const coordinador = [
         icon: 'fa-chart-pie',
         fontAwesome:true,
         children:[
-         
+          {
+            title:'Líderes',
+            route:'report.lideres',
+            resource:'reportes',
+            action:'read',
+          },
           {
             title:'Estados de Cuenta',
             route:'report.movimientos.full',
             resource:'reportes',
             action:'read',
           },
-
-         
         ]
 
       },
+
 
       {
         title: 'Academia',

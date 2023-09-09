@@ -541,7 +541,6 @@ export default {
 
 
 		setStatusCoordinador(state,{lideres_activos}){
-				console.log(lideres_activos);
 				const {ultimo_mes,ultimo_trimestre } = lideres_activos
 
 				if(ultimo_mes >= 10){
@@ -1173,6 +1172,15 @@ export default {
 			})
 
 		},
+
+		fetchDataReportLideres({commit},datos){
+			
+			return new Promise((resolve, reject) => {
+				axios.post(`/api/reporte/fetch-data-lideres`,datos).then(({data}) => resolve(data)).catch(e => reject(e))
+			})
+
+		},
+
 
 		downloadReportPromotores(_,datos){
 

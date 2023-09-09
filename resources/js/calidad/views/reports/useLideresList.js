@@ -3,17 +3,15 @@ import store from '@/store'
 import {ref,watch} from 'vue'
 
 import useFilterTable from '@core/utils/useFilterTable'
-export default function usePromotoresList(){
+export default function useLideresList(){
 
   const tableColumns = ref([
-    { key:'username',label:"Promotor",sortable:true},
-    { key: 'total_viajeros_registrados', sortable: false,label:"Total registrados" },
-    { key: 'total_viajeros_activos', sortable: false,label:"Total activos" },
-    { key: 'ultima_activacion', sortable: false,label:"última Activación"},
-    { key: 'activaciones', sortable: true,label:'Activaciones' },
+    { key:'username',label:"Lider",sortable:true},
+    { key: 'total_promotores', sortable: false,label:"Promotores Activos"},
+    { key: 'status', sortable: false,label:"Status" },
+    { key: 'comision', sortable: false,label:"Comisiones ganadas"},
   ])
 
-  const filtermes  = ref(null)
   const {
     perPageOptions,
       currentPage,
@@ -28,29 +26,29 @@ export default function usePromotoresList(){
       items,
   } = useFilterTable();
 
-  watch(filtermes,() => refetchData())
 
   
   const fetchData = (ctx,next) => {
 
-    store.dispatch('usuario/fetchDataReportPromotores',{
+    store.dispatch('usuario/fetchDataReportLideres',{
+
       page:currentPage.value,
       sortBy:sortBy.value,
       isSortDirDesc:isSortDirDesc.value,
       perPage:perPage.value,
       q:searchQuery.value,
-      mes:filtermes.value
 
-    }).then(({total:all,promotores}) => {
+    }).then(({total:all,lideres}) => {
       total.value = all
-      next(promotores)
+      next(lideres)
     })
 
   } 
 
 
   const descargar = () => {
-    store.dispatch('usuario/downloadReportPromotores',{
+
+    store.dispatch('usuario/downloadReportLider',{
       page:currentPage.value,
       sortBy:sortBy.value,
       isSortDirDesc:isSortDirDesc.value,
@@ -80,20 +78,19 @@ export default function usePromotoresList(){
 
   return {
     perPageOptions,
-      currentPage,
-      perPage,
-      searchQuery,
-      sortBy,
-      isSortDirDesc,
-      refTable,
-      total,
-      dataMeta,
-      refetchData,
-      items,
-      tableColumns,
-      fetchData,
-      filtermes,
-      descargar
-
+    currentPage,
+    perPage,
+    searchQuery,
+    sortBy,
+    isSortDirDesc,
+    refTable,
+    total,
+    dataMeta,
+    refetchData,
+    items,
+    tableColumns,
+    fetchData,
+    descargar
   }
+
 }

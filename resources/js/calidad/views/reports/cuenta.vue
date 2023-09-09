@@ -15,7 +15,7 @@
 
             <template #header-table>
               <b-card>
-                <b-container fluid>
+                <b-container fluid class="px-0">
                   <b-row>
                     <b-col cols="12" md="6">
                       <b-form-group label="Filtre por rango de fechas">

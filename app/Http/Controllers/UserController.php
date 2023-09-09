@@ -1800,8 +1800,6 @@ class UserController extends Controller
           
             $promotor->avatar = $promotor->getAvatar();
             $promotor->portada = $promotor->getPortada();
-
-                // dd($promotor);
                 $fecha_ultima = $promotor->referidos->where('activo', true)->sortByDesc('created_at')->pluck('created_at')->first();
                 $promotor->ultimaActivacion = $fecha_ultima ? Carbon::now()->diffInDays($fecha_ultima) : 0;
                 // $promotor->ultimaActivacion = $promotor->ultimaActivacion();
@@ -1825,6 +1823,35 @@ class UserController extends Controller
             'total' => $pagination->total(),
             'promotores' => $promotores
         ]);
+    }
+
+
+    public function fetchDataLideresReport(Request $request){
+
+        $usuario = $request->user();
+        $filtro = $request->all();
+        $searchs = collect(['username', 'nombre', 'apellido', 'email', 'bio', 'direccion']);
+
+        $pagination = $usuario->allLideres(true,$searchs,$filtro); 
+
+        $lideres = collect($pagination->items())->each(function($lider) {
+            $lider->avatar = $lider->getAvatar();
+            $lider->portada = $lider->getPortada();
+            $fecha_ultima = $lider->promotores->where('activo', true)->sortByDesc('created_at')->pluck('created_at')->first();
+            $lider->ultimaActivacion = $fecha_ultima ? Carbon::now()->diffInDays($fecha_ultima) : 0;
+
+            $lider->comision = $lider->cuenta->whereHas('movimientos' ,function($q){
+                $q->where('tipo_movimiento',Movimiento::TIPO_INGRESO)
+                ->where('concepto','!=', 'Conversión de divisa');
+            });
+           
+        });
+
+        return response()->json([
+            'total' => $pagination->total(),
+            'lideres' => $lideres
+        ]);
+
     }
 
 

@@ -1159,6 +1159,14 @@ class User extends Authenticatable
         return $this->hasMany(Invitacion::class,'usuario_id','id');
     }
 
+    public function toggleLider(int $lider_nuevo) :bool{
+        
+        return $this->update([
+            'lider_id' => $lider_nuevo
+        ]);
+
+    }
+
     public function cargar(): User{
         $this->porcentaje_perfil = $this->getFillPercentage();
         $this->tokens;

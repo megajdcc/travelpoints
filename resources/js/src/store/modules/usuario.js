@@ -1242,6 +1242,16 @@ export default {
 					resolve(data)
 				}).catch(e => reject(e))
 			})
+		},
+
+		toggleLider({commit},form){
+
+			return new Promise((resolve, reject) => {
+				axios.put(`/api/promotor/${form.promotor_id}/toggle-lider`,form).then(({data}) => {
+					resolve(data)
+				}).catch(e => reject(e))
+			})
+			
 		}
 
 

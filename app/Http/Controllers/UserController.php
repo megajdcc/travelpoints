@@ -1933,5 +1933,25 @@ class UserController extends Controller
         return response()->json($coordinador->lideres);
     }
 
+    public function toggleLider(Request $request,User $promotor){
+
+        $datos = $request->validate([
+            'lider_actual_id' => 'required',
+            'lider_nuevo_id' => 'required',
+        ]);
+
+        try {
+            DB::beginTransaction();
+                $result = $promotor->toggleLider((int) $datos['lider_nuevo_id']);
+            DB::commit();
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            $result = false;
+        }
+
+        return response()->json(['result' => $result]);
+
+    }
+
 
 }

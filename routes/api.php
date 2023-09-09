@@ -160,6 +160,8 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
 
     Route::put('usuarios/{usuario}/update-comision-promotors',[UserController::class,'updateComisionPromotor']);
     Route::get('coordinador/{coordinador}/fetch-lideres',[UserController::class,'fetchLideresCoordinador']);
+    Route::put('promotor/{promotor}/toggle-lider',[UserController::class,'toggleLider']);
+
     /*****************************/
     /* TELEFONOS
     /*****************************/

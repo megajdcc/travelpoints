@@ -108,10 +108,16 @@
             
             <!-- Column: Actions -->
             <template #cell(actions)="{item}">
-                <b-button size="sm" variant="primary" :to="{name:'promotor.ficha',params:{id:item.id}}">
-                  <font-awesome-icon icon="fas fa-user" />
-                  Ver Promotor
-                </b-button>
+              <b-button-group size="sm">
+                 <b-button variant="primary"  v-b-tooltip.hover.left.v-primary title="Ver ficha" :to="{ name: 'promotor.ficha', params: { id: item.id } }">
+                    <font-awesome-icon icon="fas fa-id-card-clip" />
+                  </b-button>
+
+                  <b-button variant="outline-primary" @click="cambiarLider(item)" title="Cambiar Lider" v-b-tooltip.hover.left.v-primary v-if="$store.getters['usuario/isRol']('Coordinador') && item.lider_id">
+                    <font-awesome-icon icon="fas fa-person-arrow-up-from-line" />
+                  </b-button>
+              </b-button-group>
+               
             </template>
            
 
@@ -297,6 +303,51 @@
         </b-form>
       </validation-observer>
     </b-sidebar>
+
+    <b-modal :visible="showModalToggleLider" title="Cambiar Lider" @hide="toggleModalChangeLider()" hide-footer  centered no-close-on-backdrop>
+      <validation-observer ref="formValidate" #default="{handleSubmit}">
+        <b-form @submit.prevent="handleSubmit(toggleLider)">
+          <b-container>
+             <b-row>
+                <b-col cols="12">
+                  <b-form-group label="Lider actual">
+                    <validation-provider rules="required" name="lider_actual_id" #default="{errors,valid}">
+                      <v-select v-model="formToggleLider.lider_actual_id" :options="lideresCoordinador" :reduce="option => option.id" label="nombre" disabled>
+                      </v-select>
+                      <b-form-invalid-feedback :state="valid">
+                        {{ errors[0] }}
+                      </b-form-invalid-feedback>
+                    </validation-provider>
+                  </b-form-group>
+
+                  <b-form-group label="Lider Nuevo">
+                      <validation-provider rules="required" name="lider_nuevo_id" #default="{ errors, valid }">
+                        <v-select 
+                          v-model="formToggleLider.lider_nuevo_id" 
+                          :options="lideresCoordinador" 
+                          :selectable="(option) => option.id != formToggleLider.lider_actual_id" 
+                          :reduce="option => option.id" 
+                          label="nombre">
+                        </v-select>
+                        <b-form-invalid-feedback :state="valid">
+                          {{ errors[0] }}
+                        </b-form-invalid-feedback>
+                      </validation-provider>
+                    </b-form-group>
+                </b-col>
+
+                <b-col cols="12" >
+                  <b-button type="submit" title="Guardar" v-loading="loading" variant="primary" :disabled="!formToggleLider.lider_nuevo_id">
+                    <font-awesome-icon icon="fas fa-save"/>
+                    {{ $t('Cambiar') }}
+                  </b-button>
+                </b-col>
+              </b-row>
+          </b-container>
+           
+        </b-form>
+      </validation-observer>
+    </b-modal>
  
   </section>
 
@@ -339,7 +390,9 @@ import {
   BForm,
   BFormGroup,
   BFormInvalidFeedback,
-  BButtonGroup
+  BButtonGroup,
+  VBTooltip,
+  BModal
 
 } from 'bootstrap-vue';
 
@@ -376,11 +429,16 @@ export default {
     ValidationProvider,
     vSelect,
     BButtonGroup,
+    BModal,
+
     StatisticCardHorizontal
 
 
   },
 
+  directives:{
+    'b-tooltip':VBTooltip
+  },
 
   props:{
     'liderId':{
@@ -421,8 +479,14 @@ export default {
     const formValidate =ref(null)
     const formValidatePromotor = ref(null)
     const formValidateUser =ref(null)
-
+    const showModalToggleLider = ref(false)
     const showFormularioPromotor = ref(false)
+
+    const formToggleLider = ref({
+      lider_actual_id:null,
+      lider_nuevo_id:null,
+      promotor_id:null
+    })
 
     const form = ref({
       username:'',
@@ -646,6 +710,33 @@ export default {
     }
 
 
+    const toggleModalChangeLider = ()  => showModalToggleLider.value = !showModalToggleLider.value
+    const cambiarLider = (promotor) => {
+      formToggleLider.value.lider_actual_id = promotor.lider_id
+      formToggleLider.value.promotor_id = promotor.id
+
+
+      toggleModalChangeLider();
+    } 
+
+    const toggleLider = () => {
+      store.dispatch('usuario/toggleLider',formToggleLider.value).then(({result}) => {
+
+        if(result){
+          toast.success('Se ha cambiado con éxito al lider')
+        }else{
+          toast.info('No se pudo cambiar al lider')
+        }
+
+      }).catch(e => {
+        console.log(e)
+        if(e.response.status === 422){
+          formValidate.value.setErrors(e.response.data.errors)
+        }
+      })
+    }
+
+
     return {
       mostrarAboutUsuario,
       crearPromotor,
@@ -682,6 +773,11 @@ export default {
       usuario,
       getColorsStatus,
       lideresCoordinador,
+      cambiarLider,
+      showModalToggleLider,
+      toggleModalChangeLider,
+      formToggleLider,
+      toggleLider,
       getNivels: (nivel = null) => {
         if(nivel){
           return nivel.nivel == null ? 'No activo' : nivel.nivel + 1

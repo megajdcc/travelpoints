@@ -16,9 +16,8 @@ export default function usePromotoresList(lider){
       { key: 'activaciones', sortable: true,label:'Activaciones',sortKey:'lider_id' },
       { key: 'lider_id', sortable: true,label:'Lider Asignado',sortKey:'lider_id' },
       { key: 'destino_id', sortable: true,label:'Destino Asignado',sortKey:'destino_id' },
-      { key: 'actions',label:"Contacto", sortable:true, sortKey:'comision',sortBy:'comision' },
+      { key: 'actions',label:"Actions", sortable:true, sortKey:'comision',sortBy:'comision' },
   ])
-
 
   const {
       perPageOptions,
@@ -96,7 +95,7 @@ export default function usePromotoresList(lider){
       tableColumns,
       fetchData,
       eliminar,
-      quitarLider
+      quitarLider,
   }
 
 

@@ -1722,11 +1722,46 @@ class UserController extends Controller
 
     }
 
+  
+
+   
+
+    public function fetchDataPromotoresReport(Request $request){
+
+        $filtro = $request->all();
+        $searchs = collect(['username','nombre','apellido','email','bio','direccion']);
+        $usuario = $request->user();
+
+        $pagination = $usuario->allPromotores($searchs,$filtro);
+            
+        $promotores = collect($pagination->items())->each(function($promotor){
+          
+            $promotor->avatar = $promotor->getAvatar();
+            $promotor->portada = $promotor->getPortada();
+                $fecha_ultima = $promotor->referidos->where('activo', true)->sortByDesc('created_at')->pluck('created_at')->first();
+                $promotor->ultimaActivacion = $fecha_ultima ? Carbon::now()->diffInDays($fecha_ultima) : 0;
+                $promotor->totalActivaciones = $promotor->nivel['activaciones'];
+                $promotor->totalRegistros = $promotor->referidos->count();
+                $promotor->ultimoRegistro = $promotor->ultimoRegistro();
+                $promotor->activaciones = [
+                    'acumulada' => $promotor->total_viajeros_registrados,
+                    'mes' => $promotor->total_viajeros_activos_mes,
+                    'promedio' =>  $promotor->total_viajeros_registrados > 0 ? $promotor->total_viajeros_activos_mes * 100 / $promotor->total_viajeros_registrados : 0
+                ];
+        });
+
+        return response()->json([
+            'total' => $pagination->total(),
+            'promotores' => $promotores
+        ]);
+
+    }
+
     public function descargarPromotoresReport(Request $request){
         $usuario = $request->user();
         $filtro = $request->all();
         $searchs = collect(['username', 'nombre', 'apellido', 'email', 'bio', 'direccion']);
-        $pagination = $usuario->allPromotores(true, $searchs, $filtro);
+        $pagination = $usuario->allPromotores($searchs, $filtro);
 
         $promotores = collect($pagination->items())->each(function ($promotor) {
 
@@ -1786,7 +1821,35 @@ class UserController extends Controller
 
     }
 
-    public function descargarLideresReport(Request $request){
+
+    public function fetchDataLideresReport(Request $request){
+
+        $usuario = $request->user();
+        $filtro = $request->all();
+        $searchs = collect(['username', 'nombre', 'apellido', 'email', 'bio', 'direccion']);
+
+        $pagination = $usuario->allLideres($searchs,$filtro); 
+
+        $lideres = collect($pagination->items())->each(function($lider) {
+            $lider->avatar = $lider->getAvatar();
+            $lider->portada = $lider->getPortada();
+            $fecha_ultima = $lider->promotores->where('activo', true)->sortByDesc('created_at')->pluck('created_at')->first();
+            $lider->ultimaActivacion = $fecha_ultima ? Carbon::now()->diffInDays($fecha_ultima) : 0;
+
+            $lider->comision = $lider->cuenta->divisa->iso.' '.number_format((float) $lider->comision,2,',','.').' '.$lider->cuenta->divisa->simbolo;
+            $lider->status = $lider->getStatus();
+           
+        });
+
+        return response()->json([
+            'total' => $pagination->total(),
+            'lideres' => $lideres
+        ]);
+
+    }
+
+    public function descargarLideresReport(Request $request)
+    {
         $usuario = $request->user();
         $filtro = $request->all();
         $searchs = collect(['username', 'nombre', 'apellido', 'email', 'bio', 'direccion']);
@@ -1833,72 +1896,6 @@ class UserController extends Controller
             'url' => Storage::url('public/reportes/' . $nombre),
             'filename' => $nombre
         ]);
-    }
-
-
-    public function fetchDataPromotoresReport(Request $request){
-
-        $filtro = $request->all();
-        $searchs = collect(['username','nombre','apellido','email','bio','direccion']);
-        $usuario = $request->user();
-
-
-        $pagination = $usuario->allPromotores(true,$searchs,$filtro);
-            
-        $promotores = collect($pagination->items())->each(function($promotor){
-          
-            $promotor->avatar = $promotor->getAvatar();
-            $promotor->portada = $promotor->getPortada();
-                $fecha_ultima = $promotor->referidos->where('activo', true)->sortByDesc('created_at')->pluck('created_at')->first();
-                $promotor->ultimaActivacion = $fecha_ultima ? Carbon::now()->diffInDays($fecha_ultima) : 0;
-                // $promotor->ultimaActivacion = $promotor->ultimaActivacion();
-                $promotor->totalActivaciones = $promotor->nivel['activaciones'];
-                $promotor->totalRegistros = $promotor->referidos->count();
-                $promotor->ultimoRegistro = $promotor->ultimoRegistro();
-                // $promotor->activaciones = [
-                //     'acumulada' => $promotor->nivel['activaciones'],
-                //     'mes' => $promotor->activacionesMes(),
-                //     'promedio' => $promotor->nivel['activaciones'] > 0 ? $promotor->activacionesMes() * 100 / $promotor->nivel['activaciones'] : 0
-                // ];
-
-                 $promotor->activaciones = [
-                    'acumulada' => $promotor->total_viajeros_registrados,
-                    'mes' => $promotor->total_viajeros_activos_mes,
-                    'promedio' =>  $promotor->total_viajeros_registrados > 0 ? $promotor->total_viajeros_activos_mes * 100 / $promotor->total_viajeros_registrados : 0
-                ];
-        });
-
-        return response()->json([
-            'total' => $pagination->total(),
-            'promotores' => $promotores
-        ]);
-    }
-
-
-    public function fetchDataLideresReport(Request $request){
-
-        $usuario = $request->user();
-        $filtro = $request->all();
-        $searchs = collect(['username', 'nombre', 'apellido', 'email', 'bio', 'direccion']);
-
-        $pagination = $usuario->allLideres($searchs,$filtro); 
-
-        $lideres = collect($pagination->items())->each(function($lider) {
-            $lider->avatar = $lider->getAvatar();
-            $lider->portada = $lider->getPortada();
-            $fecha_ultima = $lider->promotores->where('activo', true)->sortByDesc('created_at')->pluck('created_at')->first();
-            $lider->ultimaActivacion = $fecha_ultima ? Carbon::now()->diffInDays($fecha_ultima) : 0;
-
-            $lider->comision = $lider->cuenta->divisa->iso.' '.number_format((float) $lider->comision,2,',','.').' '.$lider->cuenta->divisa->simbolo;
-            $lider->status = $lider->getStatus();
-           
-        });
-
-        return response()->json([
-            'total' => $pagination->total(),
-            'lideres' => $lideres
-        ]);
-
     }
 
 

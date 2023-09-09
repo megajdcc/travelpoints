@@ -1057,7 +1057,7 @@ class User extends Authenticatable
 
     }   
 
-    public function allPromotores(bool $paginado = false, Collection|NullType $searchs = null,array $filtro = [])
+    public function allPromotores(Collection|NullType $searchs = null,array $filtro = [])
     {   
         $primer_dia = null;
         $ultimo_dia = null;
@@ -1066,56 +1066,46 @@ class User extends Authenticatable
             $primer_dia = (new Carbon(new \DateTime($filtro['mes'])))->firstOfMonth();
             $ultimo_dia = (new Carbon(new \DateTime($filtro['mes'])))->lastOfMonth();
         }
-
-        if($paginado){
-            $resultado = User::where('lider_id', $this->id)
-                ->withCount(['referidos as total_viajeros_registrados' => function ($query) use ($primer_dia, $ultimo_dia) {
-                        $query->when(!is_null($primer_dia) && !is_null($ultimo_dia), function ($q) use ($primer_dia, $ultimo_dia) {
-                            $q->whereBetween('usuario_referencia.created_at', [$primer_dia, $ultimo_dia]);
-                        });
-                    },
-                    'referidos as total_viajeros_activos' => function ($query) use ($primer_dia, $ultimo_dia) {
-                        $query->where('activo', true)
-                            ->when(!is_null($primer_dia) && !is_null($ultimo_dia), function ($q) use ($primer_dia, $ultimo_dia) {
-                                $q->whereBetween('usuario_referencia.created_at', [$primer_dia, $ultimo_dia]);
-                            });
-                    },
-                    'referidos as total_viajeros_activos_mes' => function ($query) use ($primer_dia, $ultimo_dia) {
-                        $query->where('activo', true)
-                            ->when(is_null($primer_dia) && is_null($ultimo_dia), function ($q) {
-                                $q->whereBetween('usuario_referencia.created_at', [now()->firstOfMonth(), now()->lastOfMonth()]);
-                            })
-                            ->when(!is_null($primer_dia) && !is_null($ultimo_dia), function ($q) use ($primer_dia, $ultimo_dia) {
-                                $q->whereBetween('usuario_referencia.created_at', [$primer_dia, $ultimo_dia]);
-                            });
-                    }
-                ])
-                ->with(['referidos' => function ($query) use ($primer_dia, $ultimo_dia) {
+        $resultado = User::when($this->rol->nombre == 'Lider',fn($q)  => $q->where('lider_id', $this->id))
+            ->when($this->rol->nombre == 'Coordinador', function($q) {
+                $q->whereHas('lider',function($query) {
+                    $query->where('coordinador_id',$this->id);
+                });
+            })
+            ->withCount(['referidos as total_viajeros_registrados' => function ($query) use ($primer_dia, $ultimo_dia) {
+                    $query->when(!is_null($primer_dia) && !is_null($ultimo_dia), function ($q) use ($primer_dia, $ultimo_dia) {
+                        $q->whereBetween('usuario_referencia.created_at', [$primer_dia, $ultimo_dia]);
+                    });
+                },
+                'referidos as total_viajeros_activos' => function ($query) use ($primer_dia, $ultimo_dia) {
                     $query->where('activo', true)
                         ->when(!is_null($primer_dia) && !is_null($ultimo_dia), function ($q) use ($primer_dia, $ultimo_dia) {
                             $q->whereBetween('usuario_referencia.created_at', [$primer_dia, $ultimo_dia]);
+                        });
+                },
+                'referidos as total_viajeros_activos_mes' => function ($query) use ($primer_dia, $ultimo_dia) {
+                    $query->where('activo', true)
+                        ->when(is_null($primer_dia) && is_null($ultimo_dia), function ($q) {
+                            $q->whereBetween('usuario_referencia.created_at', [now()->firstOfMonth(), now()->lastOfMonth()]);
                         })
-                        ->orderBy('usuario_referencia.created_at', 'desc')
-                        ->take(1); // Obtener solo el primer resultado (última fecha)
-                }])
-                ->where(fn ($q) => $searchs->each(fn ($s) => $q->orWhere($s, 'LIKE', "%{$filtro['q']}%", 'OR')))
-                ->orderBy($filtro['sortBy'], $filtro['isSortDirDesc'] ? 'desc' : 'asc')
-                ->paginate($filtro['perPage'] ?: 1000);
-
-        }else{
-            $resultado = User::whereHas('lider',fn(Builder $q) => $q->where('id', $this->id))
-            ->addSelect([
-                'activacions' => function($query) {
-                        $query->selectRaw('count(distinct(u.id)) as activacions')
-                        ->from('users as u')
-                        ->join('usuario_referencia as ur','u.id','ur.referido_id')
-                        ->where('u.activo',true)
-                        ->whereColumn('ur.usuario_id','users.id');
+                        ->when(!is_null($primer_dia) && !is_null($ultimo_dia), function ($q) use ($primer_dia, $ultimo_dia) {
+                            $q->whereBetween('usuario_referencia.created_at', [$primer_dia, $ultimo_dia]);
+                        });
                 }
             ])
-            ->orderBy('activacions','desc')
-            ->get();
-        }
+            ->with(['referidos' => function ($query) use ($primer_dia, $ultimo_dia) {
+                $query->where('activo', true)
+                    ->when(!is_null($primer_dia) && !is_null($ultimo_dia), function ($q) use ($primer_dia, $ultimo_dia) {
+                        $q->whereBetween('usuario_referencia.created_at', [$primer_dia, $ultimo_dia]);
+                    })
+                    ->orderBy('usuario_referencia.created_at', 'desc')
+                    ->take(1); // Obtener solo el primer resultado (última fecha)
+            }])
+            ->where(fn ($q) => $searchs->each(fn ($s) => $q->orWhere($s, 'LIKE', "%{$filtro['q']}%", 'OR')))
+            ->orderBy($filtro['sortBy'], $filtro['isSortDirDesc'] ? 'desc' : 'asc')
+            ->paginate($filtro['perPage'] ?: 1000);
+
+        
 
 
        return $resultado;

@@ -1132,6 +1132,15 @@ class User extends Authenticatable
 
         if($paginado) {
             $resultado = User::where('coordinador_id', $this->id)
+                ->addSelect([
+                    'comision' => EstadoCuenta::join('movimientos as m','estado_cuentas.id','m.estado_cuenta_id')
+                                    ->selectRaw('sum(m.monto) as comision')
+                                    ->where('model_type',"App\\Models\\User")
+                                    ->whereColumn('model_id','users.id')
+                                    ->where('m.concepto','!=', 'Conversión de divisa')
+                                    ->where('tipo_movimiento', Movimiento::TIPO_INGRESO)
+                                  
+                ])
                 ->withCount([
                     'promotores as total_promotores' => function ($query) use ($primer_dia, $ultimo_dia) {
                         $query->when(!is_null($primer_dia) && !is_null($ultimo_dia), function ($q) use ($primer_dia, $ultimo_dia) {
@@ -1152,7 +1161,17 @@ class User extends Authenticatable
                 ->paginate($filtro['perPage'] ?: 1000);
         } else {
             $resultado = User::whereHas('coordinador', fn (Builder $q) => $q->where('id', $this->id))
+                        ->addSelect([
+                            'comision' => EstadoCuenta::join('movimientos as m', 'estado_cuentas.id', 'm.estado_cuenta_id')
+                                ->selectRaw('sum(m.monto) as comision')
+                                ->where('model_type', "App\\Models\\User")
+                                ->whereColumn('model_id', 'users.id')
+                                ->where('m.concepto', '!=', 'Conversión de divisa')
+                                ->where('tipo_movimiento', Movimiento::TIPO_INGRESO)
+                        ])
                 ->get();
+
+               
         }
 
         return $resultado;

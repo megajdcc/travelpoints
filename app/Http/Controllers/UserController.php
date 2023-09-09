@@ -1840,10 +1840,8 @@ class UserController extends Controller
             $fecha_ultima = $lider->promotores->where('activo', true)->sortByDesc('created_at')->pluck('created_at')->first();
             $lider->ultimaActivacion = $fecha_ultima ? Carbon::now()->diffInDays($fecha_ultima) : 0;
 
-            $lider->comision = $lider->cuenta->whereHas('movimientos' ,function($q){
-                $q->where('tipo_movimiento',Movimiento::TIPO_INGRESO)
-                ->where('concepto','!=', 'Conversión de divisa');
-            });
+            $lider->comision = $lider->cuenta->divisa->iso.' '.number_format((float) $lider->comision,2,',','.').' '.$lider->cuenta->divisa->simbolo;
+
            
         });
 

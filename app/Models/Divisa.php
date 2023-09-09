@@ -117,8 +117,12 @@ class Divisa extends Model
             throw new \RuntimeException('No se ha encontrado una divisa principal');
         }
 
-        $montoIntermedio = $monto / $divisaOrigen->tasa;
-        $montoDestino = $montoIntermedio * $divisaDestino->tasa;
+        if($divisaPrincipal->id === $divisaOrigen->id){
+            $montoDestino = $monto * $divisaDestino->tasa;
+        }else{
+            $montoIntermedio = $monto / $divisaOrigen->tasa;
+            $montoDestino = $montoIntermedio * $divisaDestino->tasa;
+        }
 
         return $montoDestino;
     }

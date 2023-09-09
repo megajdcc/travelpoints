@@ -68,7 +68,6 @@ trait hasCuenta
          $saldo  = $this->cuenta->saldo;
          
          $new_saldo = Divisa::cambiar($this->cuenta->divisa,$divisa,$saldo);
-         // $new_saldo = $this->cuenta->divisa->convertir($divisa,$saldo);
 
          $this->cuenta->divisa_id = $divisa->id;
          $this->cuenta->save();
@@ -80,10 +79,6 @@ trait hasCuenta
             concepto: 'Conversión de divisa',
             conversion:true
          );
-
-         // $this->cuenta->saldo = $new_saldo;
-         // $this->cuenta->save();
-
          return $movimiento;
       }
 

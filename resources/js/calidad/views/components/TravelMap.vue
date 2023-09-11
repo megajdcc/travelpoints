@@ -5,14 +5,13 @@
 
           <GmapMap
               :center="origenMap"
-              :zoom="16"
+              :zoom="zoom"
               map-type-id="terrain"
               style="width: 100%; height: 600px"
               :options="{ styles: stylosMap, gestureHandling:'greedy' }"
               ref="refMap"
-              @zoom_changed="zoomChange"
+              @zoom_changed="zoomChange" 
             >
-                
             <GmapMarker
               :visible="true"
               :draggable="false"
@@ -26,7 +25,7 @@
                 lng: Number(travel.lng)
               }"
             >
-            <GmapInfoWindow :options="optionsPlace(travel)"  :opened="showInfoWindow" >
+            <GmapInfoWindow  :opened="showInfoWindow" :options="optionsPlace(travel)" >
             </GmapInfoWindow>
           </GmapMarker>
           
@@ -97,7 +96,8 @@ export default {
     const options_map = ref({})
     const refMap = ref(null); 
     const travels = ref([]);
-    const showInfoWindow = ref(true);
+    const showInfoWindow = ref(false);
+    const zoom = ref(16)
     const initCoord = ref(false);
     const origin = ref({
       lat:0,
@@ -128,8 +128,13 @@ export default {
         cargarForm()
     })
 
-    const zoomChange = ( zoom ) => {
-      showInfoWindow.value = zoom >= 13 
+    const zoomChange = ( val ) => {
+      zoom.value = val
+      if(val < 13){
+        showInfoWindow.value = false
+      }else{
+        showInfoWindow.value = true
+      }
     }   
 
 
@@ -183,6 +188,9 @@ export default {
     })
 
     onMounted(() => {
+      setTimeout(() => {
+        showInfoWindow.value = true
+      },1500)
       origin.value.lat = coords.value.latitude != 0 ? coords.value.latitude : Number(origen.value.lat)
       origin.value.lng = coords.value.longitude != 0 ? coords.value.longitude : Number(origen.value.lng)
 
@@ -204,8 +212,9 @@ export default {
       loading:computed(() => store.state.loading),
       iconMap,
       iconMapa,
-      zoomChange,
       stylosMap,
+      zoom,
+      zoomChange,
       options_map,
       refMap,
       travels,
@@ -218,7 +227,7 @@ export default {
         disableAutoPan:true
       }),
 
-      promedioLatitud: computed(() => {
+      promedioLatitud:computed(() => {
           let sum = 0;
 
           travels.value.forEach((val) => {

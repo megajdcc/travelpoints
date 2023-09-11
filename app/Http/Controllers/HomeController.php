@@ -172,7 +172,7 @@ class HomeController extends Controller
 
         $atracciones = Atraccion::get();
         foreach ($atracciones as $key => $atraccion) {
-            // $atraccion->cargar();
+            $atraccion->ruta = "/Atraccions?q={$atraccion->nombre}";
             $atraccion->tipo = 'Atracción';
 
         }

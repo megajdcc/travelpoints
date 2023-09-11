@@ -22,7 +22,7 @@
       <!-- <destinos :destinos="destinos" /> -->
 
 
-      <b-tabs content-class="mt-3" nav-class="" ref="refTabs">
+      <b-tabs content-class="mt-3" nav-class="" ref="refTabs" lazy>
          <b-tab active>
 
             <template #title>
@@ -46,7 +46,7 @@
             <cupones :destino="destino" v-if="destino_id" id="cupones-list" ref="destinoElem"  />
 
          </b-tab>
-         <b-tab title="Maps" lazy>
+         <b-tab title="Maps">
 
             <template #title>
                <font-awesome-icon icon="fas fa-map-location-dot" class="mr-1" />

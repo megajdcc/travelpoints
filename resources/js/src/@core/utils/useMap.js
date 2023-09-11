@@ -7,7 +7,7 @@ export default function useMap(){
   const iconMap =  ref({
       // path: iconMapa,
       fillColor: "#e01283",
-      fillOpacity: 1,
+      fillOpacity: .5,
       strokeWeight: 0,
       rotation: 0,
       scale: .1,

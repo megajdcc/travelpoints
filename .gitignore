@@ -17,3 +17,4 @@ public/service-worker.js
 public/build/*
 cron-log.txt
 public/hot
+.phpunit.result.cache

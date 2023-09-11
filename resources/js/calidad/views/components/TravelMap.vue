@@ -97,7 +97,7 @@ export default {
     const options_map = ref({})
     const refMap = ref(null); 
     const travels = ref([]);
-    const showInfoWindow = ref(false);
+    const showInfoWindow = ref(true);
     const initCoord = ref(false);
     const origin = ref({
       lat:0,

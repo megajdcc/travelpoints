@@ -177,14 +177,13 @@ class HomeController extends Controller
 
         }
 
-        $negocios = Negocio::where('status', 1)->get();
+        $negocios = Negocio::where('status', 1)->where('publicado',true)->get();
 
         foreach ($negocios as $key => $negocio) {
             $negocio->ruta = "/{$negocio->url}";
             $negocio->tipo = 'Negocio';
             // $negocio->opinions;
             // $negocio->imagen = count($negocio->imagenes) > 0 ? "/storage/negocios/fotos/{$negocio->imagenes[0]->imagen}" : '';
-
             // $negocio->cargar();
         }
 

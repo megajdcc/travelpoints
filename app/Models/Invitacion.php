@@ -24,7 +24,6 @@ class Invitacion extends Model
 
     public function cargar(){
         $this->usuario?->cargar();
-        
     }
 
     

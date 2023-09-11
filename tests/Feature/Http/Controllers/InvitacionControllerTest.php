@@ -65,7 +65,7 @@ class InvitacionControllerTest extends TestCase
         $mailable->assertTo($invitacion->email)
         ->assertFrom($invitacion->usuario->email, $invitacion->usuario->getNombreCompleto())
         ->assertHasSubject('Invitación a formar Parte de Travel Points')
-        ->assertSeeInText($invitacion->email);
+        ->assertSeeInText($invitacion->mensaje);
     }
 
 
@@ -133,7 +133,8 @@ class InvitacionControllerTest extends TestCase
 
 
     public function test_fetch_data_with_invitacion_status_acepted(){
-        $invitacion_id = Invitacion::factory()->create(['status' => 2])->id;
+        $invitacion_id = Invitacion::factory()->for(User::factory(),'usuario')->create(['status' => 2])->id;
+
         $this->getJson("/api/invitacions/{$invitacion_id}/fetch-data")
         ->assertStatus(204);
     }

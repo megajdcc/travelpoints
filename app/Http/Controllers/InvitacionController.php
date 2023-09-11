@@ -84,7 +84,7 @@ class InvitacionController extends Controller
     public function fetch(Invitacion $invitacion){
 
         $invitacion->cargar();
-
+        
         return response()->json($invitacion->status == 1 ? $invitacion : null, $invitacion->status == 2 ? 204 : 200);
     }
 

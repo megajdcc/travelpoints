@@ -728,9 +728,6 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::get('invitacions/{invitacion}/recordar',[InvitacionController::class,'recordar']);
     Route::resource('invitacions',InvitacionController::class);
 
-
-   
-
 });
 
 Route::put('usuario/{usuario}/establecer/contrasena', [UserController::class, 'EstablecerContrasena'])->name('establecercontrasena');

@@ -19,7 +19,7 @@ class IataFactory extends Factory
     public function definition(): array
     {
         return [
-            'codigo' => fake()->unique()->countryCode(),
+            'codigo' => fake()->unique()->word,
             'aeropuerto' => fake()->streetAddress(),
             'estado_id' => Estado::factory(),
             'ciudad_id' => Ciudad::factory()->for(Estado::factory())

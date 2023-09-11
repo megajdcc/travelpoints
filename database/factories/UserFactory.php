@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\Usuario\Rol;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
 
@@ -33,6 +34,7 @@ class UserFactory extends Factory
             'password'         => $this->faker->password(),
             'is_password'      => true,
             'lenguaje'         => 1,
+            'rol_id' => Rol::factory(),
         ];
     }
 }

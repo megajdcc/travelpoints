@@ -1,14 +1,14 @@
 <template>
-    <b-container fluid>
+    <b-container fluid class="mx-0 px-0">
       <b-row>
         <b-col cols="12">
 
           <GmapMap
               :center="origenMap"
-              :zoom="10"
+              :zoom="16"
               map-type-id="terrain"
               style="width: 100%; height: 600px"
-              :options="{ styles: stylosMap }"
+              :options="{ styles: stylosMap, gestureHandling:'greedy' }"
               ref="refMap"
               @zoom_changed="zoomChange"
             >
@@ -26,23 +26,9 @@
                 lng: Number(travel.lng)
               }"
             >
-          
             <GmapInfoWindow :options="optionsPlace(travel)"  :opened="showInfoWindow" >
-              <!-- <template #default="{ infoWindow }">
-                <div>
-                  <b-button variant="primary" @click="infoWindow && (infoWindow.popover = !infoWindow.popover)">
-                    Mostrar detalles
-                  </b-button>
-                  <b-popover :show="infoWindow && infoWindow.popover" target="popover-button" triggers="click">
-                    Detalles del lugar: {{ travel.nombre }}, {{ travel.direccion }}
-                  </b-popover>
-                </div>
-              </template> -->
-              <!-- <p>Pera</p> -->
             </GmapInfoWindow>
-
-
-            </GmapMarker>
+          </GmapMarker>
           
           </GmapMap>
         </b-col>
@@ -52,10 +38,10 @@
 
 <script>
 import store from '@/store'
-import {toRefs,ref,computed,watch} from 'vue'
+import {toRefs,ref,computed,watch,onMounted} from 'vue'
 import useMap from '@core/utils/useMap';
 import router from '@/router';
-
+import { useGeolocation } from '@vueuse/core'
 import {
   BContainer,
   BRow,
@@ -112,6 +98,15 @@ export default {
     const refMap = ref(null); 
     const travels = ref([]);
     const showInfoWindow = ref(false);
+    const initCoord = ref(false);
+    const origin = ref({
+      lat:0,
+      lng:0
+    })
+
+    const {
+      coords,localteAt,error,resume,pause
+    } = useGeolocation();
 
     const cargarForm = () => {
       axios.get(`/api/travels/map/destino/${destino.value}`).then(({data}) => {
@@ -163,6 +158,48 @@ export default {
         }
     }
     
+    const  miLocation =  computed(() => {
+      return { lat: coords.value.latitude, lng: coords.value.longitude }
+    });
+
+    const locations = computed(() => {
+      const travelsPoints = travels.value.map(val => ({
+        lng: val.lng,
+        lat: val.lat,
+        nombre: val.nombre ? val.nombre : 'Sin definir',
+        direccion: val.direccion ? val.direccion : '',
+        ruta: getRutaTravel(val),
+        tipo: val.tipo,
+      }))
+
+      travelsPoints.push({
+          lat: miLocation.value.lat,
+          lng: miLocation.value.lng,
+          nombre: "Yo",
+          direccion: '',
+      })
+      return travelsPoints;
+     
+    })
+
+    onMounted(() => {
+      origin.value.lat = coords.value.latitude != 0 ? coords.value.latitude : Number(origen.value.lat)
+      origin.value.lng = coords.value.longitude != 0 ? coords.value.longitude : Number(origen.value.lng)
+
+    })
+
+    const asignarLocation =() => {
+      origin.value.lat = coords.value.latitude != 0 ? coords.value.latitude : Number(origen.value.lat)
+      origin.value.lng = coords.value.longitude != 0 ? coords.value.longitude : Number(origen.value.lng)
+      initCoord.value = true
+    }
+
+    watch(coords , () => {
+      if(!initCoord.value){
+        asignarLocation()
+      }
+    })
+
     return {
       loading:computed(() => store.state.loading),
       iconMap,
@@ -173,20 +210,11 @@ export default {
       refMap,
       travels,
       travelSelected,
+     
       origen,
-      locations:computed(() => {
-        return travels.value.map(val => ({
-          lng:val.lng,
-          lat:val.lat,
-          nombre:val.nombre ? val.nombre : 'Sin definir',
-          direccion:val.direccion ? val.direccion : '',
-          ruta:getRutaTravel(val),
-          tipo:val.tipo,
-        }))
-      }),
-
+      locations,
       optionsPlace: (travel) => ({
-        content: `<small>${travel.tipo.toUpperCase()}: ${travel.nombre}<br>${travel.direccion}</small>`,
+        content: travel.tipo ? `<small>${travel.tipo.toUpperCase()}: ${travel.nombre}<br>${travel.direccion}</small>` : 'Yo',
         disableAutoPan:true
       }),
 
@@ -212,10 +240,7 @@ export default {
           return Number.isFinite(result) ? result : 0; // Verificar si el resultado es finito
         }),
         showInfoWindow,
-        origenMap:computed(() => ({
-          lat:Number(origen.value.lat),
-          lng:Number(origen.value.lng)
-        }))
+        origenMap:computed(() => origin.value),
 
     }
   }

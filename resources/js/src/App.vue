@@ -4,7 +4,6 @@
       <component :is="layout">
         <router-view />
       </component>
-  
 
     <scroll-to-top v-if="enableScrollToTop" />
     <mi-agenda v-model="showMiAgenda" v-if="is_loggin"/>
@@ -13,7 +12,6 @@
     <agenda-fixed  />
     <sidebar-retiro v-if="is_loggin" v-model="showSidebarRetiro" />
     <form-user v-if="is_loggin" v-model="showFormUser"   @cerrar="() => showFormUser = false" :tipo="tipoFormUser" :liderId="liderId" />
-  
 
   </div>
 </template>

@@ -1,6 +1,5 @@
 <template>
-   <div class="horizontal-layout layout-travel" :class="[layoutClasses]"  data-col="1-column" style="min-height:100vh">
-
+   <div class="horizontal-layout layout-travel horizontal-menu navbar-sticky"  data-col="1-column" style="min-height:100vh">
       <!-- NAVBAR -->
       <b-navbar :style="{
          backgroundColor: navbarType === 'static' && scrolledTo && skin === 'light' ? 'white' : null,
@@ -17,11 +16,6 @@
       </b-navbar>
 
       <div class="horizontal-menu-wrapper">
-         <!-- <div v-if="!isNavMenuHidden"
-         class="header-navbar navbar-expand-sm navbar navbar-horizontal navbar-light navbar-shadow menu-border d-none d-xl-block"
-         :class="[navbarMenuTypeClass]">
-            <horizontal-nav-menu />
-         </div> -->
 
          <!-- Vertical Nav Menu -->
          <vertical-nav-menu :is-vertical-menu-active="isVerticalMenuActive"

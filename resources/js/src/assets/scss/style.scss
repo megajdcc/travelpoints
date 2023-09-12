@@ -211,7 +211,9 @@ strong{
     color: #5e5873;
 }
 
-.layout-travel {
+
+
+#app{
    background-image: url('../images/illustration/patron_fondo_blanco.svg');
    background-attachment: fixed;
    background-repeat: repeat;
@@ -219,23 +221,40 @@ strong{
    transition: .5s ease ;
    animation: rotar 60s ease infinite;
 
+   .layout-travel {
+     
+
+      max-width: $max_width_travel;
+      margin-left: auto;
+      margin-right: auto;
+      position: relative;
+      .header-navbar{
+         left: auto;
+         right: auto;
+         max-width: $max_width_travel;
+      }
+
+   }
+   
+   
+
+}
+.dark-layout  #app {
+
+      background-image: url('../images/illustration/patron_fondo_gris.svg') !important;
+      background-attachment: fixed;
+      background-repeat: repeat;
+      background-position: top;
+      animation: rotar 60s ease infinite;
+      transition:3s ease;
 }
 
-.dark-layout .layout-travel {
 
-   background-image: url('../images/illustration/patron_fondo_gris.svg') !important;
-   background-attachment: fixed;
-   background-repeat: repeat;
-   background-position: top;
-   animation: rotar 60s ease infinite;
-   transition:3s ease;
-}
 
 @keyframes rotar{
 
    0% {
       background-size: 120%;
-     
    }
 
    50% {
@@ -244,11 +263,14 @@ strong{
 
    75% {
       background-size: 120%;
+
    }
 
 
    100% {
       background-size: 100%;
+    
+
    }
  
 

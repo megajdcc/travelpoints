@@ -6,7 +6,6 @@
 
 <script>
 
-
 import LayoutTravel from '@core/layouts/layout-travel/LayoutTravel.vue';
 
 export default {

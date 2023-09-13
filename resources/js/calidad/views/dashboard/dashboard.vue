@@ -1,6 +1,6 @@
 <template>
     <section id="dashboard">
-        <b-container fluid>
+        <b-container fluid class="px-0">
           <b-row>
           <b-col cols="12" md="4">
 

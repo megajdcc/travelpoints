@@ -30,11 +30,8 @@
 
                      <template #cell(balance)="{ item }">
                         <span style="color:black" class="font-weight-bolder text-nowrap">
-                           {{ item.tipo_movimiento == 1 ? '+' : '-' }}{{ item.divisa_id ? item.divisa.iso :
-                              'Tp' }}{{ item.balance | currency({
-      symbol: item.divisa_id ?
-         item.divisa.simbolo : '$'
-   }) }}
+                           {{ item.balance < 0 ? '-' : '' }}{{ item.divisa_id ? item.divisa.iso :
+                              'Tp' }}{{ item.balance | currency({symbol: item.divisa_id ? item.divisa.simbolo : '$'}) }}
                         </span>
                      </template>
 
@@ -49,11 +46,9 @@
                </b-button>
             </template>
 
-
-
-
          </listado>
-        <b-sidebar v-model="showDialogRetiro" :title="$t('Solicitud de retiro')">
+
+         <b-sidebar v-model="showDialogRetiro" :title="$t('Solicitud de retiro')">
             <validation-observer ref="formValidate" #default="{ handleSubmit }">
                <b-form @submit.prevent="handleSubmit(retirar)">
                   <b-container fluid>
@@ -105,7 +100,7 @@
                   </b-container>
                </b-form>
             </validation-observer>
-         </b-sidebar>
+      </b-sidebar>
    </section>
 </template>
 

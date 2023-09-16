@@ -166,7 +166,7 @@ Vue.use(VueMask);
 
 import HighchartsVue from 'highcharts-vue';
 import Highcharts from 'highcharts';
-
+import Highcharts3d from 'highcharts/highcharts-3d'
 import Maps from "highcharts/modules/map";
 
 Maps(Highcharts);
@@ -175,6 +175,8 @@ import highchartsMore from "highcharts/highcharts-more.js"
 
 highchartsMore(Highcharts);
 
+
+Highcharts3d(Highcharts);
 // Opcionalmente, también puedes importar módulos adicionales de Highcharts, como exporting o accessibility
 import exportingInit from 'highcharts/modules/exporting';
 exportingInit(Highcharts);
@@ -222,7 +224,7 @@ Highcharts.setOptions({
       }
     },
 		style:{
-			"fontFamily":'Myriad Regular',
+			"fontFamily":'Myriad Regular Serif Roboto',
 
 		},
 		spacingTop:0,

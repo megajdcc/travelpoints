@@ -320,40 +320,7 @@ export default{
             },
 
 
-            negociosAfiliados:{
-               series:[],
-               chartOptions: {
-                  chart: {
-                     type: 'bar'
-                  },
-
-                  plotOptions: {
-                     bar: {
-                        horizontal: true,
-                        columnWidth: '55%',
-                        endingShape: 'rounded'
-                     },
-                  },
-
-                  dataLabels: {
-                     enabled: false
-                  },
-
-                  stroke: {
-                     show: true,
-                     width: 2,
-                     colors: ['transparent']
-                  },
-
-                  xaxis: {
-                     categories:[],
-                  },
-
-                  tooltip: {
-                    
-                  },
-               },
-            },
+            negociosAfiliados:[],
 
             porcentajeNegocio:{
                series:[],
@@ -861,9 +828,8 @@ export default{
          state.paisesActivos = data
       },
 
-      setTotalNegociosAfiliados(state,{data,categorias}){
-         state.negociosAfiliados.chartOptions.xaxis.categories = categorias
-         state.negociosAfiliados.series = data
+      setTotalNegociosAfiliados(state,data){
+         state.negociosAfiliados = data
       },
       
       setPorcentajeNegocio(state,{data,categorias}){

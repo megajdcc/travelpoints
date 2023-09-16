@@ -1,6 +1,6 @@
 <template>
   <b-card>
-     <highcharts :constructorType="'mapChart'" class="hc" :options="chartOptions" ref="chart"></highcharts>
+     <highcharts :constructorType="'mapChart'" class="hc" :options="chartOptions" ref="chart" style="width:100%;"></highcharts>
   </b-card>
  
 </template>

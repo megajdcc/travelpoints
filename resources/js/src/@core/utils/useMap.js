@@ -1,7 +1,10 @@
 
-import {ref} from 'vue';
+import {ref,computed} from 'vue';
 import iconMapa from '@images/icons/icon_map.png' 
-
+import { $themeColors } from '@themeConfig';
+import worldMap from '@highcharts/map-collection/custom/world.geo.json'
+import store from '@/store'
+import useAppConfig from '@core/app-config/useAppConfig';
 export default function useMap(){
 
   const iconMap =  ref({
@@ -13,6 +16,145 @@ export default function useMap(){
       scale: .1,
       icon:iconMapa,
     })
+    
+    const {
+      skin
+    } = useAppConfig();
+
+    const onPointClick = function () {
+      const key = this.key;
+      $('#mapDropdown option').each(function () {
+        if (this.value === `countries/${key.substr(0, 2)}/${key}-all.js`) {
+          $('#mapDropdown').val(this.value).trigger('change');
+        }
+      });
+    };
+
+
+    const colorText = computed(() => skin.value == 'dark' ? '#FFF' : '#333333')
+
+    const chartOptionMap = ref({
+      title: {
+        enabled: false,
+       
+      },
+      subtitle: {
+        enabled: false,
+      },
+      mapNavigation: {
+            enabled: true,
+            buttonOptions: {
+                verticalAlign: 'bottom'
+            }
+      },
+  
+
+      chart: {
+        map: worldMap,
+        height: 300,
+       
+      },
+
+      colorAxis: {
+        stops: [
+          [0, '#55aaff'],
+          [1, '#2d5b88']
+        ]
+      },
+      legend: {
+        enabled: true,
+        align: 'left',
+
+        navigation:{
+          enabled:false,
+        },
+        bubbleLegend:{
+          enabled:false
+        },
+        itemStyle:{
+          color:computed(() => colorText.value)
+        },
+
+        title:{
+          style:{
+            color:computed(() => colorText.value)
+          }
+        }
+      },
+      exporting: {
+        enabled: true
+      },
+      credits: {
+        enabled: false,
+      },
+     
+
+      plotOptions: {
+       
+        series: {
+          allAreas: true,
+          showInLegend: true,
+          backgroundColor: colorRand(),
+  
+          tiledwebmap:{
+            enabled:false
+          },
+          states: {
+           
+            hover: {
+              enabled:false,
+              color: $themeColors.danger
+            }
+          },
+
+          point: {
+              events: {
+                load: function () {
+                  const point = this;
+
+                  // Aplica un pequeño desplazamiento aleatorio en la latitud
+                  point.plotY += Math.random() * 0.5;
+
+                  // Aplica un pequeño desplazamiento aleatorio en la longitud
+                  point.plotX += Math.random() * 0.5;
+                }
+              }
+            }
+
+        }
+      },
+
+    tooltip: {
+      
+      shared: true, // Esto permite mostrar ambos conjuntos de datos en el tooltip
+      formatter: function () {
+
+        
+        let tooltipText = '';
+        if(this.point.name != 'x'){
+          tooltipText = '<strong>' + this.point.name + '</strong><br>'
+        }
+        // Itera sobre todas las series y muestra los datos correspondientes
+        this.series.chart.series.forEach(function (series) {
+          const point = series.points.find(function (point) {
+            return point.name === this.point.name ;
+          }.bind(this));
+          
+          if (point && series.name != 'x') {
+            tooltipText += series.name + ': ' + `${point.value ? point.value : 0}` + '<br>';
+          }
+        }.bind(this));
+        
+        return tooltipText;
+      }
+    },
+
+
+  
+      series: []
+    });
+
+
 
     const stylosMap = ref([
         { elementType: "geometry", stylers: [{ color: "#242f3e" }] },
@@ -98,7 +240,11 @@ export default function useMap(){
     return {
       iconMap,
       stylosMap,
-      iconMapa
+      iconMapa,
+
+      // Chart Maps
+      chartOptionMap,
+      colorText
     }
 
 }

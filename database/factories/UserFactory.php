@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\Ciudad;
 use App\Models\Usuario\Rol;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
@@ -35,6 +36,7 @@ class UserFactory extends Factory
             'is_password'      => true,
             'lenguaje'         => 1,
             'rol_id' => Rol::factory(),
+            'ciudad_id' => Ciudad::factory()
         ];
     }
 }

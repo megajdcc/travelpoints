@@ -17,7 +17,7 @@ class RolFactory extends Factory
     public function definition()
     {
         return [
-            'nombre' => fake()->text(25),
+            'nombre' => fake()->unique()->word,
         ];
     }
 }

@@ -10,7 +10,7 @@
             <slot>
               
             </slot>
-            <slot name="statistic" :statistic="statistic" >
+            <slot name="statistic" :statistic="statistic" :colorText="colorText" >
               {{ statistic }}
             </slot>
 

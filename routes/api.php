@@ -597,6 +597,12 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::get('dashboard/get/viajeros/por-pais',[DashboardController::class,'getViajerosPorPais']);
     Route::get('dashboard/get/total-viajeros',[DashboardController::class,'getTotalViajeros']);
     Route::get('dashboard/get/viajeros/pie-chart',[DashboardController::class,'getViajerosPieChart']);
+    Route::get('dashboard/equipo-promotor',[DashboardController::class,'equipoPromotor']);
+    Route::get('dashboard/get/total-coordinadores',[DashboardController::class,'totalCoordinadores']);
+    Route::get('dashboard/get/total-lideres', [DashboardController::class, 'totalLideres']);
+    Route::get('dashboard/get/total-promotores', [DashboardController::class, 'totalPromotores']);
+
+    
     /*****************************/
     /* Datos de pagos
     /*****************************/

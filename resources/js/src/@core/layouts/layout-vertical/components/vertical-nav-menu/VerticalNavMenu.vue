@@ -8,37 +8,20 @@
     @mouseenter="updateMouseHovered(true)"
     @mouseleave="updateMouseHovered(false)"
   >
-    <!-- main menu header-->
-    <div class="navbar-header expanded">
-      <slot
-        name="header"
-        :toggleVerticalMenuActive="toggleVerticalMenuActive"
-        :toggleCollapsed="toggleCollapsed"
-        :collapseTogglerIcon="collapseTogglerIcon"
-      >
-        <ul class="nav navbar-nav flex-row d-flex justify-content-center">
+    <div class="navbar-header expanded ">
+      <slot name="header" :toggleVerticalMenuActive="toggleVerticalMenuActive" :toggleCollapsed="toggleCollapsed" :collapseTogglerIcon="collapseTogglerIcon">
+        <ul class="nav navbar-nav">
 
-          <!-- Logo & Text -->
           <li class="nav-item">
-            <b-link
-              class="navbar-brand mr-0"
-              to="/"
-            >
+            <b-link class="navbar-brand" to="/">
               <span class="brand-logo">
-                <b-img
-                  :src="logo"
-                  alt="logo"
-                />
+                <b-img :src="logo" alt="logo"/>
               </span>
-              <!-- <h2 class="brand-text">
-                {{ appName }}
-              </h2> -->
             </b-link>
           </li>
 
-          <!-- Toggler Button -->
           <li class="nav-item nav-toggle">
-            <b-link class="nav-link modern-nav-toggle">
+            <b-link class="nav-link modern-nav-toggle my-0 ml-auto mr-0">
               <feather-icon
                 icon="XIcon"
                 size="20"
@@ -168,16 +151,36 @@ export default {
 
 <style lang="scss">
 @import "@core/scss/base/core/menu/menu-types/vertical-menu.scss";
+.navbar-header{
+  .nav.navbar-nav{
 
-.brand-logo img{
-  max-width: 130px !important;
-  height: 50px;
-  object-fit: contain;
+   display: flex;
+   flex-direction:row;
+   flex-wrap:nowrap;
+   justify-content:space-between;
+    align-items:center;
+    li:first-child{
+      flex:1 1 200px;
+    }
+    li.nav-toggle{
+      flex:1 1 30px;
+    }
+
+    .brand-logo img{
+        width:170px;
+        height:50px;
+        object-fit: contain;
+      }
+
+  }
 }
+
+
+
 
 @media (min-width:1200px){
   .brand-logo img{
-    max-width: 180px !important;
+    max-width: 180px ;
   }
 }
 

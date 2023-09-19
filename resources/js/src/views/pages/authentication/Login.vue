@@ -24,25 +24,25 @@
       <!-- /Left Text-->
 
       <!-- Login-->
-      <b-col lg="4" class="d-flex align-items-center auth-bg px-2 p-lg-5">
-        <b-col sm="8" md="6" lg="12" class="px-xl-2 mx-auto">
-          <b-card-title class="mb-1 font-weight-bold" title-tag="h2">
+      <b-col lg="4" class="d-flex  auth-bg">
+        <b-col sm="8" md="6" lg="12" class="mx-auto d-flex flex-column">
+          
+          <b-card-title class="mb-1 font-weight-bold mt-2" title-tag="h2">
             Bienvenido a {{ appName }} 👋
           </b-card-title>
-           <b-card-title class="mb-2 text-primary ">
+
+           <b-card-title class=" text-primary ">
             Travel Points una nueva forma de descubrir destinos, registra tu visita y gana regalos.
           </b-card-title>
 
-          <b-card-text class="mb-2">
+          <b-card-text class="">
             Inicia sesión y comience la aventura
           </b-card-text>
 
-          <b-alert variant="primary" show>
-          </b-alert>
 
           <!-- form -->
           <validation-observer ref="formValidate" #default="{ invalid, handleSubmit }">
-            <b-form class="auth-login-form mt-2" @submit.prevent="handleSubmit(iniciar)">
+            <b-form class="auth-login-form " @submit.prevent="handleSubmit(iniciar)">
               <!-- email -->
               <b-form-group label="Email" label-for="login-email">
                 <validation-provider #default="{ errors }" name="Email" vid="email" rules="required|email">
@@ -101,13 +101,6 @@
 
             </b-form>
           </validation-observer>
-
-          <!-- <b-card-text class="text-center mt-2">
-            <span>No tienes cuenta? </span>
-            <b-link :to="{name:'auth-register'}">
-              <span>&nbsp;Crear cuenta</span>
-            </b-link>
-          </b-card-text> -->
 
         </b-col>
       </b-col>

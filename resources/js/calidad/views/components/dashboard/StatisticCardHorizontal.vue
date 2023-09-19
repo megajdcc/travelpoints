@@ -17,7 +17,7 @@
           </h2>
 
           <slot name="titulo">
-            <span v-html="statisticTitle" :class="[colorText]" />
+            <b v-html="statisticTitle" :class="[colorText]" ></b>
           </slot>
 
           <slot name="legend">

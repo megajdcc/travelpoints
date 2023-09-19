@@ -6,6 +6,7 @@ use App\Models\Negocio\Empleado;
 use App\Models\Negocio\Negocio;
 use App\Models\Negocio\Reservacion;
 use App\Trais\hasOpinion;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
@@ -87,52 +88,48 @@ class Venta extends Model
 
     public static function totalOperacionesRegistradas($filtro,$rango_fecha = null){
 
-        $sq1 =  DB::table('ventas', 'v')
-            ->selectRaw('count(v.id) as ventas')
-            ->join('negocios as n', 'v.model_id', 'n.id')
-                ->join('estados as es', 'n.estado_id', 'es.id')
-                ->join('pais as p', 'es.pais_id', 'p.id')
-                ->when(isset($filtro['negocio_id']) && !empty($filtro['negocio_id']), function ($query) use ($filtro) {
-                    $query->where('n.id', $filtro['negocio_id']);
-                })
+        $ventas = Venta::when(isset($filtro['pais_id']) && !empty($filtro['pais_id']), function($q) use($filtro){
+                                $q->whereHasMorph('model',[Negocio::class],function($q) use($filtro){
+                                    $q->whereHas('estado', fn ($query) => $query->where('pais_id', $filtro['pais_id']));
+                                });
+                            })
 
-                ->when(isset($filtro['pais_id']) && !empty($filtro['pais_id']), function ($query) use ($filtro) {
-                    $query->where('p.id', $filtro['pais_id']);
-                })
-                ->when(isset($filtro['destino_id']), function ($query) use ($filtro) {
-                    $query->where('n.iata_id', Destino::find($filtro['destino_id'])->iata_id);
-                })
-                ->when(is_iterable($rango_fecha) && count($rango_fecha) > 1, function ($q) use ($rango_fecha) {
-                    $q->whereBetween('v.created_at', $rango_fecha);
-                })
-
-
-                ->where('v.model_type', "App\\Models\\Negocio\\Negocio")
-                ->first();
-
-                
-
-        return $sq1;
+                        ->when(isset($filtro['destino_id']), function ($query) use ($filtro) {
+                            $iata_id =  Destino::find($filtro['destino_id'])->iata_id;
+                            $query->whereHasMorph('model',[Negocio::class],fn($q) => $q->where('iata_id',$iata_id));
+                        })
+                        ->whereBetween('ventas.created_at', [now()->firstOfMonth(), now()])
+                        ->count();
+                        
+        return $ventas;
     }
 
 
-    public static function montoPromedioPorOperacion($filtro, $rango_fecha){
+    public static function montoPromedioPorOperacion($filtro, $rango_fecha = null){
 
-        $promedios = DB::table('ventas','v')
-            ->selectRaw('avg(v.monto) as promedio,d.nombre as divisa')
-            ->join('divisas as d','v.divisa_id','d.id')
-            ->when(is_iterable($rango_fecha) && count($rango_fecha) > 1, function ($q) use ($rango_fecha) {
-                $q->whereBetween('v.created_at', $rango_fecha);
-            })
-            ->where('v.model_type', "App\\Models\\Negocio\\Negocio")
-            ->groupBy('divisa')
-            ->get();
+        $promedios = Venta::selectRaw('avg(ventas.monto) as promedio,d.nombre as divisa')
+                            ->join('divisas as d' ,'ventas.divisa_id','d.id')
+                            ->when(isset($filtro['pais_id']) && !empty($filtro['pais_id']), function($q) use($filtro){
+                                    $q->whereHasMorph('model', [Negocio::class], function ($q) use ($filtro) {
+                                        $q->whereHas('estado', fn ($query) => $query->where('pais_id', $filtro['pais_id']));
+                                    });
+                            })
+                            ->when(isset($filtro['destino_id']), function ($query) use ($filtro) {
+                                $iata_id =  Destino::find($filtro['destino_id'])->iata_id;
+                                $query->whereHasMorph('model',[Negocio::class],fn($q) => $q->where('iata_id',$iata_id));
+                            })
+
+                        ->whereBetween('ventas.created_at', [now()->firstOfMonth(), now()])
+                        ->groupBy('divisa')
+                        ->get();
         
-            $divisa = Divisa::where('iso','USD')->first();
+        $divisa = (Sistema::first())->divisa;  // Obtener la divisa en la que opera o muestra el sistema
+
         foreach($promedios as $promedio){
             $divi = Divisa::where('nombre', $promedio->divisa)->first();
-            $promedio->promedio = $divisa->convertir($divi,$promedio->promedio);
+            $promedio->promedio = Divisa::cambiar($divi,$divisa,$promedio->promedio);
         }
+
         $promedio = 0;
 
         if($promedios->count() > 0){
@@ -144,21 +141,28 @@ class Venta extends Model
     }
 
     public static function montoPromedioPorUsuario($filtro , $rango_fecha = null){
-        $promedioPorUsuario = DB::table('ventas','v')
-            ->select('v.cliente_id', DB::raw('AVG(v.monto) as promedio'), 'd.nombre as divisa')
-            ->join('divisas as d','v.divisa_id','d.id')
-            ->where('v.model_type',"App\\Models\\Negocio\\Negocio")
-            ->when(is_iterable($rango_fecha) && count($rango_fecha) > 1, function ($q) use ($rango_fecha) {
-                $q->whereBetween('v.created_at', $rango_fecha);
-            })
-            ->groupBy('cliente_id','divisa')
-            ->get();
 
-        $divisa = Divisa::where('iso', 'USD')->first();
-
+        $promedioPorUsuario = Venta::select([
+                                                'cliente_id',
+                                                DB::raw('AVG(ventas.monto) as promedio'), 'd.nombre as divisa'
+                                             ])
+                                            ->join('divisas as d','ventas.divisa_id','d.id')
+                                            ->when(isset($filtro['pais_id']) && !empty($filtro['pais_id']), function ($q) use ($filtro) {
+                                                    $q->whereHasMorph('model', [Negocio::class], function ($q) use ($filtro) {
+                                                        $q->whereHas('estado', fn ($query) => $query->where('pais_id', $filtro['pais_id']));
+                                                    });
+                                            })
+                                            ->when(isset($filtro['destino_id']), function ($query) use ($filtro) {
+                                                $iata_id =  Destino::find($filtro['destino_id'])->iata_id;
+                                                 $query->whereHasMorph('model', [Negocio::class], fn ($q) => $q->where('iata_id', $iata_id));
+                                            })
+                                            ->whereBetween('ventas.created_at', [now()->firstOfMonth(), now()])
+                                            ->groupBy('cliente_id', 'divisa')
+                                            ->get();
+        $divisa = (Sistema::first())->divisa;
         foreach ($promedioPorUsuario as $promedio) {
             $divi = Divisa::where('nombre', $promedio->divisa)->first();
-            $promedio->promedio = $divisa->convertir($divi, $promedio->promedio);
+            $promedio->promedio = Divisa::cambiar($divi,$divisa,$promedio->promedio);
         }
 
         $promedio = 0;
@@ -166,40 +170,65 @@ class Venta extends Model
         if($promedioPorUsuario->count() > 0){
             $promedio = $promedioPorUsuario->sum(fn ($val) => $val->promedio) / $promedioPorUsuario->count();
         }
-    
-        
 
-        return $promedio;
+        return round($promedio,2);
+
     }
 
 
     public static function registroPorUsuario($filtro, $rango_fecha = null){
-        $totalVentasPorUsuario = DB::table('ventas','v')
-            ->select('v.cliente_id', DB::raw('count(v.id) as ventas'))
-            ->where('v.model_type', "App\\Models\\Negocio\\Negocio")
-            ->when(is_iterable($rango_fecha) && count($rango_fecha) > 1, function ($q) use ($rango_fecha) {
-                $q->whereBetween('v.created_at', $rango_fecha);
-            })
-            ->groupBy('v.cliente_id')
-            ->get();
-        
+
+        $totalVentasPorUsuario = Venta::select(['cliente_id',DB::raw('count(ventas.id) as ventas')])
+                                    ->when(isset($filtro['pais_id']) && !empty($filtro['pais_id']), function($q) use($filtro){
+                                            $q->whereHasMorph('model', [Negocio::class], function ($q) use ($filtro) {
+                                                $q->whereHas('estado', fn ($query) => $query->where('pais_id', $filtro['pais_id']));
+                                            });
+                                    })
+                                    ->when(isset($filtro['destino_id']), function ($query) use ($filtro) {
+                                        $iata_id =  Destino::find($filtro['destino_id'])->iata_id;
+                                        $query->whereHasMorph('model', [Negocio::class], fn ($q) => $q->where('iata_id', $iata_id));
+                                    })
+                                    ->whereBetween('ventas.created_at', [now()->firstOfMonth(), now()])
+                                    ->groupBy('cliente_id')
+                                    ->get();
+   
 
         $promedio = 0;
 
         if ($totalVentasPorUsuario->count() > 0) {
             $promedio = $totalVentasPorUsuario->sum(fn ($val) => $val->ventas) / $totalVentasPorUsuario->count();
         }
-
         return $promedio;
 
     }
 
     public static function travelpointsGenerados(){
-        return Venta::get()->sum('tps');
+        return Venta::whereBetween('created_at',[now()->firstOfMonth(),now()])->get()->sum('tps');
     }
 
     public static function travelpointsConsumados(){
-        return Consumo::sum('tps');
+        return Consumo::whereBetween('created_at',[now()->firstOfMonth(),now()])->sum('tps');
+    }
+
+    public static function travelpointsDisponibles(){
+        return EstadoCuenta::whereHas('divisa',fn($q) => $q->where('iso',(Divisa::where('principal',true)->first())->iso))->where('saldo','>',0)->sum('saldo');
+    }   
+
+    public static function tpsRecuperados(){
+        $sistema = Sistema::first();
+
+        $monto_recuperados = Movimiento::whereHas('cuenta',function(Builder $query) use($sistema){
+            $query->whereHasMorph('model',[Sistema::class],fn($q) => $q->where('id',$sistema->id));
+        })
+        ->where('concepto','LIKE', "%Inactividad del Viajero%")
+        ->where('tipo_movimiento',Movimiento::TIPO_INGRESO)
+        ->sum('monto');
+
+
+        $tps_recuperados = Divisa::cambiar($sistema->cuenta->divisa,Divisa::where('principal',true)->first(),$monto_recuperados);
+
+        return $tps_recuperados;
+
     }
 
     public static function totalIngresosTienda(){

@@ -1,5 +1,5 @@
 <template>
-   <div class="horizontal-layout layout-travel horizontal-menu navbar-sticky"  :class="[layoutClasses]"  data-col="1-column" style="min-height:100vh">
+   <div class="horizontal-layout layout-travel"  :class="[layoutClasses]"  data-col="1-column" style="min-height:100vh">
       <!-- NAVBAR -->
       <b-navbar :style="{
          backgroundColor: navbarType === 'static' && scrolledTo && skin === 'light' ? 'white' : null,

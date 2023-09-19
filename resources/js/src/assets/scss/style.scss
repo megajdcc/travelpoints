@@ -8,7 +8,7 @@ h1,h2,h3,h4,h5,h6{
 
 html{
    box-sizing: border-box;
-   font-size: 10pt;
+   font-size: 12pt;
 }
 
 body{
@@ -227,7 +227,7 @@ strong{
       max-width: $max_width_travel;
       margin-left: auto;
       margin-right: auto;
-      position: relative;
+      // position: relative;
       .header-navbar{
          left: auto;
          right: auto;
@@ -235,10 +235,8 @@ strong{
       }
 
    }
-   
-   
-
 }
+
 .dark-layout  #app {
 
       background-image: url('../images/illustration/patron_fondo_gris.svg') !important;

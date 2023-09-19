@@ -46,7 +46,9 @@ class Kernel extends ConsoleKernel
         
         // Limpiar los trabajos que esten fallidos... 
         $schedule->command('queue:flush')->daily();
-      
+
+        // Verificar usabilidad del sistema por parte de los viajeros
+        $schedule->command('usuario:verificar-usabilidad-viajeros')->monthly();
 
     }
 

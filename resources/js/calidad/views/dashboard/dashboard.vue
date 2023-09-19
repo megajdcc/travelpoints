@@ -5,7 +5,10 @@
           <!-- Origen de los Viajeros -->
           <b-row>
             <b-col cols="12">
-            <b-card title="Origen de tus viajeros registrados" v-if="$can('read', 'Tablero total paises activos')" body-class="pb-0">
+            <b-card   v-if="$can('read', 'Tablero total paises activos')" body-class="pb-0" header-class="display-5" footer-class="d-none" >
+              <template #header>
+                <h3>Origen de tus viajeros registrados</h3>
+              </template>
               <b-container fluid class="px-0 mx-0">
                 <b-row>
                 
@@ -96,10 +99,22 @@
         <!-- negocios -->
          <b-row>
               <b-col cols="12">
-              <b-card title="Negocios" body-class="pb-0">
+              <b-card body-class="pb-0">
+                 <template #header>
+                  <h3>Negocios</h3>
+                </template>
                 <b-container fluid class="px-0 mx-0">
                   <b-row>
-                    <b-col cols="12" md="8">
+                    <b-col cols="12" md="5">
+                      <donut-chart 
+                        title="Total Negocios" 
+                        subtitulo="Por destino"
+                        :series="totalNegociosPorDestino" 
+                        v-if="$can('read', 'Tablero total negocios afiliados')"
+                        /> 
+                    </b-col>
+
+                    <b-col cols="12" md="7">
                       <b class="text-center d-block font-weight-bolder" style="font-size:1.5rem">Total Negocios</b>
                       <b class="text-center d-block">Por Paises / Registrados y Activos</b>
 
@@ -108,14 +123,7 @@
                   
                     </b-col>
 
-                    <b-col cols="12" md="4">
-                      <donut-chart 
-                        title="Total Negocios" 
-                        subtitulo="Por destino"
-                        :series="totalNegociosPorDestino" 
-                        v-if="$can('read', 'Tablero total negocios afiliados')"
-                        /> 
-                    </b-col>
+                   
                   </b-row>
                 </b-container>
               </b-card>
@@ -125,12 +133,15 @@
           <!-- Viajeros -->
           <b-row>
                 <b-col cols="12">
-                <b-card title="Viajeros" body-class="pb-0">
+                <b-card  body-class="pb-0">
+                  <template #header>
+                    <h3>Viajeros</h3>
+                  </template>
                   <b-container fluid class="px-0 mx-0">
                     <b-row>
                       <b-col cols="12" md="7" class="d-flex flex-column justify-content-around">
                         <b class="text-center d-block font-weight-bolder" style="font-size:1.5rem">Viajeros Por pais</b>
-                        <map-chart :series="totalViajerosPorPais" :chartOption="{...chartOptionMap,...{chart:{...chartOptionMap.chart,...{ height: '70%' }}}}" class="flex-grow-1"></map-chart>
+                        <map-chart :series="totalViajerosPorPais" :chartOption="{...chartOptionMap,...{chart:{...chartOptionMap.chart,...{ height: '90%' }}}}" class="flex-grow-1"></map-chart>
                         
                       </b-col>
 
@@ -143,7 +154,7 @@
                             :series="totalViajerosActividad" 
                             /> 
                             <statistic-card-horizontal icon="fa-users" statisticTitle="Total Viajeros" color="warning"
-                            colorIcon="black" colorText="text-primary" :statistic="cantidadViajeros" class="mt-1 w-50" >
+                            colorIcon="black" colorText="text-primary" :statistic="cantidadViajeros" class="mt-1" >
 
                             <template #statistic="{ statistic }">
                                 <h1 :class="[`text-${colorText}`, 'font-weight-bolder']">{{ statistic }} </h1>
@@ -155,83 +166,82 @@
                   </b-container>
                 </b-card>
                 </b-col>
-            </b-row>
+          </b-row>
 
-        <b-row>
-          <b-col cols="12">
-            <el-divider content-position="left" v-if="$can('read', 'Tablero total negocios activos') ||
-              $can('read', 'Tablero total viajeros')">Destinos</el-divider>
-          </b-col>
-          <b-col cols="12" md="6">
-            <!-- Destinos Activos -->
-            <apex-chart titulo="Total negocios activos" subtitulo="Por Destinos"
-              :chartOptions="totalDestinosActivos.chartOptions" :data="totalDestinosActivos.series" type="bar" :height="400"
-              v-if="$can('read', 'Tablero total negocios activos')">
+          <!-- Equipo Promotor -->
+          <b-row>
+            <b-col cols="12">
+                <b-card  body-class="pb-0 mb-0" class="mb-0 pb-0">
+                  <template #header>
+                    <h3>Equipo Promotor</h3>
+                  </template>
+                  <b-container fluid class="px-0 mx-0">
+                    <b-row>
+                      <b-col cols="12" class="d-flex flex-column justify-content-around">
+                        <b class="text-center d-block font-weight-bolder mb-1" style="font-size:1.5rem">Coordinadores, Líderes y Promotores</b>
+                        <map-chart :series="equipoPromotor" :chartOption="{...chartOptionMap,...{chart:{...chartOptionMap.chart,...{ height: ['xs','sm'].includes(currentBreakPoint) ?'100%' : '50%' }}}}" class="flex-grow-1"></map-chart>
+                        
+                      </b-col>
 
-            </apex-chart>
-          </b-col>
+                      <b-col cols="12" class="d-flex justify-content-between flex-wrap">
+                          <statistic-card-horizontal icon="fa-user-tie" statisticTitle="Total Coordinadores" color="primary"
+                              colorIcon="black" colorText="text-white" :statistic="totalCoordinadores" class="mt-1  flex-grow-1" >
+
+                              <template #statistic="{ statistic }">
+                                  <h1 :class="[`text-${colorText}`, 'font-weight-bolder']">{{ statistic }} </h1>
+                              </template>
+
+                          </statistic-card-horizontal>
 
 
-        </b-row>
+                          <statistic-card-horizontal icon="fa-users-line" statisticTitle="Total Líderes" color="danger"
+                            colorIcon="black" colorText="text-white" :statistic="totalLideres" class="mt-1  flex-grow-1 ml-md-1" >
 
-        <el-divider content-position="left"
-          v-if="$can('read', 'Tablero total negocios afiliados') || $can('read', 'Tablero porcentaje negocios con operaciones registradas')">Negocios
-          Turísticos</el-divider>
+                            <template #statistic="{ statistic }">
+                                <h1 :class="[`text-${colorText}`, 'font-weight-bolder']">{{ statistic }} </h1>
+                            </template>
 
-        <b-row>
+                          </statistic-card-horizontal>
 
-       
 
-          <b-col cols="12" md="6">
-            <!-- Porcentaje de Negocios con operación Registrada -->
-            <apex-chart titulo="Porcentaje de Negocios " subtitulo="Con operación registradas"
-              :chartOptions="porcentajeNegocio.chartOptions" :data="porcentajeNegocio.series" type="donut" :height="450"
-              v-if="$can('read', 'Tablero porcentaje negocios con operaciones registradas')">
+                           <statistic-card-horizontal icon="fa-users" statisticTitle="Total Promotores" color="warning"
+                              colorIcon="black" colorText="text-white" :statistic="totalPromotores" class="mt-1 flex-grow-1 ml-md-1" >
 
-            </apex-chart>
+                              <template #statistic="{ statistic }">
+                                  <h1 :class="[`text-${colorText}`, 'font-weight-bolder']">{{ statistic }} </h1>
+                              </template>
 
-          </b-col>
+                            </statistic-card-horizontal>
 
-        </b-row>
 
-        <b-row>
-          <b-col cols="12">
-            <tarjetas-agrupadas-staticas style="min-height:180px" title="Gasto turístico" isFiltro
-              @changeFiltro="cargarGastosTuristicos" :items="gastosTuristicos.items" :filtro="filtro_gastos_turisticos"
-              :fecha="gastosTuristicos.ultima_fecha" v-if="$can('read', 'Tablero gasto turistico')" />
-          </b-col>
-          <b-col cols="12">
-            <tarjetas-agrupadas-staticas style="min-height:180px" title="Tienda de Regalos" :items="tiendaRegalos.items"
-              :fecha="tiendaRegalos.ultima_fecha" v-if="$can('read', 'Tablero tienda de regalos')" />
-          </b-col>
-        </b-row>
+                      </b-col>
+                    </b-row>
+                  </b-container>
+                </b-card>
+            </b-col>
+          </b-row>
 
-        <el-divider content-position="left"
-          v-if="$can('read', 'Tablero total promotores registrados') || $can('read', 'Tablero total coordinadores registrados') || $can('read', 'Tablero total comisiones generadas pagadas y por pagar')">Promotores</el-divider>
 
-        <b-row>
-          <b-col cols="12" md="6">
-            <apex-chart titulo="Total promotores registrados" subtitulo="Activos / Inactivos"
-              :chartOptions="totalPromotores.chartOptions" :data="totalPromotores.series" type="pie" :height="320"
-              v-if="$can('read', 'Tablero total promotores registrados')">
-            </apex-chart>
-          </b-col>
-          <b-col cols="12" md="6">
-            <apex-chart titulo="Total coordinadores registrados" subtitulo="Activos / Inactivos"
-              :chartOptions="totalCoordinadores.chartOptions" :data="totalCoordinadores.series" type="pie" :height="320"
-              v-if="$can('read', 'Tablero total coordinadores registrados')">
-            </apex-chart>
-          </b-col>
+          <!-- Gasto Turísticos -->
+          <b-row>
+            <b-col cols="12">
+              <tarjetas-agrupadas-staticas style="min-height:180px" title="Gasto turístico" isFiltro isNotFilterNegocio
+                @changeFiltro="cargarGastosTuristicos" :items="gastosTuristicos.items" :filtro="filtro_gastos_turisticos"
+                :fecha="gastosTuristicos.ultima_fecha" v-if="$can('read', 'Tablero gasto turistico')" class="mt-1" />
+            </b-col>
 
-          <b-col cols="12" md="6">
-            <apex-chart titulo="Total comisiones generadas" subtitulo="Pagadas y por pagar"
-              :chartOptions="totalComisionesGeneradas.chartOptions" :data="totalComisionesGeneradas.series" type="pie"
-              :height="320" v-if="$can('read', 'Tablero total comisiones generadas pagadas y por pagar')">
-            </apex-chart>
-          </b-col>
-        </b-row>
 
-        </b-container>
+            <!-- Tienda de Regalo -->
+            <b-col cols="12">
+                <tarjetas-agrupadas-staticas style="min-height:180px" title="Tienda de Regalos" :items="tiendaRegalos.items" hideFecha
+                 v-if="$can('read', 'Tablero tienda de regalos')" class="mt-1" />
+            </b-col>
+            
+          </b-row>
+
+         
+
+      </b-container>
     </section>
 </template>
 
@@ -239,7 +249,7 @@
 
 import {
   BContainer,
-  BRow,
+BRow,
   BCol,
   BFormGroup,
   BLink,
@@ -315,18 +325,19 @@ export default {
         const totalNegociosPorDestino = ref([])
         const cantidadViajeros = ref(0)
         const totalViajerosPorPais = ref([])
+        const equipoPromotor = ref([])
+        const totalCoordinadores = ref(0)
+        const totalLideres = ref(0)
+        const totalPromotores = ref(0)
+
+
          const { totalViajeros,
             viajerosActivos,
             destinosActivos,
-            totalDestinosActivos,
             paisesActivos,
             negociosAfiliados,
-            porcentajeNegocio,
             gastosTuristicos,
             tiendaRegalos,
-            totalPromotores,
-            totalCoordinadores,
-            totalComisionesGeneradas,
             operacionesTravel,
             viajerosTotalesAnual,
             totalViajerosRegistrados,
@@ -563,6 +574,23 @@ export default {
             })
 
             axios.get('/api/dashboard/get/viajeros/por-pais').then(({data}) => totalViajerosPorPais.value = data)
+
+            axios.get('/api/dashboard/equipo-promotor').then(({data}) => {
+              equipoPromotor.value = data
+            })
+
+            axios.get(`/api/dashboard/get/total-coordinadores`).then(({data}) => {
+              totalCoordinadores.value = data
+            })
+
+            axios.get(`/api/dashboard/get/total-lideres`).then(({data}) => {
+              totalLideres.value = data
+            })
+
+            axios.get(`/api/dashboard/get/total-promotores`).then(({ data }) => {
+              totalPromotores.value = data
+            })
+
         }
 
         const fetchGastosTuristicos = () => {
@@ -633,22 +661,19 @@ export default {
             generos,
             cargarDashboard,
             totalViajeros,
-            totalDestinosActivos,
             configRangoFecha,
             viajerosActivos,
             viajerosTotalesAnual,
             destinosActivos,
             paisesActivos,
             negociosAfiliados,
-            porcentajeNegocio,
             cargarGastosTuristicos,
             cargarTiendaRegalos,
             filtro_gastos_turisticos,
             gastosTuristicos,
             tiendaRegalos,
             totalPromotores,
-            totalCoordinadores,
-            totalComisionesGeneradas,
+            totalLideres,
             operacionesTravel,
             rolUser,
             viajeros_referidos,
@@ -726,7 +751,10 @@ export default {
             }),
             cantidadViajeros,
             totalViajerosPorPais,
-            colorText
+            colorText,
+            equipoPromotor,
+            totalCoordinadores,
+            currentBreakPoint:computed(() => store.getters['app/currentBreakPoint'])
         }
     }
 

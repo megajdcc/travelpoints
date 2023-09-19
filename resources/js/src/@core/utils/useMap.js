@@ -3,6 +3,7 @@ import {ref,computed} from 'vue';
 import iconMapa from '@images/icons/icon_map.png' 
 import { $themeColors } from '@themeConfig';
 import worldMap from '@highcharts/map-collection/custom/world.geo.json'
+import topMap from '@highcharts/map-collection/custom/world.topo.json'
 import store from '@/store'
 import useAppConfig from '@core/app-config/useAppConfig';
 export default function useMap(){
@@ -43,6 +44,10 @@ export default function useMap(){
       },
       mapNavigation: {
             enabled: true,
+            enableDoubleClickZoom:true,
+            enableDoubleClickZoomTo:true,
+            enableTouchZoom:true,
+            mouseWheelSensitivity:1.5,
             buttonOptions: {
                 verticalAlign: 'bottom'
             }
@@ -50,7 +55,8 @@ export default function useMap(){
   
 
       chart: {
-        map: worldMap,
+        // map: worldMap,
+        map:topMap,
         height: 300,
        
       },
@@ -126,15 +132,13 @@ export default function useMap(){
 
     tooltip: {
       
-      shared: true, // Esto permite mostrar ambos conjuntos de datos en el tooltip
+      shared: true,
       formatter: function () {
 
-        
         let tooltipText = '';
-        if(this.point.name != 'x'){
+        if(this.point.name && this.point.name != 'x'){
           tooltipText = '<strong>' + this.point.name + '</strong><br>'
         }
-        // Itera sobre todas las series y muestra los datos correspondientes
         this.series.chart.series.forEach(function (series) {
           const point = series.points.find(function (point) {
             return point.name === this.point.name ;

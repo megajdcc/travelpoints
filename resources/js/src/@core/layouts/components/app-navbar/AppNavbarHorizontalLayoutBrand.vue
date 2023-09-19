@@ -59,30 +59,30 @@ export default {
 
 <style lang="scss">
 .brand-logo img {
-  max-width: 90px !important;
+  // max-width: 90px;
 }
 
 @media (min-width:400px) {
   .brand-logo img {
-    max-width: 100px !important;
+    // max-width: 100px !important;
   }
 }
 
 @media (min-width:500px) {
   .brand-logo img {
-    max-width: 110px !important;
+    // max-width: 110px !important;
   }
 }
 
 @media (min-width:720px) {
   .brand-logo img {
-    max-width: 130px !important;
+    // max-width: 130px !important;
   }
 }
 
 @media (min-width:1200px) {
   .brand-logo img {
-    max-width: 180px !important;
+    // max-width: 180px !important;
   }
 }
 </style>

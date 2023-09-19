@@ -112,7 +112,8 @@ class User extends Authenticatable
         'activo'            => 'boolean',
         'tps'               => 'float',
         'nivel'             => 'array',
-        'lider_business' => 'boolean'
+        'lider_business' => 'boolean',
+        'ultimo_login' => 'datetime'
     ];
 
     public function password(): Attribute

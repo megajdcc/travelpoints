@@ -404,12 +404,15 @@ class DashboardController extends Controller
         $montoPromedioxusuario = Venta::montoPromedioPorUsuario($filtro,$rango_fecha);
         $registroPorUsuario = Venta::registroPorUsuario($filtro, $rango_fecha);
 
-        $ultima_fecha = Venta::get()->last()?->created_at;
+        // $ultima_fecha = Venta::get()->last()?->created_at;
+        $ultima_fecha = now()->firstOfMonth()->format('d/m/Y') .' - '. now()->format('d/m/Y');
+
+        
         $total_operaciones_registradas = collect([
             'icon'        => 'fa-cash-register',
             'color'       => 'light-primary',
-            'title'       => $q1->ventas,
-            'subtitle'    => 'Total de operaciones registradas',
+            'title'       => $q1,
+            'subtitle'    => 'Total compras registradas',
             'customClass' => 'mb-2 mb-xl-0',
             'tooltip' => 'Filtra por rango de fecha, negocio, pais y Destino'
 
@@ -461,21 +464,49 @@ class DashboardController extends Controller
     public function fetchTiendaRegalos(Request $request){
 
         $filtro = $request->all();
-        // $rango_fecha = false;
-        // $rango_fecha = preg_replace('/ +/', ' ', $filtro['rango_fecha']);
-
-        // if (!empty($rango_fecha)) {
-        //     $rango_fecha = \explode('to', $rango_fecha);
-        // }
 
         $q1 = Sistema::totalIngresoTienda();
         $tpsGenerados = Venta::travelpointsGenerados();
         $tpsConsumados = Venta::travelpointsConsumados();
+        $tpsDisponibles = Venta::travelpointsDisponibles();
+        $tpsRecuperados = Venta::tpsRecuperados();
         $totalIngresosTienda = Venta::totalIngresosTienda();
         $totalRegalosVendidos = Consumo::totalRegaloVendidos();
         $precioPromedioRegalo =  Producto::avg('precio');
-        $ultima_fecha = Consumo::get()->last()?->created_at;
         
+         $total_travelpoints_generados = collect([
+            'icon'        => 'fa-sack-dollar',
+            'color'       => 'light-success',
+            'title'       => '$ ' . number_format((float) $tpsGenerados, 2) . ' TPS',
+            'subtitle'    => 'Travel Points generados en el mes',
+            'customClass' => 'mb-2 mb-xl-0',
+        ]);
+
+        $tps_consumados = collect([
+            'icon'        => 'fa-file-invoice-dollar',
+            'color'       => 'light-danger',
+            'title'       => '$ ' . number_format((float) $tpsConsumados, 2) . ' TPS',
+            'subtitle'    => 'Travel Points consumidos en el mes',
+            'customClass' => 'mb-2 mb-xl-0',
+        ]);
+
+         $tps_disponibles = collect([
+            'icon'        => 'fa-hand-holding-dollar',
+            'color'       => 'light-primary',
+            'title'       => '$ ' . number_format((float) $tpsDisponibles, 2) . ' TPS',
+            'subtitle'    => 'Travel Points disponibles en total',
+            'customClass' => 'mb-2 mb-xl-0',
+        ]);
+
+        $tps_recuperados = collect([
+            'icon'        => 'fa-hand-holding-dollar',
+            'color'       => 'light-primary',
+            'title'       => '$ ' . number_format((float) $tpsRecuperados, 2) . ' TPS',
+            'subtitle'    => 'Travel Points Recuperados',
+            'customClass' => 'mb-2 mb-xl-0',
+        ]);
+
+
         $totalIngresoTienda = collect([
             'icon'        => 'fa-hand-holding-dollar',
             'color'       => 'light-primary',
@@ -484,24 +515,11 @@ class DashboardController extends Controller
             'customClass' => 'mb-2 mb-xl-0',
         ]);
 
-        $total_travelpoints_generados = collect([
-            'icon'        => 'fa-sack-dollar',
-            'color'       => 'light-success',
-            'title'       => '$ ' . number_format((float) $tpsGenerados, 2) . ' TPS',
-            'subtitle'    => 'Total Travel Points generados',
-            'customClass' => 'mb-2 mb-xl-0',
-        ]);
+       
 
 
 
-        $tps_consumados = collect([
-            'icon'        => 'fa-file-invoice-dollar',
-            'color'       => 'light-danger',
-            'title'       => '$ ' . number_format((float) $tpsConsumados, 2) . ' TPS',
-            'subtitle'    => 'Travel Points Canjeados',
-            'customClass' => 'mb-2 mb-xl-0',
-
-        ]);
+       
 
         $totalIngresosTienda = collect([
             'icon'        => 'fa-cash-register',
@@ -524,7 +542,7 @@ class DashboardController extends Controller
         $precioPromedioRegalo = collect([
             'icon'        => 'fa-circle-dollar-to-slot',
             'color'       => 'light-success',
-            'title'       => $precioPromedioRegalo,
+            'title'       => round($precioPromedioRegalo,2),
             'subtitle'    => 'Precio promedio Regalos Tienda',
             'customClass' => '',
         ]);
@@ -534,14 +552,16 @@ class DashboardController extends Controller
         return response()
         ->json([
             'items' => [
-                $totalIngresoTienda,
                 $total_travelpoints_generados,
                 $tps_consumados,
+                $tps_disponibles,
+                $tps_recuperados,
+                $totalIngresoTienda,
                 $totalIngresosTienda,
                 $totalRegalosVendidos,
                 $precioPromedioRegalo
             ],
-            'ultimaFecha' => $ultima_fecha
+            'ultimaFecha' => null
         ]);
     }
 
@@ -1237,5 +1257,147 @@ class DashboardController extends Controller
         ];
         
         return  response()->json([$viajeros]);
+    }
+
+
+    public function equipoPromotor(){
+
+        $coordinadores = Pais::selectRaw('codigo')
+                        ->addSelect([
+                            'cant' => User::join('ciudads as c', 'users.ciudad_id', 'c.id')->join('estados as e', 'c.estado_id', 'e.id')
+                                        ->whereColumn('e.pais_id', 'pais.id')
+                                        ->whereHas('rol',fn($q) => $q->where('nombre','Coordinador'))
+                                        ->selectRaw('count(users.id) as cant')
+                        ])
+                        ->havingRaw('cant > 0')
+                        ->get();
+
+        $lideres = Pais::selectRaw('codigo')
+                    ->addSelect([
+                        'cant' => User::join('ciudads as c', 'users.ciudad_id', 'c.id')->join('estados as e', 'c.estado_id', 'e.id')
+                                        ->whereColumn('e.pais_id', 'pais.id')
+                                        ->whereHas('rol', fn ($q) => $q->where('nombre','Lider'))
+                                        ->selectRaw('count(users.id) as cant')
+                    ])
+                    ->havingRaw('cant > 0')
+                    ->get();
+
+        $promotores = Pais::selectRaw('codigo')
+        ->addSelect([
+            'cant' => User::join('ciudads as c', 'users.ciudad_id', 'c.id')->join('estados as e', 'c.estado_id', 'e.id')
+                            ->whereColumn('e.pais_id', 'pais.id')
+                            ->whereHas('rol', fn ($q) => $q->where('nombre','Promotor'))
+                            ->selectRaw('count(users.id) as cant')
+        ])
+            ->havingRaw('cant > 0')
+            ->get();
+       
+        $coordinadores_por_destino = Destino::selectRaw('lat,lng,nombre')
+                            ->addSelect([
+                                'cant' => User::whereHas('rol',fn($q) => $q->where('nombre','Coordinador'))
+                                                ->whereHas('lideres.promotores',fn($q) => $q->whereColumn('destino_id','destinos.id'))
+                                                ->selectRaw('count(users.id) as cant')
+                            ])
+                            ->where('activo',true)
+                            ->havingRaw('cant > 0')
+                            ->get();
+
+        $lideres_por_destino = Destino::selectRaw('lat,lng,nombre')
+        ->addSelect([
+            'cant' => User::whereHas('rol', fn ($q) => $q->where('nombre', 'Lider'))
+            ->whereHas('promotores', fn ($q) => $q->whereColumn('destino_id', 'destinos.id'))
+            ->selectRaw('count(users.id) as cant')
+        ])
+            ->where('activo', true)
+            ->havingRaw('cant > 0')
+            ->get();
+
+        $promotores_por_destino = Destino::selectRaw('lat,lng,nombre')
+        ->addSelect([
+            'cant' => User::whereHas('rol', fn ($q) => $q->where('nombre', 'Promotor'))
+                ->whereColumn('destino_id','destinos.id')
+                ->selectRaw('count(users.id) as cant')
+        ])
+            ->where('activo', true)
+            ->havingRaw('cant > 0')
+            ->get();
+        
+        $coordinadores = [
+            'name' => 'Coordinadores',
+            'showInLegend' => false,
+            'allAreas' => false,
+            'data' => $coordinadores->map(fn($c) => [Str::lower($c->codigo),$c->cant])
+        ];
+
+        $lideres = [
+            'name' => 'Líderes',
+            'showInLegend' => false,
+            'allAreas' => false,
+            'data' => $lideres->map(fn ($l) => [Str::lower($l->codigo), $l->cant])
+        ];
+
+        $promotores = [
+            'name' => 'Promotores',
+            'showInLegend' => false,
+            'allAreas' => false,
+            'data' => $promotores->map(fn ($p) => [Str::lower($p->codigo),$p->cant])
+        ];
+
+      
+
+        $coordinador_por_destino = [
+            'name' => 'Coordinadores',
+            'allAreas' => false,
+            'type' => 'mappoint',
+            'data' => $coordinadores_por_destino->map(fn ($d) => ['name' => $d->nombre,'value' => $d->cant, 'geometry' => ['type' => 'Point', 'coordinates' => [(float) $d->lng, (float) $d->lat]]])
+        ];
+
+        $lideres_por_destino = [
+            'name' => 'Líderes',
+            'allAreas' => false,
+            'type' => 'mappoint',
+            'data' => $lideres_por_destino->map(fn ($d) => ['name' => $d->nombre,'value' => $d->cant, 'geometry' => ['type' => 'Point', 'coordinates' => [(float) $d->lng, (float) $d->lat]]])
+        ];
+
+         $promotores_por_destino = [
+            'name' => 'Promotores',
+            'allAreas' => false,
+            'type' => 'mappoint',
+            'data' => $promotores_por_destino->map(fn ($d) => ['name' => $d->nombre,'value' => $d->cant, 'geometry' => ['type' => 'Point', 'coordinates' => [(float) $d->lng, (float) $d->lat]]])
+        ];
+
+
+        return response()->json([['name' => 'x','data' => [], 'showInLegend' => false,'allAreas' => true],
+            $coordinadores,
+            $lideres,
+            $promotores,
+            $coordinador_por_destino,
+            $lideres_por_destino,
+            $promotores_por_destino
+        ]);
+    }
+
+    public function totalCoordinadores(){
+
+        $total_coordinadores = User::whereHas('rol',fn($q) => $q->where('nombre','Coordinador'))
+                                ->count();
+
+        return response()->json($total_coordinadores);
+    }
+
+    public function totalLideres()
+    {
+
+        $total_lideres = User::whereHas('rol', fn ($q) => $q->where('nombre', 'Lider'))
+        ->count();
+
+        return response()->json($total_lideres);
+    }
+
+    public function totalPromotores()
+    {
+        $total_promotores = User::whereHas('rol', fn ($q) => $q->where('nombre', 'Promotor'))
+        ->count();
+        return response()->json($total_promotores);
     }
 }

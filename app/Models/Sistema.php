@@ -225,5 +225,9 @@ class Sistema extends Model
 
     }
 
+    public static function getDivisa() : Divisa{
+        return (Sistema::first())->divisa;
+    }
+
    
 }

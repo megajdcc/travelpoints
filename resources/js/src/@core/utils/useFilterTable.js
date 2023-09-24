@@ -1,12 +1,12 @@
 import {ref,watch,computed}  from 'vue'
 
-export default function useFilterTable(){
+export default function useFilterTable(ordenar_por = 'id',sortDirDesc = true){
 
    const items = ref([])
 
    const refTable = ref(null)
-   const isSortDirDesc = ref(true)
-   const sortBy = ref('id')
+   const isSortDirDesc = ref(sortDirDesc)
+   const sortBy = ref(ordenar_por)
    const searchQuery = ref('')
    const perPage = ref(100)
    const currentPage = ref(1)

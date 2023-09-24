@@ -1252,6 +1252,33 @@ export default {
 				}).catch(e => reject(e))
 			})
 			
+		},
+
+		reportFetchViajeros({commit},filtro){
+			return new Promise((resolve, reject) => {
+				axios.post(`/api/reporte/fetch-data-viajeros`,filtro).then(({data}) => resolve(data))
+				.catch(e => reject(e))
+			})
+		},
+
+		reportFetchViajerosDescargar({commit},filtro){
+			return new Promise((resolve, reject) => {
+				axios.post(`/api/reporte/fetch-data-viajeros-descargar`,filtro).then(({data}) => resolve(data))
+				.catch(e => reject(e))
+			})
+		},
+
+		reportFetchDataEquipo({commit},filtro){
+
+			return new Promise((resolve, reject) => {
+				axios.post(`/api/reporte/fetch-data-equipo`,filtro).then(({data}) => resolve(data)).catch(e => reject(e))
+			})
+		},
+
+		reportFetchDataEquipoDescargar(_,filtro){
+			return new Promise((resolve, reject) => {
+				axios.post(`/api/reporte/fetch-data-equipo-descargar`,filtro).then(({data}) => resolve(data)).catch(e => reject(e))
+			})
 		}
 
 

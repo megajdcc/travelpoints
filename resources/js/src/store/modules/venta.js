@@ -198,6 +198,26 @@ export default{
 
 
          })
+      },
+
+      reportFetchData(_,filtro){
+         return new Promise((resolve, reject) => {
+            axios.post(`/api/reporte/fetch-data-gasto-turistico`,filtro).then(({data}) => resolve(data)).catch(e => reject(e))
+         })
+      },
+
+      getCincoPaisesConMasRegistro(_){
+         return new Promise((resolve, reject) => {
+            axios.get(`/api/reporte/get/cinco-paises-con-mayores-registros`).then(({data}) => resolve(data)).catch(e => reject(e))
+            
+         })
+      },
+
+
+      reportFetchDataDescargar(_,filtro){
+         return new Promise((resolve, reject) => {
+            axios.post(`/api/reporte/fetch-data-gasto-turistico-descargar`,filtro).then(({data}) => resolve(data)).catch(e => reject(e))
+         })
       }
    }
 }

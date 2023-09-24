@@ -728,6 +728,19 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
         Route::post('fetch-data-lideres', [UserController::class, 'fetchDataLideresReport']);
         Route::post('descargar/fetch-data-promotores', [UserController::class, 'descargarPromotoresReport']);
         Route::post('descargar/fetch-data-lideres', [UserController::class, 'descargarLideresReport']);
+        Route::post('territorios/destinos',[DestinoController::class,'fetchDataDestinoReport']);
+        Route::post('territorios/destinos/descargar', [DestinoController::class, 'descargarFetchDataDestinoReport']);
+        Route::post('fetch-data-viajeros',[UserController::class, 'fetchDataViajerosReportPorPais']);
+        Route::post('fetch-data-viajeros-descargar', [UserController::class, 'descargarFetchDataViajerosReportPorPais']);
+        Route::post('fetch-data-negocios',[NegocioController::class,'fetchDataNegocioReport']);
+        Route::post('fetch-data-negocios-descargar', [NegocioController::class, 'descargarFetchDataNegocioReport']);
+        Route::post('fetch-data-equipo',[UserController::class,'fetchDataEquipo']);
+        Route::post('fetch-data-equipo-descargar', [UserController::class, 'descargarFetchDataEquipo']);
+        Route::post('fetch-data-gasto-turistico',[VentaController::class,'fetchDataGastoTuristico']);
+        Route::post('fetch-data-gasto-turistico-descargar', [VentaController::class, 'fetchDataGastoTuristicoDescargar']);
+
+        Route::get('get/cinco-paises-con-mayores-registros',[VentaController::class, 'getCincoPaisesConMayoresRegistros']);
+
 
     });
 

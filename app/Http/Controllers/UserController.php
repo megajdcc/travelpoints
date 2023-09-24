@@ -14,6 +14,7 @@ use Carbon\Carbon;
 use Exception;
 use Datatables;
 use App\Events\{UsuarioCreado};
+use App\Models\Destino;
 use App\Models\Divisa;
 use App\Notifications\CuentaDesactivada;
 use Illuminate\Validation\Rules\RequiredIf;
@@ -29,6 +30,7 @@ use App\Models\Panel;
 use App\Models\Producto;
 use App\Models\Tarjeta;
 use App\Models\Usuario\Permiso;
+use App\Models\Venta;
 use App\Notifications\NuevaAsignacionCoordinador;
 use App\Notifications\NuevaAsignacionLider;
 use App\Notifications\nuevoAmigo;
@@ -1950,6 +1952,379 @@ class UserController extends Controller
         }
 
         return response()->json(['result' => $result]);
+
+    }
+
+
+    public function fetchDataViajerosReportPorPais(Request $request){
+
+        $filtro = $request->all();
+        $mes = (new Carbon(new \DateTime($filtro['mes'])));
+
+        if($request->has('pais')){
+            $paginations = User::addSelect([
+                    'pais' => Pais::select('pais')->whereHas('estados.ciudades', fn ($q) => $q->whereColumn('id', 'users.ciudad_id'))
+                ])
+                ->whereHas('rol', fn ($q) => $q->where('nombre', 'Viajero'))
+                ->when(isset($filtro['mes']) && !empty($filtro['mes']), function ($q) use ($mes) {
+                    $q->whereBetween('created_at', [$mes->firstOfMonth(), (new Carbon($mes))->lastOfMonth()]);
+                })
+                ->when($filtro['pais'] == 'otros', function ($q) use ($filtro) {
+                    $q->whereNull('ciudad_id');
+                   
+                })
+                ->when($filtro['pais'] != 'otros', function ($q) use($filtro) {
+                    $q->whereHas('ciudad.estado.pais', fn ($qu) => $qu->where('pais', $filtro['pais']));
+                })
+                // ->groupBy('pais')
+                ->orderBy($filtro['sortBy'], $filtro['isSortDirDesc'] ? 'desc' : 'asc')
+                ->paginate($filtro['perPage'] ?? 1000);
+
+            $viajeros = collect($paginations->items())->each(fn ($u) => $u->cargar());
+
+        }else{
+            $paginations = Pais::select('pais')
+            ->addSelect([
+                'viajeros' => User::selectRaw('count(*)')
+                    ->whereHas('rol', fn ($q) => $q->where('nombre', 'Viajero'))
+                    ->when(isset($filtro['mes']) && !empty($filtro['mes']), function ($q) use ($mes) {
+                        $q->whereBetween('created_at', [$mes->firstOfMonth(), (new Carbon($mes))->lastOfMonth()]);
+                    })
+                    ->whereHas('ciudad.estado', fn ($q) => $q->whereColumn('pais_id', 'pais.id')),
+                'con_consumo' => User::selectRaw('count(*)')
+                    ->whereHas('rol', fn ($q) => $q->where('nombre', 'Viajero'))
+                    ->has('consumos')
+                    ->when(isset($filtro['mes']) && !empty($filtro['mes']), function ($q) use ($mes) {
+                        $q->whereBetween('created_at', [$mes->firstOfMonth(), (new Carbon($mes))->lastOfMonth()]);
+                    })
+                    ->whereHas('ciudad.estado', fn ($q) => $q->whereColumn('pais_id', 'pais.id')),
+                'sin_consumo' => User::selectRaw('count(*)')
+                    ->whereHas('rol', fn ($q) => $q->where('nombre', 'Viajero'))
+                    ->doesntHave('consumos')
+                    ->when(isset($filtro['mes']) && !empty($filtro['mes']), function ($q) use ($mes) {
+                        $q->whereBetween('created_at', [$mes->firstOfMonth(), (new Carbon($mes))->lastOfMonth()]);
+                    })
+                    ->whereHas('ciudad.estado', fn ($q) => $q->whereColumn('pais_id', 'pais.id')),
+            ])
+            ->where([
+                ['pais',"LIKE","%{$filtro['q']}%","OR"]
+            ])
+            ->when(isset($filtro['mes']) && !empty($filtro['mes']), function ($q) use ($mes) {
+                $q->whereHas('estados.ciudades.usuarios',function($query) use($mes){
+                    $query->whereHas('rol',fn($qu) => $qu->where('nombre','Viajero'))
+                    ->whereBetween('created_at', [$mes->firstOfMonth(), (new Carbon($mes))->lastOfMonth()]);
+                });
+            })
+            ->havingRaw('viajeros > 0')
+            ->orderBy($filtro['sortBy'] ?? 'pais', $filtro['isSortDirDesc'] ? 'desc' : 'asc')
+            ->paginate($filtro['perPage'] ?? 1000);
+            $viajeros = $paginations->items();
+        }
+        
+       
+        return response()->json([
+            'total' => $paginations->total(),
+            'viajeros' => $viajeros,
+        ]);
+    }
+
+    public function descargarFetchDataViajerosReportPorPais(Request $request){
+        $filtro = $request->all();
+        $mes = (new Carbon(new \DateTime($filtro['mes'])));
+
+        if ($request->has('pais')) {
+            $paginations = User::addSelect([
+                'pais' => Pais::select('pais')->whereHas('estados.ciudades', fn ($q) => $q->whereColumn('id', 'users.ciudad_id'))
+            ])
+                ->whereHas('rol', fn ($q) => $q->where('nombre', 'Viajero'))
+                ->when(isset($filtro['mes']) && !empty($filtro['mes']), function ($q) use ($mes) {
+                    $q->whereBetween('created_at', [$mes->firstOfMonth(), (new Carbon($mes))->lastOfMonth()]);
+                })
+                ->when($filtro['pais'] == 'otros', function ($q) use ($filtro) {
+                    $q->whereNull('ciudad_id');
+                })
+                ->when($filtro['pais'] != 'otros', function ($q) use ($filtro) {
+                    $q->whereHas('ciudad.estado.pais', fn ($qu) => $qu->where('pais', $filtro['pais']));
+                })
+                // ->groupBy('pais')
+                ->orderBy($filtro['sortBy'], $filtro['isSortDirDesc'] ? 'desc' : 'asc')
+                ->paginate($filtro['perPage'] ?? 1000);
+
+            $viajeros = collect($paginations->items())->each(fn ($u) => $u->cargar());
+        } else {
+            $paginations = Pais::select('pais')
+            ->addSelect([
+                'viajeros' => User::selectRaw('count(*)')
+                    ->whereHas('rol', fn ($q) => $q->where('nombre', 'Viajero'))
+                    ->when(isset($filtro['mes']) && !empty($filtro['mes']), function ($q) use ($mes) {
+                        $q->whereBetween('created_at', [$mes->firstOfMonth(), (new Carbon($mes))->lastOfMonth()]);
+                    })
+                    ->whereHas('ciudad.estado', fn ($q) => $q->whereColumn('pais_id', 'pais.id')),
+                'con_consumo' => User::selectRaw('count(*)')
+                    ->whereHas('rol', fn ($q) => $q->where('nombre', 'Viajero'))
+                    ->has('consumos')
+                    ->when(isset($filtro['mes']) && !empty($filtro['mes']), function ($q) use ($mes) {
+                        $q->whereBetween('created_at', [$mes->firstOfMonth(), (new Carbon($mes))->lastOfMonth()]);
+                    })
+                    ->whereHas('ciudad.estado', fn ($q) => $q->whereColumn('pais_id', 'pais.id')),
+                'sin_consumo' => User::selectRaw('count(*)')
+                    ->whereHas('rol', fn ($q) => $q->where('nombre', 'Viajero'))
+                    ->doesntHave('consumos')
+                    ->when(isset($filtro['mes']) && !empty($filtro['mes']), function ($q) use ($mes) {
+                        $q->whereBetween('created_at', [$mes->firstOfMonth(), (new Carbon($mes))->lastOfMonth()]);
+                    })
+                    ->whereHas('ciudad.estado', fn ($q) => $q->whereColumn('pais_id', 'pais.id')),
+            ])
+            ->where([
+                ['pais', "LIKE", "%{$filtro['q']}%", "OR"]
+            ])
+            ->when(isset($filtro['mes']) && !empty($filtro['mes']), function ($q) use ($mes) {
+                $q->whereHas('estados.ciudades.usuarios', function ($query) use ($mes) {
+                    $query->whereHas('rol', fn ($qu) => $qu->where('nombre', 'Viajero'))
+                    ->whereBetween('created_at', [$mes->firstOfMonth(), (new Carbon($mes))->lastOfMonth()]);
+                });
+            })
+            ->havingRaw('viajeros > 0')
+            ->orderBy($filtro['sortBy'] ?? 'pais', $filtro['isSortDirDesc'] ? 'desc' : 'asc')
+            ->paginate($filtro['perPage'] ?? 1000);
+            $viajeros = $paginations->items();
+        }
+
+        $imagenBase64 = "data:image/png;base64," . base64_encode(Storage::disk('public')->get('logotipo.png'));
+        $logowhite = "data:image/png;base64," . base64_encode(Storage::disk('public')->get('logotipoblancohorizontal.png'));
+
+        $datos = [
+            'filtro' => $filtro,
+            'viajeros' => $viajeros,
+            'logotipo' => $imagenBase64,
+            'logotipoblanco' => $logowhite,
+        ];
+
+
+        $pdf = Pdf::loadView('reports.viajeros', $datos);
+
+        $pdf->setOption([
+            'dpi' => 150,
+            'defaultFont' => 'sans-serif',
+            'isHtml5ParserEnabled' => true,
+            'isRemoteEnabled' => true
+        ]);
+
+        $pdf->setPaper('a4', 'landscape');
+
+        $nombre = 'Viajeros.pdf';
+        $pdf->save($nombre, 'reportes');
+
+        return response()->json([
+            'url' => Storage::url('public/reportes/' . $nombre),
+            'filename' => $nombre
+        ]);
+    }
+
+
+    public function fetchDataEquipo(Request $request){
+
+        $filtro = $request->all();
+        $mes = (new Carbon(new \DateTime($filtro['mes'])));
+
+        if($request->has('pais') && !empty($filtro['pais'])){
+            $paginations = Destino::selectRaw('nombre as destino')
+                                    ->addSelect([
+                                        'pais' => Pais::select('pais')->whereHas('estados',fn($q) => $q->whereColumn('id','destinos.estado_id')),
+                                        'coordinadores' =>User::selectRaw('count(distinct(users.id))')
+                                                        ->whereHas('rol', fn ($q) => $q->where('nombre', 'Coordinador'))
+                                                            ->when(isset($filtro['mes']) && !empty($filtro['mes']), function ($q) use ($mes) {
+                                                                $q->whereBetween('created_at', [$mes->firstOfMonth(), (new Carbon($mes))->lastOfMonth()]);
+                                                            })
+                                                            ->whereHas('lideres.promotores',fn($q) => $q->whereColumn('destino_id','destinos.id')),
+                                        'lideres' => User::selectRaw('count(distinct(users.id))')
+                                        ->whereHas('rol', fn ($q) => $q->where('nombre', 'Lider'))
+                                            ->when(isset($filtro['mes']) && !empty($filtro['mes']), function ($q) use ($mes) {
+                                                $q->whereBetween('created_at', [$mes->firstOfMonth(), (new Carbon($mes))->lastOfMonth()]);
+                                            })
+                                            ->whereHas('promotores', fn ($q) => $q->whereColumn('destino_id', 'destinos.id')),
+                                        'promotores' => User::selectRaw('count(distinct(users.id))')
+                                        ->whereHas('rol', fn ($q) => $q->where('nombre', 'Promotor'))
+                                            ->when(isset($filtro['mes']) && !empty($filtro['mes']), function ($q) use ($mes) {
+                                                $q->whereBetween('created_at', [$mes->firstOfMonth(), (new Carbon($mes))->lastOfMonth()]);
+                                            })
+                                            ->whereColumn('destino_id','destinos.id'),
+                                    ])
+                                    ->where([
+                                        ['nombre', 'LIKE', "%{$filtro['q']}%", 'OR'],
+                                        ['titulo', 'LIKE', "%{$filtro['q']}%", 'OR'],
+                                        ['about_travel', 'LIKE', "%{$filtro['q']}%", 'OR'],
+
+                                    ])
+                                    ->whereHas('estado.pais',fn($q) => $q->where('pais',$filtro['pais']))
+                                    ->orderBy($filtro['sortBy'] ?? 'pais', $filtro['isSortDirDesc'] ? 'desc' : 'asc')
+                                    ->paginate($filtro['perPage'] ?? 100);
+
+            $equipo = $paginations->items();
+                                
+
+        }else{
+            $paginations = Pais::select('pais')
+                                ->addSelect([
+                                    'coordinadores' => User::selectRaw('count(distinct(users.id))')
+                                                                ->whereHas('rol',fn($q) => $q->where('nombre','Coordinador'))
+                                                                ->when(isset($filtro['mes']) && !empty($filtro['mes']),function($q) use($mes){
+                                                                    $q->whereBetween('created_at',[$mes->firstOfMonth(),(new Carbon($mes))->lastOfMonth()]);
+                                                                })
+                                                                ->whereHas('lideres.promotores',function($query){
+                                                                    $query->whereHas('destino',function($que){
+                                                                        $que->whereHas('estado',fn($q) => $q->whereColumn('pais_id','pais.id'));
+                                                                    });
+                                                                }),
+                                    'lideres' =>    User::selectRaw('count(distinct(users.id))')
+                                                    ->whereHas('rol', fn ($q) => $q->where('nombre', 'Lider'))
+                                                    ->when(isset($filtro['mes']) && !empty($filtro['mes']), function ($q) use ($mes) {
+                                                        $q->whereBetween('created_at', [$mes->firstOfMonth(), (new Carbon($mes))->lastOfMonth()]);
+                                                    })
+                                                    ->whereHas('promotores', function ($query) {
+                                                        $query->whereHas('destino', function ($que) {
+                                                            $que->whereHas('estado', fn ($q) => $q->whereColumn('pais_id', 'pais.id'));
+                                                        });
+                                                    }),
+                                    'promotores' =>    User::selectRaw('count(distinct(users.id))')
+                                    ->whereHas('rol', fn ($q) => $q->where('nombre', 'Promotor'))
+                                        ->when(isset($filtro['mes']) && !empty($filtro['mes']), function ($q) use ($mes) {
+                                            $q->whereBetween('created_at', [$mes->firstOfMonth(), (new Carbon($mes))->lastOfMonth()]);
+                                        })
+                                        ->whereHas('destino', function ($que) {
+                                            $que->whereHas('estado', fn ($q) => $q->whereColumn('pais_id', 'pais.id'));
+                                        }),
+                                        
+                                ])
+                                ->where([
+                                    ['pais','LIKE',"%{$filtro['q']}%",'OR']
+                                ])
+                                ->havingRaw('coordinadores > 0 || lideres > 0 || promotores > 0')
+                                ->orderBy($filtro['sortBy'] ?? 'pais',$filtro['isSortDirDesc'] ? 'desc' : 'asc')
+                                ->paginate($filtro['perPage'] ?? 100);
+
+            $equipo = $paginations->items();
+        }
+
+
+        return response()->json([
+            'total' => $paginations->total(),
+            'equipo' => $equipo
+        ]);
+
+    }
+
+    public function descargarFetchDataEquipo(Request $request){
+        $filtro = $request->all();
+        $mes = (new Carbon(new \DateTime($filtro['mes'])));
+
+        if ($request->has('pais') && !empty($filtro['pais'])) {
+            $paginations = Destino::selectRaw('nombre as destino')
+                ->addSelect([
+                    'pais' => Pais::select('pais')->whereHas('estados', fn ($q) => $q->whereColumn('id', 'destinos.estado_id')),
+                    'coordinadores' => User::selectRaw('count(distinct(users.id))')
+                        ->whereHas('rol', fn ($q) => $q->where('nombre', 'Coordinador'))
+                        ->when(isset($filtro['mes']) && !empty($filtro['mes']), function ($q) use ($mes) {
+                            $q->whereBetween('created_at', [$mes->firstOfMonth(), (new Carbon($mes))->lastOfMonth()]);
+                        })
+                        ->whereHas('lideres.promotores', fn ($q) => $q->whereColumn('destino_id', 'destinos.id')),
+                    'lideres' => User::selectRaw('count(distinct(users.id))')
+                        ->whereHas('rol', fn ($q) => $q->where('nombre', 'Lider'))
+                        ->when(isset($filtro['mes']) && !empty($filtro['mes']), function ($q) use ($mes) {
+                            $q->whereBetween('created_at', [$mes->firstOfMonth(), (new Carbon($mes))->lastOfMonth()]);
+                        })
+                        ->whereHas('promotores', fn ($q) => $q->whereColumn('destino_id', 'destinos.id')),
+                    'promotores' => User::selectRaw('count(distinct(users.id))')
+                        ->whereHas('rol', fn ($q) => $q->where('nombre', 'Promotor'))
+                        ->when(isset($filtro['mes']) && !empty($filtro['mes']), function ($q) use ($mes) {
+                            $q->whereBetween('created_at', [$mes->firstOfMonth(), (new Carbon($mes))->lastOfMonth()]);
+                        })
+                        ->whereColumn('destino_id', 'destinos.id'),
+                ])
+                ->where([
+                    ['nombre', 'LIKE', "%{$filtro['q']}%", 'OR'],
+                    ['titulo', 'LIKE', "%{$filtro['q']}%", 'OR'],
+                    ['about_travel', 'LIKE', "%{$filtro['q']}%", 'OR'],
+
+                ])
+                ->whereHas('estado.pais', fn ($q) => $q->where('pais', $filtro['pais']))
+                ->orderBy($filtro['sortBy'] ?? 'pais', $filtro['isSortDirDesc'] ? 'desc' : 'asc')
+                ->paginate($filtro['perPage'] ?? 100);
+
+            $equipo = $paginations->items();
+        } else {
+            $paginations = Pais::select('pais')
+                ->addSelect([
+                    'coordinadores' => User::selectRaw('count(distinct(users.id))')
+                        ->whereHas('rol', fn ($q) => $q->where('nombre', 'Coordinador'))
+                        ->when(isset($filtro['mes']) && !empty($filtro['mes']), function ($q) use ($mes) {
+                            $q->whereBetween('created_at', [$mes->firstOfMonth(), (new Carbon($mes))->lastOfMonth()]);
+                        })
+                        ->whereHas('lideres.promotores', function ($query) {
+                            $query->whereHas('destino', function ($que) {
+                                $que->whereHas('estado', fn ($q) => $q->whereColumn('pais_id', 'pais.id'));
+                            });
+                        }),
+                    'lideres' =>    User::selectRaw('count(distinct(users.id))')
+                        ->whereHas('rol', fn ($q) => $q->where('nombre', 'Lider'))
+                        ->when(isset($filtro['mes']) && !empty($filtro['mes']), function ($q) use ($mes) {
+                            $q->whereBetween('created_at', [$mes->firstOfMonth(), (new Carbon($mes))->lastOfMonth()]);
+                        })
+                        ->whereHas('promotores', function ($query) {
+                            $query->whereHas('destino', function ($que) {
+                                $que->whereHas('estado', fn ($q) => $q->whereColumn('pais_id', 'pais.id'));
+                            });
+                        }),
+                    'promotores' =>    User::selectRaw('count(distinct(users.id))')
+                        ->whereHas('rol', fn ($q) => $q->where('nombre', 'Promotor'))
+                        ->when(isset($filtro['mes']) && !empty($filtro['mes']), function ($q) use ($mes) {
+                            $q->whereBetween('created_at', [$mes->firstOfMonth(), (new Carbon($mes))->lastOfMonth()]);
+                        })
+                        ->whereHas('destino', function ($que) {
+                            $que->whereHas('estado', fn ($q) => $q->whereColumn('pais_id', 'pais.id'));
+                        }),
+
+                ])
+                ->where([
+                    ['pais', 'LIKE', "%{$filtro['q']}%", 'OR']
+                ])
+                ->havingRaw('coordinadores > 0 || lideres > 0 || promotores > 0')
+                ->orderBy($filtro['sortBy'] ?? 'pais', $filtro['isSortDirDesc'] ? 'desc' : 'asc')
+                ->paginate($filtro['perPage'] ?? 100);
+
+            $equipo = $paginations->items();
+        }
+
+        $imagenBase64 = "data:image/png;base64," . base64_encode(Storage::disk('public')->get('logotipo.png'));
+        $logowhite = "data:image/png;base64," . base64_encode(Storage::disk('public')->get('logotipoblancohorizontal.png'));
+
+        $datos = [
+            'filtro' => $filtro,
+            'equipos' => $equipo,
+            'logotipo' => $imagenBase64,
+            'logotipoblanco' => $logowhite,
+        ];
+
+
+        $pdf = Pdf::loadView('reports.equipo', $datos);
+
+        $pdf->setOption([
+            'dpi' => 150,
+            'defaultFont' => 'sans-serif',
+            'isHtml5ParserEnabled' => true,
+            'isRemoteEnabled' => true
+        ]);
+
+        $pdf->setPaper('a4', 'landscape');
+
+        $nombre = 'Equipo Promotor.pdf';
+        $pdf->save($nombre, 'reportes');
+
+        return response()->json([
+            'url' => Storage::url('public/reportes/' . $nombre),
+            'filename' => $nombre
+        ]);
+
 
     }
 

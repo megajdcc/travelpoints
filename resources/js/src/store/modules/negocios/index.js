@@ -971,6 +971,21 @@ export default{
             resolve(data)
          }).catch(e => reject(e))
       })
+     },
+
+
+     reportFetchNegocios({commit},filtro){
+      return new Promise((resolve, reject) => {
+         axios.post(`/api/reporte/fetch-data-negocios`,filtro).then(({data}) => resolve(data))
+            .catch(e => reject(e))
+      })
+     },
+
+     reportFetchNegocioDescargar({commit},filtro){
+        return new Promise((resolve, reject) => {
+         axios.post(`/api/reporte/fetch-data-negocios-descargar`,filtro).then(({data}) => resolve(data))
+            .catch(e => reject(e))
+      })
      }
 
    }

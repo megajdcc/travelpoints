@@ -335,7 +335,26 @@ export default{
             }).catch(e => reject(e))
 
          })
+      },
+
+      reportFetchDestino({commit},filtro){
+
+         return new Promise((resolve, reject) => {
+            axios.post(`/api/reporte/territorios/destinos`,filtro).then(({data}) => resolve(data)).catch(e => reject(e));
+
+         })
+      },
+
+
+       reportFetchDestinoDescargar({commit},filtro){
+
+         return new Promise((resolve, reject) => {
+            axios.post(`/api/reporte/territorios/destinos/descargar`,filtro).then(({data}) => resolve(data)).catch(e => reject(e));
+
+         })
       }
+
+
 
    }
 

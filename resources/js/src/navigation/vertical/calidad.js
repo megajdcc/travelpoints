@@ -329,6 +329,66 @@ export default [
          }
       ]
    },
+
+   {
+      title:'Reportes',
+      icon:'fa-file-invoice',
+      fontAwesome:true,
+      children:[
+         {
+            title:'Territorios',
+            route:'reportes.territorios',
+            action: 'read',
+            resource: 'reportes',
+            icon:'fa-map-location-dot',
+            fontAwesome:true,
+         },
+         {
+            title:'Viajeros',
+            route:'reportes.viajeros',
+            action: 'read',
+            resource: 'reportes',
+            icon:'fa-person-walking-luggage',
+            fontAwesome:true,
+
+         },
+         {
+            title:'Negocios',
+            route:'reportes.negocios',
+            action: 'read',
+            resource: 'reportes',
+             icon:'fa-shop',
+            fontAwesome:true,
+         },
+         {
+            title:'Equipo Promotor',
+            route:'reportes.equipo',
+            action: 'read',
+            resource: 'reportes',
+            icon:'fa-users',
+            fontAwesome:true,
+         },
+         {
+            title:'Gasto Turístico',
+            route:'reportes.gasto.turistico',
+            action: 'read',
+            resource: 'reportes',
+            icon:'fa-file-invoice',
+            fontAwesome:true,
+         },
+
+         {
+            title:'Tienda de Regalos',
+            route:'reportes.territorios',
+            action: 'read',
+            resource: 'reportes',
+             icon:'fa-cash-register',
+            fontAwesome:true,
+         },
+
+         
+      ]
+   }
    
 ]
 

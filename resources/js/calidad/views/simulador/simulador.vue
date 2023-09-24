@@ -41,7 +41,7 @@
                     Cuántos días de la semana trabajará cada promotor.
                   </span>
                 </template>
-                  <el-slider v-model="form.dias_trabajado" show-input></el-slider>
+                  <el-slider v-model="form.dias_trabajado" show-input :min="1" :max="7"></el-slider>
               </b-form-group>
 
 

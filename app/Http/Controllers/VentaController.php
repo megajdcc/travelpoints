@@ -2,16 +2,24 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Consumo;
+use App\Models\Destino;
 use App\Models\Divisa;
 use App\Models\Movimiento;
 use App\Models\Negocio\Empleado;
+use App\Models\Negocio\Negocio;
+use App\Models\Pais;
 use App\Models\Sistema;
 use App\Models\Venta;
 use App\Notifications\consumoInvitado;
 use App\Notifications\nuevoConsumoNegocio;
+use Barryvdh\DomPDF\Facade\Pdf;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
+use phpseclib3\Crypt\DES;
 
 class VentaController extends Controller
 {
@@ -303,4 +311,230 @@ class VentaController extends Controller
         ]);
 
     }
+
+
+    public function fetchDataGastoTuristico(Request $request){
+
+        $filtro = $request->all();
+
+        $mes = (new Carbon(new \DateTime($filtro['mes'])));
+
+        if($request->has('pais')){
+
+            $paginations = Destino::select('nombre as destino')
+                                    
+                                    ->addSelect(['total_compras' => Venta::selectRaw('count(*)')
+                                                    ->whereHasMorph('model', [Negocio::class], function (Builder $query) {
+                                                        $query->whereColumn('estado_id','destinos.estado_id');
+                                                    })
+                                                    ->when(isset($filtro['mes']) && !empty($filtro['mes']), function ($query) use ($mes) {
+                                                        $query->whereBetween('created_at', [$mes->firstOfMonth(), (new Carbon($mes))->lastOfMonth()]);
+                                                    }),
+                                                'total_consumos' => Consumo::selectRaw('count(*)')
+                                                    ->whereHas('tienda', function (Builder $query) {
+                                                                 $query->whereColumn('estado_id', 'destinos.estado_id');
+                                                    })
+                                                    ->when(isset($filtro['mes']) && !empty($filtro['mes']), function ($query) use ($mes) {
+                                                        $query->whereBetween('created_at', [$mes->firstOfMonth(), (new Carbon($mes))->lastOfMonth()]);
+                                                    })
+                                    ])
+                ->whereHas('estado.pais',fn($q) => $q->where('pais',$filtro['pais']))
+                ->havingRaw('total_compras > 0 || total_consumos > 0')
+                ->orderBy($filtro['sortBy'] ?? 'destino',$filtro['isSortDirDesc'] ? 'desc' : 'asc')
+                ->paginate($filtro['perPage'] ?? 100);
+
+                $ds = Sistema::getDivisa();
+
+                $registros = collect($paginations->items())->each(function($r) use($mes,$ds) {
+                        $r->total_operaciones = ($r->total_compras + $r->total_consumos);
+
+                        $ventas = Venta::whereHasMorph('model', [Negocio::class], function (Builder $query) use($r) {
+                                     $query->whereHas('estado.destinos',fn($q) => $q->where('nombre',$r->destino));
+                                })
+                                ->when(isset($filtro['mes']) && !empty($filtro['mes']), function ($query) use ($mes) {
+                                    $query->whereBetween('created_at', [$mes->firstOfMonth(), (new Carbon($mes))->lastOfMonth()]);
+                                })->get();
+
+                        $r->reg_promedio = ($ventas->each(fn($v) => $v->monto = Divisa::cambiar($v->divisa,$ds,$v->monto)))->avg('monto');
+                        $r->reg_promedio = "{$ds->iso} ".number_format((float) $r->reg_promedio,2,',','.')." {$ds->simbolo}";
+                        
+                });
+
+            
+        }else{
+           
+             $paginations = Pais::select('pais')
+                                ->addSelect([
+                                    'total_compras' => Venta::selectRaw('count(*)')
+                                                        ->whereHasMorph('model', [Negocio::class], function (Builder $query) {
+                                                            $query->whereHas('estado', fn (Builder $q) => $q->whereColumn('pais_id', 'pais.id'));
+                                                        })
+                                                        ->when(isset($filtro['mes']) && !empty($filtro['mes']), function ($query) use ($mes) {
+                                                            $query->whereBetween('created_at', [$mes->firstOfMonth(), (new Carbon($mes))->lastOfMonth()]);
+                                                        }),
+                                    'total_consumos' => Consumo::selectRaw('count(*)')
+                                                        ->whereHas('tienda', function (Builder $query) {
+                                                            $query->whereHas('estado', fn (Builder $q) => $q->whereColumn('pais_id', 'pais.id'));
+                                                        })
+                                                        ->when(isset($filtro['mes']) && !empty($filtro['mes']), function ($query) use ($mes) {
+                                                            $query->whereBetween('created_at', [$mes->firstOfMonth(), (new Carbon($mes))->lastOfMonth()]);
+                                                        })
+                                ])
+                                ->havingRaw('total_compras > 0 || total_consumos > 0')
+                                ->orderBy($filtro['sortBy'] ?? 'pais') 
+                                ->paginate($filtro['perPage'] ?? 100);
+                                                        
+            $ds = Sistema::getDivisa();
+
+            $registros = collect($paginations->items())->each(function($r) use($mes,$ds) {
+                    $r->total_operaciones = ($r->total_compras + $r->total_consumos);
+
+                    $ventas = Venta::whereHasMorph('model', [Negocio::class], function (Builder $query) use($r) {
+                                $query->whereHas('estado.pais', fn (Builder $q) => $q->where('pais', $r->pais));
+                            })
+                            ->when(isset($filtro['mes']) && !empty($filtro['mes']), function ($query) use ($mes) {
+                                $query->whereBetween('created_at', [$mes->firstOfMonth(), (new Carbon($mes))->lastOfMonth()]);
+                            })->get();
+
+                    $r->reg_promedio = ($ventas->each(fn($v) => $v->monto = Divisa::cambiar($v->divisa,$ds,$v->monto)))->avg('monto');
+                    $r->reg_promedio = "{$ds->iso} ".number_format((float) $r->reg_promedio,2,',','.')." {$ds->simbolo}";
+                    
+            });
+        }
+
+        return response()->json([
+            'total' => $paginations->total(),
+            'registros' => $registros
+        ]);
+
+
+    }
+
+    public function fetchDataGastoTuristicoDescargar(Request $request){
+
+        $filtro = $request->all();
+
+        $mes = (new Carbon(new \DateTime($filtro['mes'])));
+
+        if ($request->has('pais')) {
+
+            $paginations = Destino::select('nombre as destino')
+
+            ->addSelect([
+                'total_compras' => Venta::selectRaw('count(*)')
+                ->whereHasMorph('model', [Negocio::class], function (Builder $query) {
+                    $query->whereColumn('estado_id', 'destinos.estado_id');
+                })
+                    ->when(isset($filtro['mes']) && !empty($filtro['mes']), function ($query) use ($mes) {
+                        $query->whereBetween('created_at', [$mes->firstOfMonth(), (new Carbon($mes))->lastOfMonth()]);
+                    }),
+                'total_consumos' => Consumo::selectRaw('count(*)')
+                ->whereHas('tienda', function (Builder $query) {
+                    $query->whereColumn('estado_id', 'destinos.estado_id');
+                })
+                    ->when(isset($filtro['mes']) && !empty($filtro['mes']), function ($query) use ($mes) {
+                        $query->whereBetween('created_at', [$mes->firstOfMonth(), (new Carbon($mes))->lastOfMonth()]);
+                    })
+            ])
+                ->whereHas('estado.pais', fn ($q) => $q->where('pais', $filtro['pais']))
+                ->havingRaw('total_compras > 0 || total_consumos > 0')
+                ->orderBy($filtro['sortBy'] ?? 'destino', $filtro['isSortDirDesc'] ? 'desc' : 'asc')
+                ->paginate($filtro['perPage'] ?? 100);
+
+            $ds = Sistema::getDivisa();
+
+            $registros = collect($paginations->items())->each(function ($r) use ($mes, $ds) {
+                $r->total_operaciones = ($r->total_compras + $r->total_consumos);
+
+                $ventas = Venta::whereHasMorph('model', [Negocio::class], function (Builder $query) use ($r) {
+                    $query->whereHas('estado.destinos', fn ($q) => $q->where('nombre', $r->destino));
+                })
+                    ->when(isset($filtro['mes']) && !empty($filtro['mes']), function ($query) use ($mes) {
+                        $query->whereBetween('created_at', [$mes->firstOfMonth(), (new Carbon($mes))->lastOfMonth()]);
+                    })->get();
+
+                $r->reg_promedio = ($ventas->each(fn ($v) => $v->monto = Divisa::cambiar($v->divisa, $ds, $v->monto)))->avg('monto');
+                $r->reg_promedio = "{$ds->iso} " . number_format((float) $r->reg_promedio, 2, ',', '.') . " {$ds->simbolo}";
+            });
+        } else {
+
+            $paginations = Pais::select('pais')
+                ->addSelect([
+                    'total_compras' => Venta::selectRaw('count(*)')
+                    ->whereHasMorph('model', [Negocio::class], function (Builder $query) {
+                        $query->whereHas('estado', fn (Builder $q) => $q->whereColumn('pais_id', 'pais.id'));
+                    })
+                        ->when(isset($filtro['mes']) && !empty($filtro['mes']), function ($query) use ($mes) {
+                            $query->whereBetween('created_at', [$mes->firstOfMonth(), (new Carbon($mes))->lastOfMonth()]);
+                        }),
+                    'total_consumos' => Consumo::selectRaw('count(*)')
+                    ->whereHas('tienda', function (Builder $query) {
+                        $query->whereHas('estado', fn (Builder $q) => $q->whereColumn('pais_id', 'pais.id'));
+                    })
+                        ->when(isset($filtro['mes']) && !empty($filtro['mes']), function ($query) use ($mes) {
+                            $query->whereBetween('created_at', [$mes->firstOfMonth(), (new Carbon($mes))->lastOfMonth()]);
+                        })
+                ])
+                ->havingRaw('total_compras > 0 || total_consumos > 0')
+                ->orderBy($filtro['sortBy'] ?? 'pais')
+                ->paginate($filtro['perPage'] ?? 100);
+
+            $ds = Sistema::getDivisa();
+
+            $registros = collect($paginations->items())->each(function ($r) use ($mes, $ds) {
+                $r->total_operaciones = ($r->total_compras + $r->total_consumos);
+
+                $ventas = Venta::whereHasMorph('model', [Negocio::class], function (Builder $query) use ($r) {
+                    $query->whereHas('estado.pais', fn (Builder $q) => $q->where('pais', $r->pais));
+                })
+                    ->when(isset($filtro['mes']) && !empty($filtro['mes']), function ($query) use ($mes) {
+                        $query->whereBetween('created_at', [$mes->firstOfMonth(), (new Carbon($mes))->lastOfMonth()]);
+                    })->get();
+
+                $r->reg_promedio = ($ventas->each(fn ($v) => $v->monto = Divisa::cambiar($v->divisa, $ds, $v->monto)))->avg('monto');
+                $r->reg_promedio = "{$ds->iso} " . number_format((float) $r->reg_promedio, 2, ',', '.') . " {$ds->simbolo}";
+            });
+        }
+
+
+        $imagenBase64 = "data:image/png;base64," . base64_encode(Storage::disk('public')->get('logotipo.png'));
+        $logowhite = "data:image/png;base64," . base64_encode(Storage::disk('public')->get('logotipoblancohorizontal.png'));
+
+        $datos = [
+            'filtro' => $filtro,
+            'registros' => $registros,
+            'paises_con_mayor_registros' => Venta::cinco_paises_con_mayores_registros(),
+            'logotipo' => $imagenBase64,
+            'logotipoblanco' => $logowhite,
+        ];
+
+
+        $pdf = Pdf::loadView('reports.territorios.gasto-turistico', $datos);
+
+        $pdf->setOption([
+            'dpi' => 150,
+            'defaultFont' => 'sans-serif',
+            'isHtml5ParserEnabled' => true,
+            'isRemoteEnabled' => true
+        ]);
+
+        $pdf->setPaper('a4', 'landscape');
+
+        $nombre = 'Gasto Turístico.pdf';
+        $pdf->save($nombre, 'reportes');
+
+        return response()->json([
+            'url' => Storage::url('public/reportes/' . $nombre),
+            'filename' => $nombre
+        ]);
+    }
+
+
+    public function getCincoPaisesConMayoresRegistros(){
+
+       $ventas = Venta::cinco_paises_con_mayores_registros();
+        return response()->json($ventas);
+
+    }
+
 }

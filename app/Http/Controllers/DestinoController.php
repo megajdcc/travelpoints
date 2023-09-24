@@ -9,6 +9,9 @@ use Illuminate\Support\Facades\{DB,Storage,File};
 
 use Illuminate\Database\Eloquent\Builder;
 use App\Models\Imagen;
+use App\Models\Pais;
+use Barryvdh\DomPDF\Facade\Pdf;
+use Carbon\Carbon;
 use Illuminate\Support\Collection;
 
 class DestinoController extends Controller
@@ -362,6 +365,111 @@ class DestinoController extends Controller
 
         return response()->json(['result' => $result,'destino' => $destino]);
 
+    }
+
+
+    public function fetchDataDestinoReport(Request $request){
+        
+        $filtro  = $request->all();
+        $mes = (new Carbon(new \DateTime($filtro['mes'])));
+        $pagination = Destino::when(isset($filtro['pais']) && !empty($filtro['pais']), function($query){
+                    $query->select(['nombre','created_at','id']);
+                })->when(!isset($filtro['pais']) || empty($filtro['pais']),function($q){
+                    $q->selectRaw('count(*) as destinos');
+                })
+            ->addSelect([
+                'pais' => Pais::select('pais')->whereHas('estados', fn ($q) => $q->whereColumn('id', 'destinos.estado_id'))
+            ])
+            ->where([
+                ['nombre', 'LIKE', "%{$filtro['q']}%", 'OR'],
+                ['titulo', 'LIKE', "%{$filtro['q']}%", 'OR'],
+                ['about_travel', 'LIKE', "%{$filtro['q']}%", 'OR'],
+
+            ])
+            // ->whereHas('estado.pais', fn ($q) => $q->where([
+            //     ['pais', 'LIKE', "%{$filtro['q']}%", 'OR']
+            // ]))
+            ->where('activo', true)
+            ->when(isset($filtro['mes']) && !empty($filtro['mes']), function(Builder $q) use($mes){
+                $q->whereBetween('created_at', [$mes->firstOfMonth(), (new Carbon($mes))->lastOfMonth()]);
+            })
+             ->when(isset($filtro['pais']) && !empty($filtro['pais']),fn($q) => $q->whereHas('estado.pais',fn($qu) => $qu->where('pais',$filtro['pais'])))
+            ->when(!isset($filtro['pais']) || empty($filtro['pais']),fn($q) => $q->groupBy('pais'))
+            ->orderBy($filtro['sortBy'],$filtro['isSortDirDesc'] ? 'desc' : 'asc')
+            ->paginate($filtro['perPage'] ?? 1000);
+        
+        $totalPaises = (collect($pagination->items()))->groupBy('pais')->count();
+        
+
+      
+        return response()->json([
+            'total' => $pagination->total(),
+            'destinos' => $pagination->items(),
+            'totalPaises' => $totalPaises
+        ]);
+        
+    }
+
+    public function descargarFetchDataDestinoReport(Request $request){
+
+        $filtro  = $request->all();
+        $mes = (new Carbon(new \DateTime($filtro['mes'])));
+
+        $pagination = Destino::when(isset($filtro['pais']) && !empty($filtro['pais']), function ($query) {
+                            $query->select(['nombre', 'created_at', 'id']);
+                        })->when(!isset($filtro['pais']) || empty($filtro['pais']), function ($q) {
+                            $q->selectRaw('count(*) as destinos');
+                        })
+                    ->addSelect([
+                        'pais' => Pais::select('pais')->whereHas('estados', fn ($q) => $q->whereColumn('id', 'destinos.estado_id'))
+                    ])
+                    ->where([
+                        ['nombre', 'LIKE', "%{$filtro['q']}%", 'OR'],
+                        ['titulo', 'LIKE', "%{$filtro['q']}%", 'OR'],
+                        ['about_travel', 'LIKE', "%{$filtro['q']}%", 'OR'],
+                    ])
+            // ->whereHas('estado.pais', fn ($q) => $q->where([
+            //     ['pais', 'LIKE', "%{$filtro['q']}%", 'OR']
+            // ]))
+            ->where('activo', true)
+            ->when(isset($filtro['mes']) && !empty($filtro['mes']), function (Builder $q) use ($mes) {
+                $q->whereBetween('created_at', [$mes->firstOfMonth(), (new Carbon($mes))->lastOfMonth()]);
+            })
+            ->when(isset($filtro['pais']) && !empty($filtro['pais']), fn ($q) => $q->whereHas('estado.pais', fn ($qu) => $qu->where('pais', $filtro['pais'])))
+            ->when(!isset($filtro['pais']) || empty($filtro['pais']), fn ($q) => $q->groupBy('pais'))
+
+            ->orderBy($filtro['sortBy'], $filtro['isSortDirDesc'] ? 'desc' : 'asc')
+            ->paginate($filtro['perPage'] ?? 1000);
+
+        $imagenBase64 = "data:image/png;base64," . base64_encode(Storage::disk('public')->get('logotipo.png'));
+        $logowhite = "data:image/png;base64," . base64_encode(Storage::disk('public')->get('logotipoblancohorizontal.png'));
+
+        $datos = [
+            'filtro' => $filtro,
+            'destinos' => $pagination->items(),
+            'logotipo' => $imagenBase64,
+            'logotipoblanco' => $logowhite,
+        ];
+
+
+        $pdf = Pdf::loadView('reports.territorios.destinos', $datos);
+
+        $pdf->setOption([
+            'dpi' => 150,
+            'defaultFont' => 'sans-serif',
+            'isHtml5ParserEnabled' => true,
+            'isRemoteEnabled' => true
+        ]);
+
+        $pdf->setPaper('a4', 'landscape');
+
+        $nombre = 'Destinos.pdf';
+        $pdf->save($nombre, 'reportes');
+
+        return response()->json([
+            'url' => Storage::url('public/reportes/' . $nombre),
+            'filename' => $nombre
+        ]);
     }
 
 

@@ -36,7 +36,10 @@ class Estado extends Model
         return $this->hasMany(Solicitud::class,'estado_id','id');
     }
 
-
+    
+    public function destinos(){
+        return $this->hasMany(Destino::class,'estado_id','id');
+    }
    
     
 

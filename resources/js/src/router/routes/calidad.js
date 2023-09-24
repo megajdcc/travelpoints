@@ -3650,6 +3650,118 @@ export default [
       }
    },
 
+   {
+      path:'/reports/territorios',
+      component:() => import('views/reports/territorios/index.vue'),
+      children:[
+         {
+            path:'',
+            name:'reportes.territorios',
+            props: (route) => ({ pais: route.query.pais }),
+            component:() => import('views/reports/territorios/list.vue'),
+            meta:{
+               resource:'reportes',
+               action:'read',
+               pageTitle:'Territorios y Destinos',
+               breadcrumb:[
+                  {text:'Listado',active:true}
+               ]
+            }
+         }
+      ]
+   },
+
+   {
+      path:'/reports/viajeros',
+      component:() => import('views/reports/viajeros/index.vue'),
+      children:[
+         {
+            path:'',
+            name:'reportes.viajeros',
+            props: (route) => ({ pais: route.query.pais }),
+            component:() => import('views/reports/viajeros/list.vue'),
+            meta:{
+               resource:'reportes',
+               action:'read',
+               pageTitle:'Viajeros por Países',
+               breadcrumb:[
+                  {text:'Listado',active:true}
+               ]
+            }
+         }
+      ]
+   },
+
+    {
+      path:'/reports/negocios',
+      component:() => import('views/reports/negocios/index.vue'),
+      children:[
+         {
+            path:'',
+            name:'reportes.negocios',
+            props: (route) => ({ pais: route.query.pais, destino:route.query.destino }),
+            component:() => import('views/reports/negocios/list.vue'),
+            meta:{
+               resource:'reportes',
+               action:'read',
+               pageTitle:'Negocios por País y Destino',
+               breadcrumb:[
+                  {text:'Listado',active:true}
+               ]
+            }
+         }
+      ]
+   },
+
+
+    {
+      path:'/reports/equipo',
+      component:() => import('views/reports/equipo/index.vue'),
+      children:[
+         {
+            path:'',
+            name:'reportes.equipo',
+            props: (route) => ({ pais: route.query.pais }),
+            component:() => import('views/reports/equipo/list.vue'),
+            meta:{
+               resource:'reportes',
+               action:'read',
+               pageTitle:'Equipo por País y Destino',
+               breadcrumb:[
+                  {text:'Listado',active:true}
+               ]
+            }
+         }
+      ]
+   },
+
+    {
+      path:'/reports/gasto-turistico',
+      component:() => import('views/reports/gasto_turistico/index.vue'),
+      children:[
+         {
+            path:'',
+            name:'reportes.gasto.turistico',
+            props: (route) => ({ pais: route.query.pais }),
+            component:() => import('views/reports/gasto_turistico/list.vue'),
+            meta:{
+               resource:'reportes',
+               action:'read',
+               pageTitle:'Gasto Turístico',
+               breadcrumb:[
+                  {text:'Listado',active:true}
+               ]
+            }
+         }
+      ]
+   },
+
+
+
+   
+
+   
+
 
    /*****************************************/
    /* Academia

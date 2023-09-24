@@ -11,10 +11,12 @@ use Illuminate\Support\Facades\{DB,Storage,File};
 use App\Models\Imagen;
 use App\Models\Movimiento;
 use App\Models\Negocio\HorarioReservacion;
+use App\Models\Pais;
 use App\Models\Red;
 use App\Models\User;
 use App\Models\Usuario\Permiso;
 use App\Models\Video;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use DateTime;
 
@@ -855,6 +857,223 @@ class NegocioController extends Controller
     public function invitar(Request $request, User $usuario){
 
         return response()->json();
+    }
+
+    public function fetchDataNegocioReport(Request $request){
+
+        $filtro = $request->all();
+
+        $mes = (new Carbon(new \DateTime($filtro['mes'])));
+
+        if($request->has('pais') && !empty($request->get('pais'))){
+            $paginations = Destino::selectRaw('nombre as destino')
+                            ->addSelect([
+                                'negocios' => Negocio::selectRaw('count(*)')
+                                                ->when(isset($filtro['mes']) && !empty($filtro['mes']), function ($q) use ($mes) {
+                                                    $q->whereBetween('created_at', [$mes->firstOfMonth(), (new Carbon($mes))->lastOfMonth()]);
+                                                })
+                                                ->whereColumn('iata_id','destinos.iata_id'),
+                                'pais' => Pais::select('pais')
+                                        
+                                            ->whereHas('estados',fn($q) => $q->whereColumn('id','destinos.estado_id'))
+                            ])
+                            ->when(isset($filtro['mes']) && !empty($filtro['mes']), function ($q) use ($mes) {
+                                $q->whereBetween('created_at', [$mes->firstOfMonth(), (new Carbon($mes))->lastOfMonth()]);
+                            })
+                            ->whereHas('estado.pais' ,fn($q) => $q->where('pais',$filtro['pais']))
+                            ->where([
+                                ['nombre', 'like', "%{$filtro['q']}%", 'OR'],
+                                ['titulo', 'like', "%{$filtro['q']}%", 'OR'],
+                                ['about_travel', 'like', "%{$filtro['q']}%", 'OR'],
+                            ])
+                            ->orderBy($filtro['sortBy'] ?? 'pais', $filtro['isSortDirDesc'] ? 'desc' : 'asc')
+                            ->paginate($filtro['perPage'] ?? 100);
+
+            $negocios = collect($paginations->items());
+        }else if($request->has('destino') && !empty($request->get('destino'))){
+           
+            $paginations = Negocio::selectRaw('nombre as negocio,direccion')
+                                ->addSelect([
+                                    'destino' => Destino::selectRaw('nombre as destino')
+                                                    ->when(isset($filtro['mes']) && !empty($filtro['mes']), function ($q) use ($mes) {
+                                                        $q->whereBetween('created_at', [$mes->firstOfMonth(), (new Carbon($mes))->lastOfMonth()]);
+                                                    })
+                                                    ->whereColumn('estado_id','negocios.estado_id'),
+                                    'pais' => Pais::select('pais')->whereHas('estados',fn($q) => $q->whereColumn('id','negocios.estado_id'))
+                                ])
+                                ->when(isset($filtro['mes']) && !empty($filtro['mes']), function ($q) use ($mes) {
+                                    $q->whereBetween('created_at', [$mes->firstOfMonth(), (new Carbon($mes))->lastOfMonth()]);
+                                })
+                                ->whereHas('estado',function($q) use($filtro){
+                                    $q->whereHas('destinos',fn($query) => $query->where('nombre',$filtro['destino']));
+                                })
+                                ->where([
+                                    ['nombre','like',"%{$filtro['q']}%",'OR'],
+                                    ['direccion', 'like', "%{$filtro['q']}%", 'OR'],
+                                    ['sitio_web', 'like', "%{$filtro['q']}%", 'OR'],
+                                    ['breve', 'like', "%{$filtro['q']}%", 'OR'],
+                                    ['descripcion', 'like', "%{$filtro['q']}%", 'OR'],
+                                ])
+                                ->orderBy($filtro['sortBy'] ?? 'pais', $filtro['isSortDirDesc'] ? 'desc' : 'asc')
+                                ->paginate($filtro['perPage'] ?? 100);
+
+            $negocios = collect($paginations->items());
+
+
+        }else{
+             $paginations = Pais::select('pais')
+                        ->addSelect([
+                            'negocios' => Negocio::selectRaw('count(distinct(id))')
+                             ->when(isset($filtro['mes']) && !empty($filtro['mes']),function($q) use($mes){
+                                $q->whereBetween('created_at',[$mes->firstOfMonth(),(new Carbon($mes))->lastOfMonth()]);
+                            })
+                            ->whereHas('estado',fn($q) => $q->whereColumn('pais_id','pais.id')),
+                            'activos' => Negocio::selectRaw('count(distinct(id))')
+                            ->when(isset($filtro['mes']) && !empty($filtro['mes']), function ($q) use ($mes) {
+                                $q->whereBetween('created_at', [$mes->firstOfMonth(), (new Carbon($mes))->lastOfMonth()]);
+                            })->whereHas('estado', fn ($q) => $q->where('publicado',true)->whereColumn('pais_id', 'pais.id')),
+                            'desactivados' => Negocio::selectRaw('count(distinct(id))')->when(isset($filtro['mes']) && !empty($filtro['mes']),function($q) use($mes){
+                                $q->whereBetween('created_at',[$mes->firstOfMonth(),(new Carbon($mes))->lastOfMonth()]);
+                            })->whereHas('estado', fn ($q) => $q->where('publicado', false)->whereColumn('pais_id', 'pais.id')),
+                        ])
+                        ->where([
+                            ['pais','LIKE',"%{$filtro['q']}%",'OR']
+                        ])
+                        // ->groupBy('pais')
+                        ->havingRaw('negocios > 0')
+                        ->orderBy($filtro['sortBy'] ?? 'pais', $filtro['isSortDirDesc'] ? 'desc' : 'asc')
+                        ->paginate($filtro['perPage'] ?? 100);
+
+            $negocios = collect($paginations->items());
+        }
+
+
+        return response()->json([
+            'total' => $paginations->total(),
+            'negocios' => $negocios
+        ]);
+       
+    }
+
+    public function descargarFetchDataNegocioReport(Request $request){
+
+         $filtro = $request->all();
+
+        $mes = (new Carbon(new \DateTime($filtro['mes'])));
+
+        if($request->has('pais') && !empty($request->get('pais'))){
+            $paginations = Destino::selectRaw('nombre as destino')
+                            ->addSelect([
+                                'negocios' => Negocio::selectRaw('count(*)')
+                                                ->when(isset($filtro['mes']) && !empty($filtro['mes']), function ($q) use ($mes) {
+                                                    $q->whereBetween('created_at', [$mes->firstOfMonth(), (new Carbon($mes))->lastOfMonth()]);
+                                                })
+                                                ->whereColumn('iata_id','destinos.iata_id'),
+                                'pais' => Pais::select('pais')
+                                        
+                                            ->whereHas('estados',fn($q) => $q->whereColumn('id','destinos.estado_id'))
+                            ])
+                            ->when(isset($filtro['mes']) && !empty($filtro['mes']), function ($q) use ($mes) {
+                                $q->whereBetween('created_at', [$mes->firstOfMonth(), (new Carbon($mes))->lastOfMonth()]);
+                            })
+                            ->whereHas('estado.pais' ,fn($q) => $q->where('pais',$filtro['pais']))
+                            ->where([
+                                ['nombre', 'like', "%{$filtro['q']}%", 'OR'],
+                                ['titulo', 'like', "%{$filtro['q']}%", 'OR'],
+                                ['about_travel', 'like', "%{$filtro['q']}%", 'OR'],
+                            ])
+                            ->orderBy($filtro['sortBy'] ?? 'pais', $filtro['isSortDirDesc'] ? 'desc' : 'asc')
+                            ->paginate($filtro['perPage'] ?? 100);
+
+            $negocios = collect($paginations->items());
+        }else if($request->has('destino') && !empty($request->get('destino'))){
+           
+            $paginations = Negocio::selectRaw('nombre as negocio,direccion')
+                                ->addSelect([
+                                    'destino' => Destino::selectRaw('nombre as destino')
+                                                    ->when(isset($filtro['mes']) && !empty($filtro['mes']), function ($q) use ($mes) {
+                                                        $q->whereBetween('created_at', [$mes->firstOfMonth(), (new Carbon($mes))->lastOfMonth()]);
+                                                    })
+                                                    ->whereColumn('estado_id','negocios.estado_id'),
+                                    'pais' => Pais::select('pais')->whereHas('estados',fn($q) => $q->whereColumn('id','negocios.estado_id'))
+                                ])
+                                ->when(isset($filtro['mes']) && !empty($filtro['mes']), function ($q) use ($mes) {
+                                    $q->whereBetween('created_at', [$mes->firstOfMonth(), (new Carbon($mes))->lastOfMonth()]);
+                                })
+                                ->whereHas('estado',function($q) use($filtro){
+                                    $q->whereHas('destinos',fn($query) => $query->where('nombre',$filtro['destino']));
+                                })
+                                ->where([
+                                    ['nombre','like',"%{$filtro['q']}%",'OR'],
+                                    ['direccion', 'like', "%{$filtro['q']}%", 'OR'],
+                                    ['sitio_web', 'like', "%{$filtro['q']}%", 'OR'],
+                                    ['breve', 'like', "%{$filtro['q']}%", 'OR'],
+                                    ['descripcion', 'like', "%{$filtro['q']}%", 'OR'],
+                                ])
+                                ->orderBy($filtro['sortBy'] ?? 'pais', $filtro['isSortDirDesc'] ? 'desc' : 'asc')
+                                ->paginate($filtro['perPage'] ?? 100);
+
+            $negocios = collect($paginations->items());
+
+
+        }else{
+             $paginations = Pais::select('pais')
+                        ->addSelect([
+                            'negocios' => Negocio::selectRaw('count(distinct(id))')
+                             ->when(isset($filtro['mes']) && !empty($filtro['mes']),function($q) use($mes){
+                                $q->whereBetween('created_at',[$mes->firstOfMonth(),(new Carbon($mes))->lastOfMonth()]);
+                            })
+                            ->whereHas('estado',fn($q) => $q->whereColumn('pais_id','pais.id')),
+                            'activos' => Negocio::selectRaw('count(distinct(id))')
+                            ->when(isset($filtro['mes']) && !empty($filtro['mes']), function ($q) use ($mes) {
+                                $q->whereBetween('created_at', [$mes->firstOfMonth(), (new Carbon($mes))->lastOfMonth()]);
+                            })->whereHas('estado', fn ($q) => $q->where('publicado',true)->whereColumn('pais_id', 'pais.id')),
+                            'desactivados' => Negocio::selectRaw('count(distinct(id))')->when(isset($filtro['mes']) && !empty($filtro['mes']),function($q) use($mes){
+                                $q->whereBetween('created_at',[$mes->firstOfMonth(),(new Carbon($mes))->lastOfMonth()]);
+                            })->whereHas('estado', fn ($q) => $q->where('publicado', false)->whereColumn('pais_id', 'pais.id')),
+                        ])
+                        ->where([
+                            ['pais','LIKE',"%{$filtro['q']}%",'OR']
+                        ])
+                        // ->groupBy('pais')
+                        ->havingRaw('negocios > 0')
+                        ->orderBy($filtro['sortBy'] ?? 'pais', $filtro['isSortDirDesc'] ? 'desc' : 'asc')
+                        ->paginate($filtro['perPage'] ?? 100);
+
+            $negocios = collect($paginations->items());
+        }
+
+
+        $imagenBase64 = "data:image/png;base64," . base64_encode(Storage::disk('public')->get('logotipo.png'));
+        $logowhite = "data:image/png;base64," . base64_encode(Storage::disk('public')->get('logotipoblancohorizontal.png'));
+
+        $datos = [
+            'filtro' => $filtro,
+            'negocios' => $negocios,
+            'logotipo' => $imagenBase64,
+            'logotipoblanco' => $logowhite,
+        ];
+
+        $pdf = Pdf::loadView('reports.negocios', $datos);
+
+        $pdf->setOption([
+            'dpi' => 150,
+            'defaultFont' => 'sans-serif',
+            'isHtml5ParserEnabled' => true,
+            'isRemoteEnabled' => true
+        ]);
+
+        $pdf->setPaper('a4', 'landscape');
+
+        $nombre = 'Negocios.pdf';
+        $pdf->save($nombre, 'reportes');
+
+        return response()->json([
+            'url' => Storage::url('public/reportes/' . $nombre),
+            'filename' => $nombre
+        ]);
+
+
     }
 
 

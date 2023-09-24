@@ -10,7 +10,7 @@
       <!-- Table Container Card -->
       <b-card no-body class="mb-0" v-if="!hideHeader">
 
-         <div class="m-2">
+         <div class="my-1 container-fluid">
             <!-- Table Top -->
             <b-row>
                <!-- Per Page -->
@@ -18,8 +18,10 @@
                   <per-page v-model="perPage" :perPageOptions="perPageOptions"></per-page>
                </b-col>
 
-               <b-col md="8">
+               <b-col md="8" class="d-flex">
+                  <slot name="btn-action-prepend"></slot>
                   <b-input-group size="sm">
+                   
                      <b-form-input :value="searchQuery" @input="updateQ" type="search" :placeholder="searchPlaceholder" />
                      <b-input-group-append >
                         <b-button size="sm" @click="refetchData()" :title="$t('Recargar')">
@@ -96,6 +98,8 @@ import {
    BFormInput,
    BInputGroup,
    BInputGroupAppend,
+   BInputGroupPrepend,
+
    BCarousel,
    BCarouselSlide,
    BImg,
@@ -126,6 +130,7 @@ export default {
       BCarousel,
       BCarouselSlide,
       BInputGroupAppend,
+      BInputGroupPrepend,
       BImg,
       perPage: () => import('components/PerPage.vue'),
       paginateTable: () => import('components/PaginateTable.vue'),

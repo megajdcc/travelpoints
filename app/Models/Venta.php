@@ -9,6 +9,7 @@ use App\Trais\hasOpinion;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 
 class Venta extends Model
@@ -245,6 +246,17 @@ class Venta extends Model
             $comision_travel = $negocio->comision * $this->personas;
         }
         return $comision_travel;
+    }
+
+    public static function cinco_paises_con_mayores_registros() : Collection{
+        $ventas = collect(DB::select('select * from pais_origen_viajero'));
+
+        $ventas = $ventas->each(function ($v) use ($ventas) {
+
+            $v->promedio = $v->ventas / $ventas->reduce(fn ($carr, $ve) => $carr + $ve->ventas, 0) * 100;
+        });
+
+        return $ventas;
     }
 
 }

@@ -16,7 +16,7 @@
     <font-awesome-icon :icon="['fas',item.icon]" v-if="item.fontAwesome" />
     <feather-icon :icon="item.icon || 'CircleIcon'" v-else />
     
-      <span class="menu-title text-truncate">{{ t(item.title) }}</span>
+      <span class="menu-title text-truncate">{{ t(item.title,item.title) }}</span>
       <b-badge
         v-if="item.tag"
         pill

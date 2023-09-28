@@ -12,11 +12,11 @@
       <li class="dropdown-menu-header">
         <div class="dropdown-header d-flex py-1">
           <h4 class="notification-title mb-0 mr-auto">
-            Carrito de Compra
+            {{ $t('Carro de Compras') }}
           </h4>
 
           <b-badge pill variant="light-primary">
-            {{ cantidad }} Productos
+            {{ cantidad }} {{ $t('Productos') }}
           </b-badge>
 
         </div>
@@ -34,11 +34,11 @@
                 <section>
                    <p class="media-heading">
                     <span class="font-weight-bolder" >
-                      {{ producto.nombre }}
+                      {{ $t(producto.nombre) }}
                     </span>
                   </p>
                   <small class="notification-text">
-                    {{ producto.breve }}
+                    {{ $t(producto.breve) }}
                   </small>
                 </section>
                 <b-button @click="$store.dispatch('carrito/quitarProducto',{producto_id: producto.id, usuario_id:usuario.id })" variant="danger" size="sm">
@@ -54,7 +54,7 @@
             
             <b-button variant="primary" title="Ir A Caja." @click="irCaja">
               <font-awesome-icon icon="fas fa-cash-register"/>
-                Pasar por caja
+                {{ $t('Pasar por caja') }}
             </b-button>
 
           </b-button-group>

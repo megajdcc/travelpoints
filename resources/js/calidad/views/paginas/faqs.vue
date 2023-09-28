@@ -5,10 +5,10 @@
          <b-card no-body class="faq-search" :style="{ backgroundImage: `url(${imgBanner})` }">
             <b-card-body class="text-center content-banner">
                <h1 class="text-white font-weight-bolder display-5">
-                  Respondamos algunas preguntas
+                  {{ $t('Respondamos algunas preguntas') }}
                </h1>
                <b-card-text class="mb-2 font-weight-bolder text-white ">
-                  o elige una categoría para encontrar rápidamente la ayuda que necesitas
+                  {{ $t('o elige una categoría para encontrar rápidamente la ayuda que necesitas') }}
                </b-card-text>
 
                <!-- form -->
@@ -17,7 +17,7 @@
                      <b-input-group-prepend is-text>
                         <feather-icon icon="SearchIcon" />
                      </b-input-group-prepend>
-                     <b-form-input id="searchbar" v-model="faqSearchQuery" placeholder="Busca la pregunta" />
+                     <b-form-input id="searchbar" v-model="faqSearchQuery" :placeholder="$t('Busca la pregunta')" />
                   </b-input-group>
                </b-form>
                <!-- form -->
@@ -37,7 +37,7 @@
                <!-- title -->
                <template #title>
                   <feather-icon :icon="categoria.icono" size="18" class="mr-1" />
-                  <span class="font-weight-bolder">{{ categoria.nombre }}</span>
+                  <span class="font-weight-bolder">{{ $t(categoria.nombre) }}</span>
                </template>
                <faq-question-answer :options="categoria" />
             </b-tab>
@@ -57,10 +57,9 @@
       <section class="faq-contact">
          <b-row class="mt-5 pt-75 text-center">
             <b-col cols="12">
-               <h2>¿Aún tienes una pregunta?</h2>
+               <h2>{{ $t('¿Aún tienes una pregunta?') }}</h2>
                <b-card-text class="mb-3">
-                  Si no puede encontrar una pregunta en nuestras preguntas frecuentes, siempre puede contactarnos. ¡Te
-                  responderemos en breve!
+                 {{ $t('Si no puede encontrar una pregunta en nuestras preguntas frecuentes, siempre puede contactarnos. ¡Te responderemos en breve!') }}
                </b-card-text>
             </b-col>
             <b-col sm="6">
@@ -68,8 +67,8 @@
                   <b-avatar size="70" rounded variant="light-primary" class="mb-2">
                      <font-awesome-icon icon="fas fa-phone" size="4x" />
                   </b-avatar>
-                  <h4>01 800 400 INFO (4636), (322) 225 9635.</h4>
-                  <span class="text-body">¡Siempre estamos felices de ayudar!</span>
+                  <h4>{{ $t('01 800 400 INFO (4636), (322) 225 9635.') }}</h4>
+                  <span class="text-body">{{ $t('¡Siempre estamos felices de ayudar!') }}</span>
                </b-card>
             </b-col>
             <b-col sm="6">
@@ -79,8 +78,8 @@
                         <font-awesome-icon icon="fas fa-envelope" size="4x" />
                      </b-link>
                   </b-avatar>
-                  <h4>soporte@infochannel.si</h4>
-                  <span class="text-body">¡La mejor manera de obtener una respuesta más rápida!</span>
+                  <h4>{{ $t('soporte@infochannel.si') }}</h4>
+                  <span class="text-body">{{ $t('¡La mejor manera de obtener una respuesta más rápida!') }}</span>
                </b-card>
             </b-col>
          </b-row>

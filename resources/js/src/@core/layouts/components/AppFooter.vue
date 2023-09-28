@@ -7,10 +7,10 @@
         href="/"
         target="_blank"
       >{{ sistema.nombre || 'Travel' }}</b-link>
-      <span class="d-none d-sm-inline-block">, Todos los derechos reservados</span>
+      <span class="d-none d-sm-inline-block">, {{ $t('Todos los derechos reservados') }}</span>
     </span>
 
-    <span class="float-md-right d-none d-md-block">Hecho a mano &amp; con amor
+    <span class="float-md-right d-none d-md-block">{{ $t('Hecho a mano & con amor') }}
       <feather-icon
         icon="HeartIcon"
         size="21"

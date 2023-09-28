@@ -20,7 +20,7 @@
 
     <b-button variant="dark" @click="() => showGallerie = !showGallerie" size="sm" class="btn-gallerie" rounded>
       <font-awesome-icon icon="fa-images" class="mr-1" />
-      Todas las fotos {{ imagenes.length }}
+      {{ $t('Todas las fotos') }} {{ imagenes.length }}
     </b-button>
 
     <gallerie :galleries="imagenes" :showGallerie.sync="showGallerie" :path="path" />

@@ -3576,6 +3576,82 @@ export default [
    },
 
    /*****************************************/
+   /* Idiomas
+   /*************************************** */
+
+   {
+      path:'/idiomas',
+      component:() => import('views/idiomas/index.vue'),
+      children:[
+         {
+            path:'',
+            name:'idioma.list',
+            component:() => import('views/idiomas/list.vue'),
+            meta:{
+               pageTitle:'Idiomas del sistema',
+               resource:'idiomas',
+               action:'read',
+               breadcrumb:[
+                  {text:'Listado',active:true}
+               ]
+            }
+         },
+
+         {
+            path:'traduccions',
+            name:'idioma.list',
+            props: (route) => ({ lang: route.query.lang }),
+            component:() => import('views/idiomas/traducciones.vue'),
+            meta:{
+               pageTitle:'Traducciones del idioma',
+               resource:'idiomas',
+               action:'read',
+               breadcrumb:[
+                  {text:'Listado',active:false,to:{name:'idioma.list'}},
+                  {text:'Traducciones',active:true},
+
+               ]
+            }
+         },
+
+         {
+            path:'create',
+            name:'idioma.create',
+            component:() => import('views/idiomas/create.vue'),
+            meta:{
+               pageTitle:'Crear',
+               resource:'idiomas',
+               navActiveLink:'idioma.list',
+               action:'read',
+               breadcrumb:[
+                  {text:'Listado',active:false,to:{name:'idioma.list'}},
+                  {text:'Crear',active:true},
+               ]
+            }
+         },
+
+          {
+            path:':id/edit',
+            name:'idioma.edit',
+            props:true,
+            component:() => import('views/idiomas/edit.vue'),
+            meta:{
+               pageTitle:'Editar',
+               resource:'idiomas',
+               navActiveLink:'idioma.list',
+               action:'read',
+               breadcrumb:[
+                  {text:'Listado',active:false,to:{name:'idioma.list'}},
+                  {text:'Editar',active:true},
+               ]
+            }
+         }
+
+
+      ]
+   },
+
+   /*****************************************/
    /* Reportes
    /*************************************** */
    {

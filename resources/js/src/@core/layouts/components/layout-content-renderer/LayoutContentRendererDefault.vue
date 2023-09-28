@@ -8,7 +8,7 @@
     
     <div class="header-navbar-shadow" />
 
-    <div class="content-wrapper " :class="contentWidth === 'boxed' ? 'container p-0' : null" style="min-height:75vh" >
+    <div class="content-wrapper mt-1" :class="contentWidth === 'boxed' ? 'container p-0' : null" style="min-height:75vh" >
       <slot name="breadcrumb">
         <app-breadcrumb />
       </slot>

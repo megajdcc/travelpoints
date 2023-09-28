@@ -1,10 +1,10 @@
 <template>
   <b-button-group>
-    <b-button variant="primary" @click.stop="toggleSeguidor" :disabled="!usuario.id" class="font-weight-bolder flex-grow-1" v-b-tooltip.hover="legendSeguidor">
+    <b-button variant="primary" @click.stop="toggleSeguidor" :disabled="!usuario.id" class="font-weight-bolder flex-grow-1" v-b-tooltip.hover="$t(legendSeguidor)">
       <font-awesome-icon :icon="getIconSeguidor" :class="{'mr-1' : !hideLegend}"  :color="getColorSeguidor"  />
         <template v-if="!hideLegend">
           <span class="d-none d-md-inline">
-            {{ legendSeguidor }}
+            {{ $t(legendSeguidor) }}
           </span>
         </template>
     </b-button>
@@ -14,12 +14,12 @@
     </slot>
   
     <b-button variant="warning" :disabled="!usuario.id" @click="toggleRecomendacion"
-      class="font-weight-bolder flex-grow-1" v-b-tooltip.hover="legendRecomendacion">
+      class="font-weight-bolder flex-grow-1" v-b-tooltip.hover="$t(legendRecomendacion)">
       <font-awesome-icon icon="fa fa-heart" :class="{'mr-1' : !hideLegend}" :color="getColorRecomendacion" />
 
       <template v-if="!hideLegend">
           <span class="d-none d-md-inline">
-              {{ legendRecomendacion }}
+              {{ $t(legendRecomendacion) }}
           </span>
       </template>
     </b-button>
@@ -108,7 +108,7 @@ export default{
           return 'Lo sigo'
         }
 
-        return '¿ Seguir ?'
+        return '¿Seguir?'
       }),
 
 
@@ -128,7 +128,7 @@ export default{
           return 'Lo recomiendas'
         }
 
-        return '¿ Lo Recomiendas ?'
+        return '¿Lo Recomiendas?'
       }),
 
 

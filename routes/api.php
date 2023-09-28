@@ -11,7 +11,7 @@ use App\Models\Divisa;
 use App\Http\Controllers\ImagenController;
 use App\Models\Negocio\HorarioReservacion;
 
-use App\Http\Controllers\{PaisController, CiudadController, EstadoController, InvitacionController, LoteController, MensajesVonageController, PaginaController, ReunionController, TarjetaController};
+use App\Http\Controllers\{PaisController, CiudadController, EstadoController, IdiomaController, InvitacionController, LoteController, MensajesVonageController, PaginaController, ReunionController, TarjetaController};
 
 /*
 |--------------------------------------------------------------------------
@@ -32,6 +32,7 @@ use App\Http\Controllers\{PaisController, CiudadController, EstadoController, In
 
 // Route::middleware('auth:api')->group(function(){
 
+Route::get('idiomas/get-locales', [IdiomaController::class, 'getLocales']);
 
 Route::group(['prefix' => 'auth'], function () {
 
@@ -719,6 +720,15 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::post('reunions/{reunion}/guardar/archivo',[ReunionController::class,'guardarArchivo']);
     Route::post('reunions/fetch/reunions',[ReunionController::class,'fetchReunions']);
 
+    /**************************/
+    /* IDioma
+    /**************************/
+
+    Route::get('idiomas/{idioma}/fetch-data',[IdiomaController::class,'fetch']);
+    Route::post('idiomas/fetch-data', [IdiomaController::class, 'fetchData']);
+    Route::get('idiomas/fetch-for-short-lang/{lang}',[IdiomaController::class,'fetchForShortLang']);
+    Route::put('idiomas/{idioma}/change-json',[IdiomaController::class,'changeJson']);
+    Route::resource('idiomas',IdiomaController::class);
 
     /**************************/
     /* Reportes
@@ -859,3 +869,5 @@ Route::get('divisas/get/all', fn () => response()->json(Divisa::all()));
 // Iatas
 Route::get('iatas/get/all', [IataController::class, 'getIatas']);
 
+// Lang
+Route::get('lang/{lang}',[IdiomaController::class,'getLang']);

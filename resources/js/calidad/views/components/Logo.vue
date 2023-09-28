@@ -1,5 +1,5 @@
 <template>
-   <b-link class="brand-logo" :to="url">
+   <b-link class="brand-logo " :to="url" >
       <img :src="logo" :alt="appName" />
    </b-link>
 </template>
@@ -43,3 +43,4 @@ export default {
    },
 }
 </script>
+

@@ -1,11 +1,9 @@
 <template>
    <b-container fluid class="px-0 mx-0">
       <b-row>
-     
-
          <b-col >
             <h3 class="font-weight-bolder titulo">
-               {{ atraccion.nombre }}
+               {{ $t(atraccion.nombre) }}
             </h3>
 
             <has-like :model="{model_type:atraccion.modelType,model_id:atraccion.id}" class="cursor-pointer" />
@@ -21,16 +19,14 @@
                <b-form-rating id="rating-sm-no-border" :value="promedioCalificacion" no-border variant="warning" inline size="sm" readonly
                   class="ml-0 pl-0 h-auto" style="background:transparent" />
             
-               <!-- <span class="d-flex align-items-center">
-                  {{ atraccion.likes.length}}
-               </span> -->
+         
 
                <ul class="list-inline my-0">
                   
                   <li class="list-inline-item mr-2" v-if="atraccion.horarios.length">
                      <strong class="font-weight-bolder">
                         <b-button @click="showHorario = !showHorario" size="sm" variant="outline-primary">
-                           {{ legendHorario  }}
+                           {{ $t(legendHorario)  }}
                         </b-button>
                      </strong>
                   </li>
@@ -45,21 +41,21 @@
                   <li class="list-inline-item mr-2" v-if="atraccion.sitio_web">
                      <strong class="font-weight-bolder" >
                         <b-link  :href="atraccion.sitio_web" target="_blank">
-                           Visitar el sitio web
+                           {{ $t('Visitar el sitio web') }}
                         </b-link>
                      </strong>
                   </li>
                   
                   <li class="list-inline-item mr-2" v-if="atraccion.telefono">
                      <strong class="font-weight-bolder">
-                        <b-link :href="`tel:${atraccion.telefono.telefono}`">Llamar</b-link>
+                        <b-link :href="`tel:${atraccion.telefono.telefono}`">{{ $t('Llamar') }}</b-link>
                      </strong>
                   </li>
 
                   <li class="list-inline-item mr-2" v-if="atraccion.email" >
                      <strong class="font-weight-bolder">
                         <b-link  :href="`mailto:${atraccion.email}`" target="_blank">
-                           Correo Electrónico
+                           {{ $t('Correo Electrónico') }}
                         </b-link>
                      </strong>
                   </li>
@@ -73,7 +69,7 @@
                         <template #btn-prepend>
                            <b-button size="sm" variant="outline-dark" @click="comoLlegar">
                               <font-awesome-icon icon="fas fa-map-location-dot"/>
-                              ¿Como llegar?
+                              {{ $t('¿Cómo llegar?') }}
                            </b-button>
                         </template>
                      </OpinionForm>
@@ -92,22 +88,22 @@
             <b-card variant="light">
                
                <h3 class="font-weight-bolder">
-                  Acerca de
+                  {{ $t('Acerca de') }}
                </h3>
-               <strong class="font-weight-bolder">Duración Sugerida</strong>
-               <p class="font-weight-bold">{{ atraccion.duracion_sugerida }}</p>
+               <strong class="font-weight-bolder">{{ $t('Duración Sugerida') }}</strong>
+               <p class="font-weight-bold">{{ $t(atraccion.duracion_sugerida) }}</p>
 
                <!-- <br> -->
                <p class="contenido-parrafo"  :class="{'show-text' : isShowText}" >
-                  {{  atraccion.descripcion  }}
+                  {{  $t(atraccion.descripcion)  }}
                </p>
-               <b-button v-if="atraccion.descripcion.length > 384" @click="toggleShowDescription" variant="link" size="sm">{{ isShowText ? "Menos" : 'Seguir Leyendo' }}</b-button>
+               <b-button v-if="atraccion.descripcion.length > 384" @click="toggleShowDescription" variant="link" size="sm">{{ isShowText ? $t("Menos") : $t('Seguir Leyendo') }}</b-button>
                
                <el-divider></el-divider>
                <ul class="list-unstyled">
                   <li v-for="({sujeto,descripcion},i) in atraccion.incluye" :key="i">
-                     <strong>Incluye {{  sujeto  }}</strong>
-                     <p>{{  descripcion  }}</p>
+                     <strong>{{ $t('Incluye') }} {{  $t(sujeto)  }}</strong>
+                     <p>{{  $t(descripcion)  }}</p>
                   </li>
                </ul>
             </b-card>
@@ -132,8 +128,8 @@
 
       <!-- Negocios cercanos a la atraccion -->
       <b-row>
-         <b-col cols="12" v-if="atraccion">
-            <negocios :atraccion="atraccion" subTitulo="Con negocios cercanos a tí..."></negocios>
+      <b-col cols="12" v-if="atraccion">
+            <negocios :atraccion="atraccion" subTitulo="Con negocios cercanos a ti..."></negocios>
          </b-col>
       </b-row>
 
@@ -144,7 +140,7 @@
             <b-tabs pills >
                <b-tab>
                   <template #title>
-                    <strong>Opiniones</strong> 
+                    <strong>{{  $t('Opiniones')  }}</strong> 
                   </template>
 
                   
@@ -169,7 +165,7 @@
 
 <script>
 
-import {toRefs, ref,onMounted,computed,nextTick,watch} from 'vue'
+import {toRefs, ref,onMounted,computed,nextTick,watch,inject} from 'vue'
 import store from '@/store'
 import { useGeolocation } from '@vueuse/core'
 import {
@@ -234,7 +230,7 @@ export default {
       const {query} = toRefs(props)
       const showDirections = ref(false)
       const { coords, locatedAt, error, resume, pause } = useGeolocation()
-
+      const i18n = inject('i18n')
       watch(query,() => {
          store.dispatch('atraccion/fetchName',query.value).then(({result}) => {
             if(result){
@@ -267,7 +263,7 @@ export default {
       const comoLlegar = () => {
         
          if (error.code == 1 && error.message == 'User denied Geolocation') {
-            toast.info('No podemos procesar tu solicitud , sin saber cual es tu ubicación, permite a la aplicación el uso de geolocalización')
+            toast.info(i18n.t('No podemos procesar tu solicitud , sin saber cual es tu ubicación, permite a la aplicación el uso de geolocalización'))
             resume()
          }else{
             showDirections.value = true
@@ -278,7 +274,7 @@ export default {
          console.log(message,code)
          
          if(code == 1 && message == 'User denied Geolocation'){
-            toast.info('No podemos procesar tu solicitud , sin saber cual es tu ubicación, permite a la aplicación el uso de geolocalización')
+            toast.info(i18n.t('No podemos procesar tu solicitud , sin saber cual es tu ubicación, permite a la aplicación el uso de geolocalización'))
             resume()
          }
 

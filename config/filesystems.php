@@ -169,6 +169,20 @@ return [
             'visibility' => 'public',
         ],
 
+        'traducciones' => [
+            'driver' => 'local',
+            'root' => storage_path('app/public/traducciones'),
+            'url' => env('APP_URL') . '/storage/traducciones',
+            'visibility' => 'public',
+        ],
+
+        'locales' => [
+            'driver' => 'local',
+            'root' => storage_path('app/resources/js/src/libs/i18n/idiomas'),
+            'url' => env('APP_URL') . '/storage/traducciones',
+            'visibility' => 'public',
+        ],
+
 
 
 

@@ -1,8 +1,8 @@
 <template>
     <b-row>
       <b-col cols="12" >
-        <h3>{{ titulo  }}</h3>
-        <p>{{  subTitulo  }}</p>
+        <h3>{{ $t(titulo)  }}</h3>
+        <p>{{  $t(subTitulo)  }}</p>
       </b-col>
       <b-col cols="12" >
         <listado :actions="actions" hideFooter hideHeader>
@@ -17,7 +17,7 @@
                       <div class="card-simple-content">
                         <h2>
                           <b-link :to="{ name: 'perfil.negocio', params: { url: item.url } }">
-                            {{ item.nombre }}
+                            {{ $t(item.nombre) }}
                           </b-link>
                         </h2>
                         <div class="card-simple-rating">
@@ -41,7 +41,7 @@
                       </div><!-- /.card-simple-content -->
         
                       <div class="card-simple-label">
-                        {{ item.categoria.categoria }}
+                        {{ $t(item.categoria.categoria) }}
                       </div>
         
                       <!-- <div class="card-simple-price" :title="item.comision" data-toggle="tooltip">
@@ -49,12 +49,12 @@
                             </div> -->
         
                       <b-badge class="card-simple-price" variant="success" v-if="item.tipo_comision == 2"
-                        v-b-tooltip.hover="'Monto por Persona'">
+                        v-b-tooltip.hover="$t('Monto por Persona')">
                         {{ item.tps_referido | currency('tp') }}
                       </b-badge>
         
                       <b-badge class="card-simple-price" variant="success" v-else
-                        v-b-tooltip.hover="'Porcentaje por lo que consumas'">
+                        v-b-tooltip.hover="$t('Porcentaje por lo que consumas')">
                         {{ Math.round(item.comision) }} %
                       </b-badge>
         

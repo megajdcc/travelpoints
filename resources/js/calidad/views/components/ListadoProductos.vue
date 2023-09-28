@@ -72,7 +72,7 @@
               
                   <div class="view-options d-flex flex-wrap">
               
-                    <v-select v-model="sortBy" :options="sortByOptions" label="text" :reduce="option => option.value" style="min-width: 150px;" v-if="!cjDropShipping">
+                    <v-select v-model="sortBy" :options="sortByOptions.map(v => ({text:$t(v.text),value:v.value}))" label="text" :reduce="option => option.value" style="min-width: 150px;" v-if="!cjDropShipping">
                     </v-select>
               
                     <b-form-radio-group v-model="itemView" class="ml-1 ml-md-1 list item-view-radio-group" buttons size="sm"
@@ -100,7 +100,7 @@
             <b-col cols="12" class="mt-1 px-0">
 
               <b-input-group class="input-group-merge">
-                <b-form-input v-model="searchQuery" :placeholder="placeholderSearch" class="search-product" />
+                <b-form-input v-model="searchQuery" :placeholder="$t(placeholderSearch)" class="search-product" />
                 <b-input-group-append is-text>
                   <feather-icon icon="SearchIcon" class="text-muted" />
                 </b-input-group-append>
@@ -110,7 +110,7 @@
 
             <b-col cols="12" class="mt-1 px-0" v-if="iskm0">
               <p>
-                <strong class="text-danger">IMPORTANTE:</strong>Los productos en la categoría “Km. 0” son productos locales de cada destino que solo pueden entregarse en las tiendas de cada destino. No hay envío a domicilio ni devolución en estas compras.
+                <strong class="text-danger">{{ $t('IMPORTANTE') }}:</strong>{{ $t('Los productos en la categoría “Km. 0” son productos locales de cada destino que solo pueden entregarse en las tiendas de cada destino. No hay envío a domicilio ni devolución en estas compras.') }}
               </p>
             </b-col>
 

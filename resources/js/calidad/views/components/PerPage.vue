@@ -1,6 +1,6 @@
 
 <template>
-   <b-input-group :size="size" :prepend="$t('Mostrar')">
+   <b-input-group :size="size" :prepend="$t('mostrar')">
 
       <b-form-select :value="perPage" @change="$emit('update:per-page',$event)" :options="perPageOptions"
          text-field="label" value-field="value">

@@ -26,8 +26,8 @@ Vue.use(GmapVue, {
   installComponents: true
 
 });
-
-import i18n from '@/libs/i18n'
+import '@axios'
+import i18n , {loadLocaleAsync} from '@/libs/i18n'
 import router from './router'
 import store from './store'
 import App from './App.vue'
@@ -37,7 +37,7 @@ import './global-components'
 
 
 // 3rd party plugins
-import '@axios'
+
 import '@/libs/acl'
 import '@/libs/portal-vue'
 import '@/libs/clipboard'
@@ -268,8 +268,7 @@ let app = new Vue({
   store,
   i18n,
   render: h => h(App),
-  provide:() =>  ({swal : Vue.swal,i18n:i18n})
-
+  provide:() =>  ({swal : Vue.swal,i18n:i18n,loadLocaleAsync:loadLocaleAsync})
 }).$mount('#app')
 
 // app.provide();

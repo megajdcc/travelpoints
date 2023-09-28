@@ -1,11 +1,11 @@
 <template>
-  <b-container :fluid="windowWidth < 762 ? true : false" class=" px-0" :class="{ 'mx-0': windowWidth < 762, 'mx-auto': windowWidth > 762 }" >
+  <b-container :fluid="windowWidth < 762 ? true : false" class=" px-0 mt-1" :class="{ 'mx-0': windowWidth < 762, 'mx-auto': windowWidth > 762 }" >
 
       <b-row v-if="pagina.is_contacto">
 
         <b-col cols="12">
 
-          <strong class="text-center mb-2 d-block" style="font-size:18pt; font-style:italic">¡Contáctanos!</strong>
+          <strong class="text-center mb-2 d-block" style="font-size:18pt; font-style:italic">{{ $t('¡Contáctenos!') }}</strong>
 
           <validation-observer ref="formValidate" #default="{ handleSubmit }">
               <b-form @submit.prevent="handleSubmit(enviar)" >
@@ -15,7 +15,7 @@
                         <b-form-group >
                         <validation-provider name="nombre" rules="required" #default="{ errors }">
                             <b-form-input v-model="formulario.nombre" :state="errors.length ? false : null"
-                              placeholder="Su Nombre" />
+                              :placeholder="$t('Su nombre')" />
 
                             <b-form-invalid-feedback>
                               {{ errors[0] }}
@@ -27,7 +27,7 @@
                       <b-col cols="12" sm="6" lg="3">
                           <b-form-group >
                             <validation-provider name="email" rules="required|email" #default="{ errors }">
-                              <b-form-input v-model="formulario.email" :state="errors.length ? false : null" placeholder="Su Email" />
+                              <b-form-input v-model="formulario.email" :state="errors.length ? false : null" :placeholder="$t('Su email')" />
 
                               <b-form-invalid-feedback>
                                 {{ errors[0] }}
@@ -39,7 +39,7 @@
                               <b-form-group >
                                 <validation-provider name="telefono" rules="required" #default="{ errors }">
                                   <the-mask v-model="formulario.telefono" :mask="'+############'" class="form-control" type="tel" masked
-                                    placeholder="Su número de teléfono" />
+                                    :placeholder="$t('Su número de teléfono')" />
 
                                   <b-form-invalid-feedback :state="errors.length ? false : null">
                                     {{ errors[0] }}
@@ -51,7 +51,7 @@
                           <b-col cols="12" sm="6" lg="3">
                             <b-form-group >
                                 <validation-provider name="asunto" rules="required" #default="{ errors,valid }">
-                                  <b-form-input v-model="formulario.asunto" :state="valid" placeholder="Asunto" />
+                                  <b-form-input v-model="formulario.asunto" :state="valid" :placeholder="$t('Asunto')" />
 
                                   <b-form-invalid-feedback>
                                     {{ errors[0] }}
@@ -63,7 +63,7 @@
                         <b-col cols="12" sm="6" lg="3">
                           <b-form-group >
                               <validation-provider name="perfil" rules="required" #default="{ errors,valid }">
-                              <v-select v-model="formulario.perfil" :options="perfiles" placeholder="Perfil de socio TravelPoints" :reduce="option => option.value" />
+                              <v-select v-model="formulario.perfil" :options="perfiles" :placeholder="$t('Perfil de socio Travel Points')" :reduce="option => option.value" />
 
                                 <b-form-invalid-feedback :state="valid">
                                   {{ errors[0] }}
@@ -77,7 +77,7 @@
                     <b-col cols="12">
                         <b-form-group>
                           <validation-provider name="mensaje" rules="required" #default="{ valid, errors }">
-                            <b-form-textarea v-model="formulario.mensaje" :state="valid" placeholder="Su caso" :rows="3" />
+                            <b-form-textarea v-model="formulario.mensaje" :state="valid" :placeholder="$t('Su caso')" :rows="3" />
 
                             <b-form-invalid-feedback>
                               {{ errors[0] }}
@@ -89,16 +89,16 @@
 
                     <b-col cols="12">
                         <b-form-checkbox id="checkbox-1" v-model="politicas">
-                          Usted acepta nuestras <b-link :to="{ path: pagePolitica }"> Políticas de Privacidad </b-link>
+                          {{ $t('Usted acepta nuestras') }} <b-link :to="{ path: pagePolitica }"> {{ $t('Políticas de privacidad') }} </b-link>
                         </b-form-checkbox>
                     </b-col>
                   </b-row>
 
-                  <b-row >
+                  <b-row class="mt-1" >
                     <b-col cols="12">
                         <b-button variant="primary" title="Enviar" type="submit" v-loading="loading" :disabled="!politicas">
                           <feather-icon icon="SendIcon" />
-                          Enviar Mensaje
+                          {{ $t('Enviar Mensaje') }}
                         </b-button>
                     </b-col>  
                     
@@ -108,7 +108,7 @@
           </validation-observer>
           
         </b-col>
-        <el-divider content-position="left">Sucursales</el-divider>
+        <el-divider content-position="left">{{$t('Sucursales')}}</el-divider>
         <b-col cols="12" class="mt-2">
             <GmapMap :center="{ lat: promedioLatitud, lng: promedioLongitud }" :zoom="3" map-type-id="terrain"
                       style="width: 100%; height: 300px" :options="{ styles: stylosMap }" ref="refMap">
@@ -150,7 +150,7 @@
 <script>
 
 import store from '@/store'
-import {ref,computed,toRefs,watch} from 'vue'
+import {ref,computed,toRefs,watch,inject} from 'vue'
 import router from '@/router';
 import {
   BContainer,
@@ -213,6 +213,7 @@ export default {
     const politicas = ref(false)
     const options_map = ref({})
     const refMap = ref(null);
+    const i18n = inject('i18n')
 
     const formulario = ref({
       email: '',
@@ -228,7 +229,7 @@ export default {
       axios.post('/api/enviar/mensaje/contacto', formulario.value).then(({ data }) => {
 
         if (data.result) {
-          toast.success('Se ha enviado con éxito su mensaje.')
+          toast.success(i18n.t('Se ha enviado con éxito su mensaje.'))
           formulario.value = {
             email: '',
             nombre: '',
@@ -239,7 +240,7 @@ export default {
           }
 
         } else {
-          toast.info('No se pudo enviar Su mensaje, inténtelo de nuevo...')
+          toast.info(i18n.t('No se pudo enviar Su mensaje, inténtelo de nuevo...'))
         }
 
       }).catch(e => {
@@ -269,10 +270,10 @@ export default {
     
 
     const perfiles = ref([
-      {label:'Soy un Viajero',value:1},
-      {label:'Soy un Negocio',value:2},
-      {label:'No estoy registrado',value:3},
-      {label:'Otro',value:4},
+      {label:i18n.t('Soy un Viajero'),value:1},
+      {label:i18n.t('Soy un Negocio'),value:2},
+      {label:i18n.t('No estoy registrado'),value:3},
+      {label:i18n.t('Otro'),value:4},
     ])
 
 
@@ -313,7 +314,7 @@ export default {
       optionsPlace: (sucursal) => ({
         content: `<strong>${sucursal.nombre} 
         <br> ${sucursal.direccion} 
-        <br> Teléfonos: ${sucursal.telefonos.map(val => val.telefono).join()} </strong>`
+        <br> ${i18n.t('Teléfonos')}: ${sucursal.telefonos.map(val => val.telefono).join()} </strong>`
       }),
 
       promedioLongitud: computed(() => {

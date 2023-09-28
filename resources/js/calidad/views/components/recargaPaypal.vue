@@ -2,7 +2,7 @@
         <b-sidebar v-model="showRecarga" right @hidden="$emit('update:showRecarga', false)"  >
 
             <template #header>
-              <h3>{{ title }}</h3>
+              <h3>{{ $t(title) }}</h3>
             </template>
 
             <b-container fluid>
@@ -11,7 +11,7 @@
                 <b-col cols="12">
 
 
-                  <b-form-group label="Monto a recargar">
+                  <b-form-group :label="$t('Monto a recargar')">
                   
                     <validation-provider name="monto" rules="required" #default="{ valid, errors }">
                       <currency-input v-model="monto" :options="optionsCurrency"  InputClass="form-control" />
@@ -38,8 +38,8 @@
                 <b-row>
                   <b-col cols="12" class="d-flex justify-content-end">
                     <b-button-group size="sm">
-                      <b-button @click="hide" title="Cerrar" variant="danger">
-                        Cerrar
+                      <b-button @click="hide" :title="$t('Cerrar')" variant="danger">
+                        {{ $t('Cerrar') }}
                       </b-button>
                     </b-button-group>
                   </b-col>
@@ -63,7 +63,7 @@ import {
   BForm,BFormGroup,
   BFormInvalidFeedback
 } from 'bootstrap-vue'
-import {toRefs,ref,computed,onMounted,watch}  from 'vue'
+import {toRefs,ref,computed,onMounted,watch,inject}  from 'vue'
 import store from '@/store'
 
 import {ValidationProvider,ValidationObserver} from 'vee-validate';
@@ -109,7 +109,7 @@ export default {
     const monto = ref(0)
     const { sistema } = toRefs(store.state.sistema)
 
-
+    const i18n = inject('i18n')
     const pagoCompletadoPaypal = ({payer,state}) => {
       
         if(state === 'approved'){
@@ -117,25 +117,25 @@ export default {
           store.dispatch('negocio/agregarSaldo',{
               monto:monto.value,
               negocio_id:negocio.value.id,
-              concepto:`Recarga de Saldo con Paypal Registrado con el número de referencia : ${payer.payer_info.payer_id}`
+              concepto:i18n.t('Recarga de Saldo con Paypal Registrado con el número de referencia')`: ${payer.payer_info.payer_id}`
 
           }).then(({result}) => {
               
               if(result){
-                toast.success('Recarga realizada con éxito', { position: 'bottom-right' })
+                toast.success(i18n.t('Recarga realizada con éxito'), { position: 'bottom-right' })
                 
                 emit('update:showRecarga',false)
                 
                 monto.value = 0
               }else{
 
-                toast.info('No pudimos aprobar tu pago, danos 24 horas para verificar tu pago, te estaremos informando',{position:'bottom-right'})
+                toast.info(i18n.t('No pudimos aprobar tu pago, danos 24 horas para verificar tu pago, te estaremos informando'),{position:'bottom-right'})
               }
             
           })
               
         }else{
-              toast.info('Su pago no fue cargado  ...',{position:'bottom-right'})
+              toast.info(i18n.t('Su pago no fue cargado...'),{position:'bottom-right'})
         }
 
     }

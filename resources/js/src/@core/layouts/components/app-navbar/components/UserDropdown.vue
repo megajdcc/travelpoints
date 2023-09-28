@@ -6,7 +6,7 @@
         <p class="user-name font-weight-bolder mb-0">
           {{ usuario.nombre || usuario.username }}
         </p>
-        <span class="user-status">{{ getRolPanel }}</span>
+        <span class="user-status">{{ $t(getRolPanel) }}</span>
       </div>
 
       <b-avatar size="40" :src=" is_loggin ? usuario.avatar : '/storage/img-perfil/default.jpg'" variant="light-primary"
@@ -19,52 +19,52 @@
 
     <b-dropdown-item :to="{ name: 'home' }" link-class="d-flex align-items-center" v-if="is_loggin && $can('read','home')">
       <feather-icon size="16" icon="HomeIcon" class="mr-50" />
-      <span>Panel Travel</span>
+      <span>{{ $t('Panel Travel') }}</span>
     </b-dropdown-item>
 
     <b-dropdown-item :to="{ name: 'negocio.home' }" link-class="d-flex align-items-center" v-if="is_loggin && isNegocios">
       <font-awesome-icon icon="fas fa-store" class="mr-50 fa-2xl" />
-      <span>Panel Negocio</span>
+      <span>{{ $t('Panel Negocio') }}</span>
     </b-dropdown-item>
 
     <b-dropdown-item :to="getToUrlperfil" link-class="d-flex align-items-center" v-if="is_loggin">
       <feather-icon size="16" icon="SettingsIcon" class="mr-50" />
-      <span>Mi Perfil</span>
+      <span>{{ $t('Mi Perfil') }}</span>
     </b-dropdown-item>
 
     <b-dropdown-item :to="{ name: 'mi.tarjetas' }" link-class="d-flex align-items-center" v-if="is_loggin && $can('read','socio perfil tarjetas')">
       <font-awesome-icon icon="fas fa-credit-card" class="mr-1"/>
-      <span>Mis Tarjetas</span>
+      <span>{{ $t('Mis Tarjetas') }}</span>
     </b-dropdown-item>
 
     <b-dropdown-item @click="mostrarAgenda" link-class="d-flex align-items-center" v-if="is_loggin">
         <font-awesome-icon icon="fas fa-calendar-day" class="mr-1"/>
-        <span>Mi Agenda</span>
+        <span>{{ $t('Mi Agenda') }}</span>
     </b-dropdown-item>
 
     <b-dropdown-item @click="mostratAboutUsuario" link-class="d-flex align-items-center" v-if="is_loggin && rolName == 'Promotor' && usuario.lider_id">
         <font-awesome-icon icon="fas fa-user-tie" class="mr-1"/>
-        <span>Mi Lider</span>
+        <span>{{ $t('Mi Líder') }}</span>
     </b-dropdown-item>
 
     <b-dropdown-item @click="mostratAboutUsuario('Lider')" link-class="d-flex align-items-center" v-if="is_loggin && rolName == 'Lider' && usuario.coordinador_id">
         <font-awesome-icon icon="fas fa-user-tie" class="mr-1"/>
-        <span>Mi Coordinador</span>
+        <span>{{ $t('Mi Coordinador') }}</span>
     </b-dropdown-item>
 
     <b-dropdown-item :to="{ name: 'faqs' }" link-class="d-flex align-items-center" v-if="rolName != 'Promotor'">
       <feather-icon size="16" icon="HelpCircleIcon" class="mr-50" />
-      <span>Faq</span>
+      <span>{{ $t('Faq') }}</span>
     </b-dropdown-item>
 
     <b-dropdown-item link-class="d-flex align-items-center" @click="logout" v-loading="loading" v-if="is_loggin">
       <feather-icon size="16" icon="LogOutIcon" class="mr-50" />
-      <span>Cerrar sesión</span>
+      <span>{{ $t('Cerrar sesión') }}</span>
     </b-dropdown-item>
 
     <b-dropdown-item :to="{ name: 'login' }" link-class="d-flex align-items-center" v-if="!is_loggin">
       <feather-icon size="16" icon="LogInIcon" class="mr-50" />
-      <span>Login</span>
+      <span>{{ $t('Login') }}</span>
     </b-dropdown-item>
      <!-- <b-popover target="popover-target-1" triggers="hover" placement="bottomright">
         <profile-about :about-data="datosPerfilLider" />

@@ -898,7 +898,8 @@ class NegocioController extends Controller
                                                     ->when(isset($filtro['mes']) && !empty($filtro['mes']), function ($q) use ($mes) {
                                                         $q->whereBetween('created_at', [$mes->firstOfMonth(), (new Carbon($mes))->lastOfMonth()]);
                                                     })
-                                                    ->whereColumn('estado_id','negocios.estado_id'),
+                                                    ->whereColumn('estado_id','negocios.estado_id')
+                                                    ->limit(1),
                                     'pais' => Pais::select('pais')->whereHas('estados',fn($q) => $q->whereColumn('id','negocios.estado_id'))
                                 ])
                                 ->when(isset($filtro['mes']) && !empty($filtro['mes']), function ($q) use ($mes) {

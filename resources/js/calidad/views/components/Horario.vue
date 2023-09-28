@@ -4,7 +4,7 @@
                <tbody>
                   <tr v-for="({dia,apertura,cierre,doble_turno},i) in horarios" :key="i">
                      <td>
-                        {{ getDay(dia) }}
+                        {{ $t(getDay(dia)) }}
                      </td>
                      
                      <td>
@@ -14,7 +14,7 @@
                            </template>
 
                            <template v-else>
-                              <strong class="text-danger">Cerrado</strong>
+                              <strong class="text-danger">{{ $t('Cerrado') }}</strong>
                            </template>
                         </section>
 
@@ -22,17 +22,17 @@
                            <template v-if="apertura.length && cierre.length">
 
                               <section class="d-flex justify-content-between">
-                                 Mañana: ({{ apertura[0] | fecha('hh:mm A', true) }} - {{ cierre[0] | fecha('hh:mm A', true) }})
+                                 {{ $t('Mañana') }}: ({{ apertura[0] | fecha('hh:mm A', true) }} - {{ cierre[0] | fecha('hh:mm A', true) }})
                               </section>
                         
                               <section class="d-flex justify-content-between">
-                                 Tarde: ({{ apertura[1] | fecha('hh:mm A', true) }} - {{ cierre[1] | fecha('hh:mm A', true) }})
+                                 {{ $t('Tarde') }}: ({{ apertura[1] | fecha('hh:mm A', true) }} - {{ cierre[1] | fecha('hh:mm A', true) }})
                               </section>
                         
                            </template>
 
                            <template v-else>
-                              <strong class="text-danger">Cerrado</strong>
+                              <strong class="text-danger">{{ $t('Cerrado') }}</strong>
                            </template>
                         </section>
                         <!-- {{ getHora(apertura) }} - {{ getHora(cierre) }} -->

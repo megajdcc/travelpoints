@@ -40,11 +40,11 @@
                </article>
             </b-list-group-item>
 
-            <b-list-group-item v-if="!resultados.length" button variant="info">
+            <!-- <b-list-group-item v-if="!resultados.length" button variant="info">
                <b-link :to="`/search?q=${search}`">
                   Todos los resultados para "{{ search }}"
                </b-link>
-            </b-list-group-item>
+            </b-list-group-item> -->
 
          </b-list-group>
       

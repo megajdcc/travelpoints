@@ -40,7 +40,7 @@
 
           <b-col cols="12" md="4">
               <b-tabs class="show-directions" active-tab-class="mt-0" >
-                <b-tab title="Ver detalles de la ruta " active>
+                <b-tab :title="$t('Ver detalles de la ruta')" active>
                   <div class="datails-direction">
                 
                     <div v-if="direcciones">
@@ -58,7 +58,7 @@
                     <li  class="nav-item">
                         <b-button role="button"  class="nav-link" variant="text" @click="openDirections">
                           <font-awesome-icon icon="fas fa-map-location-dot" />
-                            Abrir en Google Maps
+                            {{ $t('Abrir en Google Maps') }}
                         </b-button>
                     </li>
                   </template>

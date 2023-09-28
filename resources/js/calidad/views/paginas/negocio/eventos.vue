@@ -1,6 +1,6 @@
 <template>
     <section class="mt-2">
-        <h4 class="display-4">Event<strong class="text-warning">os</strong> </h4>
+        <h4 class="display-4">{{$t('Event')}}<strong class="text-warning">{{ $t('os') }}</strong> </h4>
         <listado :actions="actions" class="mt-1">
             <template #contenido="{ items }">
                 <b-container fluid>
@@ -11,7 +11,7 @@
                         <div class="card-simple-content">
                           <h2>
                             <b-link :to="{ name: 'evento.show', params: { event: item.url } }">
-                              {{ item.titulo }}
+                              {{ $t(item.titulo) }}
                             </b-link>
                           </h2>
                           <!-- <div class="card-simple-rating">

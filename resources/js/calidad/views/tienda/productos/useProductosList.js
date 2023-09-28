@@ -1,8 +1,8 @@
-import { ref, computed,watch,onMounted,toRefs } from 'vue'
+import { ref, computed,watch,onMounted,toRefs,inject } from 'vue'
 import store from '@/store'
 
 export default function useProductosList() {
-
+  const i18n = inject('i18n')
   const refTable = ref(null)
   const isSortDirDesc = ref(true)
   const searchQuery = ref('')
@@ -17,8 +17,8 @@ export default function useProductosList() {
   const sortBy = ref('price-asc')
 
   const sortByOptions = [
-    { text: 'Mas bajos ', value: 'price-asc' },
-    { text: 'Mas altos', value: 'price-desc' },
+    { text: 'Más bajos', value: 'price-asc' },
+    { text: 'Más altos', value: 'price-desc' },
   ]
 
 

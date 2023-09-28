@@ -326,6 +326,15 @@ export default [
             route: 'mensajes.list',
             action: 'read',
             resource: 'vonage'
+         },
+
+         {
+            title:'Idiomas',
+            route:'idioma.list',
+            action:'read',
+            resource:'idiomas',
+            icon:'fa-language',
+            fontAwesome:true,
          }
       ]
    },
@@ -377,14 +386,14 @@ export default [
             fontAwesome:true,
          },
 
-         {
-            title:'Tienda de Regalos',
-            route:'reportes.territorios',
-            action: 'read',
-            resource: 'reportes',
-             icon:'fa-cash-register',
-            fontAwesome:true,
-         },
+         // {
+         //    title:'Tienda de Regalos',
+         //    route:'reportes.territorios',
+         //    action: 'read',
+         //    resource: 'reportes',
+         //     icon:'fa-cash-register',
+         //    fontAwesome:true,
+         // },
 
          
       ]

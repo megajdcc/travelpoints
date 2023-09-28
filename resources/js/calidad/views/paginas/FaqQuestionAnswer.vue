@@ -7,7 +7,7 @@
             </b-avatar>
             <div>
                <h4 class="mb-0 font-weight-bolder">
-                  {{ options.nombre }}
+                  {{ $t(options.nombre) }}
                </h4>
             </div>
          </div>
@@ -15,11 +15,11 @@
          <!-- collapse -->
          <app-collapse id="faq-payment-qna" accordion type="margin" class="mt-2">
 
-            <app-collapse-item v-for="( data, index) in options.faqs" :key="index" :title="data.pregunta">
+            <app-collapse-item v-for="( data, index) in options.faqs" :key="index" :title="$t(data.pregunta)">
                <template #header>
-                  <h4 class="font-weight-bolder">{{ data.pregunta }}</h4>
+                  <h4 class="font-weight-bolder">{{ $t(data.pregunta) }}</h4>
                </template>
-               <div v-html="data.respuesta"></div>
+               <div v-html="$t(data.respuesta)"></div>
             </app-collapse-item>
 
          </app-collapse>

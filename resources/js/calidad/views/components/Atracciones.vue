@@ -1,8 +1,8 @@
 <template>
       <b-row>
          <b-col cols="12">
-            <h3>{{ titulo }}</h3>
-            <p>Descubre los lugares que no te debes perder</p>
+            <h3>{{ $t(titulo) }}</h3>
+            <p>{{ $t('Descubre los lugares que no te debes perder') }}</p>
          </b-col>
          <b-col cols="12">
                <!-- <SwiperComponent /> -->
@@ -31,12 +31,12 @@
          
                         <b-link :to="atraccion.ruta">
          
-                           <b-badge variant="primary" v-if="atraccion.duracion_sugerida"> Duración Sugerida: {{
-                                 atraccion.duracion_sugerida
+                           <b-badge variant="primary" v-if="atraccion.duracion_sugerida"> {{ $t('Duración Sugerida') }}: {{
+                                 $t(atraccion.duracion_sugerida)
                            }}</b-badge>
          
                            <h4 class="title-card mt-1 mb-0">
-                              {{ atraccion.nombre }}
+                              {{ $t(atraccion.nombre) }}
                            </h4>
          
          
@@ -52,14 +52,14 @@
                               <el-rate :value="promedioCalificacion(atraccion)" disabled disabled-void-color="#4f4f4f" void-color="#000000" />
                            
                               <p class="my-0 font-weight-bolder" v-if="atraccion.opinions">
-                                 {{ atraccion.opinions.length }} <small>Opiniones</small>
+                                 {{ atraccion.opinions.length }} <small>{{ $t('Opiniones') }}</small>
                               </p>
                            
                            </section>
 
                         </section>
          
-                        <p class="text-justify parrafo-card" >{{ atraccion.descripcion }}</p>
+                        <p class="text-justify parrafo-card" >{{ $t(atraccion.descripcion) }}</p>
          
                      </b-card>
          

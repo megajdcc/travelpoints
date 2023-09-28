@@ -35,17 +35,17 @@
                           
                         </h2>
 
-                        <b-badge variant="primary">{{ producto.categoria.nombre }}</b-badge>
+                        <b-badge variant="primary">{{ $t(producto.categoria.nombre) }}</b-badge>
                       </div>
                     </div>
                     <h6 class="item-name">
                       <b-link class="text-body" :to="{ name: !isStore ? 'producto.show' : 'tienda.travel.show.producto', params: { id: producto.id } }">
-                        {{ producto.nombre }}
+                        {{ $t(producto.nombre) }}
                       </b-link>
                     
                     </h6>
                     <b-card-text class="item-description" style="max-width:320px" >
-                      {{ producto.breve }}
+                      {{ $t(producto.breve) }}
                     </b-card-text>
 
                   </b-card-body>
@@ -73,16 +73,16 @@
                         <feather-icon icon="Trash2Icon" class="mr-50" />
                       </b-button>
 
-                      <b-button tag="a" class="btn-cart" variant="dark" v-if="$can('write', 'productos')" title="Imagenes" :to="{ name: 'producto.imagenes', params: { id: producto.id } }" >
+                      <b-button tag="a" class="btn-cart" variant="dark" v-if="$can('write', 'productos')" :title="$t('Imágenes')" :to="{ name: 'producto.imagenes', params: { id: producto.id } }" >
                         <font-awesome-icon icon="fas fa-images"/>
                       </b-button>
               
                     </b-button-group>
 
                     <b-button-group v-else class="w-100" >
-                        <b-button tag="a" class="w-100" variant="primary" title="Agregar al carrito" v-b-tooltip.hover @click="agregarCarrito(producto.id)" v-if="producto.tipo_producto != 2" >
+                        <b-button tag="a" class="w-100" variant="primary" :title="$t('Agregar al carro')" v-b-tooltip.hover @click="agregarCarrito(producto.id)" v-if="producto.tipo_producto != 2" >
                           <font-awesome-icon icon="fas fa-cart-plus" />
-                          Agregar Carrito
+                          {{ $t('Agregar al carro') }}
                         </b-button>
                     </b-button-group>
                   </div>
@@ -93,7 +93,7 @@
 
             <b-sidebar v-model="addCarrito" no-header-close >
                   <template #title>
-                    <h3>Agregar al carrito</h3>
+                    <h3> {{ $t('Agregar al carro') }}</h3>
                   </template>
 
                   <b-container fluid >
@@ -125,7 +125,7 @@
                                   
                                   <b-link class="text-body" :to="{ name: !isStore ? 'producto.show' : 'tienda.travel.show.producto', 
                                   params: { id: product.id } }">
-                                    {{ product.nombre }}
+                                    {{ $t(product.nombre) }}
                                   </b-link>
                             
                                 </h6>
@@ -136,7 +136,7 @@
 
                           <b-form-group v-if="!product.isChino">
                                 <template #label>
-                                  Tienda que ofrece el producto y/o servicio.
+                                  {{ $t('Tienda que ofrece el producto y/o servicio.') }}
                                 </template>
 
                                 <validation-provider name="tienda_id" rules="required" #default="{ valid, errors }">
@@ -155,7 +155,7 @@
 
                               <b-form-group v-else description="Puede ser el color y el tamaño, elija el que desee">
                                   <template #label>
-                                    Elija la variación deseada 
+                                    {{ $t('Elija la variación deseada') }}
                                   </template>
 
                                   <validation-provider name="vid" rules="required" #default="{ errors, valid }">
@@ -173,7 +173,7 @@
                                           </template>
 
                                           <template #no-options>
-                                            Sin Variante
+                                            {{ $t('Sin Variante') }}
                                           </template>
 
                                       </v-select>
@@ -186,7 +186,7 @@
 
                                 <b-form-group v-if="formulario.tienda_id || formulario.vid">
                                   <template #label>
-                                    Cantidad de productos
+                                    {{ $t('Cantidad de productos') }}
                                   </template>
 
                                   <validation-provider name="cantidad" rules="required" #default="{ valid, errors }">
@@ -208,12 +208,12 @@
 
                         <b-button variant="primary" @click="guardarCarrito" v-loading="loading" :disabled="formulario.cantidad < 1 || loading">
                               <font-awesome-icon icon="fas fa-cart-plus"/>
-                              Agregar al Carrito
+                              {{ $t('Agregar al carro') }}
                         </b-button>
 
                         <b-button variant="dark" @click="hide">
                           <font-awesome-icon icon="fas fa-times"/>
-                          Cerrar
+                          {{ $t('Cerrar') }}
                         </b-button>
 
                         

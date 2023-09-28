@@ -1,8 +1,8 @@
 <template>
   <b-row>
     <b-col cols="12">
-      <p>{{ titulo }}</p>
-      <h3>{{ subTitulo }}</h3>
+      <p>{{ $t(titulo) }}</p>
+      <h3>{{ $t(subTitulo) }}</h3>
     </b-col>
     <b-col cols="12">
       <listado :actions="actions" hideFooter hideHeader>
@@ -17,7 +17,7 @@
                     <div class="card-simple-content">
                       <h2>
                         <b-link :to="{ name: 'evento.show', params: { event: item.url } }">
-                          {{ item.titulo }}
+                          {{ $t(item.titulo) }}
                         </b-link>
                       </h2>
                       <!-- <div class="card-simple-rating">
@@ -42,7 +42,7 @@
 
 
                     <b-badge class="card-simple-price" variant="success">
-                      {{ item.model.nombre }}
+                      {{ $t(item.model.nombre) }}
                     </b-badge>
 
                 

@@ -1,5 +1,5 @@
 <template>
-  <b-container :fluid="windowWidth < 762 ? true : false" class=" px-0" :class="{'mx-0': windowWidth < 762, 'mx-auto': windowWidth > 762 }" >
+  <b-container :fluid="windowWidth < 762 ? true : false" class=" px-0 " :class="{'mx-0': windowWidth < 762, 'mx-auto': windowWidth > 762 }" >
 
     <b-row>
 

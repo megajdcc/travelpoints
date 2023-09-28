@@ -42,7 +42,7 @@ import {
 } from 'bootstrap-vue'
 
 import { avatarText } from '@core/utils/filter'
-import { computed, toRefs,ref } from 'vue';
+import { computed, toRefs,ref,inject } from 'vue';
 import store from '@/store';
 import useAuth from '@core/utils/useAuth'
 import PayPal from 'vue-paypal-checkout'
@@ -81,7 +81,7 @@ export default {
     const { panel, negocioId,isNegocio } = toRefs(props)
     const  showRecarga = ref(false)
     const { negocio } = toRefs(store.state.negocio)
-
+    const i18n = inject('i18n')
     const {
       logout,
       is_loggin,
@@ -105,13 +105,13 @@ export default {
               return cargo.cargo;
             }
 
-            return 'Sin definir';
+            return i18n.t('Sin definir');
 
           }
 
         }
 
-        return 'Sin definir';
+        return i18n.t('Sin definir');
 
       }
 

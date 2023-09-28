@@ -1,6 +1,6 @@
 <template>
     <section class="mt-2">
-        <h4 class="display-4">Publicaci<strong class="text-warning">ones</strong> </h4>
+        <h4 class="display-4">{{$t('Publicaci')}}<strong class="text-warning">{{$t('ones')}}</strong> </h4>
         <listado :actions="actions" class="mt-1">
             <template #contenido="{ items }">
                 <b-container fluid>
@@ -24,11 +24,11 @@
         
                                     <main class="flex-grow-1 d-flex flex-column align-items-start ml-1">
                                         <h4 :title="item.titulo" class="mt-1">
-                                            {{ item.titulo }}
+                                            {{ $t(item.titulo) }}
                                         </h4>
         
                                         <p class="text-justify" style="max-height:150px; overflow-y:scroll">
-                                            {{ item.contenido }}
+                                            {{ $t(item.contenido) }}
                                         </p>
         
                                     </main>

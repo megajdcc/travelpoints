@@ -11,12 +11,12 @@
               <!-- Tipo de Restaurante -->
     
               <b-badge variant="warning">
-                {{ negocio.categoria.categoria }}
+                {{ $t(negocio.categoria.categoria) }}
               </b-badge>
     
               <!-- Comision por persona o porcentaje -->
     
-              <b-badge variant="success" v-if="negocio.tipo_comision == 2" v-b-tooltip.hover="'Monto por Persona'">
+              <b-badge variant="success" v-if="negocio.tipo_comision == 2" v-b-tooltip.hover="$t('Monto por Persona')">
                 {{ negocio.comision | currency('Tp') }}
               </b-badge>
     
@@ -28,12 +28,12 @@
     
             <section class="mt-2">
     
-              <h2 class="display-4 text-white mb-0">{{ negocio.nombre }}</h2>
+              <h2 class="display-4 text-white mb-0">{{ $t(negocio.nombre) }}</h2>
 
               <el-rate :value="promedioCalificacion" disabled disabled-void-color="#4f4f4f" void-color="#000000"
                   class="d-flex flex-nowrap rate-banner my-1" size="large" style="font-size:30px"  />
     
-              <strong class="font-weight-bolder mb-1 text-white"> {{ negocio.breve }}</strong>
+              <strong class="font-weight-bolder mb-1 text-white"> {{ $t(negocio.breve) }}</strong>
 
             </section>
     
@@ -41,11 +41,11 @@
 
               <actions-negocio :negocio="negocio" />  
 
-              <b-button variant="success" title="reservar" class="mt-1 font-weight-bolder" 
+              <b-button variant="success" :title="$t('reservar')" class="mt-1 font-weight-bolder" 
               @click="isShowReservar = !isShowReservar" v-if="usuario.id" >
 
                 <font-awesome-icon icon="fa fa-calendar" class="mr-1" />
-                Reservar
+                {{ $t('Reservar') }}
 
               </b-button>
             </section>

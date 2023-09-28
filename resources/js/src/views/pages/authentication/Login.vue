@@ -24,30 +24,30 @@
       <!-- /Left Text-->
 
       <!-- Login-->
-      <b-col lg="4" class="d-flex  auth-bg">
-        <b-col sm="8" md="6" lg="12" class="mx-auto d-flex flex-column">
+      <b-col lg="4" class="d-flex px-md-3 auth-bg flex-column  justify-content-center">
+ 
           
-          <b-card-title class="mb-1 font-weight-bold mt-2" title-tag="h2">
-            Bienvenido a {{ appName }} 👋
+          <b-card-title class=" font-weight-bold mt-2 text-center" title-tag="h2">
+            {{ $t('Bienvenido a') }} {{ appName }} 👋
           </b-card-title>
 
-           <b-card-title class=" text-primary ">
-            Travel Points una nueva forma de descubrir destinos, registra tu visita y gana regalos.
+           <b-card-title class=" text-primary mb-5 text-center">
+            {{ $t('Travel Points una nueva forma de descubrir destinos, registra tu visita y gana regalos.') }}
           </b-card-title>
 
-          <b-card-text class="">
-            Inicia sesión y comience la aventura
+          <b-card-text class="text-center">
+            {{ $t('Inicia sesión y comience la aventura') }}
           </b-card-text>
 
 
           <!-- form -->
-          <validation-observer ref="formValidate" #default="{ invalid, handleSubmit }">
+          <validation-observer ref="formValidate" #default="{ invalid, handleSubmit }" class="">
             <b-form class="auth-login-form " @submit.prevent="handleSubmit(iniciar)">
               <!-- email -->
               <b-form-group label="Email" label-for="login-email">
                 <validation-provider #default="{ errors }" name="Email" vid="email" rules="required|email">
                   <b-form-input id="login-email" v-model="formulario.email" :state="errors.length > 0 ? false : null"
-                    name="login-email" placeholder="david@example.com" autocomplete="username" />
+                    name="login-email" placeholder="david@example.com" size="lg" autocomplete="username" />
                   <small class="text-danger">{{ errors[0] }}</small>
                 </validation-provider>
               </b-form-group>
@@ -55,14 +55,14 @@
               <!-- forgot password -->
               <b-form-group>
                 <div class="d-flex justify-content-between">
-                  <label for="login-password">Contraseña</label>
+                  <label for="login-password">{{ $t('Contraseña') }}</label>
                   <b-link :to="{ name: 'auth-forgot-password' }">
-                    <small>Olvidaste la contraseña?</small>
+                    <small>{{ $t('Olvidaste la contraseña?') }}</small>
                   </b-link>
                 </div>
                 <validation-provider #default="{ errors }" name="Password" vid="password" rules="required">
                   <b-input-group class="input-group-merge" :class="errors.length > 0 ? 'is-invalid' : null">
-                    <b-form-input id="login-password" v-model="formulario.password"
+                    <b-form-input id="login-password" v-model="formulario.password" size="lg"
                       :state="errors.length > 0 ? false : null" class="form-control-merge" :type="passwordFieldType"
                       name="login-password" placeholder="Password" autocomplete="current-password" />
                     <b-input-group-append is-text>
@@ -81,28 +81,27 @@
 
               <!-- checkbox -->
               <b-form-group>
-                <b-form-checkbox id="remember-me" v-model="formulario.remember" name="checkbox-1">
-                  Recordarme
+                <b-form-checkbox id="remember-me" v-model="formulario.remember" name="checkbox-1" >
+                  {{ $t('Recordarme') }}
                 </b-form-checkbox>
               </b-form-group>
 
               <!-- submit buttons -->
-              <b-button type="submit" variant="primary" block :disabled="invalid" v-loading="loading">
-                Iniciar
+              <b-button type="submit" variant="primary" block :disabled="invalid" v-loading="loading" class="mt-3">
+                {{ $t('Iniciar') }}
               </b-button>
 
-              <b-button @click="authenticarGoogle(optionsAuth)" variant="primary" block v-loading="loading">
-                Google Auth
+              <b-button @click="authenticarGoogle(optionsAuth)" variant="primary" block v-loading="loading" class="mt-1">
+                {{ $t('Google Auth') }}
               </b-button>
 
-              <b-button :to="{ name: 'register' }" variant="warning" v-loading="loading" block>
-                Registrate
+              <b-button :to="{ name: 'register' }" variant="warning" v-loading="loading" block class="mt-1">
+                {{ $t('Registrate') }}
               </b-button>
 
             </b-form>
           </validation-observer>
 
-        </b-col>
       </b-col>
       <!-- /Login-->
     </b-row>

@@ -3,8 +3,8 @@
       <b-row>
          <b-col>
             <h3 class="font-weight-bolder titulo">
-               <span class="text-warning">Explora</span>
-               {{ destino.nombre }}
+               <span class="text-warning">{{ $t('Explora') }}</span>
+               {{ $t(destino.nombre) }}
             </h3>
          </b-col>
       </b-row>
@@ -20,7 +20,7 @@
 
                <b-button variant="dark" @click="() => showGallerie = !showGallerie" size="sm" class="btn-gallerie" rounded>
                   <font-awesome-icon icon="fa-images" class="mr-1" />
-                  Ver todas las fotos
+                  {{ $t('Ver todas las fotos') }}
                </b-button>
 
             </article>
@@ -36,7 +36,7 @@
          </b-col>
 
          <b-col cols="12">
-            <small>Turismo en {{ destino.nombre }}, {{ destino.estado.pais.pais }} - Viajes a {{ destino.nombre }}</small>
+            <small>{{ $t('Turismo en') }} {{ $t(destino.nombre) }}, {{ destino.estado.pais.pais }} - {{ $t('Viajes a') }} {{ $t(destino.nombre) }}</small>
          </b-col>
 
 
@@ -44,9 +44,9 @@
       <b-row class="mt-1">
          <b-col cols="12">
             <h3>
-               {{ destino.titulo  }}
+               {{ $t(destino.titulo)  }}
             </h3>
-            <div v-html="destino.descripcion"></div>
+            <div v-html="$t(destino.descripcion)"></div>
 
             <b-button v-b-toggle.collapse-1 variant="primary" v-if="destino.about_travel">
                {{ $t('Información de Interés sobre el Destino') }}
@@ -54,7 +54,7 @@
                <b-collapse id="collapse-1" class="mt-2">
                   <b-card>
                      <b-card-body >
-                        <section v-html="destino.about_travel"></section>
+                        <section v-html="$t(destino.about_travel)"></section>
                      </b-card-body>
                   </b-card>
                </b-collapse>

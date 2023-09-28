@@ -2,10 +2,10 @@
   <validation-observer ref="formValidate" #default="{handleSubmit}">
 
     <b-form @submit.prevent="handleSubmit(enviarReserva)">
-      <b-modal :visible="isShowDialog" centered @hide="cerrarModal" title="Crea tu reserva" @show="cargarForm">
+      <b-modal :visible="isShowDialog" centered @hide="cerrarModal" :title="$t('Crea tu reserva')" @show="cargarForm">
         <b-form-group>
           <template #label>
-            Fecha de la reserva: <span class="text-danger">*</span>
+            {{ $t('Fecha de la reserva') }}: <span class="text-danger">*</span>
           </template>
         
           <validation-provider name="fecha" #default="{valid,errors}">
@@ -21,10 +21,10 @@
           </validation-provider>
         </b-form-group>
 
-        <el-divider content-position="left">Horas Disponibles</el-divider>
+        <el-divider content-position="left">{{$t('Horas Disponibles')}}</el-divider>
         
         <section class="d-flex flex-wrap" v-if="horas.length > 0 ? true : false">
-          <b-form-group description="AL seleccionar la hora, buscaremos la cantidad de lugares disponibles">
+          <b-form-group :description="$t('AL seleccionar la hora, buscaremos la cantidad de lugares disponibles')">
         
             <validation-provider name="hora" rules="required" #default="{valid,errors}">
         
@@ -45,13 +45,13 @@
         </section>
         
         <section v-else class="bg-danger horas-no-disponible">
-          <h3 class="text-white">Sin horas disponibles</h3>
+          <h3 class="text-white">{{ $t('Sin horas disponibles') }}</h3>
         </section>
 
         <b-form-group>
 
           <template #label>
-            Número de Personas: <span class="text-danger">*</span>
+            {{$t('Número de Personas')}}: <span class="text-danger">*</span>
           </template>
         
           <validation-provider name="personas" rules="required|min:1" #default="{valid,errors}">
@@ -67,10 +67,10 @@
 
         </b-form-group>
         
-        <b-form-group label="Observación" description="Agregue una observación o requerimiento a su Reserva">
+        <b-form-group :label="$t('Observación')" :description="$t('Agregue una observación o requerimiento a su Reserva')">
         
           <validation-provider name="observacion" #default="{valid,errors}">
-            <b-form-textarea v-model="formulario.observacion" :state="valid" :rows="4" placeholder="Agregue una observación o requerimiento a su Reserva"></b-form-textarea>
+            <b-form-textarea v-model="formulario.observacion" :state="valid" :rows="4" :placeholder="$t('Agregue una observación o requerimiento a su Reserva')"></b-form-textarea>
         
             <b-form-invalid-feedback :state="valid">
               {{ errors[0] }} 
@@ -82,14 +82,14 @@
 
         <template #modal-footer="{hide}">
             <b-button-group size="sm">
-              <b-button variant="primary" @click="enviarReserva" title="Enviar Reservar" :disabled="loading || formulario.personas < 1" v-loading="loading">
+              <b-button variant="primary" @click="enviarReserva" :title="$t('Enviar Reserva')" :disabled="loading || formulario.personas < 1" v-loading="loading">
                 <font-awesome-icon icon="fas fa-paper-plane" />
-                Enviar Reserva
+                {{ $t('Enviar Reserva') }}
               </b-button>
 
               <b-button variant="dark" title="Cerrar" @click="hide" >
                 <font-awesome-icon icon="fas fa-xmark" />
-                Cerrar
+                {{ $t('Cerrar') }}
               </b-button>
             </b-button-group>
           </template>
@@ -158,7 +158,7 @@ export default {
 
 
     const swal = inject('swal')
-
+    const i18n = inject('i18n')
     const lugares = ref(0)
 
     const { isShowDialog } = toRefs(props)
@@ -184,7 +184,7 @@ export default {
 
                  swal({
                     icon: 'success',
-                    title: 'Su reserva ha sido enviada con éxito!',
+                    title: i18n.t('Su reserva ha sido enviada con éxito!'),
                     cancelButtonText:'Ok',
                     showCancelButton:true,
                     showConfirmButton:false
@@ -196,7 +196,7 @@ export default {
                 emit('update:isShowDialog', false)
 
               } else {
-                toast.info('No se pudo generar la reserva, inténte de nuevo mas tarde...', { position: 'bottom-right' })
+                toast.info(i18n.t('No se pudo generar la reserva, intente de nuevo mas tarde...'), { position: 'bottom-right' })
                 emit('update:isShowDialog', false)
               }
 
@@ -293,7 +293,7 @@ export default {
           
           swal({
             icon: 'info',
-            title: "La hora seleccionada ha pasado. Por favor, elige otro momento.",
+            title: i18n.t('La hora seleccionada ha pasado. Por favor, elige otro momento.'),
             cancelButtonText: 'Ok',
             showCancelButton: true,
             showConfirmButton: false
@@ -305,7 +305,7 @@ export default {
 
         swal({
           icon: 'info',
-          title: "Esta hora no tiene lugares disponibles. Por favor, selecciona otro horario.",
+          title: i18n.t('Esta hora no tiene lugares disponibles. Por favor, selecciona otro horario.'),
           cancelButtonText: 'Ok',
           showCancelButton: true,
           showConfirmButton: false

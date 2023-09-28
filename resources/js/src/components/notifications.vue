@@ -16,7 +16,7 @@
     <li class="dropdown-menu-header">
       <div class="dropdown-header d-flex py-1">
         <h4 class="notification-title mb-0 mr-auto">
-          Notificaciones
+          {{$t('Notificaciones')}}
         </h4>
 
      
@@ -25,7 +25,7 @@
           pill
           variant="light-primary"
         >
-          {{ cantidad }} sin leer
+          {{ cantidad }} {{$t('sin leer')}}
 
         </b-badge>
       </div>
@@ -33,15 +33,15 @@
       <div class="dropdown-header pb-1 pt-0" v-if="sinleer.length > 0">
 
           <b-button-group size="sm">
-             <b-button  variant="outline-dark" @click="todoleido()" size="sm" v-b-tooltip.hover.top="'Marcar todo como leido'">
-                Marcar todos como leido
+             <b-button  variant="outline-dark" @click="todoleido()" size="sm" v-b-tooltip.hover.top="$t('Marcar todos como leído')">
+                {{ $t('Marcar todos como leído') }}
             </b-button>
 
-            <b-button variant="outline-dark" v-if="formulario.notificaciones.filter(val => val.seleccionado).length > 0" @click="marcarLeido()" v-b-tooltip.hover.top="'Marcar como leidos'" >
+            <b-button variant="outline-dark" v-if="formulario.notificaciones.filter(val => val.seleccionado).length > 0" @click="marcarLeido()" v-b-tooltip.hover.top="$t('Marcar como leídos')" >
               <feather-icon icon="EyeIcon" size="12"/>
             </b-button>
 
-            <b-button variant="outline-dark" v-if="formulario.notificaciones.filter(val => val.seleccionado).length > 0" @click="eliminarSeleccionadas()" v-b-tooltip.hover.top="'Eliminar seleccionadas'" >
+            <b-button variant="outline-dark" v-if="formulario.notificaciones.filter(val => val.seleccionado).length > 0" @click="eliminarSeleccionadas()" v-b-tooltip.hover.top="$t('Eliminar seleccionadas')" >
               <feather-icon icon="TrashIcon" size="12"/>
             </b-button>
 
@@ -54,7 +54,7 @@
       <b-tabs content-class="mt-1" fill pills end>
         <b-tab>
           <template #title>
-            <strong class="mr-1">Sin leer </strong>
+            <strong class="mr-1">{{ $t('Sin leer') }}</strong>
             <b-badge pill variant="primary">
                  {{sinleer.length}}
             </b-badge>
@@ -88,7 +88,7 @@
                         </span>
                         </p>
                         <small class="notification-text" v-if="notification.data">
-                          {{ notification.data.mensaje[0].substring(0,30) }}...(seguir leyendo)
+                          {{ notification.data.mensaje[0].substring(0,30) }}{{ $t('...(seguir leyendo)') }}
                         </small>
                     
                     
@@ -103,7 +103,7 @@
         <b-tab title="Leidos" >
 
           <template #title>
-            <strong class="mr-1">Leidos </strong>
+            <strong class="mr-1">{{ $t('Leídos')  }}</strong>
             <b-badge pill variant="primary">
                  {{leidas.length}}
             </b-badge>
@@ -137,17 +137,17 @@
                           </span>
                         </p>
                         <small class="notification-text">
-                          {{ notification.data.mensaje[0].substring(0,30) }}...(seguir leyendo)
+                          {{ notification.data.mensaje[0].substring(0,30) }}{{ $t('...(seguir leyendo)') }}
                         </small>
                       </div>
 
                       <div class="col-12 col-md-4">
                         <b-button-group size="sm"  class="btns">
-                          <b-button variant="danger" v-b-tooltip.hover.top="'Eliminar Notificación'" @click.stop="eliminarNotification(notification.id)">
+                          <b-button variant="danger" v-b-tooltip.hover.top="$t('Eliminar Notificación')" @click.stop="eliminarNotification(notification.id)">
                             <feather-icon icon="Trash2Icon" size="12"/>
                           </b-button>
 
-                          <b-button variant="dark" v-b-tooltip.hover.top="'Marcar como no leida'" @click.stop="noshowNotificacion(notification.id)">
+                          <b-button variant="dark" v-b-tooltip.hover.top="$t('Marcar como no leída')" @click.stop="noshowNotificacion(notification.id)">
                             <feather-icon icon="EyeOffIcon" size="12"/>
                           </b-button>
                         </b-button-group>
@@ -189,7 +189,7 @@ import {
 import VuePerfectScrollbar from 'vue-perfect-scrollbar'
 import Ripple from 'vue-ripple-directive'
 
-import {ref,onMounted, watch,toRefs,computed, onUnmounted} from 'vue';
+import {ref,onMounted, watch,toRefs,computed, onUnmounted,inject} from 'vue';
 
 import store from '@/store';
 import router from '@/router';
@@ -228,7 +228,7 @@ export default {
     let { sinleer,leidas } = toRefs(store.state.notificacion);
 
     let seleccionados = ref([]);
-
+    const i18n = inject('i18n')
 
 
     let formulario  = ref({
@@ -311,7 +311,7 @@ export default {
           
           store.dispatch('notificacion/marcarLeida',
             {usuario:store.state.usuario.usuario.id,notificacion:notification.value.id}).then(respon => {
-              Notification.info('Notificación marcada como leida');
+              toast.info(i18n.t('Notificación marcada como leída'))
               cargarNotificaciones(store.state.usuario.usuario.id)
             }).catch(e => {
               console.log(e)
@@ -341,7 +341,7 @@ export default {
 
         store.dispatch('notificacion/marcarLeida',
             {usuario:usuario.value.id,notificacion:notification_id}).then(respon => {
-              Notification.info('Notificación marcada como leida');
+              toast.info(i18n.t('Notificación marcada como leída'))
               cargarNotificaciones(store.state.usuario.usuario.id)
             }).catch(e => {
               console.log(e)
@@ -354,10 +354,10 @@ export default {
         store.dispatch('notificacion/marcarNoLeida',{usuario:usuario.value.id,notificacion:notificacion_id}).then(respon => {
 
           if(respon.data.result){
-            Notification.info('Se ha pasado a la bandeja de no leidas')
+            toast.info(i18n.t('Se ha pasado a la bandeja de no leídas'))
             cargarNotificaciones(usuario.value.id)
           }else{
-            Notification.info('No se pudo marcar como no leida, inténtelo de nuevo')
+            toast.info(i18n.t('No se pudo marcar como no leída, inténtelo de nuevo'))
           }
 
         }).catch(e => {
@@ -372,11 +372,11 @@ export default {
       store.dispatch('notificacion/eliminar',{notificacion:notification_id,usuario:usuario.value.id}).then(respon => {
 
         if(respon.data.result) {
+          toast.info(i18n.t('Se ha eliminado con éxito la notificación.'))
 
-          Notification.info('Se ha eliminado con éxito la notificación.')
           cargarNotificaciones(usuario.value.id);
         }else{
-          Notification.info('No se pudo eliminar la notificación, inténtelo de nuevo mas tarde.')
+          toast.info(i18n.t('No se pudo eliminar la notificación, inténtelo de nuevo mas tarde.'))
         }
 
       }).catch(e => {
@@ -391,10 +391,10 @@ export default {
       store.dispatch('notificacion/todoleido',usuario.value.id).then(respon => {
 
         if(respon.data.result){
-          Notification.info('Se ha marcado todo como leido')
+          toast.info(i18n.t('Se ha marcado todo como leído'))
           cargarNotificaciones(usuario.value.id)
         }else{
-          Notification.info('Error en servidor inténtelo de nuevo mas tarde');
+          toast.info(i18n.t('Error en servidor inténtelo de nuevo mas tarde'))
         }
 
       }).catch( e => {
@@ -415,7 +415,7 @@ export default {
           // Notification.info('Los seleccionados se han marcados c')
           cargarNotificaciones(usuario.value.id);
         }else{
-          Notification.info('La operación no tuvo éxito, inténtelo de nuevo mas tarde.')
+          toast.info(i18n.t('La operación no tuvo éxito, inténtelo de nuevo mas tarde.'))
         }
 
       }).catch(e => {
@@ -436,7 +436,8 @@ export default {
           // Notification.info('Los seleccionados se han marcados c')
           cargarNotificaciones(usuario.value.id);
         }else{
-          Notification.info('La operación no tuvo éxito, inténtelo de nuevo mas tarde.')
+            toast.info(i18n.t('La operación no tuvo éxito, inténtelo de nuevo mas tarde.'))
+
         }
 
       }).catch(e => {

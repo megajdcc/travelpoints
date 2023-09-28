@@ -2,8 +2,8 @@
   <b-row>
     <b-col cols="12" v-if="cupones.length > 0">
      
-      <h3>{{ titulo }}</h3>
-      <p>{{ subTitulo }}</p>
+      <h3>{{ $t(titulo) }}</h3>
+      <p>{{ $t(subTitulo) }}</p>
     </b-col>
     <b-col cols="12">
       <listado :actions="actions" hideFooter hideHeader>
@@ -18,7 +18,7 @@
                     <div class="card-simple-content">
                       <h2>
                         <b-link @click="showCupon(item)">
-                          {{ item.nombre }}
+                          {{ $t(item.nombre) }}
                         </b-link>
                       </h2>
 
@@ -29,7 +29,7 @@
                             <font-awesome-icon icon="fas fa-eye"/>
                           </b-button>
 
-                          <b-button @click="loQuiero(item)" title="Quiero el Cupón" v-b-tooltip.hover variant="outline-success" v-if="is_loggin">
+                          <b-button @click="loQuiero(item)" :title="$t('Quiero el Cupón')" v-b-tooltip.hover variant="outline-success" v-if="is_loggin">
                             <font-awesome-icon icon="fas fa-check-to-slot"/>
                           </b-button>
 
@@ -39,12 +39,12 @@
                     </div><!-- /.card-simple-content -->
 
                     <div class="card-simple-label" >
-                       {{ item.negocio.nombre }}
+                       {{ $t(item.negocio.nombre) }}
                     </div>
 
 
                     <b-badge class="card-simple-price" variant="success" v-if="item.negocio">
-                      {{ item.disponibles > 1 ? `${item.disponibles} Disponibles` : `${item.disponibles} Disponible` }}
+                      {{ item.disponibles > 1 ? `${item.disponibles} `+ $t('Disponibles') : `${item.disponibles} `+$t('Disponible') }}
                     </b-badge>
 
                 
@@ -66,8 +66,8 @@
                     {{ getStatusCupon(cupon) }}
                 </b-badge>
                 <strong class="text-warning">
-                    Inicia: {{ cupon.expide | fecha('LL') }} & Termina: {{ cupon.vence | fecha('LL') }} | Disponibles: {{
-                      cupon.disponibles }} | Valor: {{ cupon.precio | currency(cupon.divisa ? cupon.divisa.iso : 'USD') }}
+                    {{ $t('Inicia') }}: {{ cupon.expide | fecha('LL') }} & {{ $t('Termina') }}: {{ cupon.vence | fecha('LL') }} | {{ $t('Disponibles') }}: {{
+                      cupon.disponibles }} | {{ $t('Valor') }}: {{ cupon.precio | currency(cupon.divisa ? cupon.divisa.iso : 'USD') }}
                 </strong>
 
               </section>
@@ -86,25 +86,25 @@
                 <main class="flex-grow-1 flex-chrink-0 mt-1 mt-md-0 ml-1">
               
                   <h4 :title="cupon.nombre" class="text-warning">
-                      {{ cupon.nombre }}
+                      {{ $t(cupon.nombre) }}
                   </h4>
               
-                  <p class="text-justify" :title="cupon.nombre" >
-                      {{ cupon.descripcion }}
+                  <p class="text-justify" :title="$t(cupon.nombre)" >
+                      {{ $t(cupon.descripcion) }}
                   </p>
 
                   <section class="d-flex justify-content-between flex-wrap">
                       <article class="d-flex flex-column mr-md-1">
-                        <strong class="text-warning font-weight-bolder">Condiciones</strong>
+                        <strong class="text-warning font-weight-bolder">{{$t('Condiciones')}}</strong>
                         <p class="text-justify">
-                            {{ cupon.condiciones }}
+                            {{ $t(cupon.condiciones) }}
                         </p>
                       </article>
 
                       <article class="d-flex flex-column ">
-                        <strong class="text-warning font-weight-bolder ">Restricciones</strong>
+                        <strong class="text-warning font-weight-bolder ">{{ $t('Restricciones') }}</strong>
                         <p class="text-break text-justify">
-                            {{ cupon.restricciones }}
+                            {{ $t(cupon.restricciones) }}
                         </p>
                       </article>
                 
@@ -190,7 +190,7 @@ export default {
     const actions = useCuponesList({ destino: destino.value ? destino : null })
     const {usuario} = toRefs(store.state.usuario)
     const swal = inject('swal')
-
+    const i18n = inject('i18n')
     onMounted(() => actions.refetchData());
     watch(() => destino.value.id, () => actions.refetchData());
 
@@ -205,10 +205,10 @@ export default {
 
     const loQuiero = (cup) => {
       swal({
-        title:'¿Quieres reservar el cupón?',
+        title:i18n.t('¿Quieres reservar el cupón?'),
         icon:'question',
-        confirmButtonText:'Sí, lo quiero!',
-        cancelButtonText:'No, no lo quiero',
+        confirmButtonText:i18n.t('Sí, lo quiero!'),
+        cancelButtonText:i18n.t('No, no lo quiero'),
         showCancelButton:true,
       }).then(({isConfirmed,isDenied,isDismiseed}) => {
         if(isConfirmed){
@@ -251,10 +251,10 @@ export default {
         let fecha_termina = moment(cupo.vence);
 
         if (fecha_actual.isAfter(fecha_termina)) {
-          return 'Expirado';
+          return i18n.t('Expirado');
         }
 
-        return fecha_actual.isBetween(fecha_inicio, fecha_termina) ? 'Activo' : 'No activo'
+        return fecha_actual.isBetween(fecha_inicio, fecha_termina) ? i18n.t('Activo') : i18n.t('No Activo')
       
       },
     }

@@ -3,7 +3,7 @@
    <b-row>
 
       <b-col cols="12" sm="6" class="d-flex align-items-center justify-content-center justify-content-sm-start">
-      <span class="text-muted">{{ $t('generales.mostrando') }} {{ dataMeta.from }} a {{ dataMeta.to }}  {{ $t('generales.de') }} {{ dataMeta.of }} {{ $t('generales.entradas') }} </span>
+      <span class="text-muted">{{ $t('Mostrando') }} {{ dataMeta.from }} {{ $t('a') }} {{ dataMeta.to }}  {{ $t('de') }} {{ dataMeta.of }} {{ $t('entradas') }} </span>
       </b-col>
       <!-- Pagination -->
       <b-col cols="12" sm="6" class="d-flex align-items-center justify-content-center justify-content-sm-end">

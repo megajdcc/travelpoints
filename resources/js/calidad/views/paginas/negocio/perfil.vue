@@ -3,7 +3,7 @@
 
     <swiper-gallery :imagenes="negocio.imagenes" path="/storage/negocios/fotos/" class="mt-1" :heightGallery="400" :coverImg="false" />
   
-      <h2 class="display-4 d-flex d-md-none">Sobre <span class="text-warning">{{ negocio.nombre }}</span></h2>
+      <h2 class="display-4 d-flex d-md-none">{{ $t('Sobre') }} <span class="text-warning">{{ $t(negocio.nombre) }}</span></h2>
       <b-card body-class="d-flex flex-column justify-content-center d-flex d-md-none">
 
             <section class="d-flex align-items-center">
@@ -102,7 +102,7 @@
             <table class="table table-hover table-sm table-responsive" border="0" v-if="negocio.precios">
               <tr v-if="negocio.precios.compra_promedio">
                 <td>
-                  <strong>Compra promedio por persona</strong>
+                  <strong>{{ $t('Compra promedio por persona') }}</strong>
                 </td>
                 <td>
                   <!-- Min: {{ negocio.precios.precio_minimo | currency(negocio.divisa.iso) }} - Max: {{
@@ -119,7 +119,7 @@
             <table class="table table-hover table-sm " border="0" v-if="negocio.redes.length">
               <tr>
                 <td>
-                  <strong>Seguir</strong>
+                  <strong>{{ $t('Seguir') }}</strong>
                 </td>
                 <td>
 
@@ -151,7 +151,7 @@
   <!-- Video del negocio -->
   <template v-if="negocio.videos.length">
     <hr>
-    <h2>Video</h2>
+    <h2>{{ $t('Video') }}</h2>
     
     <section class="d-flex flex-column ">
       <video :poster="portada" :src="`/storage/negocios/videos/${video}`" controls class="video-negocio" controlslist="nodownload"></video>
@@ -170,7 +170,7 @@
   </template>
 
   <!-- Opiniones del negocio -->
-  <h2 class="d-none d-md-flex" >Opiniones sobre este <strong class="text-warning">negocio</strong></h2>
+  <h2 class="d-none d-md-flex" >{{ $t('Opiniones sobre este') }} <strong class="text-warning ml-1"> {{ $t('Negocio') }}</strong></h2>
   <section class="d-none d-md-flex flex-column ">
     <reviews-opinion :promedioCalificacion="promedioCalificacion" :cantidad="negocio.opinions.length"
       :porcentajeOpinions="porcentajeOpinions" :model="{model_id:negocio.id,model_type:negocio.modelType}"

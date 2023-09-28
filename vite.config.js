@@ -43,7 +43,6 @@ export default defineConfig({
                         },
                     },
                 },{
-                    // urlPattern: /\.(?:css|ico|png|jpg|jpeg|svg|json)$/,
                     urlPattern:({request}) => request.destination === 'image',
                     handler:'CacheFirst',
                     options: {

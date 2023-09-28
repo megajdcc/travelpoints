@@ -131,7 +131,6 @@ import useAuth from '@core/utils/useAuth';
 import router from '@/router'
 import Ripple from 'vue-ripple-directive'
 
-import { useElementBounding } from '@vueuse/core'
 export default {
 
    components: {

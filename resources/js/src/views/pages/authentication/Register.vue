@@ -1,19 +1,9 @@
 <template>
   <div class="auth-wrapper auth-v2">
     <b-row class="auth-inner m-0">
-
-      
-      <!-- Brand logo-->
       <b-link class="brand-logo">
-        
          <img src="/storage/logotipo.png" alt="Logo" />
-        <!-- <h2 class="brand-text text-primary ml-1">
-          Boda y Playa
-        </h2> -->
       </b-link>
-      <!-- /Brand logo-->
-
-      <!-- Left Text-->
       <b-col
         lg="8"
         class="d-none d-lg-flex align-items-center p-5"
@@ -40,10 +30,10 @@
           class="px-xl-2 mx-auto"
         >
           <b-card-title class="mb-1">
-            La aventura comienza aquí 🚀
+            {{ $t('La aventura comienza aquí') }} 🚀
           </b-card-title>
           <b-card-text class="mb-2">
-            Empieza por registrarte, como usuario (Invitado)...
+            {{ $t('Empieza por registrarte, como usuario (Invitado)...') }}
           </b-card-text>
 
           <!-- form -->
@@ -57,7 +47,7 @@
             >
               <!-- username -->
               <b-form-group
-                label="Nombre"
+                :label="$t('Nombre')"
                 label-for="register-username"
               >
                 <validation-provider
@@ -164,8 +154,8 @@
                   v-model="status"
                   name="checkbox-1"
                 >
-                 estoy de acuerdo con
-                  <b-link :to="pageTermino" target="_blank">política y términos de privacidad</b-link>
+                {{ $t('estoy de acuerdo con') }}
+                  <b-link :to="pageTermino" target="_blank">{{ $t('política y términos de privacidad') }}</b-link>
                 </b-form-checkbox>
               </b-form-group>
 
@@ -175,15 +165,15 @@
                 type="submit"
                 :disabled="invalid"
               >
-                Inscribirse
+                {{ $t('Inscribirse') }}
               </b-button>
             </b-form>
           </validation-observer>
 
           <p class="text-center mt-2">
-            <span>Ya tienes una cuenta?</span>
+            <span>{{ $t('Ya tienes una cuenta?') }}</span>
             <b-link :to="{name:'auth-login'}">
-              <span>&nbsp;Iniciar sesión en su lugar</span>
+              <span>&nbsp;{{ $t('Iniciar sesión en su lugar') }}</span>
             </b-link>
           </p>
 

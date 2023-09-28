@@ -5,7 +5,7 @@
       <font-awesome-icon icon="fas fa-play"/>
     </b-nav-item>
 
-    <b-sidebar v-model="show"  right backdrop title="Academia" z-index="1052">
+    <b-sidebar v-model="show"  right backdrop :title="$t('Academia')" z-index="1052">
         <b-container fluid>
           <b-row>
             <b-col>
@@ -17,7 +17,7 @@
                     <source :src="`/storage/multimedias/${video.url}`">
                   </video>
 
-                   <b-button @click="verVideo(a)" variant="primary">Ver</b-button>
+                   <b-button @click="verVideo(a)" variant="primary">{{ $t('Ver') }}</b-button>
                 </b-card>
                
 
@@ -30,17 +30,14 @@
 
     <b-modal v-model="showContenido" size="lg" centered hide-footer lazy>  
       <section class="d-flex justify-content-center flex-wrap" v-if="contenido">
-          <h3 class="text-uppercase" > {{  contenido.titulo  }}</h3>
+          <h3 class="text-uppercase" > {{  $t(contenido.titulo)  }}</h3>
 
-           <b-embed  class="mx-1 mb-1" type="iframe" :aspect="relation" v-for="(video, e) in contenido.videos" :key="e" :src="`/storage/multimedias/${video.url}`"
+            <b-embed  class="mx-1 mb-1" type="iframe" :aspect="relation" v-for="(video, e) in contenido.videos" :key="e" :src="`/storage/multimedias/${video.url}`"
                     allowfullscreen>
-            </b-embed>
-          <!-- <video class="mx-1 mb-1" height="300" v-for="(video, e) in contenido.videos" :key="e" controls >
-              <source :src="`/storage/multimedias/${video.url}`">
-          </video> -->
-          
-          <el-divider content-position="left">Descripción</el-divider>
-          <span class="" v-html="contenido.descripcion">
+            </b-embed> 
+                     
+          <el-divider content-position="left">{{ $t('Descripción') }}</el-divider>
+            <span class="" v-html="$t(contenido.descripcion)">
           </span>
       </section>
     </b-modal>

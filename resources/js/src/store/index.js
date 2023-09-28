@@ -177,6 +177,9 @@ import reunion from './modules/reunion.js'
 // Invitacions
 import invitacion from './modules/invitacion.js'
 
+// Idioma 
+
+import idioma from './modules/idioma.js'
 
 Vue.use(Vuex)
 
@@ -336,7 +339,8 @@ export default new Vuex.Store({
     tarjeta,
     vonage,
     reunion,
-    invitacion
+    invitacion,
+    idioma
   },
   strict:false,
 

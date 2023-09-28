@@ -15,7 +15,7 @@ export default {
             certificacion: false,
             preguntas: [
                {
-                  pregunta: 'Le recomendarias este lugar o actividad a un amigo que visite el lugar por primera vez ?',
+                  pregunta: '¿Le recomendarías este lugar o actividad a un amigo que visite el lugar por primera vez ?',
                   respuesta: null,
                },
                {

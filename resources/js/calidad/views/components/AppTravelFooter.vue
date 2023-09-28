@@ -5,19 +5,19 @@
             <ul class="nav justify-content-center" :class="{ 'w-75': windowWidth >= 762}">
                <li class="nav-item" v-if="!is_loggin">
                   <b-link :to="{name:'login'}" class="nav-link px-2 font-weight-bolder">
-                     Inicia Sesión
+                     {{ $t('Inicia Sesión') }}
                   </b-link>
                </li>
 
                <li class="nav-item" v-if="!is_loggin">
                   <b-link :to="{name:'register'}" class="nav-link px-2 font-weight-bolder">
-                     Hazte socio
+                    {{ $t('Hazte socio') }}
                   </b-link>
                </li>
 
                <li class="nav-item">
                   <b-link :to="{ name:'socio.negocio.afiliar'}" class="nav-link px-2 font-weight-bolder">
-                     Afilia tú negocio
+                     {{ $t('Afilia tú negocio') }}
                   </b-link>
                </li>
                <!-- <li class="nav-item">
@@ -29,14 +29,14 @@
 
                <li class="nav-item">
                   <b-link :to="{name:'faqs'}" class="nav-link px-2 font-weight-bolder">
-                     Preguntas Frecuentes
+                     {{ $t('Preguntas Frecuentes') }}
                   </b-link>
                </li>
 
 
                <li class="nav-item" v-for="(pagina,i) in paginas" :key="i">
                   <b-link :to="{path:`/${pagina.ruta}`}" class="nav-link px-2 font-weight-bolder">
-                     {{ pagina.nombre }}
+                     {{ $t(pagina.nombre) }}
                   </b-link>
                </li>
 
@@ -82,12 +82,12 @@
          </b-col> -->
 
           <b-col cols="12" :md="sistema.redes.length ? 4 : 12" class="mb-0 d-flex align-items-center flex-column mt-1" v-if="sistema.redes.length">
-            <strong class="mb-1"> REDES SOCIALES</strong>
+            <strong class="mb-1"> {{ $t('REDES SOCIALES') }}</strong>
             <div class="d-flex flex-sm-row justify-content-start align-items-center w-100">
                
                <ul class="list-unstyled d-flex m-0 justify-content-center w-100">
                   <li  v-for="({url,nombre,icono},i) in sistema.redes" :key="i" :class="{'ml-2' : i > 0}">
-                     <b-link :href="url" :alt="nombre" :title="nombre" v-b-tooltip.hover.top.v-primary target="_blank" 
+                     <b-link :href="url" :alt="$t(nombre)" :title="$t(nombre)" v-b-tooltip.hover.top.v-primary target="_blank" 
                      class="wow bounceInDown " :data-wow-delay="`1.${i}`" >
                         <font-awesome-icon :icon="['fab',icono]" size="2x"/>
                      </b-link>
@@ -105,7 +105,7 @@
                <span class="float-md-left d-block d-md-inline-block mt-25">
                   COPYRIGHT © {{ new Date().getFullYear() }}
                   <b-link class="ml-25" href="#" target="_blank">{{ sistema.nombre || 'Travel'  }}</b-link>
-                  <span class="d-none d-sm-inline-block">, Todos los derechos reservados</span>
+                  <span class="d-none d-sm-inline-block">, {{ $t('Todos los derechos reservados') }}</span>
                </span>
 
 

@@ -90,7 +90,7 @@
 
                        <!-- Condicion de la publicacion -->
                         <b-badge variant="primary" class="mb-1" v-b-tooltip.hover="producto.categoria.descripcion">
-                          {{ producto.categoria.nombre }}
+                          {{ $t(producto.categoria.nombre) }}
                         </b-badge>
 
                         <b-badge class="" varaint="success">
@@ -98,7 +98,7 @@
                         </b-badge>
 
                         <b-card-title>
-                            <h3>{{ producto.nombre  }}</h3> 
+                            <h3>{{ $t(producto.nombre)  }}</h3> 
                         </b-card-title>
 
                         <b-card-text class="item-company mb-0">

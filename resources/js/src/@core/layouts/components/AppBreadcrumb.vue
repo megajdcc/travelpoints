@@ -30,7 +30,7 @@
                 :active="item.active"
                 :to="item.to"
               >
-                {{ t(item.text) }}
+                {{ t(item.text,item.text) }}
               </b-breadcrumb-item>
             </b-breadcrumb>
           </div>

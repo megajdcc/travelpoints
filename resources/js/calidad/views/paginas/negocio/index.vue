@@ -26,14 +26,14 @@
           <section class="d-flex flex-wrap " >
 
             <font-awesome-icon icon="fas fa-handshake" class="mr-1" />
-              {{ negocio.seguidores.length > 1 ? `${negocio.seguidores.length} personas siguen a este negocio` : `${negocio.seguidores.length} persona siguen a este negocio` }}
+              {{ negocio.seguidores.length > 1 ? `${negocio.seguidores.length} ` + $t('personas siguen a este negocio') : `${negocio.seguidores.length} `+ $t('persona siguen a este negocio') }}
 
           </section>
 
           <section class="d-flex flex-wrap " >
 
             <font-awesome-icon icon="fas fa-heart" class="mr-1" color="red" />
-            {{ negocio.recomendaciones.length > 1 ? `${negocio.recomendaciones.length} personas lo recomienda` : `${negocio.recomendaciones.length} persona lo recomienda` }} 
+            {{ negocio.recomendaciones.length > 1 ? `${negocio.recomendaciones.length} `+ $t('personas lo recomienda') : `${negocio.recomendaciones.length} `+ $t('persona lo recomienda') }} 
 
           </section>
 
@@ -47,7 +47,7 @@
               class="d-flex flex-nowrap" />
           
             <p class="my-0 font-weight-bolder">
-              {{ negocio.opinions.length }} <small>Opiniones</small>
+              {{ negocio.opinions.length }} <small>{{ $t('Opiniones')  }}</small>
             </p>
           
           </section>
@@ -59,7 +59,7 @@
 
         </b-card>
 
-        <h2 class="display-4 d-none d-md-flex">Sobre <span class="text-warning">{{ negocio.nombre }}</span></h2>
+        <h2 class="display-4 d-none d-md-flex">{{ $t('Sobre') }} <span class="text-warning">{{ $t(negocio.nombre) }}</span></h2>
 
         <b-card body-class="flex-column justify-content-center d-none d-md-flex">
 
@@ -126,7 +126,7 @@
                       <td colspan="2">
                         <b-button :href="negocio.menu" target="_blank" style="text-decoration:none;" block variant="warning">
                           <font-awesome-icon icon="fas fa-book-open"/>
-                          Ver menú
+                          {{ $t('Ver menú') }}
                         </b-button>
                       </td>
                     </tr>
@@ -163,7 +163,7 @@
           <table class="table table-hover table-sm table-responsive" border="0" v-if="negocio.precios">
               <tr v-if="negocio.precios.compra_promedio">
                 <td>
-                  <strong>Compra promedio por persona</strong>
+                  <strong>{{ $t('Compra promedio por persona') }}</strong>
                 </td>
                 <td>
                   <!-- Min: {{ negocio.precios.precio_minimo | currency(negocio.divisa.iso) }} - Max: {{
@@ -180,7 +180,7 @@
           <table class="table table-hover table-sm " border="0" v-if="negocio.redes.length">
             <tr>
               <td>
-                <strong>Seguir</strong>
+                <strong>{{ $t('Seguir') }}</strong>
               </td>
               <td>
 
@@ -205,7 +205,7 @@
 
             <b-nav-item :to="{ name: 'perfil.negocio' }" active-class="active" exact>
               <font-awesome-icon icon="fas fa-home"/>
-              {{ negocio.nombre  }}
+              {{ $t(negocio.nombre)  }}
             </b-nav-item>
 
               <!-- <b-nav-item :to="{ name: 'perfil.negocio.cupones' }" active-class="active" exact >
@@ -216,12 +216,12 @@
 
               <b-nav-item :to="{ name: 'perfil.negocio.publicaciones' }" active-class="active">
                 <font-awesome-icon icon="fas fa-flag"/>
-                Publicaciones
+                {{ $t('Publicaciones')  }}
               </b-nav-item>
 
               <b-nav-item :to="{ name: 'perfil.negocio.eventos' }" active-class="active">
                 <font-awesome-icon icon="fas fa-calendar" />
-                Eventos
+                {{ $t('Eventos') }}
               </b-nav-item>
 
 
@@ -234,7 +234,7 @@
         </b-card>
 
         <template v-if="negocio.horarios.length">
-            <h2 class="display-4">Horario de  <span class="text-warning">Trabajo</span></h2>
+            <h2 class="display-4">{{ $t('Horario de')  }}  <span class="text-warning">{{ $t('Trabajo') }}</span></h2>
 
           <b-card>
             <table class="table table-sm table-hover ">
@@ -251,7 +251,7 @@
                       </template>
 
                       <template v-else>
-                        <strong class="text-danger">Cerrado</strong>
+                        <strong class="text-danger">{{ $t('Cerrado') }}</strong>
                       </template>
                     </section>
 
@@ -261,29 +261,29 @@
                         <section class="d-flex justify-content-between">
 
                           <template v-if="horario.apertura[0] && horario.cierre[0]">
-                            Mañana: ({{ horario.apertura[0] | fecha('hh:mm A', true) }} - {{ horario.cierre[0] | fecha('hh:mm A', true) }})
+                            {{$t('Mañana')}}: ({{ horario.apertura[0] | fecha('hh:mm A', true) }} - {{ horario.cierre[0] | fecha('hh:mm A', true) }})
                           </template>
 
                           <template v-else>
-                            <strong class="text-danger">Cerrado</strong>
+                            <strong class="text-danger">{{ $t('Cerrado') }}</strong>
                           </template>
 
                         </section>
                        
                         <section class="d-flex justify-content-between">
                              <template v-if="horario.apertura[1] && horario.cierre[1]">
-                              Tarde: ({{ horario.apertura[1] | fecha('hh:mm A', true) }} - {{ horario.cierre[1] | fecha('hh:mm A', true) }})
+                              {{ $t('Tarde') }}: ({{ horario.apertura[1] | fecha('hh:mm A', true) }} - {{ horario.cierre[1] | fecha('hh:mm A', true) }})
                             </template>
 
                             <template v-else>
-                              <strong class="text-danger">Cerrado</strong>
+                              <strong class="text-danger">{{ $t('Cerrado') }}</strong>
                             </template>
                         </section>
                        
                       </template>
 
                       <template v-else>
-                        <strong class="text-danger">Cerrado</strong>
+                        <strong class="text-danger">{{ $t('Cerrado') }}</strong>
                       </template>
                     </section>
                    
@@ -297,7 +297,7 @@
       
 
         <template v-if="negocio.amenidades.length">
-          <h2 class="display-4">Amenidades</h2>
+          <h2 class="display-4">{{ $t('Amenidades') }}</h2>
           <b-card>
 
             <b-form-checkbox-group :options="negocio.amenidades"  text-field="nombre" value-field="id"
@@ -309,7 +309,7 @@
       
 
         <section class="d-flex justify-content-center align-items-center flex-column" v-if="negocio.formas_pago.length">
-            <h2 class="display-5 text-muted">Pagos Aceptados</h2>
+            <h2 class="display-5 text-muted">{{ $t('Pagos Aceptados') }} </h2>
 
             <article class="d-flex flex-wrap">
               <b-form-checkbox-group :options="negocio.formas_pago" text-field="nombre" value-field="id" disabled
@@ -319,7 +319,7 @@
             
         </section>
 
-        <h2 class="d-flex d-md-none mt-2" >Opiniones sobre este <strong class="text-warning">negocio</strong></h2>
+        <h2 class="d-flex d-md-none mt-2" >{{ $t('Opiniones sobre este') }} <strong class="text-warning">{{ $t('Negocio') }}</strong></h2>
 
         <section class="d-flex d-md-none flex-column ">
           <reviews-opinion :promedioCalificacion="promedioCalificacion" :cantidad="negocio.opinions.length"
@@ -339,7 +339,7 @@
 
 <script>
 
-import { toRefs, ref, computed,onMounted,watch } from 'vue'
+import { toRefs, ref, computed,onMounted,watch,inject } from 'vue'
 
 import store from '@/store'
 import router from '@/router';
@@ -410,7 +410,7 @@ export default {
     const { url } = toRefs(props)
     const { negocio } = toRefs(store.state.negocio)
     const cargarForm = () => {
-
+    const i18n = inject('i18n')
       if(negocio.value.id){
          store.dispatch('negocio/aumentarVisita', negocio.value.id)
       }
@@ -438,7 +438,11 @@ export default {
       routerTransition
     } = useAppConfig();
 
- 
+    const optionsPlace = computed(() => {
+      return {
+        content: `<strong>${negocio.value.nombre}</strong>`
+      }
+    })
 
     return {
       routerTransition,
@@ -446,7 +450,7 @@ export default {
       negocio,
       promedioCalificacion: computed(() => store.getters['negocio/promedioCalificacion'](negocio.value)),
       porcentajeOpinions: (cal) => store.getters['negocio/porcentajeOpinions'](cal),
-      optionsPlace: computed(() => ({ content: `<strong>${negocio.value.nombre}</strong>` })),
+      optionsPlace,
 
       getColorRed: (red) => {
         switch (red) {

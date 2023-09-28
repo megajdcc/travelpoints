@@ -6,7 +6,7 @@
             </slot>
             <b-button @click="() => showOpinion = true" variant="outline-info" size="sm" v-if="is_loggin" >
                <slot name="labelButton">
-                  Escribe una opinión
+                  {{ $t('Escribe una opinión') }}
                </slot>
             </b-button>
 
@@ -16,7 +16,7 @@
          </b-button-group>
          
 
-         <b-modal :visible="showOpinion" @hide="cerrar" hide-footer centered lazy no-close-on-backdrop title="Agregar Opinión">
+         <b-modal :visible="showOpinion" @hide="cerrar" hide-footer centered lazy no-close-on-backdrop :title="$t('Agregar Opinión')">
             <validation-observer ref="formValidate" #default="{ handleSubmit }">
                <b-form @submit.prevent="handleSubmit(guardar)" style="max-height:450px;overflow-y:scroll">
                   <b-container fluid>
@@ -26,11 +26,11 @@
                            <b-form-group>
             
                               <template #label v-if="!isCompra">
-                                 Califica tu experiencia: <small>(Obligatorio)</small>
+                                 {{ $t('Califica tu experiencia') }}: <small>({{ $t('Obligatorio') }})</small>
                               </template>
 
                                  <template #label v-else>
-                                       Que calificación le pones al producto comprado: <small>(Obligatorio)</small>
+                                       {{ $t('Que calificación le pones al producto comprado') }}: <small>({{ $t('Obligatorio') }})</small>
                                  </template>
                               
                                 
@@ -51,12 +51,12 @@
 
                            <b-form-group>
                               <template #label>
-                                 Escribir una opinión: <small>(Obligatorio)</small>
+                                 {{$t('Escribir una opinión')}}: <small>({{ $t('Obligatorio') }})</small>
                               </template>
 
                               <template #description>
                                  <span class="ml-auto" :class="{'text-success' : formulario.opinion.length >= 100 }" >
-                                    {{ formulario.opinion.length }} caracteres (100 mínimo)
+                                    {{ formulario.opinion.length }} {{ $t('caracteres (100 mínimo)') }}
                                  </span> 
                                 
                               </template>
@@ -75,7 +75,7 @@
 
                            <b-form-group>
                               <template #label>
-                                 Dale un título a tu opinión: <small>(Obligatorio)</small>
+                                 {{ $t('Dale un título a tu opinión') }}: <small>({{ $t('Obligatorio') }})</small>
                               </template>
                            
                               <validation-provider name="titulo" rules="required" #default="{errors,valid}">
@@ -92,7 +92,7 @@
 
                            <b-form-group v-if="!isConsumo">
                               <template #label>
-                                ¿ Cuando fuiste ?: <small>(Obligatorio)</small>
+                                {{ $t('¿Cuando fuiste?') }}: <small>({{ $t('Obligatorio') }})</small>
                               </template>
                            
                               <validation-provider name="asistencia" rules="required" #default="{errors,valid}">
@@ -109,7 +109,7 @@
 
                            <b-form-group v-if="!isCompra">
                               <template #label>
-                                 ¿ Quién fue contigo ?: <small>(Obligatorio)</small>
+                                 {{ $t('¿Quién fue contigo?') }}: <small>({{ $t('Obligatorio') }})</small>
                               </template>
                            
                               <validation-provider name="acompanante" rules="required" #default="{errors,valid}">
@@ -128,17 +128,14 @@
                              
                            
                            <b-form-checkbox id="checkbox-1" v-model="formulario.certificacion"  :value="true" :unchecked-value="false">
-                              Certifico que esta opinión se basa en mi propia experiencia y es mi opinión genuina sobre este establecimiento; que no
-                              tengo ninguna relación personal ni comercial con dicho establecimiento y que ningún establecimiento me ofreció ningún
-                              tipo de incentivo o pago alguno para que escribiese esta opinión. Comprendo que Travelpoints tiene una política de
-                              tolerancia cero con las opiniones falsas. <b-link :to="{ name:'terminos-condiciones'}"> Obtener más información</b-link>
+                              {{ $t('opinion_certificacion') }} <b-link :to="{ name:'terminos-condiciones'}"> {{ $t('Obtener más información') }}</b-link>
                            </b-form-checkbox>
                            </b-form-group>
                         </b-col>
 
                         <b-col cols="12">
                            <b-button type="submit" variant="primary" v-loading="loading" :disabled="!formulario.certificacion">
-                              Envía tu opinión
+                              {{ $t('Envía tu opinión') }}
                            </b-button>
                         </b-col>
             
@@ -175,7 +172,7 @@ import vSelect from 'vue-select'
 import {required,min} from '@validations'
 import { regresar } from '@core/utils/utils';
 
-import {ref,computed,onMounted,toRefs} from 'vue'
+import {ref,computed,onMounted,toRefs,inject} from 'vue'
 import store from '@/store'
 import router from '@/router'
 import useAuth from '@core/utils/useAuth';
@@ -214,7 +211,7 @@ export default {
       const {modelType,modelId} = toRefs(props)
 
       const {opinion:formulario} = toRefs(store.state.opinion)
-
+      const i18n = inject('i18n')
       const cerrar = () => { showOpinion.value = false }
       const {
          is_loggin
@@ -234,9 +231,9 @@ export default {
                cerrar();
 
                emit('opinionGuardada',opinion)
-               toast.success('Se ha agregado con éxito la opinión', { position: 'bottom-right' })
+               toast.success(i18n.t('Se ha agregado con éxito la opinión'), { position: 'bottom-right' })
             }else{
-               toast.success('No se pudo agregar la opinión, intente de nuevo', { position: 'bottom-right' })
+               toast.success(i18n.t('No se pudo agregar la opinión, intente de nuevo'), { position: 'bottom-right' })
             }
 
          }).catch(e => {
@@ -254,11 +251,11 @@ export default {
       const legendRate = computed(() => {
 
          return [
-            'Pésimo',
-            'Malo',
-            'Regular',
-            'Muy Bueno',
-            'Excelente'
+            i18n.t('Pésimo'),
+            i18n.t('Malo'),
+            i18n.t('Regular'),
+            i18n.t('Muy Bueno'),
+            i18n.t('Excelente'),
          ]
       })
 

@@ -9,7 +9,7 @@
     <mi-agenda v-model="showMiAgenda" v-if="is_loggin"/>
     <sidebar-about-profile v-model="showAboutProfile" v-if="is_loggin" :userAbout="userAbout" :showEditActive="showEditActive"/>
     <form-agenda v-model="showAgenda" :tipo="tipoAgenda" v-if="is_loggin" :sobre="sobre"/>
-    <agenda-fixed  />
+    <agenda-fixed v-if="!['login','register'].includes(route.name)"  />
     <sidebar-retiro v-if="is_loggin" v-model="showSidebarRetiro" />
     <form-user v-if="is_loggin" v-model="showFormUser"   @cerrar="() => showFormUser = false" :tipo="tipoFormUser" :liderId="liderId" />
 
@@ -163,6 +163,9 @@ export default {
 
     })
 
+    onMounted(() => {
+      console.log(route)
+    })
     return {
       skinClasses,
       enableScrollToTop,

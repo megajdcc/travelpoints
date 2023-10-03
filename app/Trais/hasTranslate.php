@@ -5,8 +5,6 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Storage;
 use GoogleTranslate;
 
-use function PHPUnit\Framework\isInstanceOf;
-
 trait hasTranslate
 {
 
@@ -45,10 +43,22 @@ trait hasTranslate
 
   public function guardarTraduccion(Collection $traduccion,$name_json){
     // Convertir la colección a formato JSON y agregar un salto de línea al final
-    // $jsonData = $traduccion->toJson(JSON_PRETTY_PRINT) . PHP_EOL;
-    // $jsonData = $traduccion->toJson(JSON_UNESCAPED_UNICODE) . PHP_EOL;
+    $jsonPath = Storage::disk(Idioma::DISK_TRADUCCIONES)->path($name_json);
+
     $jsonData = json_encode($traduccion, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT) . PHP_EOL;
     Storage::disk(Idioma::DISK_TRADUCCIONES)->put($name_json, $jsonData);
+
+    $result = Storage::disk(Idioma::DISK_TRADUCCIONES)->put($this->getNameJson(), $jsonData);
+
+    $langPath = base_path('lang/' . $this->shortLang);
+
+    if (!file_exists($langPath)) {
+      mkdir($langPath, 0755, true);
+    }
+
+    copy($jsonPath, $langPath . '/' . $this->getNameJson());
+
+    return $result;
   }
 
   public function quitarTraduccion(array $props) : void{

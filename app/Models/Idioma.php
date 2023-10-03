@@ -8,6 +8,8 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\Support\Collection;
 use App\Trais\hasTranslate;
+use Illuminate\Support\Facades\App;
+
 class Idioma extends Model
 {
     use HasFactory, hasTranslate;
@@ -30,13 +32,19 @@ class Idioma extends Model
 
     public function createJson(){
         $data = $this->generateJson($this->getJson());
-
-        // $jsonData = $data->toJson(JSON_UNESCAPED_UNICODE) . PHP_EOL;
         $jsonData = json_encode($data, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT) . PHP_EOL;
 
         $name_json = Str::slug($this->shortLang).'.json';
+        $jsonPath = Storage::disk(Idioma::DISK_TRADUCCIONES)->path($name_json);
         Storage::disk(Idioma::DISK_TRADUCCIONES)->put($name_json, $jsonData);
-        // Storage::put(resource_path('/js/libs/i18n/idiomas').$name_json, $jsonData);
+
+        // Copia el archivo JSON al directorio lang en el directorio raíz
+        $langPath = base_path('lang/' . $this->shortLang);
+        if (!file_exists($langPath)) {
+            mkdir($langPath, 0755, true);
+        }
+        copy($jsonPath, $langPath . '/' . $name_json);
+
     }
 
 
@@ -89,8 +97,20 @@ class Idioma extends Model
 
         $jsonData = json_encode(collect($json), JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT) . PHP_EOL;
 
-        // $jsonData = collect($json)->toJson(JSON_UNESCAPED_UNICODE) . PHP_EOL;
-        return Storage::disk(Idioma::DISK_TRADUCCIONES)->put($this->getNameJson(),$jsonData);
+        $jsonPath = Storage::disk(Idioma::DISK_TRADUCCIONES)->path($this->getNameJson());
+
+        $result =  Storage::disk(Idioma::DISK_TRADUCCIONES)->put($this->getNameJson(),$jsonData);
+
+        $langPath = base_path('lang/' . $this->shortLang);
+        
+        if (!file_exists($langPath)) {
+            mkdir($langPath, 0755, true);
+        }
+        
+        copy($jsonPath, $langPath . '/' . $this->getNameJson());
+
+        return $result;
+
     }
 
     public function getNameJson(){

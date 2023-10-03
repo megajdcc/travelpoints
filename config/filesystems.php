@@ -183,9 +183,12 @@ return [
             'visibility' => 'public',
         ],
 
-
-
-
+        'lang' => [
+            'driver' => 'local',
+            'root' => storage_path('lang'),
+            'url' => env('APP_URL') . '/storage/lang',
+            'visibility' => 'public',
+        ],
 
         's3' => [
             'driver' => 's3',

@@ -2328,5 +2328,13 @@ class UserController extends Controller
 
     }
 
+    public function updateLocale(User $usuario,string $locale){
+
+        $usuario->locale = $locale;
+        $result = $usuario->save();
+        return response()->json(['result' => $result]);
+
+    }
+
 
 }

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Jobs\ModelTraslate;
 use App\Models\Atraccion;
 use App\Models\Destino;
 use App\Models\Divisa;
@@ -146,6 +147,7 @@ class NegocioController extends Controller
            
             
             $negocio->update($datos);
+            ModelTraslate::dispatch($negocio,['nombre','descripcion','breve', 'direccion']);
 
            
             // if($negocio->tps_referido != $datos[]){
@@ -192,6 +194,7 @@ class NegocioController extends Controller
         try{
             DB::beginTransaction();
 
+            $negocio->quitarTraduccion(['nombre', 'descripcion', 'breve', 'direccion']);
             $negocio->delete();
             
             DB::commit();
@@ -263,9 +266,6 @@ class NegocioController extends Controller
         }catch(\Exception $e){
             DB::rollBack();
             $result = false;
-
-            dd($e->getMessage());
-
         }
 
         $negocio->cargar();
@@ -548,11 +548,7 @@ class NegocioController extends Controller
             } catch (\Exception $e) {
                 DB::rollBack();
                 $result = false;
-
-                dd($e->getMessage());
             }
-
-           
 
         }
 

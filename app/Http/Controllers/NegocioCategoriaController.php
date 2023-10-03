@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Jobs\ModelTraslate;
 use App\Models\Negocio\NegocioCategoria;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
@@ -85,6 +86,10 @@ class NegocioCategoriaController extends Controller
         }
 
         $categoria = NegocioCategoria::create([...$this->validar($request),...['imagen' => $file_name]]);
+        ModelTraslate::dispatch($categoria, [
+            'categoria',
+            'descripcion',
+        ]);
 
         return response()->json(['result' => true,'categoria' => $categoria]);
 
@@ -123,6 +128,10 @@ class NegocioCategoriaController extends Controller
                     $categoria->imagen = $file_name;
                 }
                 $categoria->save();
+                ModelTraslate::dispatch($categoria, [
+                    'categoria',
+                    'descripcion',
+                ]);
             DB::commit();
             $result = true;
         }catch(\Exception $e){
@@ -148,7 +157,7 @@ class NegocioCategoriaController extends Controller
 
 
             Storage::disk('negocio-categoria')->delete($categoria->imagen);
-
+            $categoria->quitarTraduccion(['categoria','descripcion']);
             $categoria->delete();
 
             DB::commit();

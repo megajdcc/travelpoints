@@ -11,16 +11,16 @@
     <div class="misc-inner p-2 p-sm-3">
       <div class="w-100 text-center">
         <h2 class="mb-1">
-          No estas autorizado! 🔐
+          {{ $t('No estas autorizado!') }} 🔐
         </h2>
         <p class="mb-2">
-          No tienes permiso para acceder a esta página. Vuelve a casa!!
+          {{ $t('No tienes permiso para acceder a esta página. Vuelve a casa!') }}
         </p>
         <b-button
           variant="primary"
           class="mb-1 btn-sm-block"
           :to="loginRoute()"
-        >De vuelta a casa</b-button>
+        >{{ $t('De vuelta a casa') }}</b-button>
         <b-img
           fluid
           :src="imgUrl"

@@ -163,6 +163,8 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::get('coordinador/{coordinador}/fetch-lideres',[UserController::class,'fetchLideresCoordinador']);
     Route::put('promotor/{promotor}/toggle-lider',[UserController::class,'toggleLider']);
 
+    Route::get('usuarios/{usuario}/update-locale/{locale}',[UserController::class,'updateLocale']);
+
     /*****************************/
     /* TELEFONOS
     /*****************************/
@@ -870,4 +872,6 @@ Route::get('divisas/get/all', fn () => response()->json(Divisa::all()));
 Route::get('iatas/get/all', [IataController::class, 'getIatas']);
 
 // Lang
+Route::post('traslate',[IdiomaController::class,'traslate']);
+
 Route::get('lang/{lang}',[IdiomaController::class,'getLang']);

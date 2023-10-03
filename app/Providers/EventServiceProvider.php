@@ -46,6 +46,12 @@ class EventServiceProvider extends ServiceProvider
             'App\Listeners\InformarUsuarioDesconectado',
         ],
 
+        'App\Events\DestinoEvent' => [
+            'App\Listeners\DestinoCreado',
+            'App\Listeners\DestinoActualizado',
+            'App\Listeners\DestinoEliminado',
+        ]
+
 
     ];
 

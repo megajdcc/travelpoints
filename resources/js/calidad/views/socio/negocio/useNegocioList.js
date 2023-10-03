@@ -1,11 +1,11 @@
 
 import store from '@/store'
 
-import { ref, computed, onMounted, watch } from 'vue'
+import { ref, computed, onMounted, watch,inject } from 'vue'
 
 
 export default function useNegocioList(usuario,sigo = false, recomendados = false) {
-
+  const i18n = inject('i18n')
   const isSortDirDesc = ref(true)
   const sortBy = ref('id')
   const searchQuery = ref('')
@@ -76,7 +76,7 @@ export default function useNegocioList(usuario,sigo = false, recomendados = fals
       total.value = all
       next(negocios)
     }).catch(e => {
-      toast.info('Error trayendo Data', { position: 'bottom-right' })
+      toast.info(i18n.t('Error trayendo Data'), { position: 'bottom-right' })
     })
 
   }

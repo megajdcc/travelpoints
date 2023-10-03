@@ -36,6 +36,7 @@ import { BNavItemDropdown, BDropdownItem, BImg } from 'bootstrap-vue'
 import esImg from '@/assets/images/flags/es.png'
 import enImg from '@/assets/images/flags/en.png'
 import store from '@/store'
+import useAuth  from '@core/utils/useAuth';
 import {toRefs,ref,computed,toRef,inject} from 'vue'
 
 export default {
@@ -52,6 +53,9 @@ export default {
   // },
   setup() {
     /* eslint-disable global-require */
+    
+    const usuario_id = computed(() => store.state.usuario.usuario.id)
+    const {is_loggin} = useAuth();
     const locales = computed(() => store.state.idioma.locales)
     const i18n = inject('i18n')
     const loadLocaleAsync = inject('loadLocaleAsync')
@@ -80,8 +84,14 @@ export default {
     const currentLocale = computed(() => locales.value.find(l => l.locale === i18n.locale));
 
     const idiomaElegido = (loc) => {
-      localStorage.setItem('locale',loc)
+      localStorage.setItem('locale', loc)
       loadLocaleAsync(loc)
+
+      if(is_loggin.value){
+        store.dispatch('usuario/updateLocale',{usuario:usuario_id.value,locale:loc}).then(({result}) => {
+          toast.info('Idioma cambiado con éxito')
+        })
+      }
     }
     return {
       locales,

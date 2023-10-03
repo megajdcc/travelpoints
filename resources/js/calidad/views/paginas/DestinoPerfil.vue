@@ -66,7 +66,7 @@
 
       <template v-if="!isHome">
          <!-- Atracciones -->
-         <atracciones v-if="destino" :atracciones="destino.atracciones" :titulo="`Las atracciones más populares en ${destino.nombre}`"  />
+         <atracciones v-if="destino" :atracciones="destino.atracciones" :titulo="$t(`Las atracciones más populares en `)+$t(destino.nombre)"  />
 
          <!-- Negocios -->
          <negocios :destino="destino"/>

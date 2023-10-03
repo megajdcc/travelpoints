@@ -12,10 +12,10 @@
         </b-link>
         <!-- /Brand logo-->
         <b-card-title class="mb-1">
-          Restablecer la contraseña 🔒
+          {{ $t('Restablecer la contraseña') }} 🔒
         </b-card-title>
         <b-card-text class="mb-2">
-          Su nueva contraseña debe ser diferente de las contraseñas utilizadas anteriormente
+          {{ $t('Su nueva contraseña debe ser diferente de las contraseñas utilizadas anteriormente') }}
         </b-card-text>
 
         <!-- form -->
@@ -23,7 +23,7 @@
           <b-form method="POST" class="auth-reset-password-form mt-2" @submit.prevent="validationForm">
 
             <!-- password -->
-            <b-form-group label="Nueva contraseña" label-for="reset-password-new">
+            <b-form-group :label="$t('Nueva contraseña')" label-for="reset-password-new">
               <validation-provider #default="{ errors }" name="Password" vid="Password" rules="required|password">
                 <b-input-group class="input-group-merge" :class="errors.length > 0 ? 'is-invalid' : null">
                   <b-form-input id="reset-password-new" v-model="password" :type="password1FieldType"
@@ -38,7 +38,7 @@
             </b-form-group>
 
             <!-- confirm password -->
-            <b-form-group label-for="reset-password-confirm" label="Confirmar Contraseña">
+            <b-form-group label-for="reset-password-confirm" :label="$t('Confirmar Contraseña')">
               <validation-provider #default="{ errors }" name="Confirm Password" rules="required|confirmed:Password">
                 <b-input-group class="input-group-merge" :class="errors.length > 0 ? 'is-invalid' : null">
                   <b-form-input id="reset-password-confirm" v-model="cPassword" :type="password2FieldType"
@@ -54,14 +54,14 @@
 
             <!-- submit button -->
             <b-button block type="submit" variant="primary">
-              Establecer nueva contraseña
+              {{ $t('Establecer nueva contraseña') }}
             </b-button>
           </b-form>
         </validation-observer>
 
         <p class="text-center mt-2">
           <b-link :to="{ name: 'login' }">
-            <feather-icon icon="ChevronLeftIcon" /> Volver al login
+            <feather-icon icon="ChevronLeftIcon" /> {{ $t('Volver al login') }}
           </b-link>
         </p>
 
@@ -89,7 +89,7 @@ import {
 } from 'bootstrap-vue'
 import { required } from '@validations'
 import ToastificationContent from '@core/components/toastification/ToastificationContent.vue'
-import { ref, toRefs, computed } from 'vue';
+import { ref, toRefs, computed,inject } from 'vue';
 
 import logotipo from 'storage/logotipo.png'
 import logotipoblanco from 'storage/logotipoblanco.png'
@@ -173,11 +173,11 @@ export default {
               if (respon.data.result) {
 
                 this.$router.push('/login')
-                this.$notify.success('La contraseña se ha reestablecido exitosamente.')
+                this.$notify.success(this.i18n.t('La contraseña se ha reestablecido exitosamente'))
               } else {
                 this.$notify.info({
-                  title: 'No se pudo reestablecer la contraseña',
-                  message: (respon.data.status == 'passwords.token') ? 'EL token ya no es valido, vuelve a enviar el link de reestablecimiento' : respon.data.status
+                  title: this.i18n.t('No se pudo reestablecer la contraseña'),
+                  message: (respon.data.status == 'passwords.token') ? this.i18n.t('EL token ya no es valido, vuelve a enviar el link de reestablecimiento') : respon.data.status
                 })
 
                 if (respon.data.status == 'passwords.token') {

@@ -53,7 +53,8 @@ export default {
 				porcentaje_perfil:0,
 				nivel:{nivel:null,activaciones:0},
 				lider_business:false,
-				comision_promotores:null
+				comision_promotores:null,
+				locale:'es'
 			},
 
 			user: {
@@ -98,6 +99,8 @@ export default {
 				porcentaje_perfil:0,
 				nivel:{nivel:null,activaciones:0},
 				status:3,
+				locale:'es'
+
 			},
 
 			usuarios: [],
@@ -265,8 +268,10 @@ export default {
 			return state.usuario.promotores ? state.usuario.promotores.length : 0
 		},
 
-	
 
+		getLocale(state){
+			return state.usuario.locale
+		}
 		
 	},
 
@@ -346,7 +351,9 @@ export default {
 				nivel:{nivel:null,activaciones:0},
 				status:3,
 				lider_business:false,
-				comision_promotores:null
+				comision_promotores:null,
+				locale:'es'
+
 
 
 
@@ -456,7 +463,9 @@ export default {
 				nivel:{nivel:null,activaciones:0},
 				status:3,
 				lider_business:false,
-				comision_promotores:null
+				comision_promotores:null,
+				locale:'es'
+
 			}
 		},
 
@@ -571,6 +580,11 @@ export default {
 
 		setInvitador(state,invitador) {
 			state.user = invitador
+		},
+
+		updateLocale(state,locale){
+			localStorage.setItem('locale',locale)
+			state.usuario.locale = locale
 		}
 
 	},
@@ -1278,6 +1292,21 @@ export default {
 		reportFetchDataEquipoDescargar(_,filtro){
 			return new Promise((resolve, reject) => {
 				axios.post(`/api/reporte/fetch-data-equipo-descargar`,filtro).then(({data}) => resolve(data)).catch(e => reject(e))
+			})
+		},
+
+
+		updateLocale({commit},{usuario,locale}){
+
+			return new Promise((resolve, reject) => {
+				axios.get(`/api/usuarios/${usuario}/update-locale/${locale}`).then(({data}) => {
+
+					if(data.result){
+						commit('updateLocale',locale)
+					}
+					resolve(data)
+				}).catch(e => reject(e))
+				
 			})
 		}
 

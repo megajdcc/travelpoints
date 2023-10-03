@@ -2,8 +2,8 @@
     <b-sidebar :visible="showAgenda" @change="$emit('update:showAgenda',$event)"  
     sidebar-class="agenda-form-content" backdrop :width="currentBreakpoint  == 'xs' ? '320px' : '450px'" @hidden="limpiar">
       <template #title>
-        <h3>{{ `Agregar ${getTitle}` }}</h3>
-        <p v-if="sobre" class="text-black-50" style="font-size:10pt !important">Sobre {{ sobre }}</p>
+        <h3>{{ $t('Agregar')+` `+ $t(getTitle) }}</h3>
+        <p v-if="sobre" class="text-black-50" style="font-size:10pt !important">{{ $t('Sobre') }} {{ $t(sobre) }}</p>
       </template>
 
       <validation-observer ref="formValidate" #default="{handleSubmit}">
@@ -13,11 +13,11 @@
               <b-col cols="12">
                 <b-form-group >
                   <template #label>
-                    Titulo: <span class="text-danger"></span>
+                    {{ $t('Titulo') }}: <span class="text-danger"></span>
                   </template>
 
                   <validation-provider name="titulo" rules="required" #default="{errors,valid}">
-                    <b-form-input v-model="formulario.titulo" :state="valid" placeholder="Añade un título"/>
+                    <b-form-input v-model="formulario.titulo" :state="valid" :placeholder="$t('Añade un título')"/>
 
                     <b-form-invalid-feedback :state="valid">
                       {{ errors[0] }}
@@ -28,14 +28,14 @@
 
                 <b-form-group>
                   <template #label>
-                      Fecha {{ ['del','de la','del'][tipo - 1] + ' ' + getTitle }}: <span class="text-danger">*</span>
+                      {{ $t('Fecha') }} {{ [$t('del'),$t('de la'),$t('del')][tipo - 1] + ' ' + $t(getTitle) }}: <span class="text-danger">*</span>
                   </template>
 
                   <validation-provider name="fecha_inicio" rules="required" #default="{ valid, errors }">
                     <el-date-picker
                           v-model="formulario.fecha_inicio"
                           :type="!formulario.all_dia ? 'datetime' : 'date' "
-                          placeholder="Seleccione la fecha de inicio"  class="w-100" :picker-options="optionsDate">
+                          :placeholder="$t('Seleccione la fecha de inicio')"  class="w-100" :picker-options="optionsDate">
                         </el-date-picker>
                         <!-- <flat-pickr v-model="formulario.fecha_inicio" class="form-control form-control-md " ref="formTimeRef"
                         :config="{ maxDate: formulario.fecha_fin, enableTime: false, dateFormat: 'Y-m-d' }" /> -->
@@ -50,14 +50,14 @@
 
                 <b-form-group v-if="tipo == 3 && !formulario.recurrente">
                     <template #label>
-                        Fecha de culminación:
+                        {{ $t('Fecha de culminación') }}:
                     </template>
 
                     <validation-provider name="fecha_fin" rules="required" #default="{ valid, errors }">
                       <el-date-picker
                             v-model="formulario.fecha_fin"
                             :type="!formulario.all_dia ? 'datetime' : 'date'"
-                            placeholder="Seleccione la fecha de culminación"  class="w-100" :picker-options="{
+                            :placeholder="$t('Seleccione la fecha de culminación')"  class="w-100" :picker-options="{
                               disabledDate: (fecha) => fecha < (new Date(formulario.fecha_inicio))
                             }">
                           </el-date-picker>
@@ -76,7 +76,7 @@
            
                       <validation-provider name="all_dia" rules="required" #default="{ valid, errors }">
                           <b-form-checkbox v-model="formulario.all_dia" name="all_dia" switch>
-                            ¿Todo el día?: {{ formulario.all_dia ? 'Sí todo el día' : 'No, una hora específica' }} <span class="text-danger">*</span>
+                            {{ $t('¿Todo el día?') }}: {{ formulario.all_dia ? $t('Sí todo el día') : $t('No, una hora específica') }} <span class="text-danger">*</span>
                           </b-form-checkbox>
                           <b-form-invalid-feedback :state="valid">
                             {{ errors[0] }}
@@ -90,7 +90,7 @@
            
                       <validation-provider name="recurrente" rules="required" #default="{ valid, errors }">
                           <b-form-checkbox v-model="formulario.recurrente" name="all_dia" switch>
-                            ¿Recurrente?: {{ formulario.recurrente ? 'Recurrente' : 'No recurrente' }} <span class="text-danger">*</span>
+                            {{ $t('¿Recurrente?') }}: {{ formulario.recurrente ? $t('Recurrente') : $t('No recurrente') }} <span class="text-danger">*</span>
                           </b-form-checkbox>
                           <b-form-invalid-feedback :state="valid">
                             {{ errors[0] }}
@@ -103,7 +103,7 @@
                      <template v-if="formulario.recurrente">
                           <b-form-group>
                               <template #label>
-                                Tipo de recurrencia: <span class="text-danger">*</span>
+                                {{ $t('Tipo de recurrencia') }}: <span class="text-danger">*</span>
                               </template>
 
                               <validation-provider name="tipo_recurrencia" rules="required" #default="{ valid, errors }">
@@ -119,7 +119,7 @@
 
                           <b-form-group description="Días de la semana" v-if="formulario.tipo_recurrencia == 1">
                               <template #label>
-                                ¿Que días?: <span class="text-danger">*</span>
+                                {{ $t('¿Que días?') }}: <span class="text-danger">*</span>
                               </template>
 
                               <validation-provider name="dia_semana" rules="required" #default="{ valid, errors }">
@@ -134,7 +134,7 @@
                           <section class="" v-if="!formulario.all_dia">
                               <b-form-group >
                                     <template #label>
-                                      Hora de inicio del {{ getTitle }}: <span class="text-danger">*</span>
+                                      {{ $t('Hora de inicio del') }} {{ $t(getTitle) }}: <span class="text-danger">*</span>
                                     </template>
 
                                     <validation-provider name="hora_inicio" 
@@ -149,11 +149,11 @@
 
                               <b-form-group >
                                       <template #label>
-                                          Hora de finalización del {{  getTitle }}: <span class="text-danger">*</span>
+                                          {{ $t('Hora de finalización del') }} {{ $t(getTitle) }}: <span class="text-danger">*</span>
                                       </template>
 
                                       <validation-provider name="hora_fin" :rules="!formulario.all_dia ? 'required' : ''" #default="{ valid, errors }">
-                                          <b-form-timepicker :disabled="formulario.all_dia"  hour12  label-close-button="Cerrar"
+                                          <b-form-timepicker :disabled="formulario.all_dia"  hour12  :label-close-button="$t('Cerrar')"
                                           v-model="formulario.recurrencia.hora_fin" v-bind="labels['es-ES'] || {}"  locale="es-ES"/>
                                           <b-form-invalid-feedback :state="valid">
                                             {{ errors[0] }}
@@ -165,9 +165,9 @@
 
                     </template>
 
-                    <b-form-group :label="`Descripción ${['del','de la','del'][tipo - 1]} ${getTitle}`">
+                    <b-form-group :label="$t('Descripción')+` ${[$t('del'),$t('de la'),$t('del')][tipo - 1]} `+$t(getTitle)">
                       <validation-provider name="descripcion" #default="{errors,valid}">
-                        <b-form-textarea v-model="formulario.descripcion" :state="valid" :placeholder="`Describe tu ${getTitle}`"></b-form-textarea>
+                        <b-form-textarea v-model="formulario.descripcion" :state="valid" :placeholder="$t('Describe tu')+` `+$t(getTitle)"></b-form-textarea>
 
                           <b-form-invalid-feedback :state="valid">
                               {{ errors[0] }}
@@ -177,15 +177,15 @@
                     </b-form-group>
 
 
-                    <b-form-group label="Adjuntar Archivo">
+                    <b-form-group :label="$t('Adjuntar Archivo')">
 
                       <validation-provider name="archivo" #default="{valid,errors}">
                           <b-form-file
                             v-model="formulario.archivo"
                             :state="valid"
-                            placeholder="Busque un archivo"
-                            drop-placeholder="Suelta el archivo aquí..."
-                            browse-text="Buscar"
+                            :placeholder="$t('Busque un archivo')"
+                            :drop-placeholder="$t('Suelta el archivo aquí...')"
+                            :browse-text="$t('Buscar')"
                           ></b-form-file>
 
                            <b-form-invalid-feedback :state="valid">
@@ -200,7 +200,7 @@
                     <validation-provider name="recordarme" rules="required" #default="{ valid, errors }">
                           
                           <b-form-checkbox v-model="recordarme" name="recordarme" switch>
-                            ¿Recordarme por correo?: {{ recordarme ? 'Sí' : 'No' }}
+                            {{ $t('¿Recordarme por correo?') }}: {{ recordarme ? $t('Sí') : $t('No') }}
                           </b-form-checkbox>
 
                           <b-form-invalid-feedback :state="valid">
@@ -215,7 +215,7 @@
                         <b-form-group v-if="formulario.participantes.length">
                           <validation-provider name="recordatorio.participantes" rules="required" #default="{ valid, errors }">
                               <b-form-checkbox v-model="formulario.recordatorio.participantes" name="recordatorio.participantes" switch>
-                                ¿Le recordamos a los participantes?: {{ formulario.recordatorio.participantes ? 'Sí' : 'No' }}
+                                {{ $t('¿Le recordamos a los participantes?') }}: {{ formulario.recordatorio.participantes ? $t('Sí') : $t('No')  }}
                               </b-form-checkbox>
 
                               <b-form-invalid-feedback :state="valid">
@@ -227,10 +227,10 @@
                         </b-form-group>
 
 
-                      <b-form-group label="Nota para el recordatorio">
+                      <b-form-group :label="$t('Nota para el recordatorio')">
 
                         <validation-provider name="recordatorio.nota" rules="required" #default="{errors,valid}">
-                          <b-form-textarea v-model="formulario.recordatorio.nota" :state="valid" placeholder="Esta nota te la enviaremos en el recordatorio"></b-form-textarea>
+                          <b-form-textarea v-model="formulario.recordatorio.nota" :state="valid" :placeholder="$t('Esta nota te la enviaremos en el recordatorio')"></b-form-textarea>
 
                           <b-form-invalid-feedback :state="valid">
                             {{ errors[0] }}
@@ -249,12 +249,12 @@
                 <b-button-group size="sm">
                   <b-button variant="danger" @click="limpiar" v-loading="loading">
                     <font-awesome-icon icon="fas fa-trash-can"/>
-                    Limpiar
+                    {{ $t('Limpiar') }}
                   </b-button>
 
                   <b-button variant="primary" type="submit" v-loading="loading" :disabled="loading">
                       <font-awesome-icon icon="fas fa-save"/>
-                      Guardar
+                      {{ $t('Guardar') }}
                   </b-button>
                 </b-button-group>
               </b-col>
@@ -289,7 +289,7 @@ import {
 
 } from 'bootstrap-vue';
 
-import {toRefs,ref,computed,watch, nextTick,provide }  from 'vue'
+import {toRefs,ref,computed,watch, nextTick,provide,inject }  from 'vue'
 import store from '@/store'
 import {ValidationObserver,ValidationProvider} from 'vee-validate'
 import {required} from '@validations'
@@ -350,7 +350,7 @@ export default {
     const formValidate = ref(null)
     const formTimeRef  = ref(null)
     const recordarme = ref(false)
-    
+    const i18n = inject('i18n')
     const getTitle =  computed(() => {
       let titles = ['Recordatorio', 'Tarea', 'Evento']
       return titles[tipo.value - 1]
@@ -367,10 +367,10 @@ export default {
       store.dispatch('reunion/guardar',formulario.value).then(({result,reunion}) => {
 
         if(result){
-          toast.success(`${getTitle.value} Agregado con éxito`)
+          toast.success(i18n.t(getTitle.value)+` `+i18n.t('Agregado con éxito'))
           emit('update:showAgenda',false)
         }else{
-          toast.info(`${getTitle.value} no se pudo agregar, inténtelo de nuevo mas tarde`)
+          toast.info(i18n.t(getTitle.value) + ` `+ $t('no se pudo agregar, inténtelo de nuevo mas tarde'))
         }
       }).catch(e => {
         
@@ -388,7 +388,7 @@ export default {
 
     const allDiaOptions = ref([
       {
-        text:'Sí'
+        text:i18n.t('Sí')
       }
     ])
 
@@ -403,10 +403,10 @@ export default {
     }
 
     const tipoRecurrencias = ref([
-         { text: 'Diariamente', value: 0 },
-         { text:'Semanal',value:1},
+         { text: i18n.t('Diariamente'), value: 0 },
+         { text:i18n.t('Semanal'),value:1},
          // { text:'Mensual', value:2},
-         { text:'Anual', value: 3 },
+         { text:i18n.t('Anual'), value: 3 },
     ])
 
      const cambiarDias = (tipo) => {
@@ -418,14 +418,14 @@ export default {
 
     const labels = ref({
        'es-ES': {
-        labelHours: 'Horas',
-        labelMinutes: 'Minutos',
-        labelSeconds: 'Segundos',
-        labelIncrement: 'Aumentar',
-        labelDecrement: 'Reducir',
-        labelSelected: 'Haora seleccionada',
-        labelNoTimeSelected: 'Hora no seleccionada',
-        labelCloseButton: 'Cerrar'
+        labelHours: i18n.t('Horas'),
+        labelMinutes: i18n.t('Minutos'),
+        labelSeconds: i18n.t('Segundos'),
+        labelIncrement: i18n.t('Aumentar'),
+        labelDecrement: i18n.t('Reducir'),
+        labelSelected: i18n.t('Hora seleccionada'),
+        labelNoTimeSelected: i18n.t('Hora no seleccionada'),
+        labelCloseButton: i18n.t('Cerrar')
       },
     })
 

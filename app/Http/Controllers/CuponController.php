@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Jobs\ModelTraslate;
 use App\Models\Destino;
 use App\Models\Negocio\Negocio;
 use App\Models\Negocio\Cupon;
@@ -163,6 +164,7 @@ class CuponController extends Controller
             Storage::disk('negocio_cupones')->put($imagen_name,File::get($imagen));
 
             $cupon = Cupon::create([...$this->validar($request),...['imagen' => $imagen_name,'activo' => true]]);
+            ModelTraslate::dispatch($cupon,['nombre','descripcion','condiciones','restricciones']);
 
             DB::commit();
             $result = true;
@@ -213,6 +215,7 @@ class CuponController extends Controller
                 ...$datos,
                 ...['imagen' => isset($imagen_name) ? $imagen_name : $cupon->imagen]
             ]);
+            ModelTraslate::dispatch($cupon, ['nombre', 'descripcion', 'condiciones', 'restricciones']);
             
             $cupon->refresh();
            
@@ -240,7 +243,7 @@ class CuponController extends Controller
             DB::beginTransaction();
 
                 Storage::disk('negocio_cupones')->delete($cupon->imagen);
-            
+                $cupon->quitarTraduccion(['nombre', 'descripcion', 'condiciones', 'restricciones']);
                 $cupon->delete();
 
             DB::commit();

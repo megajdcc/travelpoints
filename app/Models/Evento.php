@@ -4,14 +4,14 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Trais\{hasImages};
+use App\Trais\{hasImages,hasTranslate};
 use App\Jobs\VerificarEvento;
 
 class Evento extends Model
 {
 
     use HasFactory;
-    use hasImages;
+    use hasImages, hasTranslate;
 
     public readonly string $model_type;
 

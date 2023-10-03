@@ -17,13 +17,13 @@
               <b-row class="mt-3">
 
                  <b-col cols="12">
-                    <strong>Evento de: {{ evento.model ? evento.model.nombre : 'Sin definir' }}</strong>
+                    <strong>{{ $t('Evento de') }}: {{ evento.model ? evento.model.nombre : $t('Sin definir') }}</strong>
                  </b-col>
 
                  <b-col cols="12">
                     <small class="text-uppercase">
-                       Inicia <br> {{ evento.fecha_inicio | fecha('ddd D [de] MMMM [del] YYYY [ a las ] h:mm A') }}
-                       <br> <span v-if="evento.fecha_fin">Finaliza <br>
+                       {{ $t('Inicia') }} <br> {{ evento.fecha_inicio | fecha('ddd D [de] MMMM [del] YYYY [ a las ] h:mm A') }}
+                       <br> <span v-if="evento.fecha_fin">{{ $t('Finaliza') }}<br>
                           {{ evento.fecha_fin | fecha('ddd D [de] MMMM [del] YYYY [ a las ] h:mm A') }}
                        </span>
                     </small>
@@ -47,8 +47,8 @@
                  </b-col>
 
                  <b-col cols="12">
-                    <el-divider content-position="left">Contenido</el-divider>
-                    <div v-html="evento.contenido"></div>
+                    <el-divider content-position="left">{{ $t('Contenido') }}</el-divider>
+                    <div v-html="$t(evento.contenido)"></div>
                  </b-col>
               </b-row>
            </b-container>

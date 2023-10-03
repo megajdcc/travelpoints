@@ -7,9 +7,11 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Support\Facades\{Storage,File};
 use Illuminate\Http\UploadedFile;
+use App\Trais\hasTranslate;
+
 class NegocioCategoria extends Model
 {
-    use HasFactory;
+    use HasFactory, hasTranslate;
 
     protected $fillable = [
         'categoria',

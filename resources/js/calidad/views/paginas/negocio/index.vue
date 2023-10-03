@@ -118,7 +118,7 @@
                     </td>
 
                     <td>
-                      {{ negocio.direccion }}
+                      {{ $t(negocio.direccion) }}
                     </td>
                   </tr>
 

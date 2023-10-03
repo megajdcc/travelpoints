@@ -22,6 +22,7 @@
         "laravel/tinker": "^2.5",
         "laravel/vonage-notification-channel": "^3.2",
         "league/flysystem": "^3.0",
+        "megajdcc/lg-translater": "^1.0",
         "nesbot/carbon": "^2.67",
         "pusher/pusher-php-server": "^7.0",
         "symfony/http-client": "^6.2",

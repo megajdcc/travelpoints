@@ -1,13 +1,13 @@
 
 import store from '@/store'
 import router from '@/router'
-import {ref,computed} from 'vue'
+import {ref,computed,inject} from 'vue'
 import { initialAbility } from '@/libs/acl/config'
 import ability from '@/libs/acl/ability'
 import ToastificationContent from '@core/components/toastification/ToastificationContent.vue'
 
 export default function useAuth(){
-
+   const i18n = inject('i18n')
    const usuario = computed(() => store.state.usuario.usuario)
 
    const optionsAuth = ref({
@@ -74,7 +74,7 @@ export default function useAuth(){
                   // localStorage.setItem('usuarioId',data.usuario.id)
 
                   ability.update(JSON.parse(localStorage.getItem('habilidades')));
-
+                  store.dispatch('usuario/updateLocale',{usuario:data.usuario.id,locale:i18n.locale})
                   resolv(data.result)
 
             }).catch((error) => {
@@ -183,13 +183,15 @@ export default function useAuth(){
             // store.commit('usuario/cargarUser',data.usuario)
          }
 
+         store.dispatch('usuario/updateLocale',{usuario:usuario.value.id,locale:i18n.locale})
+
          toast({
             component: ToastificationContent,
             props: {
-               title: `Bienvenido ${usuario.value.nombre || usuario.value.username}`,
+               title: i18n.t('Bienvenido')+` ${usuario.value.nombre || usuario.value.username}`,
                icon: 'CoffeeIcon',
                variant: 'success',
-               text: `Ha iniciado sesión correctamente como ${usuario.value.rol.nombre}. ¡Ahora puedes empezar a explorar!`,
+               text: i18n.t('Ha iniciado sesión correctamente como')+` ${usuario.value.rol.nombre}. `+i18n.t('¡Ahora puedes empezar a explorar!'),
             },
          }, {
             position: 'bottom-right',

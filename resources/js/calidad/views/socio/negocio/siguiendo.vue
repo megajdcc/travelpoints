@@ -4,7 +4,7 @@
       <listado :actions="actions" hideFooter>
 
         <template #titulo>
-          <h3>Sigo a {{ total > 1 ? `${total} negocios` : `${total} negocio` }} </h3>
+          <h3>{{ $t('Sigo a') }} {{ total > 1 ? `${total} `+$t('negocios') : `${total} `+$t('negocio') }} </h3>
         </template>
 
         <template #contenido="{ items }">
@@ -18,7 +18,7 @@
                     <div class="card-simple-content">
                       <h2>
                         <b-link :to="{ name: 'perfil.negocio', params: { url: item.url } }">
-                          {{ item.nombre }}
+                          {{ $t(item.nombre) }}
                         </b-link>
                       </h2>
 
@@ -33,7 +33,7 @@
                           <template #btns>
 
                             <b-button :to="{ name: 'perfil.negocio', params: { url: item.url } }" link-class="d-flex align-items-center" variant="dark"
-                              title="Ir al Perfil del Negocio" v-b-tooltip.hover>
+                              :title="$t('Ir al Perfil del Negocio')" v-b-tooltip.hover>
                               <font-awesome-icon icon="fas fa-right-to-bracket" />
                             </b-button>
 
@@ -44,7 +44,7 @@
                     </div><!-- /.card-simple-content -->
 
                     <div class="card-simple-label">
-                      {{ item.categoria.categoria }}
+                      {{ $t(item.categoria.categoria) }}
                     </div>
 
                     <!-- <div class="card-simple-price" :title="item.comision" data-toggle="tooltip">
@@ -52,12 +52,12 @@
                             </div> -->
 
                     <b-badge class="card-simple-price" variant="success" v-if="item.tipo_comision == 2"
-                      v-b-tooltip.hover="'Monto por Persona'">
+                      v-b-tooltip.hover="$t('Monto por Persona')">
                       {{ item.comision | currency(item.divisa.iso) }}
                     </b-badge>
 
                     <b-badge class="card-simple-price" variant="success" v-else
-                      v-b-tooltip.hover="'Porcentaje por lo que consumas'">
+                      v-b-tooltip.hover="$t('Porcentaje por lo que consumas')">
                       {{ item.comision }} %
                     </b-badge>
 

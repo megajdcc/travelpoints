@@ -81,6 +81,7 @@ class User extends Authenticatable
         'porcentaje_perfil',
         'lider_business',
         'comision_promotores',
+        'locale', // default => es
 
          /**
           * Para el caso de los promotores el nivel 

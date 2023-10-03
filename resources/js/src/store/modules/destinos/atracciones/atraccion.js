@@ -93,7 +93,7 @@ export default {
             const hora1 = moment(moment().format(`Y-M-D ${dia.apertura}`));
             const hora2 = moment(moment().format(`Y-M-D ${dia.cierre}`));
             
-            return `De ${hora1.format('h:mm A')} a ${hora2.format('h:mm A')}`
+            return `${hora1.format('h:mm A')} - ${hora2.format('h:mm A')}`
 
          }
 

@@ -1,8 +1,8 @@
 <template>
     <b-row>
       <b-col cols="12" >
-        <h3>{{ titulo  }}</h3>
-        <p v-html="subTitulo"></p>
+        <h3>{{ $t(titulo)  }}</h3>
+        <p v-html="$t(subTitulo)"></p>
       </b-col>
       <b-col cols="12" >
         <listado :actions="actions" hideFooter hideHeader>
@@ -14,7 +14,7 @@
                     <div class="card-simple-background">
                       <div class="card-simple-content">
                         <h2 @click="seleccionarDestino(item.id, item.ruta)" class="d-flex flex-column">
-                              <span class="text-uppercase"> {{ item.nombre }}</span>
+                              <span class="text-uppercase"> {{ $t(item.nombre) }}</span>
                              <strong>{{ item.iata.pais.pais }}</strong>
                         </h2>
                         <!-- <div class="card-simple-rating">
@@ -25,7 +25,7 @@
                         <div class="card-simple-actions">
         
                           <strong @click="seleccionarDestino(item.id, item.ruta)" >
-                              {{ item.titulo }}
+                              {{ $t(item.titulo) }}
                           </strong>
         
                         </div><!-- /.card-simple-actions -->
@@ -90,7 +90,7 @@ export default{
 
     subTitulo: {
       type: String,
-      default: '<strong class="text-warning">Descubre</strong> lo que cada destino tiene para ti y los <strong class="text-warning"> negocios </strong> que te ofrecen Travel Points.'
+      default: 'Descubre lo que cada destino tiene para ti y los negocios que te ofrecen Travel Points.'
     },
     isSelected:Boolean
   },

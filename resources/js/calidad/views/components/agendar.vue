@@ -1,6 +1,6 @@
 <template>
   <div class="btn-agendar" v-if="is_loggin">
-    <b-button variant="primary" @click.stop="agendar" v-b-tooltip.hover.left.v-dark="'Agendar'"  size="sm" >
+    <b-button variant="primary" @click.stop="agendar" v-b-tooltip.hover.left.v-dark="$t('Agendar')"  size="sm" >
       <font-awesome-icon icon="fas fa-calendar-plus" size="lg" />
     </b-button>
   </div>

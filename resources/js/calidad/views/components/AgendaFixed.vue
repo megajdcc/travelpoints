@@ -1,16 +1,16 @@
 <template>
   <section class="content-agenda" v-if="is_loggin" :style="{bottom:y >= 250 ? '12%' : '5%'}">
 
-      <b-button variant="primary" class="mb-1 agenda-option agenda-option-recordatorio" :class="{'show' : isShowOption, 'scroll' : y > 250} " size="sm" title="Recordatorio" v-b-tooltip.hover.left.v-danger @click="toggleAgenda(1)">
+      <b-button variant="primary" class="mb-1 agenda-option agenda-option-recordatorio" :class="{'show' : isShowOption, 'scroll' : y > 250} " size="sm" :title="$t('Recordatorio')" v-b-tooltip.hover.left.v-danger @click="toggleAgenda(1)">
               <font-awesome-icon icon="fas fa-user-clock" size="lg" />
       </b-button>
 
-     <b-button variant="primary" class="mb-1 agenda-option agenda-option-tarea"  :class="{ 'show': isShowOption, 'scroll': y > 250 }" size="sm" title="Tarea" v-b-tooltip.hover.left.v-danger @click="toggleAgenda(2)" >
+     <b-button variant="primary" class="mb-1 agenda-option agenda-option-tarea"  :class="{ 'show': isShowOption, 'scroll': y > 250 }" size="sm" :title="$t('Tarea')" v-b-tooltip.hover.left.v-danger @click="toggleAgenda(2)" >
              <font-awesome-icon icon="fas fa-clipboard-check" size="lg" />
       </b-button>
 
 
-     <b-button variant="primary" class="mb-1 agenda-option agenda-option-evento"  :class="{ 'show': isShowOption, 'scroll': y > 250 }" size="sm" title="Evento" v-b-tooltip.hover.left.v-danger  @click="toggleAgenda(3)">
+     <b-button variant="primary" class="mb-1 agenda-option agenda-option-evento"  :class="{ 'show': isShowOption, 'scroll': y > 250 }" size="sm" :title="$t('Evento')" v-b-tooltip.hover.left.v-danger  @click="toggleAgenda(3)">
            <font-awesome-icon icon="fas fa-calendar-day" size="lg" />
       </b-button>
 

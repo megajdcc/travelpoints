@@ -140,7 +140,7 @@
 
       <b-card>
         <b-card-body >
-          <section v-html="negocio.descripcion"></section>
+          <section v-html="$t(negocio.descripcion)"></section>
         </b-card-body>
       </b-card>
      <!-- <p class="text-justify">

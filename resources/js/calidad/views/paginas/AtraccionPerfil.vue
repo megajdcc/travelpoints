@@ -5,9 +5,7 @@
             <h3 class="font-weight-bolder titulo">
                {{ $t(atraccion.nombre) }}
             </h3>
-
             <has-like :model="{model_type:atraccion.modelType,model_id:atraccion.id}" class="cursor-pointer" />
-
          </b-col>
       </b-row>
 
@@ -33,7 +31,7 @@
 
                   <li class="list-inline-item mr-2" v-if="atraccion.horarios.length && horarioHoy">
                      <strong class="font-weight-bolder">
-                       {{ horarioHoy }}
+                       {{ $t('De') + ' ' + horarioHoy }}
                      </strong>
                   </li>
 

@@ -1,26 +1,26 @@
 <template>
    <validation-observer ref="formValidate" #default="{ handleSubmit }">
-      <h1>{{ titulo }}</h1>
-      <p>{{ subTitulo }}</p>
-      <p v-if="formulario.id"> La situación actual de la solicitud es la siguiente: <b-badge :variant="status.variant">{{
+      <h1>{{ $t(titulo) }}</h1>
+      <p>{{ $t(subTitulo) }}</p>
+      <p v-if="formulario.id"> {{ $t('La situación actual de la solicitud es la siguiente') }}: <b-badge :variant="status.variant">{{
          status.text }}</b-badge> </p>
       <b-form @submit.prevent="handleSubmit(guardar)" ref="formSolicitud">
          <b-card>
-            <h2>Información de negocio</h2>
+            <h2>{{ $t('Información de negocio') }}</h2>
             <hr>
             <b-container fluid>
                <b-row>
                   <b-col cols="12" md="8">
-                     <b-form-group title="Los socios de TravelPoints pueden encontrar su negocio por su nombre."
+                     <b-form-group :title="$t('Los socios de TravelPoints pueden encontrar su negocio por su nombre')"
                         v-b-tooltip.hover.v-warning>
                         <template #label>
-                           Nombre del negocio: <span class="text-danger">*</span>
+                           {{ $t('Nombre del negocio') }}: <span class="text-danger">*</span>
                            <feather-icon icon="HelpCircleIcon" class="text-warning" />
                         </template>
 
                         <validation-provider name="nombre" rules="required" #default="{ errors }">
                            <b-form-input v-model="formulario.nombre" :state="errors.length ? false : null"
-                              placeholder="Nombre del negocio" />
+                              :placeholder="$t('Nombre del negocio')" />
 
                            <b-form-invalid-feedback>
                               {{ errors[0] }}
@@ -28,16 +28,16 @@
                         </validation-provider>
                      </b-form-group>
 
-                     <b-form-group title="Describe tu negocio de manera concisa. Máximo 80 carácteres."
+                     <b-form-group :title="$t('Describe tu negocio de manera concisa. Máximo 80 carácteres')"
                         v-b-tooltip.hover.v-warning>
                         <template #label>
-                           Descripción corta: <span class="text-danger">*</span>
+                           {{ $t('Descripción corta') }}: <span class="text-danger">*</span>
                            <feather-icon icon="HelpCircleIcon" class="text-warning" />
                         </template>
 
                         <validation-provider name="descripcion" rules="required|max:80" #default="{ errors }">
                            <b-form-input v-model="formulario.breve" :state="errors.length ? false : null"
-                              placeholder="Ejemplo: Restaurante de mariscos" :rows="4" />
+                              :placeholder="$t('Ejemplo: Restaurante de mariscos')" :rows="4" />
 
                            <b-form-invalid-feedback :state="errors.legnth ? false : null">
                               {{ errors[0] }}
@@ -50,11 +50,11 @@
                   <b-col cols="12" md="4">
                      <b-form-group>
                         <template #label>
-                           Categoría del negocio: <span class="text-danger">*</span>
+                           {{ $t('Categoría del negocio') }}: <span class="text-danger">*</span>
                         </template>
 
                         <validation-provider name="categoria_id" rules="required" #default="{ errors }">
-                           <el-select v-model="formulario.categoria_id" class="w-100" placeholder="Seleccionar categoría"
+                           <el-select v-model="formulario.categoria_id" class="w-100" :placeholder="$t('Seleccionar categoría')"
                               filterable clearable>
                               <el-option v-for="(categoria, i) in categorias" :key="i" :value="categoria.id"
                                  :label="categoria.categoria"></el-option>
@@ -68,11 +68,11 @@
 
                      <b-form-group>
                         <template #label>
-                           Divisa: <span class="text-danger">*</span>
+                           {{$t('Divisa')}}: <span class="text-danger">*</span>
 
                            <validation-provider name="divisa_id" rules="required" #default="{ valid, errors }">
                               <v-select v-model="formulario.divisa_id" :reduce="(option) => option.id"
-                                 :options="divisas.filter(val => val.iso != 'Tp')" label="nombre" class="w-100" />
+                                 :options="divisas.filter(val => val.iso != 'Tp')" :label="$t('nombre')" class="w-100" />
 
                               <b-form-invalid-feedback :state="valid">
                                  {{ errors[0] }}
@@ -83,16 +83,16 @@
 
 
                      <b-form-group v-b-tooltip.hover.v-warning
-                        title="Elija entre pagar una comisión o una cantidad fija por persona">
+                        :title="$t('Elija entre pagar una comisión o una cantidad fija por persona')">
                         <template #label>
-                           Tipo de pago: <span class="text-danger">*</span>
+                           {{ $t('Tipo de pago') }}: <span class="text-danger">*</span>
                            <feather-icon icon="HelpCircleIcon" class="text-warning" />
                         </template>
 
                         <validation-provider name="tipo_comision" rules="required" #default="{ errors }">
 
                            <b-form-radio-group v-model="formulario.tipo_comision"
-                              :options="[{ text: 'Comisión', value: 1 }, { text: 'Monto Fíjo', value: 2 }]"
+                              :options="[{ text: $t('Comisión'), value: 1 }, { text: $t('Monto Fíjo'), value: 2 }]"
                               button-variant="outline-primary" buttons size="md" :state="errors.length ? false : null"
                               class="w-100" @change="validarMonto">
 
@@ -107,10 +107,10 @@
                      </b-form-group>
 
                      <b-form-group v-b-tooltip.hover.v-warning
-                        title="Se te cobrará este porcentaje por cada venta que registres en nuestro sistema. Una mayor comisión significa un mejor posicionamiento."
+                        :title="$t('Se te cobrará este porcentaje por cada venta que registres en nuestro sistema. Una mayor comisión significa un mejor posicionamiento')"
                         v-if="formulario.tipo_comision == 1">
                         <template #label>
-                           Comisión: <span class="text-danger">*</span>
+                           {{ $t('Comisión') }}: <span class="text-danger">*</span>
                            <feather-icon icon="HelpCircleIcon" class="text-warning" />
                         </template>
 
@@ -129,9 +129,9 @@
                      </b-form-group>
 
                      <b-form-group v-b-tooltip.hover.v-warning
-                        title="Se te cobrará este monto por cada venta que registres en el sistema a cada persona" v-else>
+                        :title="$t('Se te cobrará este monto por cada venta que registres en el sistema a cada persona')" v-else>
                         <template #label>
-                           Monto: <span class="text-danger">*</span>
+                           {{ $t('Monto') }}: <span class="text-danger">*</span>
                            <feather-icon icon="HelpCircleIcon" class="text-warning" />
                         </template>
 
@@ -159,16 +159,16 @@
                   <b-col cols="12">
 
                      <b-form-group
-                        title="Explica con más detalle acerca de tu negocio. Los socios de TravelPoints tambien pueden encontrar tu negocio por su descripción. Puedes agregar palabras claves para facilitar la busqueda."
+                        :title="$t('Explica con más detalle acerca de tu negocio. Los socios de TravelPoints tambien pueden encontrar tu negocio por su descripción. Puedes agregar palabras claves para facilitar la busqueda')"
                         v-b-tooltip.hover.v-warning>
                         <template #label>
-                           Descripción del negocio: <span class="text-danger">*</span>
+                           {{ $t('Descripción del negocio') }}: <span class="text-danger">*</span>
                            <feather-icon icon="HelpCircleIcon" class="text-warning" />
                         </template>
 
                         <validation-provider name="descripcion" rules="required" #default="{ errors }">
                            <b-form-textarea v-model="formulario.descripcion" :state="errors.length ? false : null" :row="3"
-                              placeholder="Descripción del negocio" />
+                              :placeholder="$t('Descripción del negocio')" />
                            <b-form-invalid-feedback :state="errors.length ? false : null">
                               {{ errors[0] }}
                            </b-form-invalid-feedback>
@@ -179,10 +179,10 @@
 
                   <b-col cols="12">
 
-                     <b-form-group title="Este será el enlace directo al perfil de tú negocio."
+                     <b-form-group :title="$t('Este será el enlace directo al perfil de tú negocio')"
                         v-b-tooltip.hover.v-warning>
                         <template #label>
-                           Enlace desea del perfil de negocio: <span class="text-danger">*</span>
+                           {{$t('Enlace desea del perfil de negocio')}}: <span class="text-danger">*</span>
                            <feather-icon icon="HelpCircleIcon" class="text-warning" />
                         </template>
 
@@ -194,7 +194,7 @@
                               </b-input-group-prepend>
 
                               <b-form-input v-model="formulario.url" :state="errors.length ? false : null"
-                                 placeholder="nombre-de-negocio" />
+                                 :placeholder="$t('nombre-de-negocio')" />
 
                            </b-input-group>
 
@@ -212,7 +212,7 @@
          </b-card>
 
          <b-card>
-            <h2>Información de contacto del negocio</h2>
+            <h2>{{ $t('Información de contacto del negocio') }}</h2>
             <hr>
 
             <b-container fluid>
@@ -220,7 +220,7 @@
                   <b-col cols="12" md="6">
                      <b-form-group>
                         <template #label>
-                           Correo electrónco del negocio: <span class="text-danger">*</span>
+                           {{ $t('Correo electrónco del negocio') }}: <span class="text-danger">*</span>
                         </template>
 
                         <validation-provider name="email" rules="required|email" #default="{ errors }">
@@ -230,7 +230,7 @@
                                  <feather-icon icon="AtSignIcon" />
                               </b-input-group-prepend>
                               <b-form-input type="email" v-model="formulario.email" :state="errors.length ? false : null"
-                                 placeholder="Correo electrónico del negocio" />
+                                 placeholder="{{ $t('Correo electrónico del negocio') }}" />
 
                            </b-input-group>
                            <b-form-invalid-feedback :state="errors.length ? false : null">
@@ -244,7 +244,7 @@
                   <b-col cols="12" md="6">
                      <b-form-group>
                         <template #label>
-                           Número telefónico del negocio: <span class="text-danger">*</span>
+                           {{ $t('Número telefónico del negocio') }}: <span class="text-danger">*</span>
                         </template>
 
                         <validation-provider name="telefono" rules="required" #default="{ errors }">
@@ -254,7 +254,7 @@
                                  <feather-icon icon="PhoneIcon" />
                               </b-input-group-prepend>
                               <b-form-input type="tel" v-model="formulario.telefono" :state="errors.length ? false : null"
-                                 placeholder="Número telefónico" v-mask="'+#############'" />
+                                 :placeholder="$t('Número telefónico')" v-mask="'+#############'" />
                            </b-input-group>
 
 
@@ -268,9 +268,9 @@
 
                   <b-col cols="12">
                      <b-form-group v-b-tooltip.hover.v-warning
-                        title="Si no tienes sitio web del negocio, dejalo en blanco">
+                        :title="$t('Si no tienes sitio web del negocio, dejalo en blanco')">
                         <template #label>
-                           Sitio web del negocio:
+                           {{ $t('Sitio web del negocio') }}:
                         </template>
 
                         <validation-provider name="sitio_web" #default="{ errors }">
@@ -280,7 +280,7 @@
                                  <feather-icon icon="GlobeIcon" />
                               </b-input-group-prepend>
                               <b-form-input type="tel" v-model="formulario.sitio_web" :state="errors.length ? false : null"
-                                 placeholder="Sitio web del negocio" />
+                                 :placeholder="$t('Sitio web del negocio')" />
                            </b-input-group>
 
 
@@ -298,14 +298,14 @@
          </b-card>
 
          <b-card>
-            <h2>Ubicación del negocio</h2>
+            <h2>{{ $t('Ubicación del negocio') }}</h2>
             <hr>
             <b-container fluid>
                <b-row>
                   <b-col cols="12" md="7">
                      <b-form-group>
                         <template #label>
-                           Dirección del negocio: <span class="text-danger">*</span>
+                           {{ $t('Dirección del negocio')}}: <span class="text-danger">*</span>
                         </template>
                         <validation-provider name="direccion" rules="required" #default="{ errors, valid }">
                            <b-input-group>
@@ -314,7 +314,7 @@
                               </b-input-group-prepend>
 
                               <b-form-textarea v-model="formulario.direccion" :state="valid"
-                                 placeholder="Dirección del negocio" :rows="4" />
+                                 :placeholder="$t('Dirección del negocio')" :rows="4" />
 
                            </b-input-group>
                            <b-form-invalid-feedback>
@@ -326,28 +326,28 @@
                   <b-col cols="12" md="5">
 
                      <b-form-group
-                        description="Seleccione el Aeropuerto mas cercano a este negocio, esto no es importante">
+                        :description="$t('Seleccione el Aeropuerto mas cercano a este negocio, esto no es importante')">
                         <template #label>
-                           Iata | Aeropuerto mas cercano:
+                           {{ $t('Iata | Aeropuerto mas cercano') }}:
                         </template>
                         <validation-provider name="iata_id" rules="required" #default="{ errors, valid }">
                            <b-input-group>
 
                               <v-select v-model="formulario.iata_id" :reduce="(option) => option.id" :options="iatas"
-                                 label="aeropuerto" class=" w-100">
+                                 :label="$t('aeropuerto')" class=" w-100">
 
                                  <template #no-options>
-                                    NO Hay Código Iata para esta busqueda
+                                    {{$t('No hay código iata para esta busqueda')}}
                                  </template>
 
                                  <template #option="{ aeropuerto, codigo }">
-                                    <strong style="margin: 0">{{ aeropuerto }}</strong>
+                                    <strong style="margin: 0">{{ $t(aeropuerto) }}</strong>
                                     <em>{{ codigo }}</em>
                                  </template>
 
                                  <template #selected-option="{ aeropuerto, codigo }">
                                     <div style="display: flex; align-items: baseline">
-                                       <strong>{{ aeropuerto }}</strong>
+                                       <strong>{{ $t(aeropuerto) }}</strong>
                                        <em style="margin-left: 0.5rem">{{ codigo }}</em>
                                     </div>
                                  </template>
@@ -365,7 +365,7 @@
 
                      <b-form-group>
                         <template #label>
-                           Código postal del negocio: <span class="text-danger">*</span>
+                           {{ $t('Código postal del negocio') }}: <span class="text-danger">*</span>
                         </template>
                         <validation-provider name="codigo_postal" rules="required" #default="{ errors }">
                            <b-input-group>
@@ -373,7 +373,7 @@
                                  <feather-icon icon="MailIcon" />
                               </b-input-group-prepend>
                               <b-form-input v-model="formulario.codigo_postal" :state="errors.length ? false : null"
-                                 placeholder="Código postal del negocio" />
+                                 :placeholder="$t('Código postal del negocio')" />
 
                            </b-input-group>
                            <b-form-invalid-feedback>
@@ -389,10 +389,10 @@
                   <b-col cols="12" md="4">
                      <b-form-group>
                         <template #label>
-                           Pais: <span class="text-danger">*</span>
+                           {{ $t('Pais') }}: <span class="text-danger">*</span>
                         </template>
 
-                        <el-select v-model="pais_id" class="w-100" placeholder="Selecciona un pais" filterable clearable
+                        <el-select v-model="pais_id" class="w-100" :placeholder="$t('Selecciona un pais')" filterable clearable
                            @change="cargarEstados">
                            <el-option v-for="(pais, i) in paises" :key="i" :value="pais.id" :label="pais.pais">
                            </el-option>
@@ -403,11 +403,11 @@
                   <b-col cols="12" md="4">
                      <b-form-group>
                         <template #label>
-                           Provincia/Estado: <span class="text-danger">*</span>
+                           {{ $t('Provincia/Estado')  }}: <span class="text-danger">*</span>
                         </template>
 
                         <validation-provider name="estado_id" rules="required" #default="{ errors }">
-                           <el-select v-model="formulario.estado_id" class="w-100" placeholder="Luego un estado" filterable
+                           <el-select v-model="formulario.estado_id" class="w-100" :placeholder="$t('Luego un estado')" filterable
                               clearable @change="cargarCiudades">
                               <el-option v-for="(estado, i) in estados" :key="i" :value="estado.id" :label="estado.estado">
                               </el-option>
@@ -426,11 +426,11 @@
                   <b-col cols="12" md="4">
                      <b-form-group>
                         <template #label>
-                           Ciudad/Municipio:
+                           {{ $t('Ciudad/Municipio') }}:
                         </template>
 
                         <validation-provider name="ciudad_id" #default="{ errors }">
-                           <el-select v-model="formulario.ciudad_id" class="w-100" placeholder="Luego una ciudad"
+                           <el-select v-model="formulario.ciudad_id" class="w-100" placeholder="$t('Luego una ciudad')"
                               filterable clearable>
                               <el-option v-for="(ciudad, i) in ciudades" :key="i" :value="ciudad.id" :label="ciudad.ciudad">
                               </el-option>
@@ -451,14 +451,13 @@
                <b-row>
                   <b-col>
                      <div class="form-group">
-                        <label for="map-canvas">Posici&oacute;n en el mapa <span class="required">*</span></label>
+                        <label for="map-canvas">{{ $t('Posición en el mapa') }} <span class="required">*</span></label>
                         <p class="text-grey">
                         <ul>
-                           <li class="text-grey">Arrastra el marcador hacia la ubicaci&oacute;n del negocio.</li>
-                           <li class="text-grey">Puedes apoyarte escribiendo una ubicaci&oacute;n como una ciudad,
-                              municipio, colonia, etc. y seleccionar una de las opciones sugeridas.</li>
+                           <li class="text-grey">{{ $t('Arrastra el marcador hacia la ubicación del negocio') }}</li>
+                           <li class="text-grey">{{ $t('Puedes apoyarte escribiendo una ubicaci&oacute;n como una ciudad, municipio, colonia, etc. y seleccionar una de las opciones sugeridas')  }}</li>
                         </ul>
-                        Las coordenadas de la ubicaci&oacute;n se crean automaticamente.
+                        {{ $t('Las coordenadas de la ubicación se crean automaticamente') }}.
                         </p>
                      </div>
 

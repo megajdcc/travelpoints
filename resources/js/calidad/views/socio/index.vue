@@ -26,13 +26,13 @@
 
             <b-nav-item :to="{ name: 'socio.negocio.list' }" active-class="active" v-if="$can('read', 'socio negocios')">
               <span class="fas fa-briefcase"></span>
-              Negocio
+              {{ $t('Negocio') }}
             </b-nav-item>
 
             <b-nav-item :to="{ name: 'socio.reservaciones' }" active-class="active"
               v-if="$can('read', 'socio reservaciones')">
               <span class="fas fa-credit-card"></span>
-              Reservaciones
+              {{ $t('Reservaciones') }}
             </b-nav-item>
 
             <!-- <b-nav-item :to="{ name: 'socio.cupones' }" active-class="active">
@@ -42,17 +42,17 @@
 
             <b-nav-item :to="{ name: 'socio.compras' }" active-class="active" v-if="$can('read', 'socio compras')">
               <span class="fas fa-weight-hanging"></span>
-              Compras
+              {{ $t('Compras') }}
             </b-nav-item>
 
             <b-nav-item :to="{ name: 'socio.consumos' }" active-class="active" v-if="$can('read', 'socio consumos')">
               <font-awesome-icon icon="fas fa-concierge-bell" />
-              Consumos
+              {{ $t('Consumos') }}
             </b-nav-item>
 
             <b-nav-item :to="{ name: 'socio.cupones' }" active-class="active" v-if="$can('read', 'socio cupones')">
               <font-awesome-icon icon="fas fa-tags" />
-              Mis Cupones
+              {{ $t('Mis Cupones') }}
             </b-nav-item>
 
 
@@ -65,28 +65,28 @@
 
             <b-nav-item :to="{ name: 'socio.negocio.list' }" exact active-class="active">
               <span class="fas fa-concierge-bell"></span>
-              Mis Negocios
+              {{ $t('Mis Negocios') }}
             </b-nav-item>
 
             <b-nav-item :to="{ name: 'socio.negocio.afiliar' }" active-class="active">
               <span class="fas fa-plus-circle"></span>
-              Afiliar mi negocio
+              {{ $t('Afiliar mi negocio') }}
             </b-nav-item>
 
             <b-nav-item :to="{ name: 'socio.negocio.siguiendo' }" exact active-class="active">
               <span class="fas fa-bookmark"></span>
-              Siguiendo
+              {{ $t('Siguiendo') }}
             </b-nav-item>
 
 
             <b-nav-item :to="{ name: 'socio.negocio.recomendados' }" exact active-class="active">
               <span class="fas fa-heart"></span>
-              Recomendados
+              {{ $t('Recomendados') }}
             </b-nav-item>
 
             <b-nav-item :to="{ name: 'socio.negocio.solicitudes' }" active-class="active">
               <span class="fas fa-file"></span>
-              Solicitudes enviadas
+              {{ $t('Solicitudes enviadas') }}
 
               <b-badge variant="danger" pill>{{ solicitudesSinAceptar }}</b-badge>
             </b-nav-item>
@@ -98,47 +98,47 @@
           <b-nav vertical card-header class="menu-socio">
             <b-nav-item :to="{ name: 'miperfil' }" exact active-class="active" v-if="$can('read', 'perfil')">
               <span class="fas fa-user"></span>
-              Perfil de socio
+              {{  $t('Perfil de socio')  }}
             </b-nav-item>
 
             <b-nav-item :to="{ name: 'micuenta' }" exact active-class="active"
               v-if="$can('read', 'socio perfil movimientos')">
               <span class="fas fa-money-check"></span>
-              Cuenta y Movimientos
+              {{ $t('Cuenta y Movimientos') }}
             </b-nav-item>
 
 
             <b-nav-item :to="{ name: 'mi.tarjetas' }" exact active-class="active"
               v-if="$can('read', 'socio perfil tarjetas')">
               <span class="fas fa-credit-card"></span>
-              Tarjetas asociadas
+              {{  $t('Tarjetas asociadas')  }}
             </b-nav-item>
 
             <b-nav-item :to="{ name: 'misreferidos' }" exact active-class="active"
               v-if="$can('read', 'socio perfil amigos')">
               <span class="fas fa-user-plus"></span>
-              Mis amigos
+              {{  $t('Mis amigos')  }}
             </b-nav-item>
 
             <b-nav-item :to="{ name: 'perfil.editar' }" exact active-class="active" v-if="$can('read', 'perfil')">
               <span class="fas fa-user-edit"></span>
-              Editar Información
+              {{  $t('Editar Información')  }}
             </b-nav-item>
 
             <b-nav-item :to="{ name: 'perfil.datos_pago' }" exact active-class="active"
               v-if="$can('write', 'Datos de pago')">
               <font-awesome-icon icon="fas fa-money-check-dollar" />
-              Datos de pago
+              {{ $t('Datos de pago') }}
             </b-nav-item>
 
             <b-nav-item :to="{ name: 'perfil.password' }" exact active-class="active" v-if="$can('write', 'perfil')">
               <span class="fas fa-key"></span>
-              Cambiar Contraseña
+              {{  $t('Cambiar Contraseña') }}
             </b-nav-item>
 
             <b-nav-item :to="{ name: 'perfil.desactivar' }" exact active-class="active" v-if="$can('write', 'perfil')">
               <span class="fas fa-window-close"></span>
-              Desactivar Cuenta
+              {{  $t('Desactivar Cuenta')  }}
             </b-nav-item>
           </b-nav>
         </b-card>
@@ -150,7 +150,7 @@
 
             <b-nav-item :to="{ name: 'socio.consumos' }" exact active-class="active">
               <font-awesome-icon icon="fas fa-concierge-bell" />
-              Mis consumos
+              {{ $t('Mis consumos') }}
             </b-nav-item>
 
           </b-nav>

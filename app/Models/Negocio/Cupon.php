@@ -6,10 +6,11 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Divisa;
 use App\Models\User;
+use App\Trais\hasTranslate;
 
 class Cupon extends Model
 {
-    use HasFactory;
+    use HasFactory,hasTranslate;
 
     public $fillable = [
         'nombre',

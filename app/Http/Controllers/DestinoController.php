@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Jobs\ModelTraslate;
 use App\Models\Destino;
 use Illuminate\Http\Request;
 
@@ -155,6 +156,7 @@ class DestinoController extends Controller
             DB::beginTransaction();
 
             $destino = Destino::create($datos->except(['imagenes'])->toArray());
+            ModelTraslate::dispatch($destino, ['nombre', 'titulo','descripcion']);
 
 
             if (isset($datos['imagenes']) && count($datos['imagenes']) > 0) {
@@ -205,6 +207,8 @@ class DestinoController extends Controller
             DB::beginTransaction();
 
             $destino->update($datos->except(['imagenes'])->toArray());
+            ModelTraslate::dispatch($destino,['nombre','titulo', 'descripcion']);
+            
 
             $destino->iata;
             $destino->ciudad;
@@ -233,9 +237,11 @@ class DestinoController extends Controller
     {
         try{
             DB::beginTransaction();
+            $destino->quitarTraduccion(['nombre','titulo','descripcion']);
             $destino->delete();
             DB::commit();
             $result = true;
+            
         }catch(\Exception $e){
             DB::rollBack();
             $result = false;

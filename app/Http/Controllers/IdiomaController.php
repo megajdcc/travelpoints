@@ -9,6 +9,8 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Http;
+use GoogleTranslate;
+
 class IdiomaController extends Controller
 {
     
@@ -98,7 +100,11 @@ class IdiomaController extends Controller
             }
 
             if ($request->boolean('default')) {
-                (Idioma::where('default', true)->first())->update(['default' => false]);
+                $idioma_por_defecto = Idioma::where('default', true)->first();
+                if($idioma_por_defecto){
+                    $idioma_por_defecto->update(['default' => false]);
+                }
+             
             }
 
             $idioma->update([
@@ -114,8 +120,6 @@ class IdiomaController extends Controller
         } catch (\Throwable $th) {
             DB::rollBack();
             $result = false;
-
-            dd($th->getMessage());
         }
 
         return response()->json(['result' => $result, 'idioma' => $idioma ?? null]);
@@ -158,6 +162,13 @@ class IdiomaController extends Controller
         ]);
 
 
+    }
+
+    public function traslate(Request $request){
+      
+        $traslate = GoogleTranslate::translate($request->input('msg'),to:$request->input('locale','en'));
+
+        return response()->json(['traslate' => $traslate]);
     }
 
 

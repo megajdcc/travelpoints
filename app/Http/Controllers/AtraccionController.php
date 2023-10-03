@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Jobs\ModelTraslate;
 use App\Models\Atraccion;
 use Illuminate\Http\Request;
 
@@ -132,6 +133,7 @@ class AtraccionController extends Controller
             DB::beginTransaction();
 
             $atraccion = Atraccion::create($datos->except(['imagenes'])->toArray());
+            ModelTraslate::dispatch($atraccion, ['nombre', 'duracion_sugerida', 'descripcion']);
             
             if($telefono['telefono']){
                 $atraccion->addTelefono($telefono);
@@ -197,7 +199,8 @@ class AtraccionController extends Controller
             DB::beginTransaction();
 
             $atraccion->update($datos->except(['imagenes'])->toArray());
-            
+            ModelTraslate::dispatch($atraccion, ['nombre', 'duracion_sugerida', 'descripcion']);
+
             if ($telefono['telefono'] ) {
 
                 if($atraccion->telefono){
@@ -248,7 +251,8 @@ class AtraccionController extends Controller
 
                 $imagen->delete();
             }
-
+            $atraccion->quitarTraduccion(['nombre', 'duracion_sugerida', 'descripcion']);
+            
             $atraccion->delete();
             DB::commit();
             $result = true;

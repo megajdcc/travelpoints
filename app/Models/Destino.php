@@ -7,14 +7,14 @@ use Illuminate\Database\Eloquent\Model;
 use App\Models\Iata;
 use App\Models\Negocio\Negocio;
 use App\Trais\HasDireccion;
-use App\Trais\{hasImages, hasLike,hasLocation};
+use App\Trais\{hasImages, hasLike,hasLocation,hasTranslate};
 use Illuminate\Contracts\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
-
+use function Illuminate\Events\queueable;
 class Destino extends Model
 {
 
-    use HasFactory,HasDireccion,hasImages,hasLike,hasLocation;
+    use HasFactory,HasDireccion,hasImages,hasLike,hasLocation, hasTranslate;
 
     public readonly  string  $model_type;
 
@@ -40,7 +40,16 @@ class Destino extends Model
     public $casts = [
         'activo' => 'boolean'
     ];
-    
+
+    protected $dispatchesEvents = [
+        'deleting',
+    ];
+
+    protected static function booted(): void{
+        static::deleting(function (Destino $destino) {
+            $destino->quitarTraduccion(['nombre', 'titulo']);
+        });
+    }
 
     public function iata(){
         return $this->belongsTo(Iata::class,'iata_id','id');

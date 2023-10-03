@@ -163,9 +163,7 @@ export default {
 
     })
 
-    onMounted(() => {
-      console.log(route)
-    })
+   
     return {
       skinClasses,
       enableScrollToTop,

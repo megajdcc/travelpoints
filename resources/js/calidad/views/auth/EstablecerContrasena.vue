@@ -10,7 +10,7 @@
          </b-link>
          <!-- /Brand logo-->
         <b-card-title class="mb-1">
-         Establecer la contraseña🔒
+         {{ $t('Establecer la contraseña') }}🔒
         </b-card-title>
     
 
@@ -24,7 +24,7 @@
 
             <!-- password -->
             <b-form-group
-              label="Nueva contraseña"
+              :label="$t('Nueva contraseña')"
               label-for="reset-password-new"
             >
               <validation-provider
@@ -61,7 +61,7 @@
             <!-- confirm password -->
             <b-form-group
               label-for="reset-password-confirm"
-              label="Confirmar Contraseña"
+              :label="$t('Confirmar Contraseña')"
             >
               <validation-provider
                 #default="{ errors }"
@@ -99,14 +99,14 @@
               type="submit"
               variant="primary"
             >
-              Establecer nueva contraseña
+              {{ $t('Establecer nueva contraseña') }}
             </b-button>
           </b-form>
         </validation-observer>
 
         <p class="text-center mt-2">
           <b-link :to="{name:'login'}">
-            <feather-icon icon="ChevronLeftIcon" /> Volver al login
+            <feather-icon icon="ChevronLeftIcon" /> {{ $t('Volver al login') }}
           </b-link>
         </p>
 
@@ -137,7 +137,7 @@ import { required } from '@validations'
 import ToastificationContent from '@core/components/toastification/ToastificationContent.vue'
 import logotipo from 'storage/logotipo.png'
 import logotipoblanco from 'storage/logotipoblanco.png'
-import { toRefs, computed } from 'vue'
+import { toRefs, computed,inject } from 'vue'
 import store from '@/store'
 
 export default {

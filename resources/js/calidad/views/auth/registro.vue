@@ -7,21 +7,21 @@
             <logo url="/"></logo>
 
             <b-card-title class="mb-1">
-               Unete al club 🚀
+               {{ $t('Unete al club') }} 🚀
             </b-card-title>
             <b-card-text class="mb-2">
-               No mas de 2 minutos te tomará registrarte.
+               {{ $t('No mas de 2 minutos te tomará registrarte') }}.
             </b-card-text>
 
             <b-card-text class="mb-2">
-               <b-button variant="outline-primary" @click="mostrarPreguntas" size="sm">¿Quieres saber mas de Travel Points?</b-button>
+               <b-button variant="outline-primary" @click="mostrarPreguntas" size="sm">{{ $t('¿Quieres saber mas de Travel Points?') }}</b-button>
             </b-card-text>
 
             <!-- form -->
             <validation-observer ref="formValidate" #default="{handleSubmit}">
                <b-form class="auth-register-form mt-2" @submit.prevent="handleSubmit(guardar)">
                   <!-- username -->
-                  <b-form-group label="Username (Alias)" label-for="username">
+                  <b-form-group :label="$t('Username (Alias)')" label-for="username">
                      <validation-provider #default="{ errors,valid }" name="username" rules="required">
                         <b-form-input id="username" v-model="formulario.username"
                            :state="valid" name="register-username"
@@ -33,7 +33,7 @@
                   </b-form-group>
 
 
-                   <b-form-group label="Nombre" label-for="nombre">
+                   <b-form-group :label="$t('Nombre')" label-for="nombre">
                         <validation-provider #default="{ errors,valid }" name="nombre" rules="required">
                            <b-form-input id="nombre" v-model="formulario.nombre"
                               :state="valid" name="register-nombre"
@@ -44,7 +44,7 @@
                         </validation-provider>
                   </b-form-group>
 
-                  <b-form-group label="Apellido" label-for="apellido">
+                  <b-form-group :label="$t('Apellido')" label-for="apellido">
                            <validation-provider #default="{ errors,valid }" name="apellido" rules="required">
                               <b-form-input id="apellido" v-model="formulario.apellido"
                                  :state="valid" name="register-nombre"
@@ -57,7 +57,7 @@
                      </b-form-group>
 
                   <!-- email -->
-                  <b-form-group label="Email" label-for="email">
+                  <b-form-group :label="$t('Email')" label-for="email">
                      <validation-provider #default="{ errors,valid }" name="email" rules="required|email">
                         <b-form-input id="email" v-model="formulario.email" :state="valid"
                            name="register-email" placeholder="mario@example.com" />
@@ -69,7 +69,7 @@
                   </b-form-group>
 
                   <!-- password -->
-                  <b-form-group label="Password" label-for="password" description="La contraseña debe contener al menos una mayúscula, una minúscula, un carácter especial(@ # $ % & / ( ) = + ? [ ] ~ – ^) y un dígito que sea facil de recordar">
+                  <b-form-group :label="$t('Password')" label-for="password" :description="$t('La contraseña debe contener al menos una mayúscula, una minúscula, un carácter especial(@ # $ % & / ( ) = + ? [ ] ~ – ^) y un dígito que sea facil de recordar')">
                      <validation-provider #default="{ errors,valid }" name="password" rules="required|password">
                         <b-input-group class="input-group-merge" :class="errors.length > 0 ? 'is-invalid' : null">
                            <b-form-input id="password" v-model="formulario.password" :type="passwordFieldType"
@@ -87,7 +87,7 @@
                   </b-form-group>
 
                   <!-- retype password -->
-                  <b-form-group label="Password" label-for="password">
+                  <b-form-group :label="$t('Password')" label-for="password">
                      <validation-provider #default="{ errors,valid }" name="retypePassword" rules="required|password">
                         <b-input-group class="input-group-merge" :class="errors.length > 0 ? 'is-invalid' : null">
                            <b-form-input id="password" v-model="formulario.retypePassword" :type="passwordFieldType"
@@ -108,28 +108,28 @@
                   <!-- checkbox -->
                   <b-form-group>
                      <b-form-checkbox id="register-privacy-policy" v-model="formulario.condiciones" name="checkbox-1">
-                        Acepto los
-                        <b-link :to="{path:pageTermino}">Terminos y condiciones</b-link>
+                        {{ $t('Acepto los') }}
+                        <b-link :to="{path:pageTermino}">{{ $t('Terminos y condiciones') }}</b-link>
                      </b-form-checkbox>
                   </b-form-group>
 
                   <!-- submit button -->
                   <b-button variant="primary" block type="submit" :disabled="!formulario.condiciones">
-                     !Hazme Socio!
+                    {{ $t('!Hazme Socio!') }}
                   </b-button>
                </b-form>
             </validation-observer>
 
             <b-card-text class="text-center mt-2">
-               <span>Ya tienes cuenta en TravelPoints? </span>
+               <span>{{ $t('Ya tienes cuenta en TravelPoints?') }} </span>
                <b-link :to="{ name: 'login' }">
-                  <span>ir a Login</span>
+                  <span>{{ $t('ir a Login') }}</span>
                </b-link>
             </b-card-text>
 
             <div class="divider my-2">
                <div class="divider-text">
-                  o
+                  {{ $t('o') }}
                </div>
             </div>
 
@@ -137,7 +137,7 @@
             <div class="auth-footer-btn d-flex justify-content-center">
                <b-button variant="google" type="button" @click.stop="authenticarGoogle(optionsAuth)">
                   <feather-icon icon="MailIcon" />
-                  Google
+                  {{ $t('Google') }}
                </b-button>
             </div>
          </b-card>
@@ -173,7 +173,7 @@ import useTogglePassword from '@core/utils/useTogglePassword';
 
 import ToastificationContent from '@core/components/toastification/ToastificationContent.vue'
 
-import { ref, computed, toRefs, onMounted, watch } from 'vue'
+import { ref, computed, toRefs, onMounted, watch,inject } from 'vue'
 import router from '@/router'
 import store from '@/store'
 
@@ -212,7 +212,7 @@ export default {
       const {codigo } = toRefs(props)
       const { paginas } = toRefs(store.state.pagina)
       const showPreguntas = ref(false)
-      
+      const i18n = inject('i18n')
       
       const {
          login,
@@ -245,10 +245,10 @@ export default {
          store.dispatch('usuario/nuevoUsuario',formulario.value).then(({result}) => {
             
             if(result){
-               toast.success('Tú cuenta ha sido creada con éxito')
+               toast.success(i18n.t('Tú cuenta ha sido creada con éxito'))
                router.push({name:'login'})
             }else{
-               toast.info('La cuenta no pudo ser creada, inténtelo de nuevo mas tarde')
+               toast.info(i18n.t('La cuenta no pudo ser creada, inténtelo de nuevo mas tarde'))
             }
 
 
@@ -268,9 +268,9 @@ export default {
             store.dispatch('usuario/verificarCodigoReferido', codigo.value).then(({ result }) => {
 
                if (result) {
-                  toast.success('Código de referidor cargado')
+                  toast.success(i18n.t('Código de referidor cargado'))
                } else {
-                  toast.info('El código no se ha podido cargar')
+                  toast.info(i18n.t('El código no se ha podido cargar'))
                   router.push('/register')
                }
 

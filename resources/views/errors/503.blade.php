@@ -15,7 +15,8 @@
   <link rel="stylesheet" type="text/css" href="{{ mix('css/loader.css') }}" />
 
   <!-- Styles -->
-  <link rel="stylesheet" href="{{ mix('css/app.css') }}">
+  @vite(['resources/js/app.js'])
+  <link rel="stylesheet" href="/css/loader.css">
 
   <!-- Favicon -->
   <link rel="shortcut icon" href="{{ asset('favicons/favicon-8x8.png') }}">
@@ -52,9 +53,9 @@
 
   @endif
 
-    <script src="{{ mix('js/manifest.js')}}"></script>
+    {{-- <script src="{{ mix('js/manifest.js')}}"></script>
     <script src="{{ mix('js/vendor.js')}}"></script>
-    <script src="{{ mix('js/app.js')}}"></script>
+    <script src="{{ mix('js/app.js')}}"></script> --}}
 
 </body>
 

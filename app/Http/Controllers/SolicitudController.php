@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Jobs\ModelTraslate;
 use App\Models\Divisa;
 use App\Models\Negocio\Solicitud;
 use Illuminate\Http\Request;
@@ -306,6 +307,7 @@ class SolicitudController extends Controller
 
                 $negocio->tps_referido = $tps_referido;
                 $negocio->save();
+                ModelTraslate::dispatch($negocio, ['nombre', 'descripcion', 'breve', 'direccion']);
 
                 $saldo_apertura = $divisa_credito->convertir($negocio->divisa, $sistema['negocio']['credito']);
 

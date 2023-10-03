@@ -9,20 +9,20 @@
     <div class="misc-inner p-2 p-sm-3">
       <div class="w-100 text-center">
         <h2 class="mb-1">
-         Página no encontrada 🕵🏻‍♀️
+         {{ $t('Página no encontrada') }} 🕵🏻‍♀️
         </h2>
         <p class="mb-2">
-          ¡UPS! 😖 La URL solicitada no se encontró en este servidor.
+          {{ $t('¡UPS!') }} 😖 {{ $t('La URL solicitada no se encontró en este servidor') }}
         </p>
 
         <b-button variant="primary" class="mb-2 btn-sm-block" :to="{path:'/'}">
-          Regresar a home
+          {{ $t('Regresar a home') }}
         </b-button>
 
         <b-img
           fluid
           :src="imgUrl"
-          alt="Error page"
+          alt="Error Page"
         />
       </div>
     </div>

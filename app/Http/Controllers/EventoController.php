@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Jobs\ModelTraslate;
 use App\Models\Evento;
 use Illuminate\Http\Request;
 use App\Models\{Atraccion,Destino,Imagen};
@@ -129,6 +130,8 @@ class EventoController extends Controller
                 'model_id' => isset($datos['model_id']) ? $datos['model_id'] : $model['model_id'],
                 'url' => Str::slug($datos['url'])
             ]]);
+
+            ModelTraslate::dispatch($evento,['titulo','contenido']);
             
             // $evento->establecerEstaus();
 
@@ -169,6 +172,7 @@ class EventoController extends Controller
                 'url' => Str::slug($datos['url'])
             ]]);
             $evento->establecerEstaus();
+            ModelTraslate::dispatch($evento, ['titulo', 'contenido']);
 
             $evento->model;
             $evento->imagenes;
@@ -205,7 +209,8 @@ class EventoController extends Controller
                 Storage::disk('eventos_imagenes')->delete($imagen->imagen);
                 $imagen->delete();
             }
-
+            $evento->quitarTraduccion(['titulo','contenido']);
+            
             $evento->delete();
 
             DB::commit();

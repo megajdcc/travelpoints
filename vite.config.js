@@ -5,7 +5,7 @@ import { VitePWA } from 'vite-plugin-pwa'
 import fs from 'fs'; 
 import path from 'path'
 
-const host = 'travelpoints.dev'; 
+const host = 'travelpoints.es'; 
 export default defineConfig({
     // base:import.meta.env['BASE_URL'],
     plugins: [

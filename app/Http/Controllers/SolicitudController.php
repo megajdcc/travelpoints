@@ -278,7 +278,7 @@ class SolicitudController extends Controller
 
                 if (isset($datos['panel']) && $datos['panel'] == 'infochannel') {
 
-                    $solicitud->usuario->notify(new SolicitudNegocioActualizada($solicitud));
+                    $solicitud->usuario->notify((new SolicitudNegocioActualizada($solicitud))->locale($solicitud->usuario->locale));
                 } else {
 
                     Notification::send(User::whereHas('rol', fn (Builder $q) => $q->where('nombre', 'Administrador'))->get(), new NuevaSolicitudNegocio($solicitud));
@@ -286,7 +286,7 @@ class SolicitudController extends Controller
                     $solicitud->usuario->notify(new SolicitudEnviada($solicitud));
                 }
             } else {
-                $solicitud->usuario->notify(new SolicitudNegocioActualizada($solicitud));
+                $solicitud->usuario->notify((new SolicitudNegocioActualizada($solicitud))->locale($solicitud->usuario->locale));
             }
 
 

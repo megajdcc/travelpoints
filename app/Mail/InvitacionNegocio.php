@@ -34,7 +34,7 @@ class InvitacionNegocio extends Mailable implements ShouldQueue
     {
         return new Envelope(
             from: new Address($this->invitacion->usuario->email,$this->invitacion->usuario->getNombreCompleto()),
-            subject: 'Invitación a formar Parte de Travel Points',
+            subject: __('Invitación a formar Parte de Travel Points'),
             to:$this->invitacion->email
         );
     }

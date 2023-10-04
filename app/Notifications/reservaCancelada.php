@@ -43,13 +43,13 @@ class reservaCancelada extends Notification implements ShouldQueue
     {   
      
         return (new MailMessage)
-                    ->subject('Reservación cancelada')
-                    ->greeting("Hola {$notifiable->getNombreCompleto()}.")
-                    ->line("Hemos cancelado tu reservación al negocio ({$this->reservacion->negocio->nombre}) que tenías activa para el pasado día {$this->reservacion->getDia()}, por que no se ha registrado tu asistena, por lo que no has acumulado Travel Points.")
-                    ->line('Si fuiste y por algún motivo el negocio no registró tu consumo, y deseas que se te registren tus puntos, por favor haznos saber de cuántas personas era tu grupo, y cuanto fue el monto del consumo. Si tuvieras una foto del ticket pagado puedes adjuntarla. Asegúrate de incluir tu usuario o email registrado en tu mensaje, para que nos sea más fácil localizar tu cuenta.')
+                    ->subject(__("Reservación cancelada"))
+                    ->greeting(__("Hola :nombre",['nombre' => $notifiable->getNombreCompleto()]))
+                    ->line(__("Hemos cancelado tu reservación al negocio (:negocio) que tenías activa para el pasado día :dia, por que no se ha registrado tu asistena, por lo que no has acumulado Travel Points.",['negocio' =>$this->reservacion->negocio->nombre,'dia'  => $this->reservacion->getDia()]))
+                    ->line(__("Si fuiste y por algún motivo el negocio no registró tu consumo, y deseas que se te registren tus puntos, por favor haznos saber de cuántas personas era tu grupo, y cuanto fue el monto del consumo. Si tuvieras una foto del ticket pagado puedes adjuntarla. Asegúrate de incluir tu usuario o email registrado en tu mensaje, para que nos sea más fácil localizar tu cuenta."))
                     
-                    ->action('Contacto', url('/contact'))
-                    ->salutation('Gracias por seguir usando nuestra aplicación de TravelPoints.');
+                    ->action(__("Contacto"), url('/contact'))
+                    ->salutation(__("Gracias por seguir usando nuestra aplicación de Travel Points"));
     }
 
     /**
@@ -61,13 +61,13 @@ class reservaCancelada extends Notification implements ShouldQueue
     public function toArray($notifiable)
     {
         return [
-            'titulo' => 'Reservación Cancelada',
+            'titulo' => __("Reservación cancelada"),
             'avatar' => null,
             'usuario' => null,
-            'mensaje' => ["Hemos cancelado tu reservación al negocio ({$this->reservacion->negocio->nombre}) que tenías activa para el pasado día {$this->reservacion->getDia()}, por que no se ha registrado tu asistena, por lo que no has acumulado Travel Points.", 'Si fuiste y por algún motivo el negocio no registró tu consumo, y deseas que se te registren tus puntos, por favor haznos saber de cuántas personas era tu grupo, y cuanto fue el monto del consumo. Si tuvieras una foto del ticket pagado puedes adjuntarla. Asegúrate de incluir tu usuario o email registrado en tu mensaje, para que nos sea más fácil localizar tu cuenta.'],
+            'mensaje' => [__("Hemos cancelado tu reservación al negocio (:negocio) que tenías activa para el pasado día :dia, por que no se ha registrado tu asistena, por lo que no has acumulado Travel Points.", ['negocio' => $this->reservacion->negocio->nombre, 'dia'  => $this->reservacion->getDia()]), __("Si fuiste y por algún motivo el negocio no registró tu consumo, y deseas que se te registren tus puntos, por favor haznos saber de cuántas personas era tu grupo, y cuanto fue el monto del consumo. Si tuvieras una foto del ticket pagado puedes adjuntarla. Asegúrate de incluir tu usuario o email registrado en tu mensaje, para que nos sea más fácil localizar tu cuenta.")],
             'type' => 'light-info', // light-info , light-success, light-danger, light-warning
             'btn' => true,
-            'btnTitle' => 'Ir a contacto',
+            'btnTitle' => __('Ir a contacto'),
             'url' => '/contact'
         ];
     }

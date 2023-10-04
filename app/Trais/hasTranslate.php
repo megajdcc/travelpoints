@@ -42,6 +42,7 @@ trait hasTranslate
 
 
   public function guardarTraduccion(Collection $traduccion,$name_json){
+    
     // Convertir la colección a formato JSON y agregar un salto de línea al final
     $jsonPath = Storage::disk(Idioma::DISK_TRADUCCIONES)->path($name_json);
 
@@ -49,16 +50,15 @@ trait hasTranslate
     Storage::disk(Idioma::DISK_TRADUCCIONES)->put($name_json, $jsonData);
 
     $result = Storage::disk(Idioma::DISK_TRADUCCIONES)->put($this->getNameJson(), $jsonData);
-
-    $langPath = base_path('lang/' . $this->shortLang);
-
+    $langPath = base_path('lang');
+    
     if (!file_exists($langPath)) {
       mkdir($langPath, 0755, true);
     }
-
+    
     copy($jsonPath, $langPath . '/' . $this->getNameJson());
-
     return $result;
+
   }
 
   public function quitarTraduccion(array $props) : void{

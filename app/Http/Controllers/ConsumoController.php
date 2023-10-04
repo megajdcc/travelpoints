@@ -204,8 +204,8 @@ class ConsumoController extends Controller
 
             // Notificar al Cliente y TravelPoints de la Nueva Compra
 
-            $consumo->cliente->notify(new NuevoConsumo($consumo));
-            Mail::to($consumo->cliente)->send(new newConsumo($consumo));
+            $consumo->cliente->notify((new NuevoConsumo($consumo))->locale($consumo->cliente->locale));
+            Mail::to($consumo->cliente)->locale($consumo->cliente->locale)->send(new newConsumo($consumo));
 
             $consumo->cliente->cargar();
 

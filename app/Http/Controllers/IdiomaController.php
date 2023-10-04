@@ -73,11 +73,11 @@ class IdiomaController extends Controller
                     'default' => $request->boolean('default')
                 ]
             ]);
-
+            DB::commit();
             // crear archivo json
             $idioma->createJson();
 
-            DB::commit();
+         
             $result = true;
         } catch (\Throwable $th) {
             DB::rollBack();

@@ -41,13 +41,13 @@ class nuevoAmigo extends Notification implements ShouldQueue
     public function toMail($notifiable)
     {
         return (new MailMessage)
-                    ->greeting("Hola {$notifiable->getNombreCompleto()}")
-                    ->line("Tu amigo {$this->amigo->getNombreCompleto()}, se ha registrado con tu link de invitación.")
-                    ->line('Ahora de todos los consumos que se registren a nombre de tu amigo, te ganarás un porcentaje en puntos Travel Points.')
-                    ->line('No hay limite de invitados, puedes invitar a todos tus amigos y familiares y ganar por cada consumo que le registren en los negocios asociados a Travel Points.')
-                    ->line('Puedes ver este y todos tus amigos en tu panel de invitados')
-                    ->action('Mis invitados', url('/socio/perfil/invitados'))
-                    ->salutation('¡Gracias por usar Travel Points!');
+                    ->greeting(__("Hola :nombre",['nombre' => $notifiable->getNombreCompleto()]))
+                    ->line(__("Tu amigo :amigo, se ha registrado con tu link de invitación",['amigo' => $this->amigo->getNombreCompleto()]))
+                    ->line(__("Ahora de todos los consumos que se registren a nombre de tu amigo, te ganarás un porcentaje en puntos Travel Points"))
+                    ->line(__("No hay limite de invitados, puedes invitar a todos tus amigos y familiares y ganar por cada consumo que le registren en los negocios asociados a Travel Points"))
+                    ->line(__("Puedes ver este y todos tus amigos en tu panel de invitados"))
+                    ->action(__("Mis invitados"), url('/socio/perfil/invitados'))
+                    ->salutation(__("Gracias por usar Travel Points!"));
     }
 
     /**
@@ -59,19 +59,19 @@ class nuevoAmigo extends Notification implements ShouldQueue
     public function toArray($notifiable)
     {
         return [
-            'titulo' => 'Nuevo Amigo asociado con tu Link de invitado',
+            'titulo' => __("Nuevo Amigo asociado con tu Link de invitado"),
             'avatar' => null,
             'usuario' => null,
             'mensaje' => [
-                "Tu amigo {$this->amigo->getNombreCompleto()}, se ha registrado con tu link de invitación.",
-                'Ahora de todos los consumos que se registren a nombre de tu amigo, te ganarás un porcentaje en puntos Travel Points.',
-                'No hay limite de invitados, puedes invitar a todos tus amigos y familiares y ganar por cada consumo que le registren en los negocios asociados a Travel Points.',
-                'Puedes ver este y todos tus amigos en tu panel de invitados'
+                __("Tu amigo :amigo, se ha registrado con tu link de invitación", ['amigo' => $this->amigo->getNombreCompleto()]),
+                __("Ahora de todos los consumos que se registren a nombre de tu amigo, te ganarás un porcentaje en puntos Travel Points"),
+                __("No hay limite de invitados, puedes invitar a todos tus amigos y familiares y ganar por cada consumo que le registren en los negocios asociados a Travel Points"),
+                __("Puedes ver este y todos tus amigos en tu panel de invitados")
 
             ],
             'type' => 'light-success', // light-info , light-success, light-danger, light-warning
             'btn' => true,
-            'btnTitle' => 'Mis invitados',
+            'btnTitle' => __('Mis invitados'),
             'url' => ['name' => 'misreferidos',]
         ];
     }

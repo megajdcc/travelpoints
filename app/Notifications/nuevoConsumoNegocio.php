@@ -46,14 +46,14 @@ class nuevoConsumoNegocio extends Notification implements ShouldQueue
     {
     
         return (new MailMessage)
-                    ->subject("Gracias por tu compra en ({$this->venta->model->categoria->categoria} - {$this->venta->model->nombre})")
-                    ->greeting("¡Hola {$notifiable->getNombreCompleto()}!")
-                    ->line("Se te ha registrado un consumo en ({$this->venta->model->categoria->categoria} - {$this->venta->model->nombre}), que te ha generado Tp$ {$this->tps} en tu cuenta.")
-                    ->line("Recuerda que los puntos TravelPoints (Tp), puedes utilizarlo para comprar en la tienda travel en el siguiente enlance:")
-                    ->action('Tienda TravelPoints', url('/tienda-travel'))
-                    ->line("Nos gustaría saber qué te pareció tu experiencia, por favor compártela en el siguiente enlace:")
-                    ->action('Mis consumos', url('/consumos'))
-                    ->salutation('¡Gracias por seguir usando TravelPoints!');
+                    ->subject(__("Gracias por tu compra en (:categoria - :negocio)",['categoria' => $this->venta->model->categoria->categoria,'negocio' => $this->venta->model->nombre]))
+                    ->greeting(__("Hola :nombre",['nombre' => $notifiable->getNombreCompleto()]))
+                    ->line(__("Se te ha registrado un consumo en (:categoria - :negocio), que te ha generado Tp$ :tp en tu cuenta.", ['categoria' => $this->venta->model->categoria->categoria, 'negocio' => $this->venta->model->nombre,'tp' => $this->tps]))
+                    ->line(__("Recuerda que los puntos TravelPoints (Tp), puedes utilizarlo para comprar en la tienda travel en el siguiente enlance:"))
+                    ->action(__("Tienda Travel Points"), url('/tienda-travel'))
+                    ->line(__("Nos gustaría saber qué te pareció tu experiencia, por favor compártela en el siguiente enlace:"))
+                    ->action(__("Mis consumos"), url('/consumos'))
+                    ->salutation(__("Gracias por seguir usando Travel Points"));
     }
 
     /**
@@ -65,13 +65,13 @@ class nuevoConsumoNegocio extends Notification implements ShouldQueue
     public function toArray($notifiable)
     {
         return [
-            'titulo' => "Gracias por consumir en {$this->venta->model->nombre}",
+            'titulo' => __("Gracias por consumir en :negocio",['negocio' => $this->venta->model->nombre ]),
             'avatar' => null,
             'usuario' => null,
-            'mensaje' => ["Gracias por tu compra en {$this->venta->model->categoria->categoria} ({$this->venta->model->nombre}), Has ganado Tp$ {$this->tps} Travel Points y ya están en tu cuenta", "Nos gustaría saber qué te pareció tu experiencia,por favor compártela en el siguiente enlace:"],
+            'mensaje' => [__("Gracias por tu compra en :categoria (:negocio), Has ganado Tp$ :tp Travel Points y ya están en tu cuenta",['categoria' => $this->venta->model->categoria->categoria,'negocio' => $this->venta->model->nombre,'tp' => $this->tps]),__("Nos gustaría saber qué te pareció tu experiencia,por favor compártela en el siguiente enlace:")],
             'type' => 'light-success', // light-info , light-success, light-danger, light-warning
             'btn' => true,
-            'btnTitle' => 'Ir a mis Consumos',
+            'btnTitle' => __("Ir a mis Consumos"),
             'url' => ['name' => 'socio.consumos']
         ];
     }
@@ -82,7 +82,7 @@ class nuevoConsumoNegocio extends Notification implements ShouldQueue
     public function toVonage(object $notifiable): VonageMessage
     {   
         $url = url('/consumos');
-        $mensaje = "Gracias por tu compra en ({$this->venta->model->categoria->categoria} - {$this->venta->model->nombre}), Has ganado Tp$ {$this->tps} Travel Points y ya están en tu cuenta. Nos gustaría saber qué te pareció tu experiencia, por favor compártela en el siguiente enlace: {$url}";
+        $mensaje = __("Gracias por tu compra en (:categoria - :negocio), Has ganado Tp$ :tp Travel Points y ya están en tu cuenta. Nos gustaría saber qué te pareció tu experiencia, por favor compártela en el siguiente enlace: :url",['categoria' => $this->venta->model->categoria->categoria,'negocio' => $this->venta->model->nombre,'tp' => $this->tps,'url' => $url]);
 
         return (new VonageMessage)
             ->content($mensaje)

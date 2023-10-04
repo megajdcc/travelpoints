@@ -43,11 +43,11 @@ class SolicitudEnviada extends Notification implements ShouldQueue
     public function toMail($notifiable)
     {
         return (new MailMessage)
-        ->subject('Solicitud enviada')
-        ->greeting("Hola {$notifiable->getNombreCompleto()}")
-                    ->line("Tu solicitud para que afiliemos al negocio {$this->solicitud->nombre}, ha sido notificada en TravelPoints.")
-                    ->line('Al revisar tu solicitud te estaremos informando acerca de su estatus.')
-                    ->salutation('¡Gracias por usar TravelPoints!');
+        ->subject(__("Solicitud enviada"))
+        ->greeting(__("Hola :nombre",['nombre' => $notifiable->getNombreCompleto()]))
+                    ->line(__("Tu solicitud para que afiliemos al negocio :negocio, ha sido notificada en TravelPoints.",['negocio' => $this->solicitud->nombre]))
+                    ->line(__("Al revisar tu solicitud te estaremos informando acerca de su estatus."))
+                    ->salutation(__("¡Gracias por usar Travel Points!"));
     }
 
     /**
@@ -59,13 +59,13 @@ class SolicitudEnviada extends Notification implements ShouldQueue
     public function toArray($notifiable)
     {
         return [
-            'titulo' => 'Solicitud enviada',
+            'titulo' => __("Solicitud enviada"),
             'avatar' => null,
             'usuario' => null,
-            'mensaje' => ["Tu solicitud para que afiliemos al negocio {$this->solicitud->nombre}, ha sido notificada en TravelPoints.","Al revisar tu solicitud te estaremos informando acerca de su estatus"],
+            'mensaje' => [__("Tu solicitud para que afiliemos al negocio :negocio, ha sido notificada en TravelPoints.", ['negocio' => $this->solicitud->nombre]), __("Al revisar tu solicitud te estaremos informando acerca de su estatus.")],
             'type' => 'light-info', // light-info , light-success, light-danger, light-warning
             'btn' => true,
-            'btnTitle' => 'Solicitudes',
+            'btnTitle' => __("Solicitudes"),
             'url' => ['name' => 'socio.negocio.solicitudes']
         ];
     }

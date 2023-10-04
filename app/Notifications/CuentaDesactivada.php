@@ -42,16 +42,16 @@ class CuentaDesactivada extends Notification implements ShouldQueue
     public function toMail($notifiable)
     {
         return (new MailMessage)
-                    ->subject('Cuenta desactivada')
-                    ->greeting("Hola {$notifiable->getNombreCompleto()}")
-                    ->line("El usuario {$this->usuario->getNombreCompleto()} ha desactivado su cuenta.")
-                    ->line("El motivo de su baja es la siguiente:")
+                    ->subject(__('Cuenta desactivada'))
+                    ->greeting(__("Hola :nombre",['nombre' => $notifiable->getNombreCompleto()]))
+                    ->line(__("El usuario :usuario ha desactivado su cuenta.",['usuario' => $this->usuario->getNombreCompleto()]))
+                    ->line(__("El motivo de su baja es la siguiente:"))
                     ->line($this->mensaje)
-                    ->salutation('Gracias por usar TravelPoints!');
+                    ->salutation(__('Gracias por usar Travel Points'));
     }
 
     /**
-     * Get the array representation of the notification.
+     * Get the array representation of the notification.S
      *
      * @param  mixed  $notifiable
      * @return array
@@ -59,13 +59,13 @@ class CuentaDesactivada extends Notification implements ShouldQueue
     public function toArray($notifiable)
     {
         return [
-            'titulo' => 'Un usuario ha desactivado su cuenta',
+            'titulo' => __('Un usuario ha desactivado su cuenta'),
             'avatar' => $this->usuario->getAvatar(),
             'usuario' => $this->usuario->getNombreCompleto(),
-            'mensaje' => ["El usuario {$this->usuario->getNombreCompleto()} ha desactivado su cuenta.", "El motivo de su baja es la siguiente:",$this->mensaje],
+            'mensaje' => [__("El usuario :usuario ha desactivado su cuenta.", ['usuario' => $this->usuario->getNombreCompleto()]), __("El motivo de su baja es la siguiente:"),$this->mensaje],
             'type' => 'light-success', // light-info , light-success, light-danger, light-warning
             'btn' => false,
-            'btnTitle' => 'Ir a mi perfil',
+            'btnTitle' => __('Ir a mi perfil'),
             'url' => ['name' => 'perfil',]
         ];
     }

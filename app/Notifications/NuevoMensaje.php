@@ -15,14 +15,15 @@ class NuevoMensaje extends Notification implements ShouldQueue
   public Sistema $sistema;
   public $datos;
 
-  public $perfiles = ['Viajero','Negocio','No registrado','otro'];
+  public $perfiles = [];
   /**
    * Create a new notification instance.
    *
    * @return void
    */
   public function __construct(Sistema $sistema, array $datos)
-  {
+  { 
+    $this->perfiles = [__('Viajero'), __("Negocio"), __('No registrado'), __('otro')];
     $this->sistema = $sistema;
     $this->datos = $datos;
   }
@@ -50,15 +51,15 @@ class NuevoMensaje extends Notification implements ShouldQueue
     // $bcc = \array_filter($this->sistema->correos, fn ($val) => $val['principal'])[0]['email'];
 
     return (new MailMessage)
-      ->subject('Nuevo mensaje en contacto | ' . $this->datos['asunto'])
-      // ->bcc($bcc)
-      ->greeting("Hola {$notifiable->getNombreCompleto()}!")
-      ->line('Perfil: '.$this->perfiles[$this->datos['perfil'] - 1])
-      ->line('Tienes un mensaje desde contacto')
-      ->line("El mensaje lo ha enviado {$this->datos['nombre']} y te quiere hacer saber lo siguiente:")
+
+      ->subject(__('Nuevo mensaje en contacto | :asunto',['asunto' => $this->datos['asunto']]))
+      ->greeting(__("Hola :nombre",['nombre' => $notifiable->getNombreCompleto()]))
+      ->line(__("Perfil: :perfil",['perfil' => $this->perfiles[$this->datos['perfil'] - 1]]))
+      ->line(__("Tienes un mensaje desde contacto"))
+      ->line(__("El mensaje lo ha enviado :nombre y te quiere hacer saber lo siguiente:",['nombre' => $this->datos['nombre']]))
       ->line($this->datos['mensaje'])
-      ->line(($this->datos['telefono']) ? "Te ha dejado su número de contacto por si quieres contáctarlo: {$this->datos['telefono']} " : '')
-      ->salutation("Gracias por usar nuestra applicación, Equipo - {$this->sistema->nombre}!");
+      ->line(($this->datos['telefono']) ? __("Te ha dejado su número de contacto por si quieres contáctarlo: :telefono",['telefono' => $this->datos['telefono']]) : '')
+      ->salutation(__("Gracias por usar nuestra applicación, Equipo - :sistema",['sistema' => $this->sistema->nombre ]));
   }
 
   /**
@@ -70,13 +71,18 @@ class NuevoMensaje extends Notification implements ShouldQueue
   public function toArray($notifiable)
   {
     return [
-      'titulo' => 'Nuevo mensaje en contacto | ' . $this->datos['asunto'],
+      'titulo' => __('Nuevo mensaje en contacto | :asunto', ['asunto' => $this->datos['asunto']]),
       'avatar' => null,
       'usuario' => null,
-      'mensaje' => ['Tienes un mensaje desde contacto:', "El mensaje lo ha enviado {$this->datos['nombre']} y te quiere hacer saber lo siguiente:", $this->datos['mensaje'], ($this->datos['telefono']) ? "Te ha dejado su número de contacto por si quieres contáctarlo: {$this->datos['telefono']} " : '', 'Perfil:' . $this->perfiles[$this->datos['perfil'] - 1]],
+      'mensaje' => [__("Tienes un mensaje desde contacto"), 
+                    __("El mensaje lo ha enviado :contacto y te quiere hacer saber lo siguiente:",['contacto' => $this->datos['nombre']]), 
+                    $this->datos['mensaje'], 
+                    ($this->datos['telefono']) ? __("Te ha dejado su número de contacto por si quieres contáctarlo: :telefono",['telefono' => $this->datos['telefono']]) : '', 
+                    __("Perfil: :perfil",['perfil' => $this->perfiles[$this->datos['perfil'] - 1]])
+                  ],
       'type' => 'light-success', // light-info , light-success, light-danger, light-warning
       'btn' => false,
-      'btnTitle' => 'Ir a mi perfil',
+      'btnTitle' => __("Ir a mi perfil"),
       'url' => ['name' => 'perfil',]
     ];
   }

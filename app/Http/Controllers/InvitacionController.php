@@ -57,7 +57,7 @@ class InvitacionController extends Controller
                 ]
             ]);
 
-            Mail::to($invitacion->email)->send(new InvitacionNegocio($invitacion));
+            Mail::to($invitacion->email)->locale($request->user()->locale)->send(new InvitacionNegocio($invitacion));
             DB::commit();
             $result = true;
         } catch (\Throwable $th) {
@@ -71,7 +71,7 @@ class InvitacionController extends Controller
 
     public function recordar(Request $request, Invitacion $invitacion){
 
-        Mail::to($invitacion->email)->send(new InvitacionNegocio($invitacion));
+        Mail::to($invitacion->email)->locale($request->user()->locale)->send(new InvitacionNegocio($invitacion));
 
 
         return response()->json([

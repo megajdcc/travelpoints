@@ -41,13 +41,13 @@ class NuevaSolicitudNegocio extends Notification implements ShouldQueue
     public function toMail($notifiable)
     {
         return (new MailMessage)
-        ->subject('Nueva solicitud de afiliación de negocio')
-        ->greeting("Hola {$notifiable->getNombreCompleto()}!")
-                    ->line("El socio {$this->solicitud->usuario->getNombreCompleto()}, ha solicitado afiliar su Negocio {$this->solicitud->nombre}.")
-                    ->line("El negocio se encuentra en la categoría {$this->solicitud->categoria->categoria}.")
-                    ->line('Puedes revisar con detenimiento los detalles del negocio en el panel de solicitudes.')
-                    ->action('Solicitudes', url('/negocios/solicitudes'))
-                    ->salutation('Gracias por usar nuestra Aplicación!');
+        ->subject(__('Nueva solicitud de afiliación de negocio'))
+        ->greeting(__("Hola :nombre",['nombre' => $notifiable->getNombreCompleto()]))
+                    ->line(__("El socio :socio, ha solicitado afiliar su Negocio :negocio",['socio' => $this->solicitud->usuario->getNombreCompleto(),'negocio' => $this->solicitud->nombre]))
+                    ->line(__("El negocio se encuentra en la categoría :categoria",['categoria' => $this->solicitud->categoria->categoria]))
+                    ->line(__("Puedes revisar con detenimiento los detalles del negocio en el panel de solicitudes"))
+                    ->action(__("Solicitudes"), url('/negocios/solicitudes'))
+                    ->salutation(__("Gracias por usar nuestra Aplicación!"));
     }
 
     /**
@@ -59,13 +59,13 @@ class NuevaSolicitudNegocio extends Notification implements ShouldQueue
     public function toArray($notifiable)
     {
         return [
-            'titulo' => 'Nueva solicitud de afiliación de negocio',
+            'titulo' => __('Nueva solicitud de afiliación de negocio'),
             'avatar' => null,
             'usuario' => null,
-            'mensaje' => ["El socio {$this->solicitud->usuario->getNombreCompleto()}, ha solicitado afiliar su Negocio {$this->solicitud->nombre}.","El negocio se encuentra en la categoría {$this->solicitud->categoria->categoria}.", 'Puedes revisar con detenimiento los detalles del negocio en el panel de solicitudes.'],
+            'mensaje' => [__("El socio :socio, ha solicitado afiliar su Negocio :negocio", ['socio' => $this->solicitud->usuario->getNombreCompleto(), 'negocio' => $this->solicitud->nombre]), __("El negocio se encuentra en la categoría :categoria", ['categoria' => $this->solicitud->categoria->categoria]), __("Puedes revisar con detenimiento los detalles del negocio en el panel de solicitudes")],
             'type' => 'light-info', // light-info , light-success, light-danger, light-warning
             'btn' => true,
-            'btnTitle' => 'Solicitud',
+            'btnTitle' => __("Solicitud"),
             'url' => ['name' => 'negocio.solicitud.show','params'=>['id' => $this->solicitud->id]]
         ];
     }

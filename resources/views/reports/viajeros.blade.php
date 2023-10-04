@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>Viajeros por Pais</title>
+	<title>{{ __('Viajeros por País') }}</title>
 
 	<style>
 		body,html{
@@ -210,9 +210,9 @@
 					<tr>
 						<td colspan="2">
 							@if(isset($filtro['pais']) && !empty($filtro['pais']))
-								<h2>Viajeros por País: <b>{{ $filtro['pais'] }}</b></h2>
+								<h2>{{ __('Viajeros por País') }}: <b>{{ $filtro['pais'] }}</b></h2>
 							@else
-								<h2>Viajeros por Países</h2>
+								<h2>{{ __('Viajeros por Países') }}</h2>
 							@endif
 
 						</td>
@@ -246,16 +246,16 @@
 					<tr>
 						@if(isset($filtro['pais']) && !empty($filtro['pais']))
 								<th class="">Num.</th>
-								<th class="">Viajero</th>
-								<th class="">Email</th>
-								<th class="">Pais</th>
+								<th class="">{{ __('Viajero') }}</th>
+								<th class="">{{ __('Email') }}</th>
+								<th class="">{{ __('País') }}</th>
 
 						@else
 								<th class="">Num.</th>
-								<th class="">País</th>
-								<th class="">Cant de viajeros</th>
-								<th class="">Viajeros con Consumo</th>
-								<th class="">Viajeros sin Consumo</th>
+								<th class="">{{ __('País') }}</th>
+								<th class="">{{ __('Cant de viajeros') }}</th>
+								<th class="">{{ __('Viajeros con Consumo') }}</th>
+								<th class="">{{ __('Viajeros sin Consumo') }}</th>
 
 
 						@endif

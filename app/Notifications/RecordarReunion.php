@@ -43,10 +43,10 @@ class RecordarReunion extends Notification implements ShouldQueue
     public function toMail($notifiable)
     {
         return (new MailMessage)
-                    ->subject('Recordatorio Mi Agenda (TravelPoints)')
-                    ->greeting("Hola {$notifiable->getNombreCompleto()}.")
+                    ->subject(__("Recordatorio Mi Agenda (TravelPoints)"))
+                    ->greeting(__("Hola :nombre",['nombre' => $notifiable->getNombreCompleto()]))
                     ->line($this->reunion->recordatorio['nota'])
-                    ->salutation('¡Gracias por usar nuestra aplicación!');
+                    ->salutation(__("¡Gracias por usar nuestra aplicación!"));
     }
 
     /**

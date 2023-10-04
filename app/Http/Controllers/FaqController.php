@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Jobs\ModelTraslate;
 use App\Models\Faq;
 use Illuminate\Http\Request;
 use Illuminate\Database\Eloquent\Builder;
@@ -79,6 +80,10 @@ class FaqController extends Controller
 
         $faq = Faq::create([...$this->validar($request),...['usuario_id' => $request->user()->id]]);
 
+        ModelTraslate::dispatch($faq, [
+            'pregunta',
+            'respuesta',
+        ]);
         $faq->categoria;
         $faq->usuario;
 
@@ -99,6 +104,11 @@ class FaqController extends Controller
     {
         
         $result = $faq->update([...$this->validar($request,$faq), ...['usuario_id' => $request->user()->id]]);
+        
+        ModelTraslate::dispatch($faq, [
+            'pregunta',
+            'respuesta',
+        ]);
 
         $faq->categoria;
         $faq->usuario;

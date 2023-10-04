@@ -39,7 +39,7 @@ class Idioma extends Model
         Storage::disk(Idioma::DISK_TRADUCCIONES)->put($name_json, $jsonData);
 
         // Copia el archivo JSON al directorio lang en el directorio raíz
-        $langPath = base_path('lang/' . $this->shortLang);
+        $langPath = base_path('lang');
         if (!file_exists($langPath)) {
             mkdir($langPath, 0755, true);
         }
@@ -60,6 +60,12 @@ class Idioma extends Model
                 $data->put($key, $this->generateJson($value));
             } else {
                 $data->put($key, $this->shortLang == 'es' ? $value : $this->translate($value,from:'es',to:$this->shortLang));
+                // $translatedValue = $this->shortLang == 'es' ? $value : $this->translate($value, from: 'es', to: $this->shortLang);
+
+                // // Eliminar comillas dobles del texto traducido
+                // $translatedValue = str_replace(['[',']'], '', $translatedValue);
+
+                // $data->put($key, $translatedValue);
             }
         }
 
@@ -101,7 +107,7 @@ class Idioma extends Model
 
         $result =  Storage::disk(Idioma::DISK_TRADUCCIONES)->put($this->getNameJson(),$jsonData);
 
-        $langPath = base_path('lang/' . $this->shortLang);
+        $langPath = base_path('lang');
         
         if (!file_exists($langPath)) {
             mkdir($langPath, 0755, true);

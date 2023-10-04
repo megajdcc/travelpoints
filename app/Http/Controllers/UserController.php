@@ -138,7 +138,7 @@ class UserController extends Controller
                 $user_register->establecerNivel();
             }
 
-            $usuario->notify(new WelcomeUsuario($usuario));
+            $usuario->notify((new WelcomeUsuario($usuario))->locale($usuario->es));
             DB::commit();
             $usuario->cargar();
 
@@ -212,7 +212,7 @@ class UserController extends Controller
 
             $result = true;
 
-            $usuario->notify(new WelcomeUsuario($usuario));
+            $usuario->notify((new WelcomeUsuario($usuario))->locale($usuario->locale));
 
             DB::commit();
         } catch (\Exception $e) {
@@ -1362,7 +1362,7 @@ class UserController extends Controller
             }
 
             $lider->cargar();
-            $lider->notify(new WelcomeUsuario($lider));
+            $lider->notify((new WelcomeUsuario($lider))->locale($lider->locale));
 
             DB::commit();
             $result = true;
@@ -1412,7 +1412,7 @@ class UserController extends Controller
                 $promotor->aperturarCuenta();
             }
             $promotor->cargar();
-            $promotor->notify(new WelcomeUsuario($promotor));
+            $promotor->notify((new WelcomeUsuario($promotor))->locale($promotor->locale));
 
             DB::commit();
             $result = true;

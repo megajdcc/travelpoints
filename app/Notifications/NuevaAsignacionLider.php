@@ -44,20 +44,20 @@ class NuevaAsignacionLider extends Notification implements ShouldQueue
 
         if($notifiable->rol->nombre == 'Lider'){
             return (new MailMessage)
-                ->subject('Te hemos asignado un promotor a tu red de promotores')
-                ->greeting("Hola {$notifiable->getNombreCompleto()}! ")
-                ->line("Tienes a un nuevo promotor en tu red de promotores; El nuevo promotor es {$this->promotor->getNombreCompleto()}, Ayudalo y guialo a cumplir sus metas dentro de travelpoints, y tienes a tu disposición la posibilidad de banearlo si ves que no cumples con las normas dentro de la asociación")
-                ->line("El nuevo promotor ya te aparece en tu listado de promotores, puedes ir a verlo cuando gustes, por aca de doy el link directo")
-                ->action('Ir a mis promotores', url('/promotores'))
-                ->salutation('Gracias por usar TravelPoints!');
+                ->subject(__('Te hemos asignado un promotor a tu red de promotores'))
+                ->greeting(__("Hola :nombre",['nombre' => $notifiable->getNombreCompleto()]))
+                ->line(__("Tienes a un nuevo promotor en tu red de promotores; El nuevo promotor es :promotor, Ayudalo y guialo a cumplir sus metas dentro de travelpoints, y tienes a tu disposición la posibilidad de banearlo si ves que no cumples con las normas dentro de la asociación",['promotor' => $this->promotor->getNombreCompleto()]))
+                ->line(__("El nuevo promotor ya te aparece en tu listado de promotores, puedes ir a verlo cuando gustes, por aca de doy el link directo"))
+                ->action(__("Ir a mis promotores"), url('/promotores'))
+                ->salutation(__('¡Gracias por preferirnos Travel Points!'));
         }else{
             return (new MailMessage)
-                ->subject('Te hemos asignado un Lider')
-                ->greeting("Hola {$notifiable->getNombreCompleto()}! ")
-                ->line("Ya no estarás solo en esta aventura, te hemos asignado el lider {$this->promotor->lider->getNombreCompleto()}")
-                ->line("El nuevo lider te aparecerá en tu tablero principal")
-                ->action('Ir a mi tablero', url('/home'))
-                ->salutation('Gracias por usar TravelPoints!');
+                ->subject(__('Te hemos asignado un Lider'))
+                ->greeting(__("Hola :nombre", ['nombre' => $notifiable->getNombreCompleto()]))
+                ->line(__("Ya no estarás solo en esta aventura, te hemos asignado el lider :lider",['lider' => $this->promotor->lider->getNombreCompleto()]))
+                ->line(__("El nuevo lider te aparecerá en tu tablero principal"))
+                ->action(__('Ir a mi tablero'), url('/home'))
+                ->salutation(__('Gracias por usar Travel Points'));
         }
         
     }
@@ -72,24 +72,24 @@ class NuevaAsignacionLider extends Notification implements ShouldQueue
     {
         if($notifiable->rol->nombre == 'Lider'){
             return [
-                'titulo' => 'Te hemos asignado un promotor a tu red de promotores',
+                'titulo' => __('Te hemos asignado un promotor a tu red de promotores'),
                 'avatar' => $this->promotor->getAvatar(),
                 'usuario' => $this->promotor->getNombreCompleto(),
-                'mensaje' => ["Tienes a un nuevo promotor en tu red de promotores; El nuevo promotor es {$this->promotor->getNombreCompleto()}, Ayudalo y guialo a cumplir sus metas dentro de travelpoints, y tienes a tu disposición la posibilidad de banearlo si ves que no cumples con las normas dentro de la asociación"],
+                'mensaje' => [__("Tienes a un nuevo promotor en tu red de promotores; El nuevo promotor es :promotor, Ayudalo y guialo a cumplir sus metas dentro de travelpoints, y tienes a tu disposición la posibilidad de banearlo si ves que no cumples con las normas dentro de la asociación", ['promotor' => $this->promotor->getNombreCompleto()])],
                 'type' => 'light-success', // light-info , light-success, light-danger, light-warning
                 'btn' => true,
-                'btnTitle' => 'Mis promotores',
+                'btnTitle' => __('Mis promotores'),
                 'url' => ['name' => 'promotores.list',]
             ];
         }else{
             return [
-                'titulo' => 'Te hemos asignado un Lider',
+                'titulo' => __('Te hemos asignado un Lider'),
                 'avatar' => $this->promotor->lider->getAvatar(),
                 'usuario' => $this->promotor->lider->getNombreCompleto(),
-                'mensaje' => ["Ya no estarás solo en esta aventura, te hemos asignado el lider {$this->promotor->lider->getNombreCompleto()}"],
+                'mensaje' => [__("Ya no estarás solo en esta aventura, te hemos asignado el lider :lider", ['lider' => $this->promotor->lider->getNombreCompleto()])],
                 'type' => 'light-success', // light-info , light-success, light-danger, light-warning
                 'btn' => true,
-                'btnTitle' => 'Mi tablero',
+                'btnTitle' => __('Mi tablero'),
                 'url' => ['name' => 'home',]
             ];
         }

@@ -28,8 +28,6 @@ class UsuarioCreado extends Mailable implements ShouldQueue
     public function build()
     {
 
-      
-
         return $this->markdown('emails.usuario.creado')
                     ->subject("Bienvenido a Travel Points ".$this->usuario->getNombreCompleto())
                     ->with([

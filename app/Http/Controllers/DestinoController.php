@@ -207,8 +207,7 @@ class DestinoController extends Controller
             DB::beginTransaction();
 
             $destino->update($datos->except(['imagenes'])->toArray());
-            ModelTraslate::dispatch($destino,['nombre','titulo', 'descripcion']);
-            
+            ModelTraslate::dispatch($destino,['nombre','titulo','descripcion']);
 
             $destino->iata;
             $destino->ciudad;

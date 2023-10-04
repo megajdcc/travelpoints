@@ -45,18 +45,18 @@ class NotificarRetiro extends Notification implements ShouldQueue
     {
         if(in_array($notifiable->rol->nombre,['Administrador','Desarrollador'])){
             return (new MailMessage)
-                ->subject("Solicitud de Retiro de Comisión.")
-                ->greeting("Solicitud de Retiro de Comisión.")
-                ->line("El {$this->retiro->usuario->rol->nombre} {$this->retiro->usuario->getNombreCompleto()}")
-                ->line("Ha solicitado un retiro de comisión; Atiende el mismo en el panel de retiros de comisiones.")
-                ->action('Retiros de comisiones', url('/retiros'))
-                ->salutation('Gracias por Seguir usando TravelPoints!');
+                ->subject(__("Solicitud de Retiro de Comisión"))
+                ->greeting(__("Solicitud de Retiro de Comisión"))
+                ->line(__("El :rol :usuario",['rol' => $this->retiro->usuario->rol->nombre,'usuario' => $this->retiro->usuario->getNombreCompleto()]))
+                ->line(__("Ha solicitado un retiro de comisión; Atiende el mismo en el panel de retiros de comisiones."))
+                ->action(__('Retiros de comisiones'), url('/retiros'))
+                ->salutation(__('Gracias por usar Travel Points'));
         }
         return (new MailMessage)
-            ->subject("Solicitud de Retiro de Comisión.")
-            ->greeting("Tu solicitud de retiro ha sido recibida")
-            ->line("Te estaremos informando cuando sea procesado el mismo.")
-            ->salutation('Gracias por Seguir usando TravelPoints!');
+            ->subject(__("Solicitud de Retiro de Comisión"))
+            ->greeting(__("Tu solicitud de retiro ha sido recibida"))
+            ->line(__("Te estaremos informando cuando sea procesado el mismo"))
+            ->salutation(__('Gracias por usar Travel Points'));
 
        
     }
@@ -71,25 +71,25 @@ class NotificarRetiro extends Notification implements ShouldQueue
     {
         if(in_array($notifiable->rol->nombre,['Administrador','Desarrollador'])){
             return [
-                'titulo' => 'Solicitud de Retiro de Comisión.',
+                'titulo' => __("Solicitud de Retiro de Comisión"),
                 'avatar' => null,
                 'usuario' => null,
-                'mensaje' => ["El {$this->retiro->usuario->rol->nombre} {$this->retiro->usuario->getNombreCompleto()}", "Ha solicitado un retiro de comisión; Atiende el mismo en el panel de retiros de comisiones."],
+                'mensaje' => [__("El :rol :usuario",['rol' => $this->retiro->usuario->rol->nombre,'usuario' => $this->retiro->usuario->getNombreCompleto()]), __("Ha solicitado un retiro de comisión; Atiende el mismo en el panel de retiros de comisiones.")],
                 'type' => 'light-primary', // light-info , light-success, light-danger, light-warning
                 'btn' => true,
-                'btnTitle' => 'Ir a retiros',
+                'btnTitle' => __('Ir a retiros'),
                 'url' => ['name' => 'retiro.list',]
             ];
         }
 
         return [
-            'titulo' => 'Tu solicitud de retiro ha sido recibida',
+            'titulo' => __('Tu solicitud de retiro ha sido recibida'),
             'avatar' => null,
             'usuario' => null,
-            'mensaje' => ["Tu solicitud de retiro ha sido recibida, te estaremos informando cuando sea procesado el mismo."],
+            'mensaje' => [__("Tu solicitud de retiro ha sido recibida, te estaremos informando cuando sea procesado el mismo")],
             'type' => 'light-success', // light-info , light-success, light-danger, light-warning
             'btn' => false,
-            'btnTitle' => 'Ir a mi perfil',
+            'btnTitle' => __('Ir a mi perfil'),
             'url' => ['name' => 'perfil.editar',]
         ];
     }

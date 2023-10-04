@@ -43,14 +43,14 @@ class consumoInvitado extends Notification implements ShouldQueue
     public function toMail($notifiable)
     {
         return (new MailMessage)
-                    ->subject("Tú invitado {$this->venta->cliente->getNombreCompleto()}, ha realizado un consumo.")
-                    ->greeting("Hola {$notifiable->getNombreCompleto()}")
-                    ->line("Tú invitado {$this->venta->cliente->getNombreCompleto()}, ha realizado un consumo en el negocio {$this->venta->model->nombre}, lo cual te ha generado una comisión en tps por un monto Tp$ {$this->comision}")
-                    ->line('Recuerda que puedes invitar a mas amigos y familiares, compartiendo tu link de invitados en la cual podrán registrarse y ser tus invitados dentro de Travel Points.')
-                    ->line("Este es tu link de invitado:".url("/register/{$notifiable->codigo_referidor}"))
-                    ->line('Te hemos generado un movimiento en tu cuenta por la comisión obtenida, puedes ver este y todos tus movimientos en el siguiente enlace')
-                    ->action('Mis Movimientos', url('/socio/perfil/mi-cuenta'))
-                    ->salutation('Gracias por usar Travel Points');
+                    ->subject(__("Tú invitado :invitado, ha realizado un consumo.",['invitado' => $this->venta->cliente->getNombreCompleto()]))
+                    ->greeting(__("Hola :nombre",['nombre' => $notifiable->getNombreCompleto()]))
+                    ->line(__("Tú invitado :invitado, ha realizado un consumo en el negocio :negocio, lo cual te ha generado una comisión en tps por un monto Tp$ :tp",['invitado' => $this->venta->cliente->getNombreCompleto(),'negocio' => $this->venta->model->nombre,'tp' => $this->comision]))
+                    ->line(__("Recuerda que puedes invitar a mas amigos y familiares, compartiendo tu link de invitados en la cual podrán registrarse y ser tus invitados dentro de Travel Points."))
+                    ->line(__("Este es tu link de invitado, :link",['link' => url("/register/{$notifiable->codigo_referidor}") ]))
+                    ->line(__('Te hemos generado un movimiento en tu cuenta por la comisión obtenida, puedes ver este y todos tus movimientos en el siguiente enlace'))
+                    ->action(__('Mis Movimientos'), url('/socio/perfil/mi-cuenta'))
+                    ->salutation(__('Gracias por usar Travel Points'));
     }
 
     /**
@@ -62,20 +62,20 @@ class consumoInvitado extends Notification implements ShouldQueue
     public function toArray($notifiable)
     {
         return [
-            'titulo' => "Tú invitado {$this->venta->cliente->getNombreCompleto()}, ha realizado un consumo.",
+            'titulo' => __("Tú invitado :invitado, ha realizado un consumo.", ['invitado' => $this->venta->cliente->getNombreCompleto()]),
             'avatar' => null,
             'usuario' => null,
             'mensaje' => [
-                "Tú invitado {$this->venta->cliente->getNombreCompleto()}, ha realizado un consumo en el negocio {$this->venta->model->nombre}, lo cual te ha generado una comisión en tps por un monto Tp$ {$this->comision}",
-                'Recuerda que puedes invitar a mas amigos y familiares, compartiendo tu link de invitados en la cual podrán registrarse y ser tus invitados dentro de Travel Points.',
-                "Este es tu link de invitado:" . url("/register/{$notifiable->codigo_referidor}"),
-                'Te hemos generado un movimiento en tu cuenta por la comisión obtenida, puedes ver este y todos tus movimientos en el siguiente enlace',
+                __("Tú invitado :invitado, ha realizado un consumo en el negocio :negocio, lo cual te ha generado una comisión en tps por un monto Tp$ :tp", ['invitado' => $this->venta->cliente->getNombreCompleto(), 'negocio' => $this->venta->model->nombre, 'tp' => $this->comision]),
+                __("Recuerda que puedes invitar a mas amigos y familiares, compartiendo tu link de invitados en la cual podrán registrarse y ser tus invitados dentro de Travel Points."),
+                __("Este es tu link de invitado, :link", ['link' => url("/register/{$notifiable->codigo_referidor}")]),
+                __('Te hemos generado un movimiento en tu cuenta por la comisión obtenida, puedes ver este y todos tus movimientos en el siguiente enlace'),
 
 
             ],
             'type' => 'light-info', // light-info , light-success, light-danger, light-warning
             'btn' => true,
-            'btnTitle' => 'Mis movimientos',
+            'btnTitle' => __('Mis movimientos'),
             'url' => ['name' => 'micuenta',]
         ];
     }

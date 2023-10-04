@@ -2,12 +2,12 @@
 @php
     
 @endphp
-# Hola  **{{ trim($cliente) }}**.   
+# {{ __('Hola') }}  **{{ trim($cliente) }}**.   
 
-Gracias por tu compra de:  
+{{ __('Gracias por tu compra de') }}:  
 
 @component('mail::table')
-| Producto y/o Servicio       | Cantidad         | Monto  |
+| {{ __('Producto y/o Servicio') }}       | {{ __('Cantidad') }}         | {{ __('Monto') }}  |
 | -------------- |:----------------:| ------:|
 @foreach ($productos as $producto)
 | **{{ $producto->nombre }}** | {{ $producto->pivot->cantidad }}  | {{ $producto->divisa->iso.' '. number_format((float) $producto->pivot->monto,2,'.',',') }}  | 
@@ -15,14 +15,14 @@ Gracias por tu compra de:
 @endcomponent
 
 @if ($productos->first()->tipo_producto == 2)
-Puedes descargar el Archivo Adjunto 
+{{ __('Puedes descargar el Archivo Adjunto') }}
 @elseif($consumo->ordencj)
 {{ $mensaje }}
 
 @else
-Puedes retirar en la tienda: **{{ strtoupper($tienda->nombre) }}**.  
- ## Dirección: **{{ strtoupper( $tienda->direccion()) }}**.
+{{ __('Puedes retirar en la tienda') }}: **{{ strtoupper($tienda->nombre) }}**.  
+ ## {{ __('Dirección') }}: **{{ strtoupper( $tienda->direccion()) }}**.
 @endif
 
-# ¡Gracias por preferirnos Travel Points! #
+# {{ __('¡Gracias por preferirnos Travel Points!') }} #
 @endcomponent

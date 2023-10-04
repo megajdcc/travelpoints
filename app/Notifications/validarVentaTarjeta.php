@@ -68,7 +68,7 @@ class validarVentaTarjeta extends Notification implements ShouldQueue
     public function toVonage(object $notifiable): VonageMessage
     {
         return (new VonageMessage)
-            ->content("Hola {$notifiable->getNombreCompleto()}. EL usuario {$this->tarjeta->usuario->getNombreCompleto()}; Ha aplicado la tarjeta con el siguiente número:{$this->tarjeta->numero}. Necesito que confirmes con una (y) si se la has vendido de lo contrario (n) para negar tal venta.");
+            ->content(__("Hola :nombre . EL usuario :usuario ; Ha aplicado la tarjeta con el siguiente número: :tarjeta Necesito que confirmes con una (y) si se la has vendido de lo contrario (n) para negar tal venta.",['nombre' => $notifiable->getNombreCompleto(),'usuario' => $this->tarjeta->usuario->getNombreCompleto(),'tarjeta' => $this->tarjeta->numero]));
     }
 
 }

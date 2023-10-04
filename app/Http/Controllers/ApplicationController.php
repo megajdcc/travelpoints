@@ -49,7 +49,7 @@ class ApplicationController extends Controller
             //     $usuarios->push($this->sistema->usuario);
             // }
 
-            Notification::send($usuarios, new NuevoMensaje($this->sistema, $datos));
+            Notification::send($usuarios, (new NuevoMensaje($this->sistema, $datos)));
 
             $result = true;
         } catch (\Exception $e) {

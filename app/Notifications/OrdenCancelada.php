@@ -48,23 +48,23 @@ class OrdenCancelada extends Notification implements ShouldQueue
         if($rol == 'Viajero'){
 
             return (new MailMessage)
-                ->subject('Se ha cancelado la orden de compra')
-                ->greeting("Hola {$notifiable->getNombreCompleto()}!")
-                ->line("Se ha cancelado su compra con el número de orden {$this->consumo->ordencj}, por un monto de {$this->consumo->total}")
-                ->line("El monto pagado por el producto se ha reembolsado en tps a su billetera")
-                ->line('Si ha pagado un monto por el envío del mismo a traves de paypal, ya hemos generado la orden de reintegro a su cuenta de donde ha pagado la misma, debe acreditarse en los próximos días, si ve que pasan mas de dos semana, comuniquese con nosotros explicando su problema.')
-                ->action('Ir a mis consumos', url('/socio/compras'))
-                ->salutation('¡Gracias por seguir usando TravelPoints!');
+                ->subject(__("Se ha cancelado la orden de compra"))
+                ->greeting(__("Hola :nombre",['nombre' => $notifiable->getNombreCompleto()]))
+                ->line(__("Se ha cancelado su compra con el número de orden :orden, por un monto de :monto",['orden' => $this->consumo->ordencj,'monto' => $this->consumo->total]))
+                ->line(__("El monto pagado por el producto se ha reembolsado en tps a su billetera"))
+                ->line(__("Si ha pagado un monto por el envío del mismo a traves de paypal, ya hemos generado la orden de reintegro a su cuenta de donde ha pagado la misma, debe acreditarse en los próximos días, si ve que pasan mas de dos semana, comuniquese con nosotros explicando su problema."))
+                ->action(__('Ir a mis consumos'), url('/socio/compras'))
+                ->salutation(__("Gracias por seguir usando Travel Points!"));
 
         }else{
             return (new MailMessage)
-                ->subject('Se ha cancelado la orden de compra')
-                ->greeting("Hola {$notifiable->getNombreCompleto()}!")
-                ->line("Se ha cancelado una compra con el número de orden {$this->consumo->ordencj}, por un monto de {$this->consumo->total}")
-                ->line("El monto pagado por el producto se ha reembolsado en tps a la billetera del cliente {$this->consumo->cliente->getNombreCompleto()}")
-                ->line($this->consumo->monto_envio ? "El monto del envío fue pagado por Paypal, el número de control en Paypal es: {$this->consumo->paypal_id}, procede a entrar en la plataforma de paypal y reembolsa el mismo" : 'No hay costo por concepto de envios, no es necesario hacer mas devoluciones')
-                ->action('Ir a ventas', url('/productos/ventas/'))
-                ->salutation('¡Gracias por seguir usando TravelPoints!');
+                ->subject(__("Se ha cancelado la orden de compra"))
+                ->greeting(__("Hola :nombre", ['nombre' => $notifiable->getNombreCompleto()]))
+                ->line(__("Se ha cancelado una compra con el número de orden :orden, por un monto de :monto",['orden' => $this->consumo->ordencj,'monto' => $this->consumo->total]))
+                ->line(__("El monto pagado por el producto se ha reembolsado en tps a la billetera del cliente :cliente",['cliente' => $this->consumo->cliente->getNombreCompleto()]))
+                ->line($this->consumo->monto_envio ? __("El monto del envío fue pagado por Paypal, el número de control en Paypal es: :control, procede a entrar en la plataforma de paypal y reembolsa el mismo",['control' => $this->consumo->paypal_id]) : __("No hay costo por concepto de envios, no es necesario hacer mas devoluciones"))
+                ->action(__("Ir a ventas"), url('/productos/ventas/'))
+                ->salutation(__("Gracias por seguir usando Travel Points!"));
         }
         
     }

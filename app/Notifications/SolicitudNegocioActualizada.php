@@ -43,11 +43,11 @@ class SolicitudNegocioActualizada extends Notification implements ShouldQueue
     {  
         
         return (new MailMessage)
-                    ->subject("Tu Solicitud de afiliación del negocio {$this->solicitud->nombre}, ha sido {$this->solicitud->getEstatus($this->solicitud->situacion)}")
-                    ->greeting("Hola {$notifiable->getNombreCompleto()}!")
+                    ->subject(__("Tu Solicitud de afiliación del negocio :negocio, ha sido :status",['negocio' => $this->solicitud->nombre,'status' => $this->solicitud->getEstatus($this->solicitud->situacion)]))
+                    ->greeting(__("Hola :nombre",['nombre' => $notifiable->getNombreCompleto()]))
                     ->line($this->solicitud->getMensage($this->solicitud->situacion))
                     // ->action('Notification Action', url('/'))
-                    ->line('Gracias por seguir usando nuestra aplicacion de TravelPoinst!');
+                    ->line(__("Gracias por seguir usando nuestra aplicacion de TravelPoinst!"));
     }
 
     /**
@@ -59,13 +59,13 @@ class SolicitudNegocioActualizada extends Notification implements ShouldQueue
     public function toArray($notifiable)
     {
         return [
-            'titulo' => "Tu Solicitud de afiliación del negocio {$this->solicitud->nombre}, ha sido {$this->solicitud->getEstatus($this->solicitud->situacion)}",
+            'titulo' => __("Tu Solicitud de afiliación del negocio :negocio, ha sido :status", ['negocio' => $this->solicitud->nombre, 'status' => $this->solicitud->getEstatus($this->solicitud->situacion)]),
             'avatar' => null,
             'usuario' => null,
             'mensaje' => [$this->solicitud->getMensage($this->solicitud->situacion)],
             'type' => 'light-info', // light-info , light-success, light-danger, light-warning
             'btn' => true,
-            'btnTitle' => 'Solicitud',
+            'btnTitle' => __("Solicitud"),
             'url' => ['name' => 'socio.negocio.solicitudes.edit','params' => ['id' => $this->solicitud->id]]
         ];
     }

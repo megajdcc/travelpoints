@@ -63,13 +63,13 @@ class WelcomeUsuario extends Notification implements ShouldQueue
      */
     public function toArray($notifiable){
         return [
-            'titulo' => 'Bienvenido a '.env('APP_NAME'),
+            'titulo' => __("Bienvenido a :sistema",['sistema' => env('APP_NAME')]),
             'avatar' => null,
             'usuario' => null,
-            'mensaje' => ['¡Hola '.$notifiable->getNombreCompleto(). '!.Bienvenido/a a TravelPoints. Estamos listos para acompañarte en este viaje.  Gana puntos en los registros de las compras que hagas en los Negocios Travel Points, invita amigos y disfruta todo lo que tenemos para tí'],
+            'mensaje' => [__("Hola :nombre .Bienvenido/a a TravelPoints. Estamos listos para acompañarte en este viaje.  Gana puntos en los registros de las compras que hagas en los Negocios Travel Points, invita amigos y disfruta todo lo que tenemos para tí",['nombre' => $notifiable->getNombreCompleto()])],
             'type' => 'light-success', // light-info , light-success, light-danger, light-warning
             'btn' => true,
-            'btnTitle' => 'Ir a mi perfil',
+            'btnTitle' => __("Ir a mi perfil"),
             'url' => ['name' => 'perfil.editar',]
              ];
     }

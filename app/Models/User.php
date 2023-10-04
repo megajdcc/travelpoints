@@ -33,14 +33,15 @@ use Illuminate\Support\{Collection,Str};
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use SebastianBergmann\Type\NullType;
 use Illuminate\Database\Eloquent\Factories\Factory;
-
-class User extends Authenticatable
+use Illuminate\Contracts\Translation\HasLocalePreference;
+class User extends Authenticatable implements HasLocalePreference
 {
 
     use HasApiTokens,HasFactory, Notifiable;
     use Has_roles;
     use hasCuenta,hasTelefonos,hasCarrito;
     use agendar;
+
     public string $model_type = 'App\models\User';
     public readonly int|null $divisa_id; 
 
@@ -116,6 +117,11 @@ class User extends Authenticatable
         'lider_business' => 'boolean',
         'ultimo_login' => 'datetime'
     ];
+
+
+    public function preferredLocale(){
+        return $this->locale;
+    }
 
     public function password(): Attribute
     {

@@ -8,7 +8,6 @@ import {computed,toRefs,onMounted,watch} from 'vue'
 
 import store from '@/store'
 
-
 export default {
    
    props:['id'],
@@ -22,24 +21,12 @@ export default {
 
       const imagenes = computed(() => store.state.atraccion.atraccion.imagenes)
 
-      const { atracciones } = toRefs(store.state.atraccion)
-
       const cargarForm = () => {
-
-         if(!atracciones.value.length){
-            store.dispatch('atraccion/fetch',id.value)
-         }else{
-            store.commit('atraccion/capturar',id.value)
-         }
-
+         store.dispatch('atraccion/fetch', id.value)
 
       }
-
-      onMounted(() => {
-         cargarForm()
-      })
-
-      watch([id,atracciones],() => cargarForm())
+      cargarForm();
+      watch([id],() => cargarForm())
 
       const actions = () => {
 

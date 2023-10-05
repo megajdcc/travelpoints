@@ -64,7 +64,7 @@ export default function useAtraccionesList(destino_id) {
 
       store.dispatch('atraccion/fetchData', {
          perPage      : perPage.value,
-         currentPage  : currentPage.value,
+         page  : currentPage.value,
          sortBy       : sortBy.value,
          q            : searchQuery.value,
          isSortDirDesc: isSortDirDesc.value,
@@ -74,14 +74,12 @@ export default function useAtraccionesList(destino_id) {
          total.value = all
          next(atracciones)
       }).catch(e => {
-         toast.info('Error trayendo Data', { position: 'bottom-right' })
+         toast.info('Error trayendo Data')
       })
 
    }
 
    const eliminar = (atraccion_id) => {
-
-
       store.dispatch(`atraccion/eliminar`, atraccion_id).then(({ result }) => {
          if (result) {
             toast.success('Se ha eliminado con éxito la atracción', { position: 'bottom-right' })

@@ -19,14 +19,9 @@ export default {
       const {id} = toRefs(props)
 
       const cargarForm = () => {
-         if(!atracciones.value.length){
-            store.dispatch('atraccion/fetch',id.value)
-         }else{
-            store.commit('atraccion/capturar',id.value)
-         }
+         store.dispatch('atraccion/fetch', id.value)
       }
-
-      onMounted(() => cargarForm())
+      cargarForm()
       watch([id],() => cargarForm())
 
       const actionsHorario = () => {

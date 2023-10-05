@@ -24,39 +24,40 @@ export default defineConfig({
                 },
             },
         }),
-       VitePWA({
-            outDir: 'public/build',
-            manifest:'public/manifest.json',
-            workbox: {
-                globStrict:true,
-                globPatterns: ['**/*.{js,css,ico,png,jpg,jpeg,svg}'],
-                skipWaiting: true,
-                maximumFileSizeToCacheInBytes:2097152 * 6,
-                globIgnores: ["**\\/node_modules\\/**\\/*", "**\\/*.{html}"],
-                runtimeCaching:[{
-                    urlPattern: ({url}) => url.origin === host,
-                    handler: 'CacheFirst',
-                    options: {
-                        cacheName: 'api-cache',
-                        expiration: {
-                            maxAgeSeconds: 2592000, // 30 días en segundos
-                        },
-                    },
-                },{
-                    urlPattern:({request}) => request.destination === 'image',
-                    handler:'CacheFirst',
-                    options: {
-                        cacheName: 'images-cache',
-                        expiration: {
-                            maxAgeSeconds: 2592000, // 30 días en segundos
-                        },
-                    },
-                }],
-            },
-            devOptions: {
-                enabled: true,
-            }
-        })
+    //    VitePWA({
+    //         outDir: 'public/build',
+    //         registerType:"autoUpdate",
+    //         manifest:'public/manifest.json',
+    //         workbox: {
+    //             globStrict:true,
+    //             globPatterns: ['**/*.{js,css,ico,png,jpg,jpeg,svg}'],
+    //             skipWaiting: true,
+    //             maximumFileSizeToCacheInBytes:2097152 * 6,
+    //             globIgnores: ["**\\/node_modules\\/**\\/*", "**\\/*.{html}","**\\/*.{php}"],
+    //             runtimeCaching:[{
+    //                 urlPattern: ({url}) => url.origin === host,
+    //                 handler: 'CacheFirst',
+    //                 options: {
+    //                     cacheName: 'api-cache',
+    //                     expiration: {
+    //                         maxAgeSeconds: 2592000, // 30 días en segundos
+    //                     },
+    //                 },
+    //             },{
+    //                 urlPattern:({request}) => request.destination === 'image',
+    //                 handler:'CacheFirst',
+    //                 options: {
+    //                     cacheName: 'images-cache',
+    //                     expiration: {
+    //                         maxAgeSeconds: 2592000, // 30 días en segundos
+    //                     },
+    //                 },
+    //             }],
+    //         },
+    //         devOptions: {
+    //             enabled: true,
+    //         }
+    //     })
 
     ],
     resolve: {

@@ -34,7 +34,7 @@ class IdiomaController extends Controller
 
         return response()->json($idiomas->map(fn($val) => [
             'locale' => $val->shortLang,
-            'img' =>"/storage/flags/{$val->flag}",
+            'img' => asset("/storage/flags/{$val->flag}"),
             'name' => $val->languaje
         ]));
         

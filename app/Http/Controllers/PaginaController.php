@@ -36,22 +36,28 @@ class PaginaController extends Controller
 
         $filtro = $request->all();
 
-        $paginator = Pagina::where([
-            ['contenido','LIKE',"%{$filtro['q']}%","OR"],
-            ['header', 'LIKE', "%{$filtro['q']}%", "OR"],
-            ['ruta', 'LIKE', "%{$filtro['q']}%", "OR"],
+        $searchs = collect(['contenido','header','ruta']);
+        $paginator = Pagina::where(fn($q) => $searchs->each(fn($s) => $q->where($s,"LIKE","%{$filtro['q']}%",'OR')))
+        ->select([
+            'nombre',
+            'header',
+            'is_termino',
+            'is_politica',
+            'ruta',
+            'usuario_id',
+            'activo',
+            'is_contacto',
+            'showHeader',
+            'icono',
+            'id'
         ])
-        ->with('usuario')
-        ->orderBy($filtro['sortBy'],$filtro['isSortDirDesc'] ? 'desc' : 'asc')
-        ->paginate($filtro['perPage']?:1000);
-
+        ->orderBy($filtro['sortBy'] ?? 'id',$filtro['isSortDirDesc'] ? 'desc' : 'asc')
+        ->paginate($filtro['perPage'] ?? 1000);
 
         return response()->json([
-            'total' => $paginator->total(),
             'paginas' => $paginator->items(),
+            'total' => $paginator->total(),
         ]);
-        
-
 
     }
 

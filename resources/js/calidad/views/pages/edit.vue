@@ -1,7 +1,7 @@
 <script>
 
 import store from '@/store'
-import { h,toRefs } from 'vue'
+import { h,toRefs,watch } from 'vue'
 
 import form from './form.vue'
 export default {
@@ -15,17 +15,12 @@ export default {
     const {id}  = toRefs(props)
 
     const cargarForm = () => {
-
-      if(!paginas.value.length){
-        store.dispatch('pagina/fetch',id.value)
-      }else{
-        store.commit('pagina/capturar',id.value)
-      }
-
-    }
+       store.dispatch('pagina/fetch', id.value)
     
+    }
     cargarForm();
-  
+    
+    watch(id, () => cargarForm())
     return () => h(form, {
 
       on: {

@@ -2,7 +2,7 @@
 
 import form from './form.vue'
 
-import { onMounted, h,toRefs } from 'vue'
+import { h,toRefs } from 'vue'
 import store from '@/store'
 export default {
 
@@ -11,24 +11,13 @@ export default {
    setup(props) {
 
       const {id} = toRefs(props)
-      const {destinos} = toRefs(store.state.destino)
 
       const cargarForm = () => {
-
-            if(!destinos.value.length){
-               store.dispatch('destino/fetch',id.value).then(() => {
-
-               })
-
-            }else{
-               store.commit('destino/capturar',id.value)
-            }
-
-
+         store.dispatch('destino/fetch', id.value)
       }
-
-
-      onMounted(() => cargarForm())
+      cargarForm();
+      
+      watch(id,() => cargarForm())
 
       return () => h(form, {
 
@@ -37,11 +26,8 @@ export default {
             save: (datos, formValidate) => {
 
                store.dispatch('destino/guardar', datos).then(({ result, destino }) => {
-
                   if (result) {
-
                      toast.success('Se ha guardado con éxito el destino', { position: 'bottom-right' })
-                   
                   }
 
                }).catch(e => {

@@ -266,6 +266,8 @@ class AuthController extends Controller
       }catch(\Exception $e){
 
          $result = false;
+
+         dd($e->getMessage());
       }
       
       return response()->json([

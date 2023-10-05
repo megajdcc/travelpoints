@@ -57,48 +57,20 @@ class AtraccionController extends Controller
     {
         $datos = $request->all();
 
-        $pagination = Atraccion::where([
-            ['nombre', 'LIKE', "%{$datos['q']}%", 'OR'],
-            ['duracion_sugerida', 'LIKE', "%{$datos['q']}%", 'OR'],
-            ['sitio_web', 'LIKE', "%{$datos['q']}%", 'OR'],
-            ['email', 'LIKE', "%{$datos['q']}%", 'OR'],
-            ['incluye', 'LIKE', "%{$datos['q']}%", 'OR'],
-            ['descripcion', 'LIKE', "%{$datos['q']}%", 'OR'],
-
-        ])
-            ->whereHas('destino', function (Builder $q) use ($datos) {
-                $q->orWhere([
-                    ['nombre', 'LIKE', "%{$datos['q']}%", 'OR'], 
-                    ['titulo', 'LIKE', "%{$datos['q']}%", 'OR'],
-                ]);
-            })
+        $searchs = collect(['nombre','duracion_sugerida','sitio_web','email','incluye','descripcion']);
+        $pagination = Atraccion::where(fn($q) => $searchs->each(fn($s) => $q->where($s,'LIKE',"%{$datos['q']}%","OR")))
+            ->whereHas('destino', fn (Builder $q) => $q->orWhere([['nombre', 'LIKE', "%{$datos['q']}%", 'OR'], ['titulo', 'LIKE', "%{$datos['q']}%", 'OR']]))
             ->where('destino_id',$datos['destino_id'])
+            ->select(['nombre','descripcion','id'])
+            ->with('imagenes')
             ->orderBY($datos['sortBy'] ?: 'id', $datos['isSortDirDesc'] ? 'desc' : 'asc')
             ->paginate($datos['perPage'] ?: 10000);
 
-        $atracciones = $pagination->items();
-
-        foreach ($atracciones as $key => $atraccion) {
-            
-
-            $atraccion->telefono;
-            $atraccion->imagenes;
-            $atraccion->destino;
-            $atraccion->destino->estado?->pais;
-            $atraccion->destino->ciudad;
-            $atraccion->horarios;
-            $atraccion->likes;
-            $atraccion->ruta = "/Atraccions?q={$atraccion->nombre}";
-            $atraccion->modelType = $atraccion->model_type;
-            $atraccion->opinions;
-
-
-        }
-
         return response()->json([
-            'atracciones' => $atracciones,
+            'atracciones' => $pagination->items(),
             'total' => $pagination->total()
         ]);
+        
     }
 
 

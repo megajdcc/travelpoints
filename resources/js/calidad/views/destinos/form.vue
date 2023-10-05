@@ -104,7 +104,7 @@
                             <b-form-group>
           
                                  <template #label>
-                                    ¿ Que debe saber el Viajero para el viaje ?
+                                    ¿Que debe saber el Viajero para el viaje?
                                  </template>
                         
                                  <validation-provider name="about_travel" #default="{ errors, valid }">
@@ -356,7 +356,7 @@ export default {
    setup(props,{emit}) {
 
       const formValidate = ref(null)
-
+      const {idiomas} = toRefs(store.state.idioma)
       const formulario = computed(() => store.getters['destino/draft'])
       const seleccionados = ref([])
 
@@ -457,6 +457,7 @@ export default {
          getLongitud,
          iatas,
          optionsEditor,
+         idiomas,
 
          filterIata:(options,search) => {
 

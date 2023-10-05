@@ -17,27 +17,9 @@
               stacked="md">
 
 
-              <template #cell(id)="{ item, detailsShowing, toggleDetails }">
-                    <b-button @click="toggleDetails" variant="primary" size="sm" >
-                        # {{ item.id }}
-                        <font-awesome-icon :icon="['fas', detailsShowing ? 'fa-angle-up' : 'fa-angle-down']"/>
-                    </b-button>
+              <template #cell(id)="{ item}">
+                   <b class="d-inline flex-nowrap">{{ item.id }}</b> 
               </template>
-
-               <template #row-details="{ item }">
-
-                 <el-divider content-position="left">Vista Previa</el-divider>
-                  <b-container fluid>
-                    <b-row>
-                      <b-col>
-                          <section v-html="item.contenido"></section>
-                      </b-col>
-                    </b-row>
-                  </b-container>
-
-              </template>
-
-
                <template #cell(ruta)="{ item }">
                   <b-link :href="`/${item.ruta}`" target="_blank">
                     <font-awesome-icon :icon="['fas',`fa-${item.icono}`]" v-if="item.icono" class="mr-1"/>

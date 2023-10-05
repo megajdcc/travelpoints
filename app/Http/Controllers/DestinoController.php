@@ -93,33 +93,18 @@ class DestinoController extends Controller
     public function fetchData(Request $request)
     {   
         $datos = $request->all();
+        $searchs = collect(['nombre','titulo','descripcion']);
 
-        $pagination = Destino::where([
-            ['nombre','LIKE',"%{$datos['q']}%",'OR'],
-            ['titulo', 'LIKE', "%{$datos['q']}%", 'OR'],
-            ['descripcion', 'LIKE', "%{$datos['q']}%", 'OR'],
-        ])
-        ->whereHas('iata' , function(Builder $q) use ($datos) {
-                    $q->orWhere([
-                        ['codigo','LIKE',"%{$datos['q']}%",'OR'],['aeropuerto', 'LIKE', "%{$datos['q']}%", 'OR'],
-                    ]);
-        })
+        $pagination = Destino::where(fn($q) => $searchs->map(fn($s) => $q->where($s,'LIKE',"%{$datos['q']}%","OR")))
+        ->whereHas('iata' , fn(Builder $q) => $q->orWhere([['codigo','LIKE',"%{$datos['q']}%", 'OR'],['aeropuerto','LIKE',"%{$datos['q']}%",'OR']]))
         ->orderBY($datos['sortBy'] ?: 'id', $datos['isSortDirDesc'] ? 'desc' : 'asc')
+        ->select(['nombre','titulo','descripcion','activo','id'])
+        ->with('imagenes')
         ->paginate($datos['perPage'] ?: 10000);
 
-        $destinos= $pagination->items();
-        
-        foreach ($destinos as $key => $destino) {
-            $destino->iata;
-            $destino->imagenes;
-            $destino->ciudad;
-            $destino->estado?->pais;
-            $destino->likes;
-
-        }
 
         return response()->json([
-            'destinos' => $destinos,
+            'destinos' => $pagination->items(),
             'total' => $pagination->total()
         ]);
     }

@@ -11,22 +11,14 @@ export default {
    setup(props) {
 
       const { id } = toRefs(props)
-
-      const {atracciones} = toRefs(store.state.atraccion)
+     
 
       const cargarForm = () => {
-
-         if (!atracciones.value.length){
-            store.dispatch('atraccion/fetch',id.value)
-         }else{
-            store.commit('atraccion/capturar',id.value)
-         }
-
+          store.dispatch('atraccion/fetch', id.value)
       }
-
+      cargarForm();
       
-      onMounted(() => cargarForm())
-
+      watch(id,() => cargarForm())
       return () => h(form, {
 
          on: {

@@ -22,19 +22,10 @@ export default {
       const {destinos,destino} = toRefs(store.state.destino)
 
       const cargarForm = () => {
-
-         if(!destinos.value.length){
-            store.dispatch('destino/fetch',id.value)
-         }else{
-            store.commit('destino/capturar',id.value)
-         }
-
-
+         store.dispatch('destino/fetch', id.value)
       }
+      cargarForm()
 
-      onMounted(() => {
-         cargarForm()
-      })
 
       watch([id,destinos],() => cargarForm())
 

@@ -2,8 +2,6 @@
 import store from '@/store'
 
 import {ref,computed,onMounted,watch} from 'vue'
-
-
 export default function useDestinoList(){
 
    const isSortDirDesc = ref(true)
@@ -58,29 +56,24 @@ export default function useDestinoList(){
 
    onMounted(() => refetchData())
 
-
-
    const fetchData = (next) => {
 
       store.dispatch('destino/fetchData',{
          perPage:perPage.value,
-         currentPage:currentPage.value,
+         page:currentPage.value,
          sortBy:sortBy.value,
          q: searchQuery.value,
          isSortDirDesc: isSortDirDesc.value
       }).then(({total:all,destinos}) => {
-
          total.value = all
          next(destinos)
       }).catch(e => {
-         toast.info('Error trayendo Data',{position:'bottom-right'})
+         toast.info('Error trayendo Data')
       })
 
    }  
 
       const eliminar =  (destino_id)  => {
-
-         
          store.dispatch(`destino/eliminar`,destino_id).then(({result}) => {
             if(result){
                toast.success('Se ha eliminado con éxito el destino',{position:'bottom-right'})
@@ -89,9 +82,6 @@ export default function useDestinoList(){
          })
 
       }
-
-
-   
 
 
       return {

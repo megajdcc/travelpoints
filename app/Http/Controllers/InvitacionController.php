@@ -178,7 +178,7 @@ class InvitacionController extends Controller
 
             Notification::send(
                 User::whereHas('rol', fn (Builder $q) => $q->where('nombre', 'Administrador'))->get(),
-                new NuevaSolicitudNegocio($solicitud)
+                new NuevaSolicitudNegocio($request->url(),$solicitud)
             );
 
             $solicitud->usuario->notify(new SolicitudEnviada($solicitud));

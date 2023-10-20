@@ -1,8 +1,15 @@
+import Error404 from '@/views/error/Error404.vue'
+import Login from '@/views/pages/authentication/Login.vue';
+import ForgotPassword from 'views/auth/ForgotPassword.vue'
+import PasswordReset from 'views/auth/PasswordReset.vue';
+import EstablecerContrasena from 'views/auth/EstablecerContrasena.vue'
+import NotAuthorized from '@/views/pages/miscellaneous/NotAuthorized.vue'
+
 export default [
   {
     path: '/error-404',
     name: 'error-404',
-    component: () => import('@/views/error/Error404.vue'),
+    component: Error404,
     meta: {
       layout: 'full',
       resource: 'Auth',
@@ -12,7 +19,7 @@ export default [
   {
     path: '/login',
     name: 'login',
-    component: () => import('@/views/pages/authentication/Login.vue'),
+    component: Login,
     meta: {
       layout: 'full',
       resource: 'Auth',
@@ -23,7 +30,7 @@ export default [
   {
     path: '/forgot-password',
     name: 'auth-forgot-password',
-    component: () => import('views/auth/ForgotPassword.vue'),
+    component:ForgotPassword,
     meta: {
       layout: 'full',
       resource: 'Auth',
@@ -38,7 +45,7 @@ export default [
       email: (route.query.email),
     }),
     name: 'auth-reset-password',
-    component: () => import('views/auth/PasswordReset.vue'),
+    component:PasswordReset,
     meta: {
       layout: 'full',
       resource:'Auth'
@@ -49,46 +56,21 @@ export default [
     path: '/usuario/:usuario/establecer/contrasena',
     props:true,
     name: 'establecer-contrasena',
-    component: () => import('views/auth/EstablecerContrasena.vue'),
+    component:EstablecerContrasena,
     meta: {
       layout: 'full',
       resource: 'Auth'
     },
   },
 
-  // {
-  //   path: '/pages/authentication/reset-password-v2',
-  //   name: 'auth-reset-password-v2',
-  //   component: () => import('@/views/pages/authentication/ResetPassword-v2.vue'),
-  //   meta: {
-  //     layout: 'full',
-  //   },
-  // },
+
   {
     path: '/pages/miscellaneous/not-authorized',
     name: 'misc-not-authorized',
-    component: () => import('@/views/pages/miscellaneous/NotAuthorized.vue'),
+    component: NotAuthorized,
     meta: {
       layout: 'full',
       resource: 'Auth',
     },
-  },
-  // {
-  //   path: '/pages/miscellaneous/under-maintenance',
-  //   name: 'misc-under-maintenance',
-  //   component: () => import('@/views/pages/miscellaneous/UnderMaintenance.vue'),
-  //   meta: {
-  //     layout: 'full',
-  //   },
-  // },
-  // {
-  //   path: '/pages/miscellaneous/error',
-  //   name: 'misc-error',
-  //   component: () => import('@/views/pages/miscellaneous/Error.vue'),
-  //   meta: {
-  //     layout: 'full',
-  //   },
-  // },
- 
-
+  }
 ]

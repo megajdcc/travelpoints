@@ -13,6 +13,7 @@ class ApplicationController extends Controller
 {
 
     protected Sistema $sistema;
+    
     public function __construct(){
         
         $this->sistema = Sistema::first();

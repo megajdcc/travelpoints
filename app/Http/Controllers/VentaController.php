@@ -209,7 +209,7 @@ class VentaController extends Controller
                         $sistema->generarMovimiento($monto_descontar,"Comisión adjudicada al viajero {$referidor->getNombreCompleto()}, por consumo de su invitado ({$venta->cliente->getNombreCompleto()}) en el negocio ({$venta->model->nombre}), por un monto de:{$monto}",Movimiento::TIPO_EGRESO);
 
                         // Se le notifica al invitador de la nueva comisión.
-                        $referidor->notify(new consumoInvitado($venta,$comision_referidor));
+                        $referidor->notify(new consumoInvitado($request->url,$venta,$comision_referidor));
                     }
                 }
                 
@@ -234,7 +234,7 @@ class VentaController extends Controller
            
             // Falta Notificar Venta al usuario y a los operadores si los Hubiera...
 
-            // $venta->cliente->notify(new nuevoConsumoNegocio($venta));
+            // $venta->cliente->notify(new nuevoConsumoNegocio($request->url(),$venta));
             DB::commit();
             $venta->cargar();
             $result = true;

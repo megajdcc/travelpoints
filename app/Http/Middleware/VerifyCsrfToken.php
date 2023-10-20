@@ -13,6 +13,6 @@ class VerifyCsrfToken extends Middleware
      */
     protected $except = [
         'vonage/*',
-        'vonage/sms-entrante'
+        'vonage/sms-entrante',
     ];
 }

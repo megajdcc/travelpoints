@@ -138,7 +138,7 @@ class UserController extends Controller
                 $user_register->establecerNivel();
             }
 
-            $usuario->notify((new WelcomeUsuario($usuario))->locale($usuario->es));
+            $usuario->notify((new WelcomeUsuario($request->url(),$usuario))->locale($usuario->es));
             DB::commit();
             $usuario->cargar();
 
@@ -204,7 +204,7 @@ class UserController extends Controller
                 }
 
                 // Notificar al usuario referidor del nuevo amigo
-                $usuario_referidor->notify(new nuevoAmigo($usuario));
+                $usuario_referidor->notify(new nuevoAmigo($request->url(),$usuario));
                 $usuario_referidor->establecerNivel();
             }
 
@@ -212,7 +212,7 @@ class UserController extends Controller
 
             $result = true;
 
-            $usuario->notify((new WelcomeUsuario($usuario))->locale($usuario->locale));
+            $usuario->notify((new WelcomeUsuario($request->url(),$usuario))->locale($usuario->locale));
 
             DB::commit();
         } catch (\Exception $e) {
@@ -1199,7 +1199,7 @@ class UserController extends Controller
                 $promotor->lider
             ]);
 
-            Notification::sendNow($users_notification, new NuevaAsignacionLider($promotor));
+            Notification::sendNow($users_notification, new NuevaAsignacionLider($request->url(),$promotor));
 
             DB::commit();
             $result = true;
@@ -1235,7 +1235,7 @@ class UserController extends Controller
                 $lider->coordinador
             ]);
 
-            // Notification::sendNow($users_notification, new NuevaAsignacionCoordinador($lider));
+            // Notification::sendNow($users_notification, new NuevaAsignacionCoordinador($request->url(),$lider));
 
             DB::commit();
             $result = true;
@@ -1362,7 +1362,7 @@ class UserController extends Controller
             }
 
             $lider->cargar();
-            $lider->notify((new WelcomeUsuario($lider))->locale($lider->locale));
+            $lider->notify((new WelcomeUsuario($request->url(),$lider))->locale($lider->locale));
 
             DB::commit();
             $result = true;
@@ -1412,7 +1412,7 @@ class UserController extends Controller
                 $promotor->aperturarCuenta();
             }
             $promotor->cargar();
-            $promotor->notify((new WelcomeUsuario($promotor))->locale($promotor->locale));
+            $promotor->notify((new WelcomeUsuario($request->url(),$promotor))->locale($promotor->locale));
 
             DB::commit();
             $result = true;
@@ -1555,7 +1555,7 @@ class UserController extends Controller
 
                  $result = true;    
 
-                //  $usuario->notify(new validarVentaTarjeta($tarjeta));
+                //  $usuario->notify(new validarVentaTarjeta($request->url(),$tarjeta));
 
                 if($usuario->cuenta->divisa->iso == 'Tp'){
                     $usuario->generarMovimiento($tarjeta->lote->tps, 'Nueva Tarjeta asociada a su cuenta');

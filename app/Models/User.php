@@ -8,7 +8,6 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Laravel\Sanctum\HasApiTokens;
 
 use App\Trais\HasDireccion;
 
@@ -34,7 +33,11 @@ use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use SebastianBergmann\Type\NullType;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Contracts\Translation\HasLocalePreference;
-class User extends Authenticatable implements HasLocalePreference
+use Laravel\Passport\HasApiTokens;
+use App\Notifications\ResetPasswordNotification;
+use Illuminate\Contracts\Auth\CanResetPassword;
+
+class User extends Authenticatable implements HasLocalePreference, CanResetPassword
 {
 
     use HasApiTokens,HasFactory, Notifiable;
@@ -42,22 +45,25 @@ class User extends Authenticatable implements HasLocalePreference
     use hasCuenta,hasTelefonos,hasCarrito;
     use agendar;
 
+
     public string $model_type = 'App\models\User';
     public readonly int|null $divisa_id; 
+
+    public string $url_reset_password = "https://travelpoints.es";
 
     /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
-    protected $fillable = [
+    protected $fillable       = [
         'username',
         'nombre',
         'apellido',
         'bio',
         'website',
         'fecha_nacimiento',
-        'genero' , // 1 => Masculino, 2 => femenino
+        'genero' , // 1       => Masculino, 2 => femenino
         'codigo_postal',
         'activo', // activo o no valor booleano
         'imagen',
@@ -67,7 +73,7 @@ class User extends Authenticatable implements HasLocalePreference
         'is_password',
         'rol_id',
         'token',
-        'lenguaje', // 1 => es
+        'lenguaje', // 1      => es
         'twitter',
         'facebook',
         'instagram',
@@ -82,7 +88,7 @@ class User extends Authenticatable implements HasLocalePreference
         'porcentaje_perfil',
         'lider_business',
         'comision_promotores',
-        'locale', // default => es
+        'locale', // default  => es
 
          /**
           * Para el caso de los promotores el nivel 
@@ -117,7 +123,12 @@ class User extends Authenticatable implements HasLocalePreference
         'lider_business' => 'boolean',
         'ultimo_login' => 'datetime'
     ];
-
+    public function sendPasswordResetNotification($token):void
+    {
+        $url = $this->url_reset_password."/reset-password?token={$token}";
+        
+        $this->notify(new ResetPasswordNotification($url));
+    }
 
     public function preferredLocale(){
         return $this->locale;

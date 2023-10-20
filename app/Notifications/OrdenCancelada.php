@@ -17,7 +17,7 @@ class OrdenCancelada extends Notification implements ShouldQueue
      *
      * @return void
      */
-    public function __construct(protected Consumo $consumo)
+    public function __construct(public string $url = 'travelpoints.es',protected Consumo $consumo)
     {
         //
     }
@@ -53,7 +53,7 @@ class OrdenCancelada extends Notification implements ShouldQueue
                 ->line(__("Se ha cancelado su compra con el número de orden :orden, por un monto de :monto",['orden' => $this->consumo->ordencj,'monto' => $this->consumo->total]))
                 ->line(__("El monto pagado por el producto se ha reembolsado en tps a su billetera"))
                 ->line(__("Si ha pagado un monto por el envío del mismo a traves de paypal, ya hemos generado la orden de reintegro a su cuenta de donde ha pagado la misma, debe acreditarse en los próximos días, si ve que pasan mas de dos semana, comuniquese con nosotros explicando su problema."))
-                ->action(__('Ir a mis consumos'), url('/socio/compras'))
+                ->action(__('Ir a mis consumos'), $this->url.'/socio/compras')
                 ->salutation(__("Gracias por seguir usando Travel Points!"));
 
         }else{
@@ -63,7 +63,7 @@ class OrdenCancelada extends Notification implements ShouldQueue
                 ->line(__("Se ha cancelado una compra con el número de orden :orden, por un monto de :monto",['orden' => $this->consumo->ordencj,'monto' => $this->consumo->total]))
                 ->line(__("El monto pagado por el producto se ha reembolsado en tps a la billetera del cliente :cliente",['cliente' => $this->consumo->cliente->getNombreCompleto()]))
                 ->line($this->consumo->monto_envio ? __("El monto del envío fue pagado por Paypal, el número de control en Paypal es: :control, procede a entrar en la plataforma de paypal y reembolsa el mismo",['control' => $this->consumo->paypal_id]) : __("No hay costo por concepto de envios, no es necesario hacer mas devoluciones"))
-                ->action(__("Ir a ventas"), url('/productos/ventas/'))
+                ->action(__("Ir a ventas"), $this->url.'/productos/ventas/')
                 ->salutation(__("Gracias por seguir usando Travel Points!"));
         }
         

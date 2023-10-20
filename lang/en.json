@@ -626,5 +626,12 @@
     "Gracias por seguir usando nuestra aplicacion de TravelPoinst!": "Thank you for continuing to use our TravelPoinst application!",
     "Hola :nombre . EL usuario :usuario ; Ha aplicado la tarjeta con el siguiente número: :tarjeta Necesito que confirmes con una (y) si se la has vendido de lo contrario (n) para negar tal venta.": "Hello :nombre The user :usuario ; You have applied the card with the following number: :card I need you to confirm with a (y) if you have sold it to them otherwise (n) to deny such sale.",
     "Bienvenido a :sistema": "Welcome to :sistema",
-    "Hola :nombre .Bienvenido\/a a TravelPoints. Estamos listos para acompañarte en este viaje.  Gana puntos en los registros de las compras que hagas en los Negocios Travel Points, invita amigos y disfruta todo lo que tenemos para tí": "Hello :nombre .Welcome to TravelPoints. We are ready to accompany you on this journey. Earn points on the records of purchases you make at Travel Points Businesses, invite friends and enjoy everything we have for you"
+    "Hola :nombre .Bienvenido\/a a TravelPoints. Estamos listos para acompañarte en este viaje.  Gana puntos en los registros de las compras que hagas en los Negocios Travel Points, invita amigos y disfruta todo lo que tenemos para tí": "Hello :nombre .Welcome to TravelPoints. We are ready to accompany you on this journey. Earn points on the records of purchases you make at Travel Points Businesses, invite friends and enjoy everything we have for you",
+    "Notificación de restablecimiento de contraseña":"Reset Password Notification",
+   "Este enlace para restablecer contraseña caducará en :count minutos.":"This password reset link will expire in :count minutes.",
+   "Si no solicitó un restablecimiento de contraseña, no es necesario realizar ninguna otra acción.":"If you did not request a password reset, no further action is required."
+
+ 
+
+
 }

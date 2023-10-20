@@ -199,11 +199,10 @@ class SolicitudController extends Controller
 
             Notification::send(
                 User::whereHas('rol', fn (Builder $q) => $q->where('nombre', 'Administrador'))->get(),
-                new NuevaSolicitudNegocio($solicitud)
+                new NuevaSolicitudNegocio($request->url(),$solicitud)
             );
 
             $solicitud->usuario->notify(new SolicitudEnviada($solicitud));
-
 
             $solicitud->categoria;
             $solicitud->usuario;
@@ -281,7 +280,7 @@ class SolicitudController extends Controller
                     $solicitud->usuario->notify((new SolicitudNegocioActualizada($solicitud))->locale($solicitud->usuario->locale));
                 } else {
 
-                    Notification::send(User::whereHas('rol', fn (Builder $q) => $q->where('nombre', 'Administrador'))->get(), new NuevaSolicitudNegocio($solicitud));
+                    Notification::send(User::whereHas('rol', fn (Builder $q) => $q->where('nombre', 'Administrador'))->get(), new NuevaSolicitudNegocio($request->url(),$solicitud));
 
                     $solicitud->usuario->notify(new SolicitudEnviada($solicitud));
                 }

@@ -11,6 +11,10 @@ class faltaUsabilidad extends Notification implements ShouldQueue
 {
     use Queueable;
 
+    public function __construct(public string $url = 'travelpoints.es')
+    {
+        
+    }
 
     /**
      *
@@ -28,7 +32,7 @@ class faltaUsabilidad extends Notification implements ShouldQueue
                     ->greeting(__('Hola :nombre, llevas mucho tiempo de inactividad.',['nombre' => $notifiable->getNombreCompleto()]))
                     ->line(__('Recuerda que si llegas a 12 meses sin inactividad alguna se te descontará el 10 % de tus TravelPoints.'))
                     ->line(__('Te invito que entres al sistema y efectues algún tipo de registro, para evitar el descuento por inactividad.'))
-                    ->action(__('Ir a Travel Points'), url('/'))
+                    ->action(__('Ir a Travel Points'), $this->url.'/')
                     ->salutation('');
     }
 

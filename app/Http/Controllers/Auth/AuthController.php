@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\{Auth, Hash, Storage};
+use Illuminate\Support\Facades\{Auth, Hash, Lang, Storage};
 use App\Models\User;
 use Validator;
 use App\Http\Controllers\Controller;
@@ -90,9 +90,8 @@ class AuthController extends Controller
          $usuario->ultimo_login = now();
          $usuario->save();
 
-         $token = (!is_null($usuario->getTokenText())) ? $usuario->getTokenText() : ($usuario->createToken($usuario->nombre.'-'.$usuario->id))->plainTextToken;
-         // $token = $tokenResult->plainTextToken;
-
+         $token = (!is_null($usuario->getTokenText())) ? $usuario->getTokenText() : $usuario->createToken($usuario->nombre . '-' . $usuario->id)->accessToken;
+         
          $usuario->token = $token;
 
          if(!$usuario->cuenta){
@@ -114,7 +113,8 @@ class AuthController extends Controller
          $result = false;
       }
 
-      return response()->json(['result' => $result,'usuario' => $result ? $usuario : null]);
+      return response()->json(['result' => $result,'usuario' => $result ? $usuario : null, 'accessToken' => $token,
+         'token_type' => 'Bearer',]);
 
    }
 
@@ -243,7 +243,8 @@ class AuthController extends Controller
        
          $user->save();
 
-         $token = (!is_null($user->getTokenText())) ? $user->getTokenText() : ($user->createToken($user->nombre.'-'.$user->id))->plainTextToken;
+         // $token = (!is_null($user->getTokenText())) ? $user->getTokenText() : ($user->createToken($user->nombre.'-'.$user->id))->accessToken;
+         $token = $user->createToken($user->nombre.'-'.$user->id)->accessToken;
          // $token = $tokenResult->plainTextToken;
 
          $user->token = $token;
@@ -269,13 +270,13 @@ class AuthController extends Controller
 
          dd($e->getMessage());
       }
-      
+     
       return response()->json([
          'result' => $result,
          'accessToken' => $token,
          'token_type' => 'Bearer',
          'usuario' =>  $user
-      ]);
+      ],200);
 
    }
 
@@ -300,7 +301,7 @@ class AuthController extends Controller
     */
    protected function guard(string $guardia  = null)
    {
-      return Auth::guard('web');
+      return Auth::guard('api');
    }
 
 
@@ -317,11 +318,11 @@ class AuthController extends Controller
       $usuario->token = null;
       $usuario->save();
       
-      $this->guard()->logout();
+      // $this->guard()->logout();
 
-      $request->session()->invalidate();
+      // $request->session()->invalidate();
 
-      $request->session()->regenerateToken();
+      // $request->session()->regenerateToken();
 
       // \broadcast(new UsuarioDesconectado($usuario))->toOthers();
 
@@ -422,9 +423,11 @@ class AuthController extends Controller
     public function resetPassword(Request $request){
       
       $request->validate([
-         'token' => 'required',
-         'email' => 'required|email',
-         'password' => 'required|confirmed',
+         'token'                 => 'required',
+         'email'                 => 'required|email|exists:users,email',
+         'password'              => 'required|confirmed',
+      ],[
+         'email.exists' => 'Usuario no registrado en nuestra plataforma' 
       ]);
 
       $status = Password::reset(

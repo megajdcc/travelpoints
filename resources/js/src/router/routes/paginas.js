@@ -1,18 +1,15 @@
 
 import store from '@/store'
-
+import Inicio from 'views/paginas/index.vue'
 export default [
    {
       path: '/',
       name: 'inicio',
-      component: () => import('views/paginas/index.vue'),
+      component:Inicio,
       meta: {
         layout:'travel',
          resource: 'Auth',
-
       },
-
-      
    },
 
    {

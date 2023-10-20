@@ -50,6 +50,9 @@ class Kernel extends ConsoleKernel
         // Verificar usabilidad del sistema por parte de los viajeros
         $schedule->command('usuario:verificar-usabilidad-viajeros')->monthly();
 
+        //  Limpiar Tokens Caducados
+        $schedule->command('auth:clear-resets')->everyFifteenMinutes();
+
     }
 
     /**

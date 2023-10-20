@@ -239,6 +239,8 @@ class RolController extends Controller
             DB::rollBack();
             $result = false;
             $message = 'EL rol no se pudo actualizar';
+
+            dd($e->getMessage());
         }
 
          return response()->json(['result' => $result,'rol' => ($result) ? $role : null, 'message' => $message]);

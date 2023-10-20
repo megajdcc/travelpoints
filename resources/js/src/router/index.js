@@ -3,23 +3,23 @@ import VueRouter from 'vue-router'
 
 // Routes
 import { canNavigate } from '@/libs/acl/routeProtection'
-import dashboard from './routes/dashboard'
 import pages from './routes/pages'
 import calidad from './routes/calidad'
 import paginas from './routes/paginas';
 import negocio from './routes/negocio';
 
+import ComponentPage from 'views/paginas/pages.vue';
+
 Vue.use(VueRouter)
 import store from '@/store'
 const rutas = [
     ...paginas,
-    ...dashboard,
     ...pages,
     ...negocio,
     ...calidad,
       {
         path:'/:page',
-        component:() => import('views/paginas/pages.vue'),
+        component:ComponentPage,
         name:'pages.public',
         props:true,
         beforeEnter:(to,from,next) => {
@@ -30,6 +30,8 @@ const rutas = [
             }else{
               next({name:'error-404'})
             }
+          }).catch(() => {
+            next({name:'error-404'})
           })
         },
         meta:{

@@ -15,9 +15,8 @@ class ResetPassword extends reset implements ShouldQueue
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(public string $url = 'https://travelpoints.es')
     {
-        //
     }
 
     /**
@@ -47,10 +46,7 @@ class ResetPassword extends reset implements ShouldQueue
         if (static::$createUrlCallback) {
             $url = call_user_func(static::$createUrlCallback, $notifiable, $this->token);
         } else {
-            $url = url(route('/forgot-password', [
-                'token' => $this->token,
-                'email' => $notifiable->getEmailForPasswordReset(),
-            ], false));
+            $url = $this->url."/forgot-password?token={$this->token}&email={$notifiable->getEmailForPasswordReset()}";
         }
 
         return $this->buildMailMessage($url);

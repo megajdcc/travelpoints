@@ -16,7 +16,7 @@ class nuevoAmigo extends Notification implements ShouldQueue
      *
      * @return void
      */
-    public function __construct(protected User $amigo)
+    public function __construct(public string $url = 'travelpoints.es',protected User $amigo)
     {
         //
     }
@@ -46,7 +46,7 @@ class nuevoAmigo extends Notification implements ShouldQueue
                     ->line(__("Ahora de todos los consumos que se registren a nombre de tu amigo, te ganarás un porcentaje en puntos Travel Points"))
                     ->line(__("No hay limite de invitados, puedes invitar a todos tus amigos y familiares y ganar por cada consumo que le registren en los negocios asociados a Travel Points"))
                     ->line(__("Puedes ver este y todos tus amigos en tu panel de invitados"))
-                    ->action(__("Mis invitados"), url('/socio/perfil/invitados'))
+                    ->action(__("Mis invitados"), $this->url.'/socio/perfil/invitados')
                     ->salutation(__("Gracias por usar Travel Points!"));
     }
 

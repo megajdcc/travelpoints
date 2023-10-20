@@ -20,7 +20,7 @@ class InvitacionNegocio extends Mailable implements ShouldQueue
      *
      * @return void
      */
-    public function __construct(public Invitacion $invitacion)
+    public function __construct(public string $url = 'travelpoints.es', public Invitacion $invitacion)
     {
         //
     }
@@ -48,7 +48,7 @@ class InvitacionNegocio extends Mailable implements ShouldQueue
     {
         return new Content(
             markdown: 'mail/InvitacionNegocio',
-            with:['mensaje' => $this->invitacion->mensaje]
+            with:['mensaje' => $this->invitacion->mensaje,'url' => $this->url]
         );
     }
 

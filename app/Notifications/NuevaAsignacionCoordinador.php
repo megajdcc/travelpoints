@@ -17,7 +17,7 @@ class NuevaAsignacionCoordinador extends Notification implements ShouldQueue
      *
      * @return void
      */
-    public function __construct(Protected User $lider)
+    public function __construct(public string $url = 'travelpoints.es', protected User $lider)
     {
         //
     }
@@ -47,7 +47,7 @@ class NuevaAsignacionCoordinador extends Notification implements ShouldQueue
                 ->greeting(__('Hola :nombre',['nombre' => $notifiable->getNombreCompleto()]))
                 ->line(__("Tienes a un nuevo lider en tu red de lideres; El nuevo lider es :lider, Ayudalo y guialo a cumplir sus metas dentro de travelpoints, y tienes a tu disposición la posibilidad de banearlo si ves que no cumples con las normas dentro de la asociación",['lider' => $this->lider->getNombreCompleto()]))
                 ->line(__("El nuevo lider ya te aparece en tu listado de lideres, puedes ir a verlo cuando gustes, por aca de doy el link directo"))
-                ->action(__('Ir a mis lideres'), url('/lideres'))
+                ->action(__('Ir a mis lideres'), $this->url.'/lideres')
                 ->salutation(__('Gracias por usar Travel Points'));
         } else {
             return (new MailMessage)
@@ -55,7 +55,7 @@ class NuevaAsignacionCoordinador extends Notification implements ShouldQueue
                 ->greeting(__('Hola :nombre', ['nombre' => $notifiable->getNombreCompleto()]))
                 ->line(__("Ya no estarás solo en esta aventura, te hemos asignado el coordinador :coordinador",['coordinador' => $this->lider->coordinador->getNombreCompleto()]))
                 ->line(__("El nuevo coordinador te aparecerá en tu tablero principal"))
-                ->action(__('Ir a mi tablero'), url('/home'))
+                ->action(__('Ir a mi tablero'), $this->url.'/home')
                 ->salutation(__('Gracias por usar Travel Points'));
         }
     }

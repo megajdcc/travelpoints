@@ -17,7 +17,7 @@ class NuevaSolicitudNegocio extends Notification implements ShouldQueue
      *
      * @return void
      */
-    public function __construct(protected Solicitud $solicitud)
+    public function __construct(public string $url = 'travelpoints.es', protected Solicitud $solicitud)
     {
     }
 
@@ -46,7 +46,7 @@ class NuevaSolicitudNegocio extends Notification implements ShouldQueue
                     ->line(__("El socio :socio, ha solicitado afiliar su Negocio :negocio",['socio' => $this->solicitud->usuario->getNombreCompleto(),'negocio' => $this->solicitud->nombre]))
                     ->line(__("El negocio se encuentra en la categoría :categoria",['categoria' => $this->solicitud->categoria->categoria]))
                     ->line(__("Puedes revisar con detenimiento los detalles del negocio en el panel de solicitudes"))
-                    ->action(__("Solicitudes"), url('/negocios/solicitudes'))
+                    ->action(__("Solicitudes"), $this->url.'/negocios/solicitudes')
                     ->salutation(__("Gracias por usar nuestra Aplicación!"));
     }
 

@@ -132,10 +132,14 @@ class NotificacionController extends Controller
         try {
             DB::beginTransaction();
 
-            foreach ($seleccionados as $key => $value) {
-                $notification = $usuario->unreadNotifications()->where('id', $value['id'])->first();
-                $notification->delete();
-            }
+            $usuario->unreadNotifications()->whereIn('id', collect(array_column($seleccionados, 'id')))
+            ->get()
+            ->each(fn($notification) => $notification->delete());
+
+            // foreach ($seleccionados as $key => $value) {
+            //     $notification = $usuario->unreadNotifications()->where('id', $value['id'])->first();
+            //     $notification->delete();
+            // }
 
             DB::commit();
             $result = true;

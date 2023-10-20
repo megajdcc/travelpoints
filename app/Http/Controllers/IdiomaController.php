@@ -100,11 +100,12 @@ class IdiomaController extends Controller
             }
 
             if ($request->boolean('default')) {
+
                 $idioma_por_defecto = Idioma::where('default', true)->first();
+                
                 if($idioma_por_defecto){
                     $idioma_por_defecto->update(['default' => false]);
                 }
-             
             }
 
             $idioma->update([
@@ -167,7 +168,6 @@ class IdiomaController extends Controller
     public function traslate(Request $request){
       
         $traslate = GoogleTranslate::translate($request->input('msg'),to:$request->input('locale','en'));
-
         return response()->json(['traslate' => $traslate]);
     }
 

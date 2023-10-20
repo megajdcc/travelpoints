@@ -19,7 +19,7 @@ class NotificarRetiro extends Notification implements ShouldQueue
      *
      * @return void
      */
-    public function __construct(public Retiro $retiro)
+    public function __construct(public string $url = 'travelpoints.es',public Retiro $retiro)
     {
         //
     }
@@ -49,7 +49,7 @@ class NotificarRetiro extends Notification implements ShouldQueue
                 ->greeting(__("Solicitud de Retiro de Comisión"))
                 ->line(__("El :rol :usuario",['rol' => $this->retiro->usuario->rol->nombre,'usuario' => $this->retiro->usuario->getNombreCompleto()]))
                 ->line(__("Ha solicitado un retiro de comisión; Atiende el mismo en el panel de retiros de comisiones."))
-                ->action(__('Retiros de comisiones'), url('/retiros'))
+                ->action(__('Retiros de comisiones'), $this->url.'/retiros')
                 ->salutation(__('Gracias por usar Travel Points'));
         }
         return (new MailMessage)

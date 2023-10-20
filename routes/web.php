@@ -78,14 +78,6 @@ Route::get('/usuario/{usuario}/establecer/contrasena', function (User $usuario) 
 
 });
 
-
-Route::get('/reset-password/{token}', function ($token) {
-   return view('application',
-      ['token' => $token]
-   );
-})->middleware('guest')->name('password.reset');
-// Route::view('cotizacion/reserva/{reserva}','application');
-
 // Reportes
 Route::get('reports/descargar/estados-cuenta',[EstadoCuentaController::class,'descargar']);
 Route::get('reports/descargar/activaciones',[UserController::class,'descargarActivaciones']);

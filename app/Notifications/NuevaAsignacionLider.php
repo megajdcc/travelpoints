@@ -17,7 +17,7 @@ class NuevaAsignacionLider extends Notification implements ShouldQueue
      *
      * @return void
      */
-    public function __construct(Protected User $promotor)
+    public function __construct(public string $url = 'travelpoints.es', protected User $promotor)
     {
         //
     }
@@ -48,7 +48,7 @@ class NuevaAsignacionLider extends Notification implements ShouldQueue
                 ->greeting(__("Hola :nombre",['nombre' => $notifiable->getNombreCompleto()]))
                 ->line(__("Tienes a un nuevo promotor en tu red de promotores; El nuevo promotor es :promotor, Ayudalo y guialo a cumplir sus metas dentro de travelpoints, y tienes a tu disposición la posibilidad de banearlo si ves que no cumples con las normas dentro de la asociación",['promotor' => $this->promotor->getNombreCompleto()]))
                 ->line(__("El nuevo promotor ya te aparece en tu listado de promotores, puedes ir a verlo cuando gustes, por aca de doy el link directo"))
-                ->action(__("Ir a mis promotores"), url('/promotores'))
+                ->action(__("Ir a mis promotores"),$this->url.'/promotores')
                 ->salutation(__('¡Gracias por preferirnos Travel Points!'));
         }else{
             return (new MailMessage)
@@ -56,7 +56,7 @@ class NuevaAsignacionLider extends Notification implements ShouldQueue
                 ->greeting(__("Hola :nombre", ['nombre' => $notifiable->getNombreCompleto()]))
                 ->line(__("Ya no estarás solo en esta aventura, te hemos asignado el lider :lider",['lider' => $this->promotor->lider->getNombreCompleto()]))
                 ->line(__("El nuevo lider te aparecerá en tu tablero principal"))
-                ->action(__('Ir a mi tablero'), url('/home'))
+                ->action(__('Ir a mi tablero'), $this->url.'/home')
                 ->salutation(__('Gracias por usar Travel Points'));
         }
         

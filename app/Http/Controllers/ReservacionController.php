@@ -178,10 +178,10 @@ class ReservacionController extends Controller
             $encargado = $reservacion->negocio->encargado;
             $users_negocio = collect([...$empleados,$encargado]);
 
-            Notification::send($users_negocio,new nuevaReservacion($reservacion,1));
+            Notification::send($users_negocio,new nuevaReservacion($request->url(),$reservacion,1));
              
             // Notificar al usuario de su Reservación
-            $reservacion->usuario->notify(new nuevaReservacion($reservacion,2));
+            $reservacion->usuario->notify(new nuevaReservacion($request->url(),$reservacion,2));
 
             // Guardarlo como un recordatorio
             $reservacion->usuario->agregarRecordatorio($reservacion);

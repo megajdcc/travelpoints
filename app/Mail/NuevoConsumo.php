@@ -21,7 +21,7 @@ class NuevoConsumo extends Mailable implements ShouldQueue
      *
      * @return void
      */
-    public function __construct(Consumo $consumo)
+    public function __construct(public string $url = 'travelpoints.es', Consumo $consumo)
     {
         $this->consumo = $consumo;
 

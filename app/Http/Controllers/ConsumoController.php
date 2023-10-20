@@ -267,7 +267,7 @@ class ConsumoController extends Controller
 
     }
 
-    public function eliminarOrdenCj(Consumo $consumo,string $orden){
+    public function eliminarOrdenCj(Request $request,Consumo $consumo,string $orden){
 
         $producto_controller = new ProductoController();
 
@@ -288,7 +288,7 @@ class ConsumoController extends Controller
             
             Notification::send(
                 $usuarios,
-                new OrdenCancelada($consumo)
+                new OrdenCancelada($request->url(),$consumo)
             );
 
         }

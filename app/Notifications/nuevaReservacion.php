@@ -19,7 +19,7 @@ class nuevaReservacion extends Notification implements ShouldQueue
      *
      * @return void
      */
-    public function __construct(protected Reservacion $reservacion,int $tipoUser = 1)
+    public function __construct(public string $url = 'travelpoints.es',protected Reservacion $reservacion,int $tipoUser = 1)
     {
         $this->tipoUser = $tipoUser;
 
@@ -57,7 +57,7 @@ class nuevaReservacion extends Notification implements ShouldQueue
                 'personas' => $this->reservacion->getPersonas()]))
                 ->line(__("Y te ha enviado la siguiente observación: :observacion",['observacion' => $this->reservacion->observacion]))
                 ->line(__('Puedes ver esta y otras reservaciones en tu panel'))
-                ->action(__('Reservaciones'), url('/negocios/reservaciones/'))
+                ->action(__('Reservaciones'), $this->url.'/negocios/reservaciones/')
                 ->salutation(__('Gracias por usar Travel Points'));
         }else{
             return (new MailMessage)
@@ -66,7 +66,7 @@ class nuevaReservacion extends Notification implements ShouldQueue
                 ->line(__("Tienes una reserva en el negocio :negocio , para el día :dia, para :personas",['negocio' => $this->reservacion->negocio->nombre,'dia' => $this->reservacion->getDia(),'personas' => $this->reservacion->getPersonas()]))
                 ->line(__("Nos has hecho saber la siguiente observación: :observacion",['observacion' => $this->reservacion->observacion ]))
                 ->line(__("Si no fuiste tú, por favor avísanos"))
-                ->action(__('Mis reservaciones'), url('/socio/reservaciones'))
+                ->action(__('Mis reservaciones'), $this->url.'/socio/reservaciones')
                 ->salutation(__('Gracias por usar Travel Points'));
         }
       

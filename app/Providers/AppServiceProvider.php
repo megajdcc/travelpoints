@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Request;
+use Laravel\Passport\Passport;
 
 class AppServiceProvider extends ServiceProvider
 {

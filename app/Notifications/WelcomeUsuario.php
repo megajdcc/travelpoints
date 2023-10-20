@@ -22,7 +22,7 @@ class WelcomeUsuario extends Notification implements ShouldQueue
      *
      * @return void
      */
-    public function __construct(User $user)
+    public function __construct(protected string $url = 'travelpoints.es',User $user)
     {
         $this->usuario = $user;
 
@@ -51,7 +51,7 @@ class WelcomeUsuario extends Notification implements ShouldQueue
      */
     public function toMail($notifiable)
     {
-        return (new UsuarioCreado($this->usuario))
+        return (new UsuarioCreado($this->url,$this->usuario))
             ->to($this->usuario->email);
     }
 

@@ -1,6 +1,20 @@
 import store from '@/store';
 
 export default [
+   
+   /*****************************************/
+   /* Home
+   /*************************************** */
+   {
+      path: '/home',
+      name: 'home',
+      meta:{
+         resource: 'home',
+         action: 'read',
+      },
+      component: () => import('views/home.vue'),
+   },
+
 
    /*****************************************/
    /* MI Perfil

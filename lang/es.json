@@ -446,5 +446,11 @@
    "Gracias por seguir usando nuestra aplicacion de TravelPoinst!":"Gracias por seguir usando nuestra aplicacion de TravelPoinst!",
    "Hola :nombre . EL usuario :usuario ; Ha aplicado la tarjeta con el siguiente número: :tarjeta Necesito que confirmes con una (y) si se la has vendido de lo contrario (n) para negar tal venta.":"Hola :nombre . EL usuario :usuario ; Ha aplicado la tarjeta con el siguiente número: :tarjeta Necesito que confirmes con una (y) si se la has vendido de lo contrario (n) para negar tal venta.",
    "Bienvenido a :sistema":"Bienvenido a :sistema",
-   "Hola :nombre .Bienvenido/a a TravelPoints. Estamos listos para acompañarte en este viaje.  Gana puntos en los registros de las compras que hagas en los Negocios Travel Points, invita amigos y disfruta todo lo que tenemos para tí":"Hola :nombre .Bienvenido/a a TravelPoints. Estamos listos para acompañarte en este viaje.  Gana puntos en los registros de las compras que hagas en los Negocios Travel Points, invita amigos y disfruta todo lo que tenemos para tí"
+   "Hola :nombre .Bienvenido/a a TravelPoints. Estamos listos para acompañarte en este viaje.  Gana puntos en los registros de las compras que hagas en los Negocios Travel Points, invita amigos y disfruta todo lo que tenemos para tí":"Hola :nombre .Bienvenido/a a TravelPoints. Estamos listos para acompañarte en este viaje.  Gana puntos en los registros de las compras que hagas en los Negocios Travel Points, invita amigos y disfruta todo lo que tenemos para tí",
+  "Notificación de restablecimiento de contraseña":"Notificación de restablecimiento de contraseña",
+   "Está recibiendo este correo electrónico porque recibimos una solicitud de restablecimiento de contraseña para su cuenta.":"Está recibiendo este correo electrónico porque recibimos una solicitud de restablecimiento de contraseña para su cuenta.",
+   "Restablecer la contraseña":"Restablecer la contraseña",
+   "Este enlace para restablecer contraseña caducará en :count minutos.":"Este enlace para restablecer contraseña caducará en :count minutos.",
+    "Si no solicitó un restablecimiento de contraseña, no es necesario realizar ninguna otra acción.":"Si no solicitó un restablecimiento de contraseña, no es necesario realizar ninguna otra acción."
+
 }

@@ -25,22 +25,26 @@ class DestinoController extends Controller
 
         $destinos->each(fn($destino)=> $destino->cargar());
 
-        // foreach($destinos as $destino){
-        //     $destino->iata;
-        //     $destino->imagenes;
-        //     $destino->ciudad;
-        //     $destino->estado?->pais;
-        //     $destino->likes;
-        //     $destino->modelType = $destino->model_type;
-        //     $destino->ruta = "/Destinos?q={$destino->nombre}";
-        //     $destino->negocios = $destino->negocios();
-            
-        // }
 
         return response()->json($destinos);
 
     }
 
+
+
+    public function fetchAll(Request $request){
+        $destinos = Destino::where('activo',true)->get();
+
+        $destinos->each(function($destino){
+            $destino->imagenes;
+            $destino->modelType = $destino->model_type;
+            $destino->ruta = "/Destinos?q={$destino->nombre}";
+            $destino->about_travel = null;
+        });
+
+        return response()->json($destinos);
+
+    }
 
     public function fetchDataPublic(Request $request){
         $datos = $request->all();

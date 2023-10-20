@@ -17,7 +17,7 @@ class UsuarioCreado extends Mailable implements ShouldQueue
      *
      * @return void
      */
-    public function __construct(public User $usuario){
+    public function __construct(public string $url = 'travelpoints.es', public User $usuario){
     }
 
     /**
@@ -34,7 +34,7 @@ class UsuarioCreado extends Mailable implements ShouldQueue
                         'Nombre' => $this->usuario->getNombreCompleto(),
                         'rol'    => $this->usuario->rol->nombre,
                         'Email'  => $this->usuario->email,
-                        'Url'    => url('/usuario/'.$this->usuario->id.'/establecer/contrasena'),
+                        'Url'    => $this->url.'/usuario/'.$this->usuario->id.'/establecer/contrasena',
                     ]);
                     
     }

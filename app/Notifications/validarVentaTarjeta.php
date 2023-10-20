@@ -19,7 +19,7 @@ class validarVentaTarjeta extends Notification implements ShouldQueue
      *
      * @return void
      */
-    public function __construct(protected Tarjeta $tarjeta)
+    public function __construct(public string $url = 'travelpoints.es', protected Tarjeta $tarjeta)
     {
         //
     }
@@ -45,7 +45,7 @@ class validarVentaTarjeta extends Notification implements ShouldQueue
     {
         return (new MailMessage)
                     ->line('The introduction to the notification.')
-                    ->action('Notification Action', url('/'))
+                    ->action('Notification Action', $this->url)
                     ->line('Thank you for using our application!');
     }
 

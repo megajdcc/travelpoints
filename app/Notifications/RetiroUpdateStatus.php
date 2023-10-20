@@ -24,7 +24,7 @@ class RetiroUpdateStatus extends Notification implements ShouldQueue
      *
      * @return void
      */
-    public function __construct(Protected Retiro $retiro)
+    public function __construct(protected Retiro $retiro)
     {
         //
     }

@@ -19,7 +19,7 @@ class nuevoConsumoNegocio extends Notification implements ShouldQueue
      *
      * @return void
      */
-    public function __construct(protected Venta $venta)
+    public function __construct(public string $url = 'travelpoints.es',protected Venta $venta)
     {
         $this->tps = \number_format((float) $this->venta->tps_bonificados, 2, ',', '.');
         
@@ -50,7 +50,7 @@ class nuevoConsumoNegocio extends Notification implements ShouldQueue
                     ->greeting(__("Hola :nombre",['nombre' => $notifiable->getNombreCompleto()]))
                     ->line(__("Se te ha registrado un consumo en (:categoria - :negocio), que te ha generado Tp$ :tp en tu cuenta.", ['categoria' => $this->venta->model->categoria->categoria, 'negocio' => $this->venta->model->nombre,'tp' => $this->tps]))
                     ->line(__("Recuerda que los puntos TravelPoints (Tp), puedes utilizarlo para comprar en la tienda travel en el siguiente enlance:"))
-                    ->action(__("Tienda Travel Points"), url('/tienda-travel'))
+                    ->action(__("Tienda Travel Points"),$this->url.'/tienda-travel')
                     ->line(__("Nos gustaría saber qué te pareció tu experiencia, por favor compártela en el siguiente enlace:"))
                     ->action(__("Mis consumos"), url('/consumos'))
                     ->salutation(__("Gracias por seguir usando Travel Points"));
@@ -81,7 +81,7 @@ class nuevoConsumoNegocio extends Notification implements ShouldQueue
      */
     public function toVonage(object $notifiable): VonageMessage
     {   
-        $url = url('/consumos');
+        $url = $this->url.'/consumos';
         $mensaje = __("Gracias por tu compra en (:categoria - :negocio), Has ganado Tp$ :tp Travel Points y ya están en tu cuenta. Nos gustaría saber qué te pareció tu experiencia, por favor compártela en el siguiente enlace: :url",['categoria' => $this->venta->model->categoria->categoria,'negocio' => $this->venta->model->nombre,'tp' => $this->tps,'url' => $url]);
 
         return (new VonageMessage)

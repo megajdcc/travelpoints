@@ -42,7 +42,7 @@ class verificarReservas implements ShouldQueue
             $reservacion->status  = 3; // cancelamos la reservación
             $reservacion->save();
             // Notificar al reservante que se le ha cancelado su reserva
-            $reservacion->usuario->notify(new reservaCancelada($reservacion));
+            $reservacion->usuario->notify(new reservaCancelada(reservacion:$reservacion));
             
         }
     }

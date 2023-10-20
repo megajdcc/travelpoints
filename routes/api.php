@@ -34,6 +34,10 @@ use App\Http\Controllers\{PaisController, CiudadController, EstadoController, Id
 
 Route::get('idiomas/get-locales', [IdiomaController::class, 'getLocales']);
 
+Route::get('oauth/csrf-cookie',function(){
+    return response()->json(['result' => csrf_token()],200,["X-CSRF-TOKEN" => csrf_token()]);
+});
+
 Route::group(['prefix' => 'auth'], function () {
 
     Route::get('google/redirect', [AuthController::class, 'redirectGoogle']);
@@ -45,8 +49,8 @@ Route::group(['prefix' => 'auth'], function () {
     Route::post('recuperar/contrasena', [AuthController::class, 'recuperarContrasena']);
     Route::post('reset-password', [AuthController::class, 'resetPassword']);
 
-
-    Route::group(['middleware' => 'auth:sanctum'], function () {
+   
+    Route::group(['middleware' => ['auth:api']], function () {
         Route::get('logout', [AuthController::class, 'logout']);
         Route::get('user', [AuthController::class, 'user']);
     });
@@ -58,7 +62,7 @@ Route::group(['prefix' => 'auth'], function () {
 
 
 
-Route::group(['middleware' => 'auth:sanctum'], function () {
+Route::group(['middleware' => ['auth:api']], function () {
 
     // Request de usuarios Form Perfil 
 
@@ -176,6 +180,8 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
 
     Route::get('destinos/{destino}/fetch/data', [DestinoController::class, 'fetch']);
     Route::post('destinos/fetch/data', [DestinoController::class, 'fetchData']);
+    Route::get('destinos/fetch-all', [DestinoController::class, 'fetchAll']);
+
     Route::resource('destinos', DestinoController::class);
     Route::put('destinos/{destino}/cargar/imagen', [DestinoController::class, 'cargarImagen']);
     Route::delete('destinos/{destino}/eliminar/imagen/{imagen}', [DestinoController::class, 'eliminarImagen']);

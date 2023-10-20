@@ -18,7 +18,7 @@ class consumoInvitado extends Notification implements ShouldQueue
      *
      * @return void
      */
-    public function __construct(protected Venta $venta, $comision)
+    public function __construct(public string $url = 'travelpoints.es', protected Venta $venta, $comision)
     {
         $this->comision = $comision;
     }
@@ -47,9 +47,9 @@ class consumoInvitado extends Notification implements ShouldQueue
                     ->greeting(__("Hola :nombre",['nombre' => $notifiable->getNombreCompleto()]))
                     ->line(__("Tú invitado :invitado, ha realizado un consumo en el negocio :negocio, lo cual te ha generado una comisión en tps por un monto Tp$ :tp",['invitado' => $this->venta->cliente->getNombreCompleto(),'negocio' => $this->venta->model->nombre,'tp' => $this->comision]))
                     ->line(__("Recuerda que puedes invitar a mas amigos y familiares, compartiendo tu link de invitados en la cual podrán registrarse y ser tus invitados dentro de Travel Points."))
-                    ->line(__("Este es tu link de invitado, :link",['link' => url("/register/{$notifiable->codigo_referidor}") ]))
+                    ->line(__("Este es tu link de invitado, :link",['link' => $this->url."/register/{$notifiable->codigo_referidor}" ]))
                     ->line(__('Te hemos generado un movimiento en tu cuenta por la comisión obtenida, puedes ver este y todos tus movimientos en el siguiente enlace'))
-                    ->action(__('Mis Movimientos'), url('/socio/perfil/mi-cuenta'))
+                    ->action(__('Mis Movimientos'), $this->url.'/socio/perfil/mi-cuenta')
                     ->salutation(__('Gracias por usar Travel Points'));
     }
 
@@ -68,7 +68,7 @@ class consumoInvitado extends Notification implements ShouldQueue
             'mensaje' => [
                 __("Tú invitado :invitado, ha realizado un consumo en el negocio :negocio, lo cual te ha generado una comisión en tps por un monto Tp$ :tp", ['invitado' => $this->venta->cliente->getNombreCompleto(), 'negocio' => $this->venta->model->nombre, 'tp' => $this->comision]),
                 __("Recuerda que puedes invitar a mas amigos y familiares, compartiendo tu link de invitados en la cual podrán registrarse y ser tus invitados dentro de Travel Points."),
-                __("Este es tu link de invitado, :link", ['link' => url("/register/{$notifiable->codigo_referidor}")]),
+                __("Este es tu link de invitado, :link", ['link' => $this->url."/register/{$notifiable->codigo_referidor}"]),
                 __('Te hemos generado un movimiento en tu cuenta por la comisión obtenida, puedes ver este y todos tus movimientos en el siguiente enlace'),
 
 

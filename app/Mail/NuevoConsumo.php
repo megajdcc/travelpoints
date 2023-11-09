@@ -21,7 +21,7 @@ class NuevoConsumo extends Mailable implements ShouldQueue
      *
      * @return void
      */
-    public function __construct(public string $url = 'travelpoints.es', Consumo $consumo)
+    public function __construct(Consumo $consumo,public string $url = 'travelpoints.es',)
     {
         $this->consumo = $consumo;
 
@@ -46,7 +46,7 @@ class NuevoConsumo extends Mailable implements ShouldQueue
             return $this->markdown('emails.newconsumo')
 
             ->attachFromStorageDisk('archivo_productos', $this->consumo->productos->first()->archivo ?: null)
-            ->subject("Gracias por tu compra" . $this->consumo->cliente->getNombreCompleto())
+            ->subject("Gracias por tu compra " . $this->consumo->cliente->getNombreCompleto())
                 ->with([
                     'cliente' => $this->consumo->cliente->getNombreCompleto(),
                     'productos' => $this->consumo->productos,
@@ -57,7 +57,7 @@ class NuevoConsumo extends Mailable implements ShouldQueue
                 ]);
         }else{
             return $this->markdown('emails.newconsumo')
-                ->subject("Gracias por tu compra" . $this->consumo->cliente->getNombreCompleto())
+                ->subject("Gracias por tu compra " . $this->consumo->cliente->getNombreCompleto())
                 ->with([
                     'cliente' => $this->consumo->cliente->getNombreCompleto(),
                     'productos' => $this->consumo->productos,

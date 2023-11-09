@@ -2,12 +2,13 @@
 
 namespace App\Models;
 
+use App\Trais\hasTranslate;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class CategoriaProducto extends Model
 {
-    use HasFactory;
+    use HasFactory,hasTranslate;
 
 
     protected $fillable = [

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\DestinoPublicResource;
 use App\Jobs\ModelTraslate;
 use App\Models\Destino;
 use Illuminate\Http\Request;
@@ -312,30 +313,31 @@ class DestinoController extends Controller
         $destino = Destino::where('nombre',$request->get('nombre'))->where('activo',true)->first();
         
         if($destino){
-            $destino->iata;
-            $destino->imagenes;
-            $destino->ciudad;
-            $destino->estado?->pais;
-            $destino->likes;
-            $destino->modelType = $destino->model_type;
+            $destino->cargar();
+            // $destino->iata;
+            // $destino->imagenes;
+            // $destino->ciudad;
+            // $destino->estado?->pais;
+            // $destino->likes;
+            // $destino->modelType = $destino->model_type;
 
-            $destino->negocios = $destino->negocios();
+            // $destino->negocios = $destino->negocios();
 
 
-            foreach ($destino->atracciones as $atraccion) {
-                $atraccion->ruta = "/Atraccions?q={$atraccion->nombre}";
-                $atraccion->opinions;
-                $atraccion->telefono;
-                $atraccion->imagenes;
-                $atraccion->destino;
-                $atraccion->horarios;
-                $atraccion->likes;
-                $atraccion->modelType = $atraccion->model_type;
-            }
+            // foreach ($destino->atracciones as $atraccion) {
+            //     $atraccion->ruta = "/Atraccions?q={$atraccion->nombre}";
+            //     $atraccion->opinions;
+            //     $atraccion->telefono;
+            //     $atraccion->imagenes;
+            //     $atraccion->destino;
+            //     $atraccion->horarios;
+            //     $atraccion->likes;
+            //     $atraccion->modelType = $atraccion->model_type;
+            // }
 
         }
         
-        return response()->json(['result' => $destino ? true : false,'destino' => $destino]);
+        return new DestinoPublicResource($destino);
     }
 
     public function toggleActive(Request $request, Destino $destino){
@@ -466,6 +468,10 @@ class DestinoController extends Controller
         ]);
     }
 
+
+    public function getAboutTravel(Destino $destino){
+        return response()->json($destino->about_travel);
+    }
 
 
 }

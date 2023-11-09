@@ -89,7 +89,7 @@ Route::get('/auth/redirect',[AuthController::class, 'redirectGoogle']);
 Route::get('/auth/google',[AuthController::class, 'callbackGoogle']);
 Route::post('/vonage/sms-entrante',[MensajesVonageController::class,'smsEntrante']);
 
-Route::get('/{any}', [ApplicationController::class, 'index'])->where('any', '.*');
+// Route::get('/{any}', [ApplicationController::class, 'index'])->where('any', '.*');
 
 
 

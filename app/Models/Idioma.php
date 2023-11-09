@@ -17,7 +17,6 @@ class Idioma extends Model
     public const DISK_TRADUCCIONES = 'traducciones';
 
     protected $fillable = [
-
         'languaje',
         'shortLang',// example es,en,uk
         'flag',

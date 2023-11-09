@@ -143,7 +143,7 @@ class RetiroController extends Controller
             // Notificar Usuario y Administradores
             $users = User::whereHas('rol',fn(Builder $q) => $q->whereIn('nombre',['Desarrollador','Administrador']))->get();
             $users->push($retiro->usuario);
-            Notification::sendNow($users,new NotificarRetiro($request->url(),$retiro));
+            Notification::sendNow($users,new NotificarRetiro($request->headers->get('origin'),$retiro));
 
 
             // Generar movimiento de cuenta;

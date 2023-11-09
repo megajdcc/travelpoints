@@ -57,7 +57,7 @@ class InvitacionController extends Controller
                 ]
             ]);
 
-            Mail::to($invitacion->email)->locale($request->user()->locale)->send(new InvitacionNegocio($invitacion));
+            Mail::to($invitacion->email)->locale($request->user()->locale)->send(new InvitacionNegocio($invitacion, $request->headers->get('origin')));
             DB::commit();
             $result = true;
         } catch (\Throwable $th) {
@@ -71,7 +71,7 @@ class InvitacionController extends Controller
 
     public function recordar(Request $request, Invitacion $invitacion){
 
-        Mail::to($invitacion->email)->locale($request->user()->locale)->send(new InvitacionNegocio($invitacion));
+        Mail::to($invitacion->email)->locale($request->user()->locale)->send(new InvitacionNegocio($invitacion, $request->headers->get('origin')));
 
 
         return response()->json([
@@ -178,7 +178,7 @@ class InvitacionController extends Controller
 
             Notification::send(
                 User::whereHas('rol', fn (Builder $q) => $q->where('nombre', 'Administrador'))->get(),
-                new NuevaSolicitudNegocio($request->url(),$solicitud)
+                new NuevaSolicitudNegocio($request->headers->get('origin'),$solicitud)
             );
 
             $solicitud->usuario->notify(new SolicitudEnviada($solicitud));

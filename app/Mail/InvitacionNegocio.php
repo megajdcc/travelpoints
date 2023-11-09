@@ -20,7 +20,7 @@ class InvitacionNegocio extends Mailable implements ShouldQueue
      *
      * @return void
      */
-    public function __construct(public string $url = 'travelpoints.es', public Invitacion $invitacion)
+    public function __construct(public Invitacion $invitacion, public string $url = 'travelpoints.es', )
     {
         //
     }

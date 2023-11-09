@@ -12,8 +12,7 @@ class IdiomaRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return $this->user()->tokenCan('idioma:write');
-
+        return true;
     }
 
     /**

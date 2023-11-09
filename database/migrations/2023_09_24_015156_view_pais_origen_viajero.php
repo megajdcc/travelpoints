@@ -12,6 +12,10 @@ return new class extends Migration
      */
     public function up(): void
     {
+        
+        DB::statement('DROP VIEW IF EXISTS pais_origen_viajero');
+
+
         DB::statement(
             "CREATE VIEW pais_origen_viajero AS 
                 SELECT 

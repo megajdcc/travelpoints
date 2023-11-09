@@ -49,14 +49,14 @@ trait hasTranslate
     $jsonData = json_encode($traduccion, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT) . PHP_EOL;
     Storage::disk(Idioma::DISK_TRADUCCIONES)->put($name_json, $jsonData);
 
-    $result = Storage::disk(Idioma::DISK_TRADUCCIONES)->put($this->getNameJson(), $jsonData);
+    $result = Storage::disk(Idioma::DISK_TRADUCCIONES)->put($name_json, $jsonData);
     $langPath = base_path('lang');
     
     if (!file_exists($langPath)) {
       mkdir($langPath, 0755, true);
     }
     
-    copy($jsonPath, $langPath . '/' . $this->getNameJson());
+    copy($jsonPath, $langPath . '/' . $name_json);
     return $result;
 
   }

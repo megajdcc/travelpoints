@@ -6,8 +6,8 @@ use App\Models\Negocio\Reservacion;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
-use Illuminate\Notifications\Notification;
 use Illuminate\Notifications\Messages\VonageMessage;
+use Illuminate\Notifications\Notification;
 
 class nuevaReservacion extends Notification implements ShouldQueue
 {
@@ -33,7 +33,7 @@ class nuevaReservacion extends Notification implements ShouldQueue
      */
     public function via($notifiable)
     {
-        return ['mail','database'] ;
+        return ['mail','database','vonage'] ;
     }
 
     /**

@@ -109,9 +109,9 @@ class ConsumoController extends Controller
      */
     public function store(Request $request)
     {
+
         $datos = $this->validar($request);
 
-        // dd($datos);
         try {
             DB::beginTransaction();
             
@@ -205,7 +205,7 @@ class ConsumoController extends Controller
             // Notificar al Cliente y TravelPoints de la Nueva Compra
 
             $consumo->cliente->notify((new NuevoConsumo($consumo))->locale($consumo->cliente->locale));
-            Mail::to($consumo->cliente)->locale($consumo->cliente->locale)->send(new newConsumo($consumo));
+            Mail::to($consumo->cliente)->locale($consumo->cliente->locale)->send(new newConsumo($consumo, $request->headers->get('origin')));
 
             $consumo->cliente->cargar();
 
@@ -288,7 +288,7 @@ class ConsumoController extends Controller
             
             Notification::send(
                 $usuarios,
-                new OrdenCancelada($request->url(),$consumo)
+                new OrdenCancelada($request->headers->get('origin'),$consumo)
             );
 
         }

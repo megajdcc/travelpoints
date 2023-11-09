@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Request;
 use Laravel\Passport\Passport;
+use Illuminate\Http\Resources\Json\JsonResource;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -30,7 +31,9 @@ class AppServiceProvider extends ServiceProvider
      * @return void
      */
     public function boot()
-    {
+    {   
+         JsonResource::withoutWrapping();
+
          Schema::defaultStringLength(191);
             
          Blade::component('components.alert','alert');
@@ -39,15 +42,12 @@ class AppServiceProvider extends ServiceProvider
 
                  if(is_array($ruta)){
 
-                     $result = false;
-
-     
-                     foreach ($ruta as $key => $value) {
+                    $result = false;
+                    foreach ($ruta as $key => $value) {
                             
                              if(Route::currentRouteName() == $value) {
                                  return true;
                              }
-  
                     }
 
                      return $result;

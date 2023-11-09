@@ -63,8 +63,8 @@ class Evento extends Model
 
             if($this->fecha_fin && now()->isAfter($this->fecha_fin)){
                 $this->status = 3;
-                // $this->fecha_inicio = $this->fecha_inicio->addYear();
-                // $this->fecha_fin = $this->fecha_fin->addYear();
+                $this->fecha_inicio = $this->fecha_inicio->addYear();
+                $this->fecha_fin = $this->fecha_fin->addYear();
                 $this->save();
                 // VerificarEvento::dispatch($this)->delay($this->fecha_inicio->addMinute());
 
@@ -74,17 +74,15 @@ class Evento extends Model
             if(now()->between($this->fecha_inicio, $this->fecha_fin)) {
                 $this->status = 1;
                 $this->save();
-                VerificarEvento::dispatch($this)->delay($this->fecha_fin->addMinute());
+                // VerificarEvento::dispatch($this)->delay($this->fecha_fin->addMinute());
             }
 
             if (now()->isBefore($this->fecha_inicio)) {
                 $this->status = 3;
                 $this->save();
 
-                VerificarEvento::dispatch($this)->delay($this->fecha_inicio->addMinute());
+                // VerificarEvento::dispatch($this)->delay($this->fecha_inicio->addMinute());
             }
-
-
 
         }else{
 
@@ -96,13 +94,13 @@ class Evento extends Model
             if(now()->between($this->fecha_inicio,$this->fecha_fin)){
                 $this->status = 1;
                 $this->save();
-                VerificarEvento::dispatch($this)->delay($this->fecha_fin->addMinute());
+                // VerificarEvento::dispatch($this)->delay($this->fecha_fin->addMinute());
             }
 
             if(now()->isBefore($this->fecha_inicio)){
                 $this->status = 3;
                 $this->save();
-                VerificarEvento::dispatch($this)->delay($this->fecha_inicio->addMinute());
+                // VerificarEvento::dispatch($this)->delay($this->fecha_inicio->addMinute());
             }
 
            

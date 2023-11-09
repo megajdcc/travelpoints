@@ -882,7 +882,7 @@ class User extends Authenticatable implements HasLocalePreference, CanResetPassw
     }
 
     public function asignarToken(){
-        $this->token = ($this->createToken($this->nombre . '-' . $this->id))?->plainTextToken;
+        $this->token = ($this->createToken($this->nombre . '-' . $this->id))?->accessToken;
         $this->save();
         return $this;
     }
@@ -1178,6 +1178,11 @@ class User extends Authenticatable implements HasLocalePreference, CanResetPassw
         return $this->hasMany(Invitacion::class,'usuario_id','id');
     }
 
+    public function userNivels(){
+        return $this->hasMany(UserNivel::class,'usuario_id','id');
+    }
+
+
     public function toggleLider(int $lider_nuevo) :bool{
         
         return $this->update([
@@ -1185,6 +1190,7 @@ class User extends Authenticatable implements HasLocalePreference, CanResetPassw
         ]);
 
     }
+
 
     public function cargar(): User{
         $this->porcentaje_perfil = $this->getFillPercentage();
@@ -1199,6 +1205,8 @@ class User extends Authenticatable implements HasLocalePreference, CanResetPassw
         $this->cuenta?->divisa;
         $this->telefonos;
         $this->likes;
+        $this->userNivels->load(['nivel.grupo', 'nivel.nivelSiguiente']);
+
         foreach ($this->negocios as $key => $negocio) {
             $negocio->descripcion = '';
         }
@@ -1248,5 +1256,38 @@ class User extends Authenticatable implements HasLocalePreference, CanResetPassw
         return $this;
     }
 
+
+    public function verificarUserNivels(){
+        
+        if($this->userNivels->count() < 1){
+            $this->iniciarNivels();
+        }else{
+            $this->actualizarAvanceUserNivels();
+        }
+
+    }
+
+    private function iniciarNivels() : void{
+
+        foreach (Nivel::where('nivel_inicial',true)->get() as $key => $nivel) {
+            UserNivel::create([
+                'usuario_id' => $this->id,
+                'nivel_id' => $nivel->id,
+                'avance' => 1,
+                'completado' => false,
+                'en_proceso' => true
+            ]);
+        }
+
+    }
+
+
+    private function actualizarAvanceUserNivels(){
+        //  hacer el calculo en los niveles en la que se esté en proceso 
+        foreach($this->userNivels->where('en_proceso',true) as $userNivel){
+            $userNivel->verificarNivelSiguiente();
+        }
+
+    }
 
 }

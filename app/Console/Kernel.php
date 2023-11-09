@@ -43,6 +43,10 @@ class Kernel extends ConsoleKernel
 
         // Verificar las reservas 
         $schedule->job(new verificarReservas)->daily();
+
+        // Verificar los niveles de viajeros
+
+        $schedule->command('usuario:verificar-nivel-viajero')->daily();
         
         // Limpiar los trabajos que esten fallidos... 
         $schedule->command('queue:flush')->daily();
@@ -52,6 +56,10 @@ class Kernel extends ConsoleKernel
 
         //  Limpiar Tokens Caducados
         $schedule->command('auth:clear-resets')->everyFifteenMinutes();
+
+
+        // Verificar Eventos 
+        $schedule->command('eventos:verificar')->everyFiveMinutes();
 
     }
 

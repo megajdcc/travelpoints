@@ -138,7 +138,7 @@ class UserController extends Controller
                 $user_register->establecerNivel();
             }
 
-            $usuario->notify((new WelcomeUsuario($request->url(),$usuario))->locale($usuario->es));
+            $usuario->notify((new WelcomeUsuario($request->headers->get('origin'),$usuario))->locale($usuario->es));
             DB::commit();
             $usuario->cargar();
 
@@ -178,7 +178,9 @@ class UserController extends Controller
 
 
         try {
+
             DB::beginTransaction();
+            
             $usuario = User::create([
                 'username'    => Str::slug($datos['username']),
                 'nombre' => $datos['nombre'],
@@ -192,7 +194,7 @@ class UserController extends Controller
             $usuario->asignarPermisosPorRol();
 
 
-            if ($datos['referidor'] && $datos['referidor'] != 'null') {
+            if ($request->has('referidor')) {
 
                 $usuario_referidor = User::where('codigo_referidor', $datos['referidor'])->first();
 
@@ -204,7 +206,7 @@ class UserController extends Controller
                 }
 
                 // Notificar al usuario referidor del nuevo amigo
-                $usuario_referidor->notify(new nuevoAmigo($request->url(),$usuario));
+                $usuario_referidor->notify(new nuevoAmigo($request->headers->get('origin'),$usuario));
                 $usuario_referidor->establecerNivel();
             }
 
@@ -212,14 +214,13 @@ class UserController extends Controller
 
             $result = true;
 
-            $usuario->notify((new WelcomeUsuario($request->url(),$usuario))->locale($usuario->locale));
+            $usuario->notify((new WelcomeUsuario($request->headers->get('origin'),$usuario))->locale($usuario->locale));
 
             DB::commit();
         } catch (\Exception $e) {
             DB::rollback();
             $result = false;
 
-            dd($e->getMessage());
         }
 
         return response()->json(['result' => $result, 'usuario' => $result ? $usuario : null]);
@@ -267,7 +268,6 @@ class UserController extends Controller
             'nombre.required' => 'El nombre es importante',
             'email.unique'    => 'El email ya está siendo usado, el mismo debe ser único',
             'username.unique' => 'El nombre de usuario ya está siendo usado, inténta con otro'
-
         ]);
 
         return $datos;
@@ -336,7 +336,13 @@ class UserController extends Controller
 
     public function getUsuarios()
     {
-        return response()->json(User::where('activo',true)->get()->each(fn ($val) => $val->cargar()));
+        $usuarios = User::where('activo',true)->get();
+        $usuarios->each(function($usuario){
+            $usuario->avatar = $usuario->getAvatar();
+            $usuario->portada = $usuario->getPortada();
+        });
+
+        return response()->json($usuarios);
     }
 
     public function getLideres()
@@ -613,6 +619,7 @@ class UserController extends Controller
             $user->cuenta?->divisa;
             $user->telefonos;
             $user->likes;
+            $user->userNivels->load(['nivel.grupo','nivel.nivelSiguiente']);
 
             // $user->solicitudes;
             // $user->destino;
@@ -835,21 +842,29 @@ class UserController extends Controller
 
     public function searchUser(Request $request)
     {
-
         $query = $request->get('q');
 
-        $usuarios = User::where([
-            ['nombre', 'LIKE', "%{$query}%", "OR"],
-            ['apellido', 'LIKE', "%{$query}%", "OR"],
-            ['email', 'LIKE', "%{$query}%", "OR"],
-            ['username', 'LIKE', "%{$query}%", "OR"],
-        ])
-            ->get();
+        $usuarios = User::where(function ($q) use ($query) {
+            $q->where(function ($q) use ($query) {
+                $q->orWhereRaw("CONCAT(nombre, ' ', apellido) LIKE ?", ["%{$query}%"]);
+            });
+
+            $searchs = ['email', 'username'];
+
+            $q->orWhere(function ($q) use ($searchs, $query) {
+                foreach ($searchs as $key => $column) {
+                    if ($key === 0) {
+                        $q->where($column, 'LIKE', "%{$query}%");
+                    } else {
+                        $q->orWhere($column, 'LIKE', "%{$query}%");
+                    }
+                }
+            });
+        })->get();
 
         foreach ($usuarios as $usuario) {
             $usuario->cargar();
         }
-
 
         return response()->json($usuarios);
     }
@@ -859,7 +874,7 @@ class UserController extends Controller
     {
 
         $carrito_productos = $usuario->carritoCompra;
-
+        
         $carrito_productos->load(['opinions', 'imagenes', 'categoria', 'tiendas', 'divisa']);
 
         return response()->json($carrito_productos);
@@ -876,10 +891,7 @@ class UserController extends Controller
 
     public function addProductoCarrito(Request $request)
     {
-
-
         $result = $request->user()->addProducto(
-
             $request->validate([
                 'tienda_id'       => 'nullable',
                 'producto_id'     => 'required',
@@ -1199,7 +1211,7 @@ class UserController extends Controller
                 $promotor->lider
             ]);
 
-            Notification::sendNow($users_notification, new NuevaAsignacionLider($request->url(),$promotor));
+            Notification::sendNow($users_notification, new NuevaAsignacionLider($request->headers->get('origin'),$promotor));
 
             DB::commit();
             $result = true;
@@ -1235,7 +1247,7 @@ class UserController extends Controller
                 $lider->coordinador
             ]);
 
-            // Notification::sendNow($users_notification, new NuevaAsignacionCoordinador($request->url(),$lider));
+            // Notification::sendNow($users_notification, new NuevaAsignacionCoordinador($request->headers->get('origin'),$lider));
 
             DB::commit();
             $result = true;
@@ -1362,7 +1374,7 @@ class UserController extends Controller
             }
 
             $lider->cargar();
-            $lider->notify((new WelcomeUsuario($request->url(),$lider))->locale($lider->locale));
+            $lider->notify((new WelcomeUsuario($request->headers->get('origin'),$lider))->locale($lider->locale));
 
             DB::commit();
             $result = true;
@@ -1412,7 +1424,7 @@ class UserController extends Controller
                 $promotor->aperturarCuenta();
             }
             $promotor->cargar();
-            $promotor->notify((new WelcomeUsuario($request->url(),$promotor))->locale($promotor->locale));
+            $promotor->notify((new WelcomeUsuario($request->headers->get('origin'),$promotor))->locale($promotor->locale));
 
             DB::commit();
             $result = true;
@@ -1555,7 +1567,7 @@ class UserController extends Controller
 
                  $result = true;    
 
-                //  $usuario->notify(new validarVentaTarjeta($request->url(),$tarjeta));
+                //  $usuario->notify(new validarVentaTarjeta($request->headers->get('origin'),$tarjeta));
 
                 if($usuario->cuenta->divisa->iso == 'Tp'){
                     $usuario->generarMovimiento($tarjeta->lote->tps, 'Nueva Tarjeta asociada a su cuenta');
@@ -2334,6 +2346,16 @@ class UserController extends Controller
         $result = $usuario->save();
         return response()->json(['result' => $result]);
 
+    }
+
+    public function getNivelUser(Request $request){
+
+        $usuario = $request->user();
+
+        $usuario->cargar();
+
+        return response()->json($usuario);
+        
     }
 
 

@@ -24,5 +24,6 @@
  ## {{ __('Dirección') }}: **{{ strtoupper( $tienda->direccion()) }}**.
 @endif
 
-# {{ __('¡Gracias por preferirnos Travel Points!') }} #
+# {{ __('¡Gracias por preferirnos!') }} #  
+# {{ __('El equipo de Travel Points') }} #  
 @endcomponent

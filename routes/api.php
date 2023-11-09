@@ -5,13 +5,16 @@ use App\Http\Controllers\Auth\{AuthController};
 use App\Http\Controllers\{AcademiaVideoController, AmenidadController, ApplicationController, CargoController, CategoriaFaqController, CategoriaProductoController, ComisionController, ConsumoController, CuponController, DashboardController, DatosPagosController, DestinoController, DivisaController, EmpleadoController, EventoController, FaqController, FormaPagoController, HomeController, HorarioController, HorarioReservacionController, IataController, MovimientoController, NegocioCategoriaController, NegocioController, UserController, NotificacionController, RolController, PermisoController, SolicitudController, TelefonoController, OpinionController, PanelController, ProductoController, PublicacionController, ReservacionController, RetiroController, SistemaController, SucursalController, TiendaController, VentaController};
 use App\Http\Middleware\convertirNull;
 use Laravel\Socialite\Facades\Socialite;
-use App\Models\{CategoriaFaq, CategoriaProducto, Pais, Estado, Ciudad, Invitacion, };
+use App\Models\{CategoriaFaq, CategoriaProducto, Pais, Estado, Ciudad, Destino, GrupoNivel, Invitacion, User, };
 use App\Http\Controllers\AtraccionController;
 use App\Models\Divisa;
 use App\Http\Controllers\ImagenController;
 use App\Models\Negocio\HorarioReservacion;
 
-use App\Http\Controllers\{PaisController, CiudadController, EstadoController, IdiomaController, InvitacionController, LoteController, MensajesVonageController, PaginaController, ReunionController, TarjetaController};
+use App\Http\Controllers\{PaisController, CiudadController, EstadoController, GrupoNivelController, IdiomaController, InvitacionController, LoteController, MensajesVonageController, NivelController, PaginaController, ReunionController, TarjetaController};
+use App\Http\Resources\DestinoPublicResource;
+use App\Http\Resources\DestinoResource;
+use App\Http\Resources\getCarritoCompra;
 
 /*
 |--------------------------------------------------------------------------
@@ -39,7 +42,7 @@ Route::get('oauth/csrf-cookie',function(){
 });
 
 Route::group(['prefix' => 'auth'], function () {
-
+    Route::post('google', [AuthController::class, 'authGoogle']);
     Route::get('google/redirect', [AuthController::class, 'redirectGoogle']);
     Route::get('google/callback', [AuthController::class, 'callbackGoogle']);
 
@@ -168,7 +171,7 @@ Route::group(['middleware' => ['auth:api']], function () {
     Route::put('promotor/{promotor}/toggle-lider',[UserController::class,'toggleLider']);
 
     Route::get('usuarios/{usuario}/update-locale/{locale}',[UserController::class,'updateLocale']);
-
+    Route::get('get/nivel-user',[UserController::class,'getNivelUser']);
     /*****************************/
     /* TELEFONOS
     /*****************************/
@@ -268,7 +271,7 @@ Route::group(['middleware' => ['auth:api']], function () {
     Route::put('negocios/{negocio}/agregar/red-social', [NegocioController::class, 'agregarRed']);
     Route::delete('negocios/{negocio}/quitar/red-social/{red}', [NegocioController::class, 'quitarRed']);
     Route::get('negocios/{negocio}/quitar/all-redes', [NegocioController::class, 'quitarRedes']);
-    Route::put('negocios/{negocio}/guardar/video', [NegocioController::class, 'guardarVideo'])->middleware('convertir.null');
+    Route::post('negocios/guardar/video', [NegocioController::class, 'guardarVideo']);
 
     Route::put('negocios/{negocio}/consultar/horas', [NegocioController::class, 'consultarHoras']);
 
@@ -287,7 +290,7 @@ Route::group(['middleware' => ['auth:api']], function () {
 
     Route::get('negocios/get/all', [NegocioController::class, 'getNegocios']);
     Route::get('negocios/{negocio}/toggle-publicado',[NegocioController::class,'togglePublicado']);
-
+    Route::get('negocios/{negocio}/verificar-saldo',[NegocioController::class,'verificarSaldo']);
 
     /*****************************/
     /* Divisas
@@ -531,7 +534,7 @@ Route::group(['middleware' => ['auth:api']], function () {
     /* Carrito Compra
     /*****************************/
 
-    Route::get('carrito/compra/{usuario}/get', [UserController::class, 'getCarrito']);
+    Route::get('carrito/compra/{usuario}/get', fn(User $usuario) => new getCarritoCompra($usuario));
     Route::get('carrito/compra/{usuario}/quitar/producto/{producto}', [UserController::class, 'sacarProductoCarrito']);
     Route::post('carrito/comprar/agregar/producto', [UserController::class, 'addProductoCarrito']);
 
@@ -769,6 +772,28 @@ Route::group(['middleware' => ['auth:api']], function () {
     Route::get('invitacions/{invitacion}/recordar',[InvitacionController::class,'recordar']);
     Route::resource('invitacions',InvitacionController::class);
 
+    /**************************/
+    /* Grupo Nivels
+    /**************************/
+
+    Route::post('grupo-nivels/fetch-data',[GrupoNivelController::class,'fetchData']);
+    Route::get('grupo-nivels/{grupo_nivel}/get/fetch-data',[GrupoNivelController::class,'fetch']);
+    Route::get('grupo-nivels/get/all',[GrupoNivelController::class, 'getAll']);
+    Route::resource('grupo-nivels',GrupoNivelController::class);
+
+    /**************************/
+    /* Nivels
+    /**************************/
+
+    Route::post('nivels/fetch-data',[NivelController::class,'fetchData']);
+    Route::get('nivels/{nivel}/get/fetch-data',[NivelController::class,'fetch']);
+    Route::post('nivels/{nivel}/guardar/insignia',[NivelController::class,'guardarInsignia']);
+    Route::get('nivels/grupo/{grupo}/get-all',[NivelController::class,'getAllGrupo']);
+    Route::get('nivels/verificar/nivels-viajeros',[NivelController::class,'verificarNivelViajeros']);
+    Route::resource('nivels',NivelController::class);
+
+    
+
 });
 
 Route::put('usuario/{usuario}/establecer/contrasena', [UserController::class, 'EstablecerContrasena'])->name('establecercontrasena');
@@ -792,12 +817,13 @@ Route::get('get/ciudades/{estado}', function (Estado $estado) {
 Route::get('usuarios/verificar/codigo/{codigo}', [UserController::class, 'verificarCodigo']);
 Route::post('cargar/categorias', [CategoriaFaqController::class, 'cargar']);
 
-Route::post('auth/google', [AuthController::class, 'authGoogle']);
+
 
 
 // Destinos 
 Route::get('destinos/get/all', [DestinoController::class, 'getAll']);
 Route::post('destinos/fetch-data/public', [DestinoController::class, 'fetchDataPublic']);
+Route::get('destino/{destino}/get/about-travel',[DestinoController::class,'getAboutTravel']);
 // Atracciones
 Route::get('atraccions/get/all', [AtraccionController::class, 'getAll']);
 Route::get('atraccions/{atraccion}/otras/cercanas', [AtraccionController::class, 'otrasCercanas']);
@@ -805,7 +831,11 @@ Route::get('atraccions/{atraccion}/otras/cercanas', [AtraccionController::class,
 Route::post('search/public', [HomeController::class, 'searchPublic']);
 Route::post('search/location', [HomeController::class, 'searchLocation']);
 Route::post('destinos/obtener/por-nombre', [DestinoController::class, 'getPorNombre']);
-Route::get('destinos/{destino}/fetch/data-public',[DestinoController::class,'fetch']);
+
+// Route::get('destinos/{destino}/fetch/data-public',[DestinoController::class,'fetch']);
+
+Route::get('destinos/{destino}/fetch/data-public',fn(Destino $destino) => new DestinoResource($destino));
+
 Route::post('atraccions/obtener/por-nombre', [AtraccionController::class, 'getPorNombre']);
 
 Route::post('opinions/fetch/data/model', [OpinionController::class, 'fetchDataModel']);

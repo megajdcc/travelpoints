@@ -6,8 +6,8 @@ use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Testing\Fluent\AssertableJson;
-use Laravel\Sanctum\Sanctum;
 use Tests\TestCase;
+use Laravel\Passport\Passport;
 
 class TraduccionTest extends TestCase
 {
@@ -16,10 +16,11 @@ class TraduccionTest extends TestCase
         $cadena_es = 'hola';
         $cadena_en  = 'hello';
 
-        Sanctum::actingAs(
+        Passport::actingAs(
             User::factory()->create(),
             ['*']
         );
+
         
         $this->postJson('/api/traslate/',['msg' => $cadena_es,'locale'  => 'en'])
         ->assertOk()
@@ -27,5 +28,7 @@ class TraduccionTest extends TestCase
             $j->where('traslate.translated_text', $cadena_en)->etc();
         });
     }
+
+    
     
 }

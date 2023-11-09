@@ -22,6 +22,7 @@ trait hasVideos
 
       public function agregarVideo(Request $request) : Video {
          
+       
          $datos = $request->all();
      
          if($datos['youtube'] != 'false'){
@@ -33,10 +34,8 @@ trait hasVideos
          }else{
 
             $video = $request->file('url');
-            
                $video_name = \sha1($video->getClientOriginalName()) . '.' . $video->getClientOriginalExtension();
-               Storage::disk('videos_negocios')->put($video_name, File::get($video));
-
+               $result = Storage::disk('videos_negocios')->put($video_name, File::get($video));
             return Video::create([
                ...[
                   'nombre' => $datos['nombre'],
@@ -53,9 +52,6 @@ trait hasVideos
       public function updateVideo(Request $request, Video $video){
 
          $datos = $request->all();
-  
-
-
        
          if ($datos['youtube'] == 'true'){
 

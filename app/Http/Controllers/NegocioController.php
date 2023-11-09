@@ -520,8 +520,9 @@ class NegocioController extends Controller
         return response()->json(['result' => $result, 'negocio' => $negocio]);
     }
 
-    public function guardarVideo(Request $request, Negocio $negocio){
+    public function guardarVideo(Request $request){
 
+        $negocio = Negocio::find($request->input('negocio_id'));
         
         if($request->get('id')){
          
@@ -540,6 +541,8 @@ class NegocioController extends Controller
             }
         }else{
             $negocio->quitarVideos();
+
+           
             try {
                 DB::beginTransaction();
                 $negocio->agregarVideo($request);
@@ -548,11 +551,13 @@ class NegocioController extends Controller
             } catch (\Exception $e) {
                 DB::rollBack();
                 $result = false;
+                dd($e->getMessage());
+
             }
 
         }
 
-        $negocio = Negocio::find($negocio->id);
+     
         $negocio->cargar();
         $negocio->videos = $negocio->videos;
 
@@ -1071,6 +1076,19 @@ class NegocioController extends Controller
         ]);
 
 
+    }
+
+    public function verificarSaldo(Negocio $negocio){
+
+        $saldo_advertencia = Divisa::cambiar(Divisa::where('iso', 'EUR')->first(), $negocio->cuenta->divisa ,10);
+
+        $saldo_negocio = $negocio->cuenta->saldo;
+
+        return response()->json([
+            'mostrar' => $saldo_negocio <= $saldo_advertencia ? true : false,
+            'saldo' => $saldo_negocio,
+            'saldo_advertencia' => $saldo_advertencia
+        ]);
     }
 
 

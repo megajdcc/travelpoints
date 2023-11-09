@@ -28,6 +28,7 @@ class AuthController extends Controller
 
    
    public function authGoogle(Request $request){
+
       $data = $request->all();
 
       $id_token = $data['credential'];
@@ -40,8 +41,6 @@ class AuthController extends Controller
 
          $usuario = User::where('email',$payload['email'])->first();
          if(!$usuario) {
-
-           
 
             $url = isset($payload['picture']) ? $payload['picture'] : null; // URL de la imagen a descargar
             $usuario = User::create([

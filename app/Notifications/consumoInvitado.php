@@ -18,7 +18,7 @@ class consumoInvitado extends Notification implements ShouldQueue
      *
      * @return void
      */
-    public function __construct(public string $url = 'travelpoints.es', protected Venta $venta, $comision)
+    public function __construct(protected Venta $venta, $comision, public string $url = 'travelpoints.es')
     {
         $this->comision = $comision;
     }

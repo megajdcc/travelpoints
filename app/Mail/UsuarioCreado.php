@@ -17,7 +17,7 @@ class UsuarioCreado extends Mailable implements ShouldQueue
      *
      * @return void
      */
-    public function __construct(public string $url = 'travelpoints.es', public User $usuario){
+    public function __construct( public User $usuario, public string $url = 'travelpoints.es'){
     }
 
     /**

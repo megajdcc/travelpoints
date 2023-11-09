@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Jobs\ModelTraslate;
 use App\Models\CategoriaProducto;
 use App\Models\Sistema;
 use Illuminate\Http\Request;
@@ -69,6 +70,7 @@ class CategoriaProductoController extends Controller
             DB::beginTransaction();
 
             $categoria = CategoriaProducto::create($datos);
+            ModelTraslate::dispatch($categoria, ['nombre', 'descripcion']);
 
             $categoria->load('productos');
 
@@ -111,6 +113,7 @@ class CategoriaProductoController extends Controller
             $categoria_producto->update($this->validar($request, $categoria_producto));
 
             $categoria_producto->load('productos');
+            ModelTraslate::dispatch($categoria_producto, ['nombre', 'descripcion']);
 
 
             DB::commit();

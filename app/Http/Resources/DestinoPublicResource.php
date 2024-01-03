@@ -28,7 +28,9 @@ class DestinoPublicResource extends JsonResource
                 'isAboutTravel' => !empty($this->about_travel),
                 'ruta' => "/Destinos?q={$this->nombre}",
                 'modelType' => $this->model_type,
-                'atracciones' => $this->atracciones
+                'atracciones' => $this->atracciones->each(function($atraccion){
+                    $atraccion->imagenes = $atraccion->imagenes->filter(fn ($imagen) => $imagen->is_thumb);
+                })
             ]
            
         ];

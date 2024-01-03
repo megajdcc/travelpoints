@@ -15,10 +15,14 @@ class Atraccion extends Model
     use HasFactory, hasTelefonos, hasImages, hasHorario, hasLike, hasLocation, hasOpinion,hasEvento, hasTranslate;
 
     public readonly string $model_type;
+    public readonly string $disk;
+
 
     public function __construct()
     {   
         $this->model_type = 'App\Models\Atraccion';
+        $this->disk = 'atracciones_imagenes';
+
     }
     
     public $fillable = [

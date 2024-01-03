@@ -97,6 +97,10 @@ class Divisa extends Model
     }
 
 
+    public function impuestos(){
+        return $this->hasMany(Impuesto::class,'divisa_id','id');
+    }
+
     /**
      * Realiza la conversión de una divisa a otra utilizando una divisa principal como intermediaria.
      *

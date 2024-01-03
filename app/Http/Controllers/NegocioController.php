@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\NegociosPublicCollection;
 use App\Jobs\ModelTraslate;
 use App\Models\Atraccion;
 use App\Models\Destino;
@@ -678,24 +679,25 @@ class NegocioController extends Controller
             ->orderBy('comision','desc')
             ->paginate($datos['perPage']?:1000, pageName:'currentPage');
 
+        // $negocios = collect($paginator->items());
 
-        $negocios = collect($paginator->items());
+        // if($datos['atraccion'] && !is_null($datos['atraccion'])){
+        //     $atraccion = Atraccion::find($datos['atraccion']);
 
-        if($datos['atraccion'] && !is_null($datos['atraccion'])){
-            $atraccion = Atraccion::find($datos['atraccion']);
-
-            $negocios = $negocios->filter(function($negocio) use($atraccion){
-                return $negocio->cercanos(['lat' => $atraccion->lat,'lng' => $atraccion->lng],80);
-            });
+        //     $negocios = $negocios->filter(function($negocio) use($atraccion){
+        //         return $negocio->cercanos(['lat' => $atraccion->lat,'lng' => $atraccion->lng],80);
+        //     });
             
-        }   
+        // }   
 
-        $negocios->each(fn($negocio) =>  $negocio->cargar());
+        // $negocios->each(fn($negocio) =>  $negocio->cargar());
 
-        return response()->json([
-            'total' => $paginator->total(),
-            'negocios' => $negocios
-        ]);
+        return new NegociosPublicCollection($paginator);
+
+        // return response()->json([
+        //     'total' => $paginator->total(),
+        //     'negocios' => $negocios
+        // ]);
       
     }
 

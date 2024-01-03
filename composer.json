@@ -16,6 +16,7 @@
         "doctrine/dbal": "^3.6",
         "google/apiclient": "^2.13",
         "guzzlehttp/guzzle": "^7.7",
+        "intervention/image": "^2.7",
         "laravel/framework": "^10.0",
         "laravel/passport": "^11.9",
         "laravel/socialite": "^5.5",

@@ -51,7 +51,7 @@ class WelcomeUsuario extends Notification implements ShouldQueue
      */
     public function toMail($notifiable)
     {
-        return (new UsuarioCreado($this->url,$this->usuario))
+        return (new UsuarioCreado($this->usuario,$this->url))
             ->to($this->usuario->email);
     }
 

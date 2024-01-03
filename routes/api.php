@@ -11,7 +11,7 @@ use App\Models\Divisa;
 use App\Http\Controllers\ImagenController;
 use App\Models\Negocio\HorarioReservacion;
 
-use App\Http\Controllers\{PaisController, CiudadController, EstadoController, GrupoNivelController, IdiomaController, InvitacionController, LoteController, MensajesVonageController, NivelController, PaginaController, ReunionController, TarjetaController};
+use App\Http\Controllers\{PaisController, CiudadController, EstadoController, GrupoNivelController, IdiomaController, ImpuestoController, InvitacionController, LoteController, MensajesVonageController, NivelController, PaginaController, ReunionController, TarjetaController};
 use App\Http\Resources\DestinoPublicResource;
 use App\Http\Resources\DestinoResource;
 use App\Http\Resources\getCarritoCompra;
@@ -792,7 +792,17 @@ Route::group(['middleware' => ['auth:api']], function () {
     Route::get('nivels/verificar/nivels-viajeros',[NivelController::class,'verificarNivelViajeros']);
     Route::resource('nivels',NivelController::class);
 
+
+    /**************************/
+    /* Impuestos
+    /**************************/
+    Route::post('impuestos/get/fetch-data', [ImpuestoController::class, 'fetchData']);
+    Route::get('impuestos/{impuesto}/get/fetch-data', [ImpuestoController::class, 'fetch']);
+    Route::resource('impuestos',ImpuestoController::class);
+
     
+
+
 
 });
 
@@ -825,7 +835,7 @@ Route::get('destinos/get/all', [DestinoController::class, 'getAll']);
 Route::post('destinos/fetch-data/public', [DestinoController::class, 'fetchDataPublic']);
 Route::get('destino/{destino}/get/about-travel',[DestinoController::class,'getAboutTravel']);
 // Atracciones
-Route::get('atraccions/get/all', [AtraccionController::class, 'getAll']);
+Route::get('atraccions/get/all/destino/{destino}', [AtraccionController::class, 'getAll']);
 Route::get('atraccions/{atraccion}/otras/cercanas', [AtraccionController::class, 'otrasCercanas']);
 // Search Public
 Route::post('search/public', [HomeController::class, 'searchPublic']);

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\EventosPublicCollection;
 use App\Jobs\ModelTraslate;
 use App\Models\Evento;
 use Illuminate\Http\Request;
@@ -382,10 +383,11 @@ class EventoController extends Controller
         $perPage = $filtro['perPage'] ?? 1000;
         $paginator = $query->paginate($perPage);
 
-        $eventos = collect($paginator->items())->each(fn ($evento) => $evento->cargar());
+        // $eventos = collect($paginator->items())->each(fn ($evento) => $evento->cargar());
 
         // Devuelve la respuesta en formato JSON
-        return response()->json(['total' => $paginator->total(), 'eventos' => $eventos]);
+        return new EventosPublicCollection($paginator);
+        // return response()->json(['total' => $paginator->total(), 'eventos' => $eventos]);
     }
 
 

@@ -194,6 +194,11 @@ class RetiroController extends Controller
                 ]
             ]);
 
+            // SI el status es procesado , generamos el recibo / factura, a Infochannel.
+            if($retiro->status == 3){
+                $retiro->generarRecibo();
+            }
+
             $retiro->load('usuario');
             $retiro->fresh();
 
@@ -209,6 +214,9 @@ class RetiroController extends Controller
         } catch (\Exception $e) {
             DB::rollBack();
             $result = false;
+
+            throw new \Exception("Error al actualizar retiro:{$e->getMessage()}", 1);
+            
         }
 
         return response()->json(['result' => $result, 'retiro' => $result ? $retiro : null]);

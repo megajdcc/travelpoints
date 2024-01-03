@@ -64,6 +64,7 @@ class RolController extends Controller
 
     public function roles(){
         $roles = Rol::get();
+
         $rols = collect([]);
             if (Auth::user()->rol->nombre == 'Desarrollador') {
                 $rols = $roles;

@@ -14,10 +14,14 @@ class Evento extends Model
     use hasImages, hasTranslate;
 
     public readonly string $model_type;
+    public readonly string $disk;
+
 
     public function __construct()
     {
         $this->model_type = 'App\Models\Evento';
+        $this->disk = 'eventos_imagenes';
+
     }
 
     protected $fillable = [
@@ -102,13 +106,7 @@ class Evento extends Model
                 $this->save();
                 // VerificarEvento::dispatch($this)->delay($this->fecha_inicio->addMinute());
             }
-
-           
         }
-
-
-
     }
-
 
 }

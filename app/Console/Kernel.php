@@ -57,9 +57,8 @@ class Kernel extends ConsoleKernel
         //  Limpiar Tokens Caducados
         $schedule->command('auth:clear-resets')->everyFifteenMinutes();
 
-
         // Verificar Eventos 
-        $schedule->command('eventos:verificar')->everyFiveMinutes();
+        $schedule->command('eventos:verificar')->everySixHours();
 
     }
 

@@ -50,7 +50,7 @@ class nuevaReservacion extends Notification implements ShouldQueue
             return (new MailMessage)
                 ->subject(__('Nueva reservación en Travel Points'))
                 ->greeting(__('Hola :nombre',['nombre' => $notifiable->getNombreCompleto()]))
-                ->line(__("El viajero :viajero a realizado una reservación a tu negocio (:negocio), para el día :dia, para :personas",
+                ->line(__("El viajero :viajero ha realizado una reservación a tu negocio :negocio, para el día :dia, para :personas",
                 ['viajero' => $this->reservacion->usuario->getNombreCompleto(),
                 'negocio' =>$this->reservacion->negocio->nombre,
                 'dia' => $this->reservacion->getDia(),

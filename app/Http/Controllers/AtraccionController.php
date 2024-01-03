@@ -4,36 +4,21 @@ namespace App\Http\Controllers;
 
 use App\Jobs\ModelTraslate;
 use App\Models\Atraccion;
+use App\Models\Destino;
 use Illuminate\Http\Request;
 
 use Illuminate\Support\Facades\{DB, Storage, File};
 use Illuminate\Database\Eloquent\Builder;
 use App\Models\Imagen;
 use Illuminate\Support\Collection;
+use App\Http\Resources\AtraccionsPublicResource;
 
 class AtraccionController extends Controller
 {
 
-    public function getAll(){
+    public function getAll(Destino $destino){
         
-        $atracciones = Atraccion::get();
-
-        foreach($atracciones as $atraccion){
-            $atraccion->telefono;
-            $atraccion->imagenes;
-            // $atraccion->destino;
-            // $atraccion->destino->estado?->pais;
-            // $atraccion->destino->ciudad;
-            $atraccion->horarios;
-            $atraccion->likes;
-            $atraccion->ruta = "/Atraccions?q={$atraccion->nombre}";
-            $atraccion->modelType = $atraccion->model_type;
-            $atraccion->opinions;
-
-        }
-
-        return response()->json($atracciones);
-
+        return new AtraccionsPublicResource($destino);
 
     }
     public function fetch(Atraccion $atraccion)
@@ -240,8 +225,9 @@ class AtraccionController extends Controller
     public function cargarImagen(Request $request, Atraccion $atraccion)
     {
 
+        
         $files = $request->file('imagen');
-
+        
         try {
             DB::beginTransaction();
 
@@ -254,6 +240,7 @@ class AtraccionController extends Controller
                 $atraccion->addImagen([
                     'imagen' => $file_name,
                 ]);
+
             }
 
 
@@ -274,6 +261,7 @@ class AtraccionController extends Controller
         } catch (\Exception $e) {
             DB::rollBack();
             $result = false;
+            dd($e->getMessage());
 
            
         }
@@ -437,10 +425,12 @@ class AtraccionController extends Controller
 
     public function otrasCercanas(Atraccion $atraccion){
   
-        $atracciones = Atraccion::getLocation(['lat' => $atraccion->lat,'lng' => $atraccion->lng,'km' => 50]);
+        // $atracciones = Atraccion::getLocation(['lat' => $atraccion->lat,'lng' => $atraccion->lng,'km' => 100]);
+        // $atracciones  = $atracciones->filter(fn ($val) => $val->id != $atraccion->id)->all();
 
-        $atracciones  = $atracciones->filter(fn ($val) => $val->id != $atraccion->id)->all();
-        return response()->json([...$atracciones]);
+        // return response()->json([...$atracciones]);
+
+        return new AtraccionsPublicResource($atraccion->destino);
     }
 
 }

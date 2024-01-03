@@ -123,6 +123,7 @@ class User extends Authenticatable implements HasLocalePreference, CanResetPassw
         'lider_business' => 'boolean',
         'ultimo_login' => 'datetime'
     ];
+    
     public function sendPasswordResetNotification($token):void
     {
         $url = $this->url_reset_password."/reset-password?token={$token}";
@@ -209,10 +210,8 @@ class User extends Authenticatable implements HasLocalePreference, CanResetPassw
 
         // return User::orderBy($filter['sortBy'])
         //             ->take($filter['perPage'])
-
     }
-
-
+    
     public function getFullName(){
         return $this->nombre . ' '. $this->apellido; 
     }

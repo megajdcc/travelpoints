@@ -120,6 +120,13 @@ return [
             'visibility' => 'public', 
         ],
 
+        'negocio_fotos' => [
+            'driver' => 'local',
+            'root' => storage_path('app/public/negocios/fotos/'),
+            'url' => env('APP_URL') . '/storage/negocios/fotos/',
+            'visibility' => 'public',
+        ],
+
         'imagenes_productos' => [
             'driver' => 'local',
             'root' => storage_path('app/public/productos'),
@@ -152,6 +159,13 @@ return [
             'driver' => 'local',
             'root' => storage_path('app/public/comprobantes/retiros'),
             'url' => env('APP_URL') . '/storage/comprobantes/retiros',
+            'visibility' => 'public',
+        ],
+
+        'recibo_retiro' => [
+            'driver' => 'local',
+            'root' => storage_path('app/public/recibos'),
+            'url' => env('APP_URL') . '/storage/recibos',
             'visibility' => 'public',
         ],
 
@@ -194,6 +208,13 @@ return [
             'driver' => 'local',
             'root' => storage_path('app/public/insignias'),
             'url' => env('APP_URL') . '/storage/insignias',
+            'visibility' => 'public',
+        ],
+
+        'thumbnails' => [
+            'driver' => 'local',
+            'root' => storage_path('app/public/thumbnails'),
+            'url' => env('APP_URL') . '/storage/thumbnails',
             'visibility' => 'public',
         ],
 

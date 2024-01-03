@@ -22,7 +22,7 @@ trait hasTranslate
           if ($idioma->shortLang == 'es') {
             $modified_collection->put($this[$prop], $this[$prop]);
           } else {
-            $modified_collection->put($this[$prop], $this->translate($this[$prop], from: 'es', to: $idioma->shortLang));
+            $modified_collection->put($this[$prop], $this->translate($this[$prop],to: $idioma->shortLang, from: 'es',));
           }
         }
 
@@ -32,7 +32,7 @@ trait hasTranslate
     }
   }
 
-  public function translate($text,$from = 'es',string $to) : string|null{
+  public function translate($text, string $to,$from = 'es') : string|null{
       $result = '';
       $traduccion = GoogleTranslate::translate($text,from:$from,to:$to);
       $result = $traduccion['translated_text'];

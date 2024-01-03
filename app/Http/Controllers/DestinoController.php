@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\DestinoPublicCollection;
 use App\Http\Resources\DestinoPublicResource;
 use App\Jobs\ModelTraslate;
 use App\Models\Destino;
@@ -81,10 +82,11 @@ class DestinoController extends Controller
         });
 
         
-        return response()->json([
-            'destinos' => $destinos,
-            'total' => $pagination->total()
-        ]);
+        return new DestinoPublicCollection($pagination) ;
+        // response()->json([
+        //     'destinos' => $destinos,
+        //     'total' => $pagination->total()
+        // ]);
     }
 
     public function fetch(Destino $destino){

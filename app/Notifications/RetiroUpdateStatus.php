@@ -14,9 +14,9 @@ class RetiroUpdateStatus extends Notification implements ShouldQueue
 
 
     protected $mensajes = [
-        2 => __("Su retiro de comisión se encuentra en proceso"),
-        3 => __("Su retiro de comisión se ha procesado con éxito"),
-        4 => __("Su retiro se ha rechazado, Comuniquese con soporte")
+        2 => "Su retiro de comisión se encuentra en proceso",
+        3 => "Su retiro de comisión se ha procesado con éxito",
+        4 => "Su retiro se ha rechazado, Comuniquese con soporte"
     ];
 
     /**
@@ -49,9 +49,9 @@ class RetiroUpdateStatus extends Notification implements ShouldQueue
     public function toMail($notifiable)
     {
         return (new MailMessage)
-        ->subject($this->mensajes[$this->retiro->status])
+        ->subject(__($this->mensajes[$this->retiro->status]))
                     ->greeting(__("Hola :nombre",['nombre' => $this->retiro->usuario->getNombreCompleto()]))
-                    ->line($this->mensajes[$this->retiro->status])
+                    ->line(__($this->mensajes[$this->retiro->status]))
                     ->line(__("Gracias por usar nuestra aplicación de Travel Points"));
     }
 
@@ -67,7 +67,7 @@ class RetiroUpdateStatus extends Notification implements ShouldQueue
             'titulo' => __("Cambio en el estado de la solicitud de Retiro de comisión"),
             'avatar' => null,
             'usuario' => null,
-            'mensaje' => [$this->mensajes[$this->retiro->status]],
+            'mensaje' => [__($this->mensajes[$this->retiro->status])],
             'type' => 'light-success', // light-info , light-success, light-danger, light-warning
             'btn' => false,
             'btnTitle' => __("Ir a mi perfil"),

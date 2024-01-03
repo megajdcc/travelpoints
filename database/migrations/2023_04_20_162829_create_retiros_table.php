@@ -17,7 +17,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('usuario_id')->constrained('users')->cascadeOnDelete()->cascadeOnUpdate();
             $table->decimal('monto');
-            $table->tinyInteger('status')->default9(1);
+            $table->tinyInteger('status')->default(1);
             $table->string('comprobante')->nullable();
             $table->text('nota')->nullable();
             $table->timestamps();

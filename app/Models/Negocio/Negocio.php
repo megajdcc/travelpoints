@@ -20,6 +20,8 @@ class Negocio extends Model
     use hasVideos,hasVenta,hasRecomendacion,hasSeguidores,hasLocation, hasTranslate;
 
     public readonly string $model_type;
+    public readonly string $disk;
+
     public $saldo_apertura = 5;
 
     public $table = 'negocios';
@@ -27,6 +29,8 @@ class Negocio extends Model
     public function __construct()
     {
         $this->model_type = 'App\Models\Negocio\Negocio';
+        $this->disk = 'negocio_fotos';
+
     }
 
 

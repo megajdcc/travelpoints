@@ -12,12 +12,16 @@ class Estado extends Model
 
     protected $fillable = [
         'estado',
-        'pais_id'
+        'pais_id',
+        'autonomo'
 
     ];
 
-
-
+    public $casts = [
+        'autonomo' => 'boolean'
+    ];
+    
+    
     public function pais(){
         return $this->belongsTo(Pais::class,'pais_id','id');
 
@@ -40,6 +44,11 @@ class Estado extends Model
     public function destinos(){
         return $this->hasMany(Destino::class,'estado_id','id');
     }
+
+    public function impuesto(){
+        return $this->hasOne(Impuesto::class,'estado_id','id');
+    }
+    
    
     
 

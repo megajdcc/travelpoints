@@ -75,10 +75,10 @@ class EstadoController extends Controller
 
     private function validar(Request $request, Estado $estado = null): array
     {
-
         return $request->validate([
-            'estado' => ['required', $estado ? Rule::unique('estados', 'estado')->ignore($estado) : 'unique:estados,estado'],
+            'estado' => ['required',],
             'pais_id' => 'required',
+            'autonomo' => 'nullable'
         ], [
             'estado.required' => 'El Pais es importante no lo olvides',
             'estado.unique' => 'El pais ya está Siendo usado, intente con otro',
@@ -95,12 +95,13 @@ class EstadoController extends Controller
      */
     public function store(Request $request)
     {
+        $datos = $this->validar($request);
 
         try {
             DB::beginTransaction();
 
 
-            $estado = Estado::create($this->validar($request));
+            $estado = Estado::create($datos);
 
             $estado->pais;
             $estado->ciudades;
@@ -126,11 +127,11 @@ class EstadoController extends Controller
      */
     public function update(Request $request, Estado $estado)
     {
-
+        $datos = $this->validar($request, $estado);
         try {
             DB::beginTransaction();
 
-            $estado->update($this->validar($request, $estado));
+            $estado->update($datos);
 
             $estado->pais;
             $estado->ciudades;

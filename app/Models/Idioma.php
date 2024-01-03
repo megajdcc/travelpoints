@@ -58,8 +58,8 @@ class Idioma extends Model
             if (is_object($value) || is_array($value)) {
                 $data->put($key, $this->generateJson($value));
             } else {
-                $data->put($key, $this->shortLang == 'es' ? $value : $this->translate($value,from:'es',to:$this->shortLang));
-                // $translatedValue = $this->shortLang == 'es' ? $value : $this->translate($value, from: 'es', to: $this->shortLang);
+                $data->put($key, $this->shortLang == 'es' ? $value : $this->translate($value,to:$this->shortLang, from: 'es'));
+            
 
                 // // Eliminar comillas dobles del texto traducido
                 // $translatedValue = str_replace(['[',']'], '', $translatedValue);

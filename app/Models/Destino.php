@@ -17,10 +17,11 @@ class Destino extends Model
     use HasFactory,HasDireccion,hasImages,hasLike,hasLocation, hasTranslate;
 
     public readonly  string  $model_type;
-
+    public readonly string $disk;
     public function __construct()
     {
         $this->model_type = 'App\Models\Destino';
+        $this->disk = 'destino_imagenes';
     }
 
     protected $fillable = [

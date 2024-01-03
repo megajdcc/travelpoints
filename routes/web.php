@@ -12,6 +12,7 @@ use App\Mail\NuevoConsumo;
 use App\Models\Consumo;
 use App\Models\Invitacion;
 use App\Models\Movimiento;
+use App\Models\Retiro;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Barryvdh\DomPDF\PDF as PDFB;
 use Illuminate\Database\Eloquent\Builder;
@@ -59,10 +60,29 @@ Route::get('/reports/view/activaciones',function(Request $request){
       'logotipo' => $imagenBase64,
       'logotipoblanco' => $logowhite,
       'avatar' => $avatar,
-      
    ]);
 
 });
+
+Route::get('/recibo/retiro',function(Request $request){
+
+   $retiro = Retiro::first();
+
+   $imagenBase64 = "data:image/png;base64," . base64_encode(Storage::disk('public')->get('logotipo.png'));
+
+   return $retiro->generarRecibo();
+   
+   return view('pdfs.recibo', [
+      ...$retiro->toArray(),
+      'logotipo'  => $imagenBase64,
+      'solicitante' => $retiro->usuario,
+      'items' => [['fecha' => now(),'concepto' => 'Comisión asignada','total' => '23,50']],
+      'abrev' => 'IVA',
+      'cuota' => 12
+   ]);
+
+});
+
 
 Route::get('/usuario/{usuario}/establecer/contrasena', function (User $usuario) {
 
@@ -89,7 +109,7 @@ Route::get('/auth/redirect',[AuthController::class, 'redirectGoogle']);
 Route::get('/auth/google',[AuthController::class, 'callbackGoogle']);
 Route::post('/vonage/sms-entrante',[MensajesVonageController::class,'smsEntrante']);
 
-// Route::get('/{any}', [ApplicationController::class, 'index'])->where('any', '.*');
+Route::get('/{any}', [ApplicationController::class, 'index'])->where('any', '.*');
 
 
 

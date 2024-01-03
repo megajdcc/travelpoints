@@ -40,7 +40,8 @@ class SistemaController extends Controller
             'empresa_digital'     => 'nullable',
             'redes'               => 'nullable',
             'negocio'             => 'nullable',
-            'porcentaje_referido' => 'nullable'
+            'porcentaje_referido' => 'nullable',
+            'nif' => 'nullable'
         ]));
         
     }

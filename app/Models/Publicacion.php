@@ -12,10 +12,14 @@ class Publicacion extends Model
     use HasFactory;
 
     public readonly string $model_type;
+    public readonly string $disk;
+
 
     public function __construct()
     {
         $this->model_type = 'App\Models\Publicacion';
+        $this->disk = 'imagenes_publicaciones';
+
     }
 
     protected $fillable = [

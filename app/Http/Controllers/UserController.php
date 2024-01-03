@@ -241,7 +241,7 @@ class UserController extends Controller
         if (in_array($usuario->rol->nombre, ['Promotor', 'Lider', 'Coordinador'])) {
             $usuario->aperturarCuenta(0, 'USD');
         } else {
-            $usuario->aperturarCuenta();
+            $usuario->aperturarCuenta(0,'USD');
         }
 
         $usuario->cargar();

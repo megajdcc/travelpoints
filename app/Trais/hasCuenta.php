@@ -16,7 +16,7 @@ trait hasCuenta
       return $this->morphOne(EstadoCuenta::class, 'model');
    }
 
-   public function aperturarCuenta($monto_apertura = 0, string $divisa_iso = null) : EstadoCuenta{
+   public function aperturarCuenta($monto_apertura = 0, string $divisa_iso = 'Tp') : EstadoCuenta{
 
       if($divisa_iso){
          $div = Divisa::where('iso',$divisa_iso)->first()->id;

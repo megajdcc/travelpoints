@@ -97,7 +97,7 @@ class IdiomaController extends Controller
             $path = null;
             if ($request->hasFile('flag')) {
                 $path = $request->flag->store('public/flags');
-            }
+        }
 
             if ($request->boolean('default')) {
 

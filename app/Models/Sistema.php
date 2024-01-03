@@ -16,6 +16,8 @@ class Sistema extends Model
     protected $table = 'sistema';
 
     public string $model_type = 'App\Models\Sistema';
+    public string $disk = 'archivos_multimedias';
+
 
     protected $fillable = [
         'nombre',
@@ -31,7 +33,8 @@ class Sistema extends Model
         'empresa_digital',
         'negocio',
         'cjdropshipping',
-        'porcentaje_referido'
+        'porcentaje_referido',
+        'nif'
     ];
 
     protected $casts = [

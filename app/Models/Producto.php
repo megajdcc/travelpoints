@@ -13,6 +13,8 @@ class Producto extends Model
     
 
     public readonly string $model_type;
+    public readonly string $disk;
+
 
 
 
@@ -47,6 +49,8 @@ class Producto extends Model
 
     public function __construct(){
         $this->model_type = 'App\Models\Producto';
+        $this->disk = 'imagenes_productos';
+
     }
 
     public function categoria(){

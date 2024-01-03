@@ -298,9 +298,9 @@ class AuthController extends Controller
     *
     * @return \Illuminate\Contracts\Auth\StatefulGuard
     */
-   protected function guard(string $guardia  = null)
+   protected function guard(string $guardia  = 'api')
    {
-      return Auth::guard('api');
+      return Auth::guard($guardia);
    }
 
 

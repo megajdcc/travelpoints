@@ -656,7 +656,11 @@ class NegocioController extends Controller
     public function fetchDataPublic(Request $request){
 
         $datos = $request->all();
-       
+        $destino_id = null;
+        if(isset($datos['atraccion']) && !empty($datos['atraccion'])){
+            $destino_id = Atraccion::find($datos['atraccion'])?->destino_id;
+        }
+
         $paginator = Negocio::where([
             ['nombre', 'LIKE', "%{$datos['q']}%", "OR"],
             ['breve', 'LIKE', "%{$datos['q']}%", "OR"],
@@ -666,6 +670,9 @@ class NegocioController extends Controller
             ['codigo_postal', 'LIKE', "%{$datos['q']}%", "OR"],
 
         ])
+            ->where('publicado',true)
+
+            
             ->when(isset($datos['destino']) && !empty($datos['destino']), function($query) use($datos){
                 $query->whereHas('iata', function (Builder $q) use ($datos) {
                     $q->whereHas('destinos', function (Builder $query) use ($datos) {
@@ -673,8 +680,15 @@ class NegocioController extends Controller
                     });
                 });
             })
+            ->when(isset($destino_id) && !is_null($destino_id), function($query) use($destino_id){
+                $query->whereHas('iata', function (Builder $q) use ($destino_id) {
+                    $q->whereHas('destinos', function (Builder $query) use ($destino_id) {
+                        $query->where('id',$destino_id);
+                    });
+                });
+            })
+
             
-            ->where('publicado',true)
             ->orderBy('tipo_comision', 'desc')
             ->orderBy('comision','desc')
             ->paginate($datos['perPage']?:1000, pageName:'currentPage');

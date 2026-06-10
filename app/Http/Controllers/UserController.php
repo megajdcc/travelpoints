@@ -1013,9 +1013,9 @@ class UserController extends Controller
     {
         $filtro = $request->all();
         $rol_user = $request->user()->rol->nombre;
-
+      
         $filas = collect(['username', 'email', 'nombre', 'apellido','direccion', 'fecha_nacimiento', 'codigo_postal', 'bio']);
-
+        
         $pagination = User::select([
             'id',
             'username',
@@ -1064,7 +1064,6 @@ class UserController extends Controller
                 }else if($usuario->rol->nombre == 'Coordinador'){
                     $q->whereHas('lider', fn($query) => $query->where('users.coordinador_id',$filtro['lider']));
                 }
-
             })
             ->when(!isset($filtro['lider']) && is_null($filtro['lider']), function(Builder $q) use($filtro,$rol_user,$request) {
 
@@ -1386,6 +1385,61 @@ class UserController extends Controller
 
         return response()->json(['result' => $result, 'lider' => $result ? $lider : null]);
     }
+
+     public function guardarCoordinador(Request $request)
+    {
+        $coordinador = null;
+
+        if($request->get('id') && !empty($request->get('id'))){
+            $coordinador = User::find($request->get('id'));
+        }
+
+        $datos  = collect($request->validate([
+            'username'       => ['required', $coordinador ? Rule::unique('users','username')->ignore($coordinador) : 'unique:users,username' ] ,
+            'nombre'         => 'required',
+            'apellido'       => 'required',
+            'email'          => ['required', $coordinador ? Rule::unique('users', 'email')->ignore($coordinador) : 'unique:users,email'],
+        ], [
+            'username.unique' => 'El nombre de usuario ya está siendo usado, intente con otro',
+            'email.unique' => 'El email ya está siendo usado, intente con otro',
+        ]));
+
+        try {
+            DB::beginTransaction();
+
+            if($request->has('id') && !empty($request->get('id'))){
+                $coordinador->update($datos);
+
+            }else{
+
+                $coordinador = User::create(
+                    [
+                        ...$datos,
+                        ...[
+                            'password' => fake()->password(),
+                            'rol_id' => Rol::where('nombre', 'Coordinador')->first()->id,
+                        ]
+                    ]
+                );
+
+                $coordinador->asignarPermisosPorRol();
+
+                $coordinador->aperturarCuenta(0, 'MXN');
+            }
+            $coordinador->cargar();
+            $coordinador->notify((new WelcomeUsuario($request->headers->get('origin'),$coordinador))->locale($coordinador->locale));
+
+            DB::commit();
+            $result = true;
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            $result = false;
+            dd($th->getMessage());
+        }
+        return response()->json(['result' => $result, 'coordinador' => $result ? $coordinador : null]);
+
+    }
+
     public function guardarPromotor(Request $request)
     {
 

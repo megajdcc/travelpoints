@@ -146,7 +146,9 @@ class AtraccionController extends Controller
      * @param  \App\Models\Atraccion  $atraccion
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Atraccion $atraccion)
+    public function 
+    
+    update(Request $request, Atraccion $atraccion)
     {   
 
         $telefono = $request->get('telefono');

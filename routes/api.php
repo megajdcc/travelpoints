@@ -152,6 +152,7 @@ Route::group(['middleware' => ['auth:api']], function () {
 
     Route::post('usuarios/promotor/save', [UserController::class, 'guardarPromotor']);
     Route::post('usuarios/lider/save', [UserController::class, 'guardarLider']);
+    Route::post('usuarios/coordinador/save', [UserController::class, 'guardarCoordinador']);
 
     Route::put('usuarios/{usuario}/asociar/tarjeta',[UserController::class,'asociarTarjeta']);
     Route::delete('usuarios/{usuario}/cancelar/tarjeta/{tarjeta}',[UserController::class,'cancelarTarjeta']);
@@ -663,10 +664,6 @@ Route::group(['middleware' => ['auth:api']], function () {
     Route::resource('ciudads', CiudadController::class);
     Route::get('fetch/ciudad/{ciudad}', [CiudadController::class, 'fetchCiudad']);
 
-
-
-
-
     /**************************/
     /* Academia
     /**************************/
@@ -831,6 +828,7 @@ Route::post('cargar/categorias', [CategoriaFaqController::class, 'cargar']);
 
 
 // Destinos 
+Route::get('destinos/get/list-select',[DestinoController::class,'getDestinoListSelect']);
 Route::get('destinos/get/all', [DestinoController::class, 'getAll']);
 Route::post('destinos/fetch-data/public', [DestinoController::class, 'fetchDataPublic']);
 Route::get('destino/{destino}/get/about-travel',[DestinoController::class,'getAboutTravel']);

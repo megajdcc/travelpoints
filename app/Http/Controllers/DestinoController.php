@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\DestinoListSelectResource;
 use App\Http\Resources\DestinoPublicCollection;
 use App\Http\Resources\DestinoPublicResource;
 use App\Jobs\ModelTraslate;
@@ -20,6 +21,9 @@ use Illuminate\Support\Collection;
 class DestinoController extends Controller
 {
 
+    public function getDestinoListSelect(){
+        return DestinoListSelectResource::collection(Destino::get());
+    }
 
     public function getAll(){
 

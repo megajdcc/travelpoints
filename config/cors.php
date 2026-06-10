@@ -1,6 +1,6 @@
     <?php
 
-return [
+    return [
 
         /*
     |--------------------------------------------------------------------------
@@ -15,21 +15,21 @@ return [
     |
     */
 
-    'paths' => ['api/*', 'sanctum/csrf-cookie'],
+        'paths' => ['api/*', 'sanctum/csrf-cookie', 'travelpoints.dev', 'api.travelpoints.dev'],
 
-    'allowed_methods' => ['*'],
+        'allowed_methods' => ['*'],
 
-    'allowed_origins' => ['*'],
+        'allowed_origins' => ['*'],
 
-    'allowed_origins_patterns' => [],
+        'allowed_origins_patterns' => [],
 
-    'allowed_headers' => ['*'],
+        'allowed_headers' => ['*'],
 
-    'exposed_headers' => [],
+        'exposed_headers' => [],
 
-    'max_age' => 0,
+        'max_age' => 0,
 
-    'supports_credentials' => false,
-    
+        'supports_credentials' => false,
 
-];
+
+    ];

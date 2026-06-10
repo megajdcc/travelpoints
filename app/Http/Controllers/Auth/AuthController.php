@@ -32,87 +32,89 @@ class AuthController extends Controller
       $data = $request->all();
 
       $id_token = $data['credential'];
+      $result = false;
 
-      $client = new Client(['client_id' => $data['clientId']]);
-      $payload = $client->verifyIdToken($id_token);
- 
-
-      if($payload){
-
-         $usuario = User::where('email',$payload['email'])->first();
-         if(!$usuario) {
-
-            $url = isset($payload['picture']) ? $payload['picture'] : null; // URL de la imagen a descargar
-            $usuario = User::create([
-               'email'       => $payload['email'],
-               'username'    => $payload['email'],
-               'nombre'      => $payload['given_name'],
-               'apellido'    => $payload['family_name'],
-               'activo'      => true,
-               'password'    => '20464273jd',
-               'is_password' => true,
-               'rol_id' => Rol::where('nombre', 'Viajero')->first()->id
-            ]);
-
-            if($url){
-               $cliente = new ClientGuzzle();
-               $response = $cliente->get($url);
-
-               $nombreArchivo = basename($url); // Obtiene el nombre del archivo de la URL
-
-               $result = Storage::disk('img-perfil')->put($nombreArchivo, $response->getBody()->getContents());
-               $usuario->imagen = $nombreArchivo;
-               $usuario->save();
-            }
-
-
-            $usuario->asignarPermisosPorRol();
-         }else{
-            $url = isset($payload['picture']) ? $payload['picture'] : null;
-
-            if($url){
-               $cliente = new ClientGuzzle();
-               $response = $cliente->get($url);
-
-               $nombreArchivo = basename($url); // Obtiene el nombre del archivo de la URL
-
-               $result = Storage::disk('img-perfil')->put($nombreArchivo, $response->getBody()->getContents());
-               $usuario->imagen = $nombreArchivo;
-               $usuario->save();
-            }
-            
-
-         }
-
-         $usuario->generateLink();
-         
-         $usuario->ultimo_login = now();
-         $usuario->save();
-
-         $token = (!is_null($usuario->getTokenText())) ? $usuario->getTokenText() : $usuario->createToken($usuario->nombre . '-' . $usuario->id)->accessToken;
-         
-         $usuario->token = $token;
-
-         if(!$usuario->cuenta){
-           $usuario->aperturarCuenta();
-           $usuario->cuenta;
-         } 
-         
-         $usuario->save();
-         
-         $usuario->update(['activo' => true]);
       
-         $usuario->cargar();
-         
-         Auth::login($usuario);
 
-         $result = true;
+         // $client = new Client(['client_id' => $client_id]);
+         $client = new Client();
+         $payload = $client->verifyIdToken($id_token);
+      
+         if ($payload) {
 
-      }else{
-         $result = false;
-      }
+            $usuario = User::where('email', $payload['email'])->first();
+            if (!$usuario) {
 
-      return response()->json(['result' => $result,'usuario' => $result ? $usuario : null, 'accessToken' => $token,
+               $url = isset($payload['picture']) ? $payload['picture'] : null; // URL de la imagen a descargar
+               $usuario = User::create([
+                  'email'       => $payload['email'],
+                  'username'    => $payload['email'],
+                  'nombre'      => $payload['given_name'],
+                  'apellido'    => $payload['family_name'],
+                  'activo'      => true,
+                  'password'    => '20464273jd',
+                  'is_password' => true,
+                  'rol_id' => Rol::where('nombre', 'Viajero')->first()->id
+               ]);
+
+               if ($url) {
+                  $cliente = new ClientGuzzle();
+                  $response = $cliente->get($url);
+
+                  $nombreArchivo = basename($url); // Obtiene el nombre del archivo de la URL
+
+                  $result = Storage::disk('img-perfil')->put($nombreArchivo, $response->getBody()->getContents());
+                  $usuario->imagen = $nombreArchivo;
+                  $usuario->save();
+               }
+
+
+               $usuario->asignarPermisosPorRol();
+            } else {
+               $url = isset($payload['picture']) ? $payload['picture'] : null;
+
+               if ($url) {
+                  $cliente = new ClientGuzzle();
+                  $response = $cliente->get($url);
+
+                  $nombreArchivo = basename($url); // Obtiene el nombre del archivo de la URL
+
+                  $result = Storage::disk('img-perfil')->put($nombreArchivo, $response->getBody()->getContents());
+                  $usuario->imagen = $nombreArchivo;
+                  $usuario->save();
+               }
+            }
+
+            $usuario->generateLink();
+
+            $usuario->ultimo_login = now();
+            $usuario->save();
+
+            $token = (!is_null($usuario->getTokenText())) ? $usuario->getTokenText() : $usuario->createToken($usuario->nombre . '-' . $usuario->id)->accessToken;
+
+            $usuario->token = $token;
+
+            if (!$usuario->cuenta) {
+               $usuario->aperturarCuenta();
+               $usuario->cuenta;
+            }
+
+            $usuario->save();
+
+            $usuario->update(['activo' => true]);
+
+            $usuario->cargar();
+
+            Auth::login($usuario);
+
+            $result = true;
+         } else {
+            $result = false;
+         }
+      
+
+
+      return response()->json(['result' => $result,'usuario' => $result ? $usuario : null, 'accessToken' => $result ? $token : null,
          'token_type' => 'Bearer',]);
 
    }
@@ -340,6 +342,7 @@ class AuthController extends Controller
             $status = Password::sendResetLink(
                $request->only('email')
             );
+            
 
             switch ($status) {
                case Password::RESET_LINK_SENT:

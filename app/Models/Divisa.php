@@ -108,6 +108,7 @@ class Divisa extends Model
      * @param Divisa $divisaDestino La divisa de destino.
      * @param float $monto El monto a convertir.
      * @return float El monto convertido a la divisa de destino.
+     * @throws \RuntimeException Si no se encuentra una divisa principal.
      */
     public static function cambiar(Divisa $divisaOrigen, Divisa $divisaDestino, float $monto): float
     {
@@ -121,15 +122,25 @@ class Divisa extends Model
             throw new \RuntimeException('No se ha encontrado una divisa principal');
         }
 
-        if($divisaPrincipal->id === $divisaOrigen->id){
-            $montoDestino = $monto * $divisaDestino->tasa;
-        }else{
+        // Si la divisa de origen es la principal
+        if ($divisaPrincipal->id === $divisaOrigen->id) {
+            $montoDestino = $monto / $divisaDestino->tasa;
+        }
+        // Si la divisa de destino es la principal
+        elseif ($divisaPrincipal->id === $divisaDestino->id) {
+            $montoDestino = $monto * $divisaOrigen->tasa;
+        }
+        // Si ninguna de las dos divisas es la principal
+        else {
             $montoIntermedio = $monto / $divisaOrigen->tasa;
             $montoDestino = $montoIntermedio * $divisaDestino->tasa;
         }
 
         return $montoDestino;
     }
+
+
+
 }
 
 

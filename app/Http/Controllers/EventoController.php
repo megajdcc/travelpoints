@@ -49,6 +49,7 @@ class EventoController extends Controller
 
 
         return response()->json($eventos);
+            
     }
 
     public function fetchData(Request $request)
@@ -386,6 +387,7 @@ class EventoController extends Controller
         // $eventos = collect($paginator->items())->each(fn ($evento) => $evento->cargar());
 
         // Devuelve la respuesta en formato JSON
+
         return new EventosPublicCollection($paginator);
         // return response()->json(['total' => $paginator->total(), 'eventos' => $eventos]);
     }

@@ -14,6 +14,7 @@ class EventosPublicCollection extends ResourceCollection
      */
     public function toArray(Request $request): array
     {
+        
         return $this->collection->map(fn ($evento) => [
             'id'               => $evento->id,
             'imagenes'         => $evento->imagenes->map(fn ($imagen) => ['imagen'=> "thumbnail-{$imagen->imagen}"])->toArray(),
@@ -24,7 +25,7 @@ class EventosPublicCollection extends ResourceCollection
             'fecha_fin'        => $evento->fecha_fin,
             'status'           => $evento->status, // 1 > activo 2 > vencido 3 > destiempo
             'model_id'         => $evento->model_id,
-            'model_type'       => $evento->model_type,
+            'model_type'       => $evento->model->model_type,
             'recurrente'       => $evento->recurrente,
             'recurrencia'      => $evento->recurrencia, // [dia_semana                         :  [],hora_inicio    :t ime,hora_fin: time,id_group: string,  ] 
             'all_dia'          => $evento->all_dia,

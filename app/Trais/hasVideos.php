@@ -35,7 +35,7 @@ trait hasVideos
 
             $video = $request->file('url');
                $video_name = \sha1($video->getClientOriginalName()) . '.' . $video->getClientOriginalExtension();
-               $result = Storage::disk('videos_negocios')->put($video_name, File::get($video));
+               $result = Storage::disk($this->disk)->put($video_name, File::get($video));
             return Video::create([
                ...[
                   'nombre' => $datos['nombre'],
@@ -102,9 +102,7 @@ trait hasVideos
 
           $video->delete();
         }
-
       } 
-
 }
 
 ?>

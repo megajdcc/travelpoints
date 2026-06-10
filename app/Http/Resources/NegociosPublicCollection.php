@@ -21,6 +21,8 @@ class NegociosPublicCollection extends ResourceCollection
             'opinions' => $negocio->opinions,
             'url' => $negocio->url,
             'categoria' => $negocio->categoria->categoria,
+            'breve' => $negocio->breve,
+            'descripcion' => $negocio->descripcion,
             'tps_referido' => $negocio->tps_referido,
             'tipo_comision' => $negocio->tipo_comision,
             'comision' => $negocio->comision,

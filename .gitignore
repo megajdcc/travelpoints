@@ -19,3 +19,4 @@ cron-log.txt
 public/hot
 .phpunit.result.cache
 sftp.json
+log_server/*.log
